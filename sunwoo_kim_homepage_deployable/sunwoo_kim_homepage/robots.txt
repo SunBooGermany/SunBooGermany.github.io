@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sunboogermany.github.io/sitemap.xml
