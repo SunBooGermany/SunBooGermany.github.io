@@ -1,6 +1,7 @@
 const content = {
   en: {
     navResearch: "Research",
+    navLog: "Research Log",
     navPublications: "Publications",
     navExperience: "Experience",
     navProjects: "Projects",
@@ -24,6 +25,10 @@ const content = {
     pillar3Title: "Learning-augmented optimization",
     pillar3Text: "Integration of reinforcement learning, Bayesian optimization, attention models, and optimization-compatible neural surrogates for scalable planning and control under uncertainty.",
     featuredTitle: "Featured research themes",
+    logTitle: "Latest Research Notes",
+    logIntro: "Critical reading notes on learning and optimization methods, with attention to mathematical structure, assumptions, and feasibility-relevant limitations.",
+    viewResearchLog: "View research log",
+    logEmpty: "Reviewed daily research notes will appear here as they are published.",
     pubTitle: "Selected publications",
     pubSubtitle: "A compact selection. Full records are linked through Google Scholar.",
     experienceTitle: "Experience",
@@ -70,6 +75,7 @@ const content = {
   },
   ko: {
     navResearch: "연구",
+    navLog: "연구 노트",
     navPublications: "논문",
     navExperience: "경험",
     navProjects: "프로젝트",
@@ -93,6 +99,10 @@ const content = {
     pillar3Title: "학습 기반 최적화",
     pillar3Text: "강화학습, 베이지안 최적화, attention 모델, optimization-compatible neural surrogate를 결합하여 불확실성 하의 계획·제어 문제를 확장 가능하게 해결.",
     featuredTitle: "대표 연구 주제",
+    logTitle: "최신 연구 노트",
+    logIntro: "학습 및 최적화 방법론의 수학적 구조, 가정, 실행가능성과 관련된 한계를 비판적으로 검토하는 기술 노트입니다.",
+    viewResearchLog: "연구 노트 보기",
+    logEmpty: "검토를 마친 일일 연구 노트가 발행되면 이곳에 표시됩니다.",
     pubTitle: "주요 논문",
     pubSubtitle: "선별된 논문 목록입니다. 전체 목록은 Google Scholar에서 확인할 수 있습니다.",
     experienceTitle: "경력과 연구 경험",

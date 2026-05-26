@@ -1,0 +1,11 @@
+- slug: safe-constrained-rl
+  label: "Safe & Constrained RL"
+  description: "Critical notes on feasibility, constraint handling, and safety claims in reinforcement learning."
+
+- slug: nonlinear-optimization
+  label: "Nonlinear Optimization"
+  description: "Methods and analysis for nonlinear decision models in planning, control, and process systems."
+
+- slug: probabilistic-heuristic-model
+  label: "Probabilistic Heuristics & Bayesian Search"
+  description: "Probabilistic search and heuristic modeling methods, assessed for optimization-relevant decisions."

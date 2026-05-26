@@ -1,7 +1,27 @@
+---
+layout: null
+---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sunboogermany.github.io/</loc>
+    <loc>{{ '/' | absolute_url }}</loc>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>{{ '/research-log/' | absolute_url }}</loc>
+    <priority>0.8</priority>
+  </url>
+  {% for category in site.data.categories %}
+  <url>
+    <loc>{{ '/categories/' | append: category.slug | append: '/' | absolute_url }}</loc>
+    <priority>0.7</priority>
+  </url>
+  {% endfor %}
+  {% for post in site.posts %}
+  <url>
+    <loc>{{ post.url | absolute_url }}</loc>
+    <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+    <priority>0.6</priority>
+  </url>
+  {% endfor %}
 </urlset>

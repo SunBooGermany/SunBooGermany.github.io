@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<article class="research-post">
+  <header class="post-header">
+    <p class="eyebrow">{{ page.category_label }}</p>
+    <h1>{{ page.title | escape }}</h1>
+    <p class="post-intro">{{ page.excerpt | escape }}</p>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {% if page.venue and page.venue != "" %}<span>{{ page.venue | escape }}{% if page.year and page.year != "" %}, {{ page.year | escape }}{% endif %}</span>{% endif %}
+    </div>
+  </header>
+
+  {% if page.paper_title and page.paper_title != "" %}
+    <aside class="paper-citation" aria-label="Paper metadata">
+      <p class="citation-label">Paper under discussion</p>
+      <h2>{{ page.paper_title | escape }}</h2>
+      {% if page.authors and page.authors != "" %}<p>{{ page.authors | escape }}</p>{% endif %}
+      <div class="citation-links">
+        {% if page.doi and page.doi != "" %}<a href="https://doi.org/{{ page.doi | escape }}" rel="noreferrer">DOI</a>{% endif %}
+        {% if page.arxiv and page.arxiv != "" %}<a href="{{ page.arxiv | escape }}" rel="noreferrer">arXiv</a>{% endif %}
+        {% if page.source_url and page.source_url != "" %}<a href="{{ page.source_url | escape }}" rel="noreferrer">Source</a>{% endif %}
+      </div>
+    </aside>
+  {% endif %}
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ '/categories/' | append: page.category | append: '/' | relative_url }}">More in {{ page.category_label }}</a>
+    <a href="{{ '/research-log/' | relative_url }}">All research notes</a>
+  </footer>
+</article>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% assign resolved_title = page.title | default: site.title %}
+  <title>{{ resolved_title | escape }} | Sunwoo Kim</title>
+  <meta name="description" content="{{ page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace | escape }}" />
+  <meta name="author" content="Sunwoo Kim" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{{ page.url | absolute_url }}" />
+  <link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml" />
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}" />
+</head>
+<body class="research-log-page">
+  <header class="site-header">
+    <a class="brand" href="{{ '/' | relative_url }}" aria-label="Sunwoo Kim homepage">
+      <span class="brand-mark">SK</span>
+      <span>Sunwoo Kim</span>
+    </a>
+    <nav class="nav research-nav" aria-label="Research log navigation">
+      <a href="{{ '/research-log/' | relative_url }}">Research Log</a>
+      {% for category in site.data.categories %}
+        <a href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">{{ category.label }}</a>
+      {% endfor %}
+    </nav>
+    <a class="lang-toggle log-home-link" href="{{ '/' | relative_url }}">Homepage</a>
+  </header>
+
+  <main class="log-main">
+    {{ content }}
+  </main>
+
+  <footer class="footer">
+    <p>&copy; {{ site.time | date: "%Y" }} Sunwoo Kim. Research notes for critical technical discussion.</p>
+    <p><a href="{{ '/' | relative_url }}">Return to homepage</a></p>
+  </footer>
+</body>
+</html>

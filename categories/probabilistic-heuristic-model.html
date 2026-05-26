@@ -1,0 +1,31 @@
+---
+layout: default
+title: "Probabilistic Heuristics & Bayesian Search"
+description: "Research notes on probabilistic heuristics and Bayesian search."
+permalink: /categories/probabilistic-heuristic-model/
+category_slug: probabilistic-heuristic-model
+category_label: "Probabilistic Heuristics & Bayesian Search"
+---
+{% assign category_posts = site.posts | where: "category", page.category_slug %}
+<section class="category-header">
+  <p class="eyebrow">Research Log Category</p>
+  <h1>{{ page.category_label }}</h1>
+  <p>Probabilistic search and heuristic modeling methods, assessed for optimization-relevant decisions.</p>
+  <a class="button secondary" href="{{ '/research-log/' | relative_url }}">All research notes</a>
+</section>
+
+<section class="notes-section">
+  {% if category_posts.size > 0 %}
+    <div class="note-list">
+      {% for post in category_posts %}
+        <article class="note-card">
+          <div class="note-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time></div>
+          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+          <p>{{ post.excerpt }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-notes">No research notes have been published in this category yet.</p>
+  {% endif %}
+</section>

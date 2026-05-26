@@ -1,0 +1,20 @@
+title: "Sunwoo Kim | Research Log"
+description: "Research notes on AI-enabled optimization, constrained reinforcement learning, and process systems engineering."
+url: "https://sunboogermany.github.io"
+baseurl: ""
+lang: "en"
+timezone: "Asia/Seoul"
+markdown: kramdown
+permalink: /research-log/:year/:month/:day/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      language: "en-ko"
+
+exclude:
+  - scripts
+  - README.md
