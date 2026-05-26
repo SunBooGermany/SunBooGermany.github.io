@@ -50,18 +50,10 @@ State assumptions, scalability questions, approximation issues, and any limits o
 
 Evaluate strengths, weaknesses, and the evidence required for broader claims.
 
-## Connection to my research
-
-Relate the paper to relevant planning, optimization, or control questions only where justified.
-
-## Possible extension
-
-Describe a testable research direction; label speculative connections as extensions rather than results.
-
 ## Korean technical note
 
 핵심 방법, 가정, 한계, 그리고 연구 연계 가능성을 기술적으로 요약한다.
 
-## Citation and metadata
+## References
 
-Provide the citation, DOI or stable source link, and any metadata used in this note.
+Identify the focal paper and include references from the paper when they are available in the provided paper, source text, metadata, bibliography, or verified source material. Do not infer or fabricate missing reference entries or metadata; leave unavailable items blank and report missing metadata in the final report.

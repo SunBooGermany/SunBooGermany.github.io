@@ -113,10 +113,18 @@ Each post should contain:
 6. Why it can work
 7. Assumptions and limitations
 8. Critical assessment
-9. Connection to my research
-10. Possible extension
-11. Korean technical note
-12. Citation and metadata
+9. Korean technical note
+10. References
+
+Do not add separate sections connecting the paper to Sunwoo Kim's research or proposing extensions by default. Include such sections only when the user explicitly requests them.
+
+## References policy
+
+The `References` section must identify the focal paper and include references from the paper when they are available in the provided material.
+Use reference details only from the provided paper, supplied source text, supplied metadata or bibliography, or verified source material.
+Do not infer or fabricate missing references.
+If the material does not provide enough reference information, leave missing items blank or report them as missing metadata in the final report.
+Fill front matter metadata fields only when they are confirmed from the provided material or verified source material.
 
 ## Front matter schema
 
@@ -148,7 +156,8 @@ If a paper only provides empirical evidence, do not describe it as a guarantee.
 If assumptions are strong, say so.
 If scalability is unclear, say so.
 If feasibility or safety is approximate, say so.
-If the connection to Sunwoo Kim's research is speculative, label it as a possible extension rather than a result.
+Explain important equations intuitively when needed without changing their mathematical meaning.
+If an explicitly requested connection or extension is speculative, label it as a proposed direction rather than a result.
 
 ## Sunwoo Kim's research positioning
 

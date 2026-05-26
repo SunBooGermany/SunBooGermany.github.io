@@ -54,7 +54,9 @@ python scripts/new_research_note.py \
   --tag constrained-rl
 ```
 
-The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder, verify all bibliographic fields against the source, and write all twelve required sections before publishing. Do not claim guarantees or results beyond what the cited work establishes.
+The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder and write all ten default sections before publishing. Do not add separate research-connection or proposed-extension sections unless explicitly requested.
+
+Populate front matter metadata and the `References` section only from the supplied paper, source text, metadata, bibliography, or verified source material. When available from those sources, include the paper's references in `References`; never infer missing citation details, and leave or report missing metadata rather than fabricate it. Do not claim guarantees or results beyond what the cited work establishes.
 
 ## Add a Better Judgment note
 
