@@ -15,7 +15,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en-ko"
+language: "en"
 ---
 
 ## Positioning
@@ -49,10 +49,6 @@ State assumptions, scalability questions, approximation issues, and any limits o
 ## Critical assessment
 
 Evaluate strengths, weaknesses, and the evidence required for broader claims.
-
-## Korean technical note
-
-핵심 방법, 가정, 한계, 그리고 연구 연계 가능성을 기술적으로 요약한다.
 
 ## References
 

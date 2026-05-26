@@ -12,7 +12,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en-ko"
+language: "en"
 ---
 
 ## Core insight
@@ -42,10 +42,6 @@ Identify scope conditions, counterexamples, missing evidence, or risks of overge
 ## Connection to my life and research
 
 Explain a thoughtful connection while clearly marking personal interpretation or a possible extension.
-
-## Korean note
-
-핵심 통찰, 적용 범위, 한계를 한국어로 간결하고 정확하게 정리합니다.
 
 ## Source metadata
 

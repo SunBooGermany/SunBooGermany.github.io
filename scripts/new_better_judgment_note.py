@@ -100,7 +100,7 @@ source_url: "{yaml_value(args.source_url)}"
 tags:
 {tag_lines}
 excerpt: "{yaml_value(args.excerpt)}"
-language: "en-ko"
+language: "en"
 ---
 
 {body}"""

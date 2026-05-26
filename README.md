@@ -54,9 +54,10 @@ python scripts/new_research_note.py \
   --tag constrained-rl
 ```
 
-The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder and write all ten default sections before publishing. Do not add separate research-connection or proposed-extension sections unless explicitly requested.
+The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder and write all nine default sections before publishing. Do not add separate research-connection or proposed-extension sections unless explicitly requested.
 
 Populate front matter metadata and the `References` section only from the supplied paper, source text, metadata, bibliography, or verified source material. When available from those sources, include the paper's references in `References`; never infer missing citation details, and leave or report missing metadata rather than fabricate it. Do not claim guarantees or results beyond what the cited work establishes.
+New research notes are written in English by default and must not include a `Korean technical note` or `Korean Note` section.
 
 ## Add a Better Judgment note
 
@@ -67,6 +68,7 @@ Better Judgment Notes use only these categories:
 - `global-affairs` (`Understanding Global Affairs` / `국제 정세의 흐름을 이해하기 위하여`)
 
 Allowed `source_type` values are `book`, `interview`, `lecture`, `essay`, `article`, `personal-reflection`, and `public-affairs`.
+Better Judgment notes are written in English by default and must not include a `Korean Note` section.
 
 Create a note skeleton:
 

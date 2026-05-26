@@ -19,13 +19,13 @@ defaults:
       type: posts
     values:
       layout: post
-      language: "en-ko"
+      language: "en"
   - scope:
       path: ""
       type: better_judgment
     values:
       layout: judgment-post
-      language: "en-ko"
+      language: "en"
 
 exclude:
   - scripts

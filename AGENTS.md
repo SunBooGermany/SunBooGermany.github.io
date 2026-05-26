@@ -74,10 +74,10 @@ Every Better Judgment note must use the `judgment-post` layout and contain:
 5. Practical implication
 6. Limits of the idea
 7. Connection to my life and research
-8. Korean note
-9. Source metadata
+8. Source metadata
 
 The tone must be reflective but analytical, readable, practical without cliché, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
+Do not include a `Korean Note` section in Better Judgment notes.
 
 ## Daily research-note purpose
 
@@ -113,10 +113,10 @@ Each post should contain:
 6. Why it can work
 7. Assumptions and limitations
 8. Critical assessment
-9. Korean technical note
-10. References
+9. References
 
 Do not add separate sections connecting the paper to Sunwoo Kim's research or proposing extensions by default. Include such sections only when the user explicitly requests them.
+Do not include a `Korean technical note` or `Korean Note` section in research notes.
 
 ## References policy
 
@@ -146,7 +146,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en-ko"
+language: "en"
 ---
 
 ## Quality rules
