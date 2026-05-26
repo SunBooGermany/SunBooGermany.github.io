@@ -1,5 +1,5 @@
-title: "Sunwoo Kim | Research Log"
-description: "Research notes on AI-enabled optimization, constrained reinforcement learning, and process systems engineering."
+title: "Sunwoo Kim | Research Blog"
+description: "Research notes on AI-enabled optimization, constrained reinforcement learning, process systems engineering, and better judgment."
 url: "https://sunboogermany.github.io"
 baseurl: ""
 lang: "en"
@@ -7,12 +7,24 @@ timezone: "Asia/Seoul"
 markdown: kramdown
 permalink: /research-log/:year/:month/:day/:title/
 
+collections:
+  better_judgment:
+    output: true
+    permalink: /better-judgment/:path/
+    sort_by: date
+
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: post
+      language: "en-ko"
+  - scope:
+      path: ""
+      type: better_judgment
+    values:
+      layout: judgment-post
       language: "en-ko"
 
 exclude:

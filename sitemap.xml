@@ -11,9 +11,19 @@ layout: null
     <loc>{{ '/research-log/' | absolute_url }}</loc>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>{{ '/better-judgment/' | absolute_url }}</loc>
+    <priority>0.8</priority>
+  </url>
   {% for category in site.data.categories %}
   <url>
     <loc>{{ '/categories/' | append: category.slug | append: '/' | absolute_url }}</loc>
+    <priority>0.7</priority>
+  </url>
+  {% endfor %}
+  {% for category in site.data.judgment_categories %}
+  <url>
+    <loc>{{ '/judgment-categories/' | append: category.slug | append: '/' | absolute_url }}</loc>
     <priority>0.7</priority>
   </url>
   {% endfor %}
@@ -21,6 +31,13 @@ layout: null
   <url>
     <loc>{{ post.url | absolute_url }}</loc>
     <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+    <priority>0.6</priority>
+  </url>
+  {% endfor %}
+  {% for note in site.better_judgment %}
+  <url>
+    <loc>{{ note.url | absolute_url }}</loc>
+    <lastmod>{{ note.date | date_to_xmlschema }}</lastmod>
     <priority>0.6</priority>
   </url>
   {% endfor %}

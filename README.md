@@ -1,6 +1,6 @@
 # Sunwoo Kim Personal Homepage
 
-This is Sunwoo Kim's academic homepage with a Jekyll-based research log for reviewed daily technical notes.
+This is Sunwoo Kim's academic homepage with a Jekyll-based Research Blog for reviewed technical notes and a Better Judgment Notes collection for occasional analytical reflections.
 
 ## Files
 
@@ -9,10 +9,12 @@ This is Sunwoo Kim's academic homepage with a Jekyll-based research log for revi
 - `script.js`: English/Korean language toggle and content rendering
 - `favicon.svg`: browser icon
 - `robots.txt`: search-engine crawling rule
-- `sitemap.xml`: Jekyll-rendered sitemap for the homepage, research-log pages, and posts
-- `_layouts/`, `_data/`, and `categories/`: research-log presentation and category infrastructure
+- `sitemap.xml`: Jekyll-rendered sitemap for both writing collections and their category pages
+- `_layouts/`, `_data/`, `categories/`, and `judgment-categories/`: presentation and category infrastructure
 - `_drafts/TEMPLATE-research-note.md`: required structure for a research note
+- `_drafts/TEMPLATE-better-judgment-note.md`: required structure for a Better Judgment note
 - `scripts/new_research_note.py`: scaffolds a post with validated category metadata
+- `scripts/new_better_judgment_note.py`: scaffolds a reflection note with validated category and source metadata
 
 ## Recommended deployment: GitHub Pages
 
@@ -54,6 +56,31 @@ python scripts/new_research_note.py \
 
 The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder, verify all bibliographic fields against the source, and write all twelve required sections before publishing. Do not claim guarantees or results beyond what the cited work establishes.
 
+## Add a Better Judgment note
+
+Better Judgment Notes use only these categories:
+
+- `decision-making` (`For Wiser Decision-Making` / `더 현명한 의사결정을 내리기 위하여`)
+- `social-phenomena` (`Understanding Social Phenomena` / `사회 현상을 이해하기 위하여`)
+- `global-affairs` (`Understanding Global Affairs` / `국제 정세의 흐름을 이해하기 위하여`)
+
+Allowed `source_type` values are `book`, `interview`, `lecture`, `essay`, `article`, `personal-reflection`, and `public-affairs`.
+
+Create a note skeleton:
+
+```bash
+python scripts/new_better_judgment_note.py \
+  --date 2026-05-26 \
+  --category decision-making \
+  --title "Decision Quality and Long-Term Thinking" \
+  --source-type book \
+  --source-title "TODO: verified source title" \
+  --author-or-speaker "TODO: verified author" \
+  --tags "decision making,judgment,long-term thinking"
+```
+
+The script writes a collection document beneath `_better_judgment/<category>/<year>/<month>/<day>/`, producing a categorized `/better-judgment/` URL through Jekyll's supported collection `:path` permalink. It refuses to overwrite an existing note unless `--force` is explicitly passed. Replace placeholders before publication and do not present interpretation as verified fact. Any note involving current public affairs or international politics must be checked against reliable sources before it is published.
+
 ## Local preview
 
 With Ruby and Bundler installed, GitHub Pages-compatible rendering can be previewed with:
@@ -63,7 +90,7 @@ gem install bundler jekyll
 jekyll serve
 ```
 
-Open `http://127.0.0.1:4000/` and verify the homepage, `/research-log/`, all three category pages, and `/sitemap.xml`.
+Open `http://127.0.0.1:4000/` and verify the homepage at desktop and mobile widths, `/research-log/`, `/better-judgment/`, all category pages, and `/sitemap.xml`.
 
 ## Notes
 

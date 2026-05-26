@@ -1,0 +1,48 @@
+---
+layout: default
+title: "Better Judgment Notes"
+description: "Reflections from books, interviews, and public affairs for better decisions and clearer understanding."
+permalink: /better-judgment/
+---
+<section class="log-hero judgment-hero">
+  <p class="eyebrow">Better Judgment Notes</p>
+  <h1>Notes for better decisions and clearer understanding</h1>
+  <p>Reflections from books, interviews, social phenomena, and international affairs, organized as disciplined notes for judgment rather than casual diary entries.</p>
+  <p class="korean-description" lang="ko">책, 인터뷰, 사회 현상, 국제 정세에서 얻은 생각을 더 나은 의사결정과 세상 이해를 위한 지침으로 정리합니다.</p>
+</section>
+
+<section class="log-categories judgment-categories" aria-label="Better Judgment categories">
+  {% for category in site.data.judgment_categories %}
+    {% assign category_notes = site.better_judgment | where: "category", category.slug %}
+    <a class="category-card" href="{{ '/judgment-categories/' | append: category.slug | append: '/' | relative_url }}">
+      <h2>{{ category.label }}</h2>
+      <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
+      <p>{{ category.description }}</p>
+      <span>{{ category_notes.size }} note{% unless category_notes.size == 1 %}s{% endunless %}</span>
+    </a>
+  {% endfor %}
+</section>
+
+{% assign judgment_notes = site.better_judgment | sort: "date" | reverse %}
+<section class="notes-section">
+  <div class="notes-heading">
+    <h2>Latest Better Judgment Notes</h2>
+  </div>
+  {% if judgment_notes.size > 0 %}
+    <div class="note-list">
+      {% for note in judgment_notes %}
+        <article class="post-card">
+          <div class="note-meta">
+            <time datetime="{{ note.date | date_to_xmlschema }}">{{ note.date | date: "%B %-d, %Y" }}</time>
+            <span>{{ note.category_label }}</span>
+          </div>
+          <h3><a href="{{ note.url | relative_url }}">{{ note.title }}</a></h3>
+          <p>{{ note.excerpt }}</p>
+          {% if note.source_title and note.source_title != "" %}<p class="source-title">{{ note.source_type | replace: "-", " " | capitalize }}: {{ note.source_title }}</p>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-notes">No Better Judgment notes have been published yet. Occasional evidence-conscious reflections will appear here.</p>
+  {% endif %}
+</section>

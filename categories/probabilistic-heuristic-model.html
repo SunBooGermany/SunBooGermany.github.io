@@ -18,7 +18,7 @@ category_label: "Probabilistic Heuristics & Bayesian Search"
   {% if category_posts.size > 0 %}
     <div class="note-list">
       {% for post in category_posts %}
-        <article class="note-card">
+        <article class="note-card research-note-card">
           <div class="note-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time></div>
           <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
           <p>{{ post.excerpt }}</p>

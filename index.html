@@ -65,8 +65,9 @@ layout: null
     </a>
     <nav class="nav" aria-label="Main navigation">
       <a data-i18n="navResearch" href="#research">Research</a>
-      <a data-i18n="navLog" href="research-log/">Research Log</a>
+      <a data-i18n="navLog" href="#research-blog">Research Blog</a>
       <a data-i18n="navPublications" href="#publications">Publications</a>
+      <a data-i18n="navJudgment" href="#better-judgment">Better Judgment</a>
       <a data-i18n="navExperience" href="#experience">Experience</a>
       <a data-i18n="navProjects" href="#projects">Projects</a>
       <a data-i18n="navContact" href="#contact">Contact</a>
@@ -135,38 +136,23 @@ layout: null
       </div>
     </section>
 
-    <section id="research-log" class="section log-preview">
-      <div class="section-header row">
-        <div>
-          <p class="eyebrow">Research Log</p>
-          <h2 data-i18n="logTitle">Latest Research Notes</h2>
-          <p data-i18n="logIntro">Critical reading notes on learning and optimization methods, with attention to mathematical structure, assumptions, and feasibility-relevant limitations.</p>
-        </div>
-        <a class="button secondary" href="research-log/" data-i18n="viewResearchLog">View research log</a>
+    <section id="research-blog" class="section research-log-preview">
+      <div class="section-header">
+        <p class="eyebrow" data-i18n="researchBlogLabel">Research Blog</p>
+        <h2 data-i18n="researchBlogTitle">Daily paper reading as research training</h2>
       </div>
-      {% if site.posts.size > 0 %}
-        <div class="note-list home-note-list">
-          {% for post in site.posts limit:3 %}
-            <article class="note-card">
-              <div class="note-meta">
-                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-                <span>{{ post.category_label }}</span>
-              </div>
-              <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-              <p>{{ post.excerpt }}</p>
-            </article>
-          {% endfor %}
+      <div class="statement-panel">
+        <blockquote data-i18n="researchBlogStatement1">I review papers on decision-making tools based on modern AI and mathematical optimization in a way that chemical engineers can understand.</blockquote>
+        <blockquote data-i18n="researchBlogStatement2">Just as elite athletes train every day, serious researchers read strong papers every day.</blockquote>
+      </div>
+      <div class="preview-footer">
+        <div class="category-pills" aria-label="Research Blog categories">
+          <span>Safe &amp; Constrained RL</span>
+          <span>Nonlinear Optimization</span>
+          <span>Probabilistic Heuristics &amp; Bayesian Search</span>
         </div>
-      {% else %}
-        <div class="empty-notes">
-          <p data-i18n="logEmpty">Reviewed daily research notes will appear here as they are published.</p>
-          <div class="category-links" aria-label="Research log categories">
-            <a href="categories/safe-constrained-rl/">Safe &amp; Constrained RL</a>
-            <a href="categories/nonlinear-optimization/">Nonlinear Optimization</a>
-            <a href="categories/probabilistic-heuristic-model/">Probabilistic Heuristics &amp; Bayesian Search</a>
-          </div>
-        </div>
-      {% endif %}
+        <a class="button secondary" href="{{ '/research-log/' | relative_url }}" data-i18n="exploreResearchBlog">Explore Research Blog</a>
+      </div>
     </section>
 
     <section id="publications" class="section alt">
@@ -179,6 +165,20 @@ layout: null
         <a class="button secondary" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
       </div>
       <div id="publication-list" class="publication-list"></div>
+    </section>
+
+    <section id="better-judgment" class="section life-insights-preview">
+      <div class="section-header">
+        <p class="eyebrow" data-i18n="judgmentLabel">Better Judgment Notes</p>
+        <h2 data-i18n="judgmentTitle">Better Judgment Notes</h2>
+        <p data-i18n="judgmentIntro">Reflections from books, interviews, and public affairs, organized as notes for better decisions, sharper social understanding, and broader geopolitical awareness.</p>
+      </div>
+      <div class="insight-grid" aria-label="Better Judgment categories">
+        <div class="insight-card" data-i18n="judgmentCategory1">For Wiser Decision-Making</div>
+        <div class="insight-card" data-i18n="judgmentCategory2">Understanding Social Phenomena</div>
+        <div class="insight-card" data-i18n="judgmentCategory3">Understanding Global Affairs</div>
+      </div>
+      <a class="button secondary preview-button" href="{{ '/better-judgment/' | relative_url }}" data-i18n="exploreJudgment">Explore Better Judgment Notes</a>
     </section>
 
     <section id="experience" class="section">

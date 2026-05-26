@@ -1,0 +1,43 @@
+---
+layout: default
+---
+<article class="judgment-post">
+  <header class="post-header">
+    <p class="eyebrow">Better Judgment Notes</p>
+    <h1>{{ page.title | escape }}</h1>
+    <p class="post-intro">{{ page.excerpt | escape }}</p>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      <span>{{ page.category_label | escape }}</span>
+      {% if page.source_type and page.source_type != "" %}<span>{{ page.source_type | replace: "-", " " | capitalize }}</span>{% endif %}
+    </div>
+  </header>
+
+  {% if page.source_title and page.source_title != "" %}
+    <aside class="paper-citation source-citation" aria-label="Source metadata">
+      <p class="citation-label">Source for reflection</p>
+      <h2>{{ page.source_title | escape }}</h2>
+      {% if page.author_or_speaker and page.author_or_speaker != "" %}<p>{{ page.author_or_speaker | escape }}{% if page.year and page.year != "" %}, {{ page.year | escape }}{% endif %}</p>{% endif %}
+      {% if page.source_url and page.source_url != "" %}
+        <div class="citation-links">
+          <a href="{{ page.source_url | escape }}" rel="noreferrer">Source</a>
+        </div>
+      {% endif %}
+    </aside>
+  {% endif %}
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  {% if page.tags.size > 0 %}
+    <div class="post-tags" aria-label="Tags">
+      {% for tag in page.tags %}<span>{{ tag | escape }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  <footer class="post-footer">
+    <a href="{{ '/judgment-categories/' | append: page.category | append: '/' | relative_url }}">More in {{ page.category_label }}</a>
+    <a href="{{ '/better-judgment/' | relative_url }}">All Better Judgment notes</a>
+  </footer>
+</article>

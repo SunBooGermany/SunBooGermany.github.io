@@ -1,0 +1,33 @@
+---
+layout: default
+title: "For Wiser Decision-Making"
+description: "Better Judgment notes on decisions, trade-offs, and judgment."
+permalink: /judgment-categories/decision-making/
+category_slug: decision-making
+category_label: "For Wiser Decision-Making"
+category_label_ko: "더 현명한 의사결정을 내리기 위하여"
+---
+{% assign category_notes = site.better_judgment | where: "category", page.category_slug | sort: "date" | reverse %}
+<section class="category-header judgment-category-header">
+  <p class="eyebrow">Better Judgment Category</p>
+  <h1>{{ page.category_label }}</h1>
+  <p class="category-korean-heading" lang="ko">{{ page.category_label_ko }}</p>
+  <p>Notes on judgment, trade-offs, incentives, and principles for making consequential decisions more deliberately.</p>
+  <a class="button secondary" href="{{ '/better-judgment/' | relative_url }}">All Better Judgment notes</a>
+</section>
+
+<section class="notes-section">
+  {% if category_notes.size > 0 %}
+    <div class="note-list">
+      {% for note in category_notes %}
+        <article class="post-card">
+          <div class="note-meta"><time datetime="{{ note.date | date_to_xmlschema }}">{{ note.date | date: "%B %-d, %Y" }}</time></div>
+          <h2><a href="{{ note.url | relative_url }}">{{ note.title }}</a></h2>
+          <p>{{ note.excerpt }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-notes">No notes have been published in this category yet.</p>
+  {% endif %}
+</section>

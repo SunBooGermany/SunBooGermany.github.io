@@ -37,6 +37,48 @@ Display labels:
 
 Do not create new categories unless explicitly requested.
 
+## Better Judgment Notes purpose
+
+Better Judgment Notes contain occasional analytical reflections from books, interviews, lectures, essays, social phenomena, and international affairs. They should function as a rigorous but readable guide for better judgment, not as a casual diary or ungrounded self-help writing.
+
+Use exactly these internal category slugs:
+
+1. decision-making
+2. social-phenomena
+3. global-affairs
+
+Display labels:
+
+1. For Wiser Decision-Making / 더 현명한 의사결정을 내리기 위하여
+2. Understanding Social Phenomena / 사회 현상을 이해하기 위하여
+3. Understanding Global Affairs / 국제 정세의 흐름을 이해하기 위하여
+
+Allowed `source_type` values:
+
+- book
+- interview
+- lecture
+- essay
+- article
+- personal-reflection
+- public-affairs
+
+## Better Judgment post format
+
+Every Better Judgment note must use the `judgment-post` layout and contain:
+
+1. Core insight
+2. Why this matters
+3. Decision-making principle
+4. What this explains about people or systems
+5. Practical implication
+6. Limits of the idea
+7. Connection to my life and research
+8. Korean note
+9. Source metadata
+
+The tone must be reflective but analytical, readable, practical without cliché, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
+
 ## Daily research-note purpose
 
 Each daily note should show critical research judgment, not just summarize a paper.

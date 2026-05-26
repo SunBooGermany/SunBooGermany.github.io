@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "Research Log"
+title: "Research Blog"
 description: "Daily critical research notes on optimization, constrained reinforcement learning, and probabilistic search."
 permalink: /research-log/
 ---
 <section class="log-hero">
-  <p class="eyebrow">Research Log</p>
+  <p class="eyebrow">Research Blog</p>
   <h1>Critical notes on learning and optimization</h1>
   <p>Daily technical notes examining assumptions, mathematical structure, evidence, and possible extensions for feasibility-critical decision making.</p>
 </section>
@@ -28,7 +28,7 @@ permalink: /research-log/
   {% if site.posts.size > 0 %}
     <div class="note-list">
       {% for post in site.posts %}
-        <article class="note-card">
+        <article class="note-card research-note-card">
           <div class="note-meta">
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
             <span>{{ post.category_label }}</span>
