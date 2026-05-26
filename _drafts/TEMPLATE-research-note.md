@@ -44,6 +44,7 @@ Equation formatting for publication:
 - Use inline <math>...</math> notation in prose, rather than code formatting, when mathematical layout matters.
 - Use <math display="block" aria-label="...">...</math> for important displayed equations.
 - Keep fenced text blocks for algorithm flows or pseudocode, not mathematical equations.
+- Preserve native MathML layout; do not add post-specific CSS overrides for math display, fonts, or spacing.
 
 Example display equation:
 <math display="block" aria-label="Estimated Lyapunov action value">

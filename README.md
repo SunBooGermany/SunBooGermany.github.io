@@ -78,6 +78,7 @@ Research-note equations use native MathML so superscripts, subscripts, accents, 
 ```
 
 Do not place display equations in fenced `text` blocks. Fenced text blocks remain appropriate for algorithm flows or pseudocode.
+The site intentionally relies on browser-native MathML rendering. Do not style `math` elements with custom layout or font rules unless a separately tested design change requires it.
 
 ## Add a Better Judgment note
 

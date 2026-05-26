@@ -166,6 +166,7 @@ Do not render mathematical equations as fenced `text` code blocks or approximate
 Use inline `<math>...</math>` for mathematical notation inside prose and `<math display="block" aria-label="...">...</math>` for displayed equations.
 Include an informative `aria-label` on displayed equations.
 Plain-text code blocks may still be used for algorithm flows, pseudocode, or terminal-like sequences that are not mathematical notation.
+Rely on the browser's native MathML layout by default; do not add global or research-post CSS that changes the `math` display mode, font, sizing, wrapping, overflow, or alignment unless it has been explicitly tested and requested.
 
 ## Sunwoo Kim's research positioning
 
