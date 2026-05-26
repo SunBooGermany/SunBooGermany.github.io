@@ -159,6 +159,14 @@ If feasibility or safety is approximate, say so.
 Explain important equations intuitively when needed without changing their mathematical meaning.
 If an explicitly requested connection or extension is speculative, label it as a proposed direction rather than a result.
 
+## Equation rendering policy
+
+Use native MathML for equations in research notes when notation requires mathematical layout, including superscripts, subscripts, accents, summations, matrices, expectations, or optimization constraints.
+Do not render mathematical equations as fenced `text` code blocks or approximate mathematical layout with plain-text symbols when MathML can express the notation precisely.
+Use inline `<math>...</math>` for mathematical notation inside prose and `<math display="block" aria-label="...">...</math>` for displayed equations.
+Include an informative `aria-label` on displayed equations.
+Plain-text code blocks may still be used for algorithm flows, pseudocode, or terminal-like sequences that are not mathematical notation.
+
 ## Sunwoo Kim's research positioning
 
 When relevant, connect papers to:

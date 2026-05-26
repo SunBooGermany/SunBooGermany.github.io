@@ -38,6 +38,27 @@ Explain the methodological contribution in original language.
 
 Describe the optimization, control, or learning formulation and the role of key assumptions.
 
+<!--
+Equation formatting for publication:
+- Use native MathML for formal equations, superscripts, subscripts, accents, sums, matrices, and constraints.
+- Use inline <math>...</math> notation in prose, rather than code formatting, when mathematical layout matters.
+- Use <math display="block" aria-label="...">...</math> for important displayed equations.
+- Keep fenced text blocks for algorithm flows or pseudocode, not mathematical equations.
+
+Example display equation:
+<math display="block" aria-label="Estimated Lyapunov action value">
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>L</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>=</mo>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>D</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>+</mo>
+  <mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>T</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+</math>
+-->
+
 ## Why it can work
 
 Distinguish theorem-backed conclusions from empirical evidence and plausible mechanisms.

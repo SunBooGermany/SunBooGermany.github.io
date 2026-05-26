@@ -753,6 +753,24 @@ h1 {
 .post-content ol {
   padding-left: 24px;
 }
+.technical-content math {
+  color: var(--ink);
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Noto Sans Math", serif;
+}
+.technical-content math[display="block"] {
+  display: block;
+  max-width: 100%;
+  margin: 24px 0 27px;
+  padding: 6px 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 1.08em;
+  text-align: center;
+}
+.technical-content p math,
+.technical-content li math {
+  white-space: nowrap;
+}
 .post-footer {
   display: flex;
   flex-wrap: wrap;
@@ -898,5 +916,9 @@ h1 {
   }
   .post-content {
     font-size: 16px;
+  }
+  .technical-content math[display="block"] {
+    margin: 20px 0 23px;
+    font-size: 1em;
   }
 }

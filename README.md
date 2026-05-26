@@ -59,6 +59,26 @@ The script creates a dated Markdown file in `_posts/`. Replace every `TODO` plac
 Populate front matter metadata and the `References` section only from the supplied paper, source text, metadata, bibliography, or verified source material. When available from those sources, include the paper's references in `References`; never infer missing citation details, and leave or report missing metadata rather than fabricate it. Do not claim guarantees or results beyond what the cited work establishes.
 New research notes are written in English by default and must not include a `Korean technical note` or `Korean Note` section.
 
+### Format technical equations
+
+Research-note equations use native MathML so superscripts, subscripts, accents, and optimization notation render as mathematical typography without an external script dependency. Use inline `<math>...</math>` notation in prose and a labelled display element for important equations:
+
+```html
+<math display="block" aria-label="Estimated Lyapunov action value">
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>L</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>=</mo>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>D</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>+</mo>
+  <mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>T</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+</math>
+```
+
+Do not place display equations in fenced `text` blocks. Fenced text blocks remain appropriate for algorithm flows or pseudocode.
+
 ## Add a Better Judgment note
 
 Better Judgment Notes use only these categories:
