@@ -27,22 +27,48 @@ In robotics, autonomous systems, process control, energy operation, and supply-c
 
 Ordinary reinforcement learning optimizes an expected cumulative objective. A constrained Markov decision process (CMDP) instead asks for a good policy among policies that also control expected cumulative constraint cost. In cost-minimization form, the safety condition is
 
-```text
-D^π(x₀) ≤ d₀,
-```
+<math display="block" aria-label="D pi of x zero is less than or equal to d zero">
+  <msup><mi>D</mi><mi>&pi;</mi></msup>
+  <mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo>
+  <mo>&le;</mo>
+  <msub><mi>d</mi><mn>0</mn></msub>
+</math>
 
-where `D^π(x₀)` is the expected cumulative constraint cost from initial state `x₀` under policy `π`, and `d₀` is the permitted budget. This is a trajectory-level expectation constraint: it controls cumulative safety burden over an episode, not merely whether each individual action passes a one-step rule.
+where <math><msup><mi>D</mi><mi>&pi;</mi></msup><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo></math> is the expected cumulative constraint cost from initial state <math><msub><mi>x</mi><mn>0</mn></msub></math> under policy <math><mi>&pi;</mi></math>, and <math><msub><mi>d</mi><mn>0</mn></msub></math> is the permitted budget. This is a trajectory-level expectation constraint: it controls cumulative safety burden over an episode, not merely whether each individual action passes a one-step rule.
 
 ## Problem setting
 
-Let `c(x,a)` denote an objective stage cost and `d(x,a)` a constraint stage cost. For an episodic CMDP, the objective is to choose `π` so that
+Let <math><mi>c</mi><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> denote an objective stage cost and <math><mi>d</mi><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> a constraint stage cost. For an episodic CMDP, the objective is to choose <math><mi>&pi;</mi></math> so that
 
-```text
-minimize over π      C^π(x₀) = E_π[ Σ_t c(x_t, a_t) | x₀ ]
-subject to           D^π(x₀) = E_π[ Σ_t d(x_t, a_t) | x₀ ] ≤ d₀.
-```
+<math display="block" aria-label="CMDP optimization problem">
+  <mtable columnalign="right left" columnspacing="1em">
+    <mtr>
+      <mtd><mtext>minimize over </mtext><mi>&pi;</mi></mtd>
+      <mtd>
+        <msup><mi>C</mi><mi>&pi;</mi></msup><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo>
+        <mo>=</mo>
+        <msub><mi mathvariant="double-struck">E</mi><mi>&pi;</mi></msub>
+        <mo>[</mo><msub><mo>&sum;</mo><mi>t</mi></msub>
+        <mi>c</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo>)</mo>
+        <mo>|</mo><msub><mi>x</mi><mn>0</mn></msub><mo>]</mo>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>subject to</mtext></mtd>
+      <mtd>
+        <msup><mi>D</mi><mi>&pi;</mi></msup><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo>
+        <mo>=</mo>
+        <msub><mi mathvariant="double-struck">E</mi><mi>&pi;</mi></msub>
+        <mo>[</mo><msub><mo>&sum;</mo><mi>t</mi></msub>
+        <mi>d</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo>)</mo>
+        <mo>|</mo><msub><mi>x</mi><mn>0</mn></msub><mo>]</mo>
+        <mo>&le;</mo><msub><mi>d</mi><mn>0</mn></msub>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>
 
-The distinction between `C^π` and `D^π` matters. Performance can be traded against other performance terms, but a feasibility-critical budget should not be silently spent simply because a reward improvement is large. Equally, the CMDP statement is not pathwise safety: an expected bound alone does not rule out every unsafe realized trajectory.
+The distinction between <math><msup><mi>C</mi><mi>&pi;</mi></msup></math> and <math><msup><mi>D</mi><mi>&pi;</mi></msup></math> matters. Performance can be traded against other performance terms, but a feasibility-critical budget should not be silently spent simply because a reward improvement is large. Equally, the CMDP statement is not pathwise safety: an expected bound alone does not rule out every unsafe realized trajectory.
 
 ## Prior research gap
 
@@ -60,46 +86,96 @@ The central question is therefore whether cumulative feasibility can be expresse
 
 The method replaces the global expected cumulative constraint
 
-```text
-D^π(x₀) ≤ d₀
-```
+<math display="block" aria-label="D pi of x zero is less than or equal to d zero">
+  <msup><mi>D</mi><mi>&pi;</mi></msup>
+  <mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo>
+  <mo>&le;</mo>
+  <msub><mi>d</mi><mn>0</mn></msub>
+</math>
 
 with Lyapunov-type local inequalities:
 
-```text
-T_{π,d}[L](x) ≤ L(x),     for every relevant state x.
-```
+<math display="block" aria-label="Local Lyapunov inequality">
+  <msub><mi>T</mi><mrow><mi>&pi;</mi><mo>,</mo><mi>d</mi></mrow></msub>
+  <mo>[</mo><mi>L</mi><mo>]</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+  <mo>&le;</mo>
+  <mi>L</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>,</mo>
+  <mspace width="1em"></mspace>
+  <mtext>for every relevant state </mtext><mi>x</mi><mo>.</mo>
+</math>
 
-Here, `L(x)` can be interpreted as an upper bound on future cumulative constraint cost, or as a state-dependent remaining safety budget. The operator `T_{π,d}` adds the immediate constraint cost and the expected continuation certificate after one transition under policy `π`. Thus the inequality says that taking one policy step does not consume more certified safety burden than the current envelope permits.
+Here, <math><mi>L</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> can be interpreted as an upper bound on future cumulative constraint cost, or as a state-dependent remaining safety budget. The operator <math><msub><mi>T</mi><mrow><mi>&pi;</mi><mo>,</mo><mi>d</mi></mrow></msub></math> adds the immediate constraint cost and the expected continuation certificate after one transition under policy <math><mi>&pi;</mi></math>. Thus the inequality says that taking one policy step does not consume more certified safety burden than the current envelope permits.
 
 If
 
-```text
-T_{π,d}[L](x) ≤ L(x)  for all x,       and       L(x₀) ≤ d₀,
-```
+<math display="block" aria-label="Lyapunov feasibility conditions">
+  <msub><mi>T</mi><mrow><mi>&pi;</mi><mo>,</mo><mi>d</mi></mrow></msub>
+  <mo>[</mo><mi>L</mi><mo>]</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+  <mo>&le;</mo>
+  <mi>L</mi><mo>(</mo><mi>x</mi><mo>)</mo>
+  <mspace width="0.4em"></mspace><mtext>for all </mtext><mi>x</mi><mo>,</mo>
+  <mspace width="1.5em"></mspace><mtext>and</mtext><mspace width="1.5em"></mspace>
+  <mi>L</mi><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo>
+  <mo>&le;</mo><msub><mi>d</mi><mn>0</mn></msub><mo>,</mo>
+</math>
 
-then repeatedly applying the local inequality gives `D^π(x₀) ≤ d₀` under the exact CMDP assumptions. The construction is useful precisely because it turns a global budget into local constraints on action distributions.
+then repeatedly applying the local inequality gives <math><msup><mi>D</mi><mi>&pi;</mi></msup><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo><mo>&le;</mo><msub><mi>d</mi><mn>0</mn></msub></math> under the exact CMDP assumptions. The construction is useful precisely because it turns a global budget into local constraints on action distributions.
 
 ## Mathematical structure: Local LP interpretation
 
-Let `π_B` be a currently feasible baseline policy used to construct the Lyapunov budget. It is not simply an arbitrary initialization: its known feasibility anchors the certificate and keeps the induced policy set nonempty.
+Let <math><msub><mi>&pi;</mi><mi>B</mi></msub></math> be a currently feasible baseline policy used to construct the Lyapunov budget. It is not simply an arbitrary initialization: its known feasibility anchors the certificate and keeps the induced policy set nonempty.
 
-For a finite action space, a candidate improvement at state `x` can be obtained from the local linear program
+For a finite action space, a candidate improvement at state <math><mi>x</mi></math> can be obtained from the local linear program
 
-```text
-π′(·|x) ∈ arg min_{π ∈ Δ}   π(·|x)ᵀ Q(x,·)
-
-subject to                  (π(·|x) - π_B(·|x))ᵀ Q_L(x,·) ≤ ε̃(x).
-```
+<math display="block" aria-label="Local Lyapunov-safe policy improvement linear program">
+  <mtable columnalign="right left" columnspacing="1em">
+    <mtr>
+      <mtd>
+        <msup><mi>&pi;</mi><mo>&prime;</mo></msup>
+        <mo>(</mo><mo>&middot;</mo><mo>|</mo><mi>x</mi><mo>)</mo>
+        <mo>&in;</mo>
+      </mtd>
+      <mtd>
+        <munder>
+          <mrow><mi>arg</mi><mspace width="0.2em"></mspace><mi>min</mi></mrow>
+          <mrow><mi>&pi;</mi><mo>&in;</mo><mi>&Delta;</mi></mrow>
+        </munder>
+        <msup>
+          <mrow><mi>&pi;</mi><mo>(</mo><mo>&middot;</mo><mo>|</mo><mi>x</mi><mo>)</mo></mrow>
+          <mi>T</mi>
+        </msup>
+        <mi>Q</mi><mo>(</mo><mi>x</mi><mo>,</mo><mo>&middot;</mo><mo>)</mo>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>subject to</mtext></mtd>
+      <mtd>
+        <msup>
+          <mrow>
+            <mo>(</mo>
+            <mi>&pi;</mi><mo>(</mo><mo>&middot;</mo><mo>|</mo><mi>x</mi><mo>)</mo>
+            <mo>-</mo>
+            <msub><mi>&pi;</mi><mi>B</mi></msub><mo>(</mo><mo>&middot;</mo><mo>|</mo><mi>x</mi><mo>)</mo>
+            <mo>)</mo>
+          </mrow>
+          <mi>T</mi>
+        </msup>
+        <msub><mi>Q</mi><mi>L</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mo>&middot;</mo><mo>)</mo>
+        <mo>&le;</mo>
+        <mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover><mo>(</mo><mi>x</mi><mo>)</mo><mo>.</mo>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>
 
 In this expression:
 
-- `Δ` is the probability simplex over actions.
-- `Q(x,·)` is the objective cost-to-go vector, so minimizing its expectation is a local performance-improvement step.
-- `Q_L(x,·)` is the Lyapunov safety-burden vector associated with taking each action and continuing.
-- `π(·|x)ᵀ Q_L(x,·)` is the expected Lyapunov burden of the candidate action distribution.
-- `(π - π_B)ᵀ Q_L` is its increase in burden relative to the feasible baseline.
-- `ε̃(x)` is the permitted local increase in certified safety burden.
+- <math><mi>&Delta;</mi></math> is the probability simplex over actions.
+- <math><mi>Q</mi><mo>(</mo><mi>x</mi><mo>,</mo><mo>&middot;</mo><mo>)</mo></math> is the objective cost-to-go vector, so minimizing its expectation is a local performance-improvement step.
+- <math><msub><mi>Q</mi><mi>L</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mo>&middot;</mo><mo>)</mo></math> is the Lyapunov safety-burden vector associated with taking each action and continuing.
+- <math><msup><mrow><mi>&pi;</mi><mo>(</mo><mo>&middot;</mo><mo>|</mo><mi>x</mi><mo>)</mo></mrow><mi>T</mi></msup><msub><mi>Q</mi><mi>L</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mo>&middot;</mo><mo>)</mo></math> is the expected Lyapunov burden of the candidate action distribution.
+- <math><msup><mrow><mo>(</mo><mi>&pi;</mi><mo>-</mo><msub><mi>&pi;</mi><mi>B</mi></msub><mo>)</mo></mrow><mi>T</mi></msup><msub><mi>Q</mi><mi>L</mi></msub></math> is its increase in burden relative to the feasible baseline.
+- <math><mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover><mo>(</mo><mi>x</mi><mo>)</mo></math> is the permitted local increase in certified safety burden.
 
 The LP therefore has a precise reading: improve objective value at this state while admitting only a bounded increase in Lyapunov safety burden relative to a policy already used to certify feasibility.
 
@@ -107,34 +183,66 @@ The LP therefore has a precise reading: improve objective value at this state wh
 
 Exact dynamic programming is generally unavailable in large or unknown MDPs. In the approximate architecture described in the supplied material, the learner estimates three state-action quantities:
 
-```text
-objective Q-function:          Q̂(x,a; θ)
-constraint-cost Q-function:    Q̂_D(x,a; θ_D)
-stopping-time Q-function:      Q̂_T(x,a; θ_T)
-```
+<math display="block" aria-label="Learned state-action quantities">
+  <mtable columnalign="left left" columnspacing="1.5em">
+    <mtr>
+      <mtd><mtext>objective Q-function:</mtext></mtd>
+      <mtd>
+        <mover accent="true"><mi>Q</mi><mo>^</mo></mover>
+        <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>;</mo><mi>&theta;</mi><mo>)</mo>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>constraint-cost Q-function:</mtext></mtd>
+      <mtd>
+        <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>D</mi></msub>
+        <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>;</mo><msub><mi>&theta;</mi><mi>D</mi></msub><mo>)</mo>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>stopping-time Q-function:</mtext></mtd>
+      <mtd>
+        <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>T</mi></msub>
+        <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>;</mo><msub><mi>&theta;</mi><mi>T</mi></msub><mo>)</mo>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>
 
 It then constructs a state-action Lyapunov estimate:
 
-```text
-Q̂_L(x,a) = Q̂_D(x,a) + ε̃ Q̂_T(x,a).
-```
+<math display="block" aria-label="Estimated state-action Lyapunov function">
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>L</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>=</mo>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>D</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo>
+  <mo>+</mo>
+  <mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover>
+  <msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>T</mi></msub>
+  <mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo><mo>.</mo>
+</math>
 
-`Q_T` must not be mistaken for another safety cost. `Q_T(x,a)` estimates the expected number of remaining steps until termination after action `a` is selected in state `x` and the baseline policy is subsequently followed. It is the Q-function of an auxiliary episodic MDP whose per-step cost is `1`.
+<math><msub><mi>Q</mi><mi>T</mi></msub></math> must not be mistaken for another safety cost. <math><msub><mi>Q</mi><mi>T</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> estimates the expected number of remaining steps until termination after action <math><mi>a</mi></math> is selected in state <math><mi>x</mi></math> and the baseline policy is subsequently followed. It is the Q-function of an auxiliary episodic MDP whose per-step cost is <math><mn>1</mn></math>.
 
-Consequently, `Q_D(x,a)` estimates real expected cumulative constraint cost, while `ε̃ Q_T(x,a)` accumulates an auxiliary per-step safety allowance over the expected remaining horizon. In short:
+Consequently, <math><msub><mi>Q</mi><mi>D</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> estimates real expected cumulative constraint cost, while <math><mover accent="true"><mi>&epsilon;</mi><mo>~</mo></mover><msub><mi>Q</mi><mi>T</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> accumulates an auxiliary per-step safety allowance over the expected remaining horizon. In short:
 
-```text
-Q_L = real constraint burden + cumulative auxiliary slack burden.
-```
+<math display="block" aria-label="Lyapunov burden interpretation">
+  <msub><mi>Q</mi><mi>L</mi></msub>
+  <mo>=</mo>
+  <mtext>real constraint burden</mtext>
+  <mo>+</mo>
+  <mtext>cumulative auxiliary slack burden.</mtext>
+</math>
 
 The approximate policy-update pipeline is:
 
 ```text
 Replay buffer
-    -> learn objective Q̂
-    -> learn constraint Q̂_D
-    -> learn stopping-time Q̂_T
-    -> construct Q̂_L = Q̂_D + ε̃ Q̂_T
+    -> learn objective action value
+    -> learn constraint-cost action value
+    -> learn stopping-time action value
+    -> construct the Lyapunov estimate
     -> solve local Lyapunov-safe LP
     -> distill LP policy into neural policy
     -> execute/update feasible-policy approximation
@@ -155,7 +263,7 @@ There are structurally defensible reasons for this approach, without claiming th
 
 The theorem-level conclusions belong to an exact value/model setting and should not be automatically transferred to deep implementations.
 
-- If an exact `L` satisfies `T_{π,d}[L](x) ≤ L(x)` for every relevant state and `L(x₀) ≤ d₀`, then the policy satisfies the global expected cumulative constraint `D^π(x₀) ≤ d₀`.
+- If an exact <math><mi>L</mi></math> satisfies <math><msub><mi>T</mi><mrow><mi>&pi;</mi><mo>,</mo><mi>d</mi></mrow></msub><mo>[</mo><mi>L</mi><mo>]</mo><mo>(</mo><mi>x</mi><mo>)</mo><mo>&le;</mo><mi>L</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> for every relevant state and <math><mi>L</mi><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo><mo>&le;</mo><msub><mi>d</mi><mn>0</mn></msub></math>, then the policy satisfies the global expected cumulative constraint <math><msup><mi>D</mi><mi>&pi;</mi></msup><mo>(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo><mo>&le;</mo><msub><mi>d</mi><mn>0</mn></msub></math>.
 - If a feasible baseline policy exists and the Lyapunov set is constructed from it as stipulated, that feasible set is nonempty because it includes the baseline.
 - Under strong assumptions that the feasible baseline is sufficiently close to the unknown optimal constrained policy, the Lyapunov-induced feasible set can contain an optimal policy.
 - A safe Bellman operator can recover the CMDP optimum only when such strong inclusion or baseline-closeness assumptions hold.
@@ -171,7 +279,7 @@ The optimality result depends on baseline closeness to an unknown optimal feasib
 
 Safety is expressed as expected cumulative constraint cost, not pathwise avoidance of unsafe outcomes. If rare but severe violations are unacceptable, an expectation-constrained CMDP requires additional risk-sensitive, robust, or chance-constrained machinery.
 
-Function approximation weakens hard guarantees. When `Q̂_L ≈ Q_L`, a local LP based on `Q̂_L` may certify a policy that is infeasible under the true constraint values. Distilling the LP action distribution into a neural policy introduces a further deviation. For strict inference-time safety, the LP projection would need to remain active at execution, or conservative margins would need to cover both estimation and distillation errors.
+Function approximation weakens hard guarantees. When <math><msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>L</mi></msub><mo>&approx;</mo><msub><mi>Q</mi><mi>L</mi></msub></math>, a local LP based on <math><msub><mover accent="true"><mi>Q</mi><mo>^</mo></mover><mi>L</mi></msub></math> may certify a policy that is infeasible under the true constraint values. Distilling the LP action distribution into a neural policy introduces a further deviation. For strict inference-time safety, the LP projection would need to remain active at execution, or conservative margins would need to cover both estimation and distillation errors.
 
 Finally, any evaluation concentrated on grid-world-style tasks establishes mechanism rather than general scalability. It should not be generalized without evidence to high-dimensional nonlinear continuous control, process dynamics, or long-horizon energy and supply-chain operation.
 
