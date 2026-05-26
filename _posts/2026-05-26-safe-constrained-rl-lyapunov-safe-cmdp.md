@@ -4,10 +4,10 @@ title: "Lyapunov-Based Safe Policy Improvement for CMDPs"
 date: 2026-05-26
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
-paper_title: ""
-authors: ""
-venue: ""
-year: ""
+paper_title: "A lyapunov-based approach to safe reinforcement learning"
+authors: "Chow Y, Nachum O, Duenez-Guzman E, Ghavamzadeh M"
+venue: "Advances in neural information processing systems"
+year: "2018"
 doi: ""
 arxiv: ""
 source_url: ""
@@ -181,30 +181,6 @@ The conceptual strength is that safety is handled as membership in an admissible
 
 Its practical vulnerability is equally clear. Certificate quality, baseline availability, and approximation error determine whether the elegant local condition remains meaningful outside a finite exact CMDP. Neural experiments can demonstrate useful empirical constraint behavior; they cannot by themselves re-establish the exact Lyapunov guarantee.
 
-## Connection to my research
+## Reference
 
-For optimization-compatible safe RL, the main takeaway is that a learned continuation value is not enough for safety. A PICNN or convex surrogate would support stronger novelty only if it preserves a one-sided feasibility residual, a Lyapunov decrease inequality, or another conservative safety certificate, rather than merely approximating value accurately.
-
-## Possible extension
-
-A possible extension is an action-convex Lyapunov surrogate embedded in nonlinear stochastic MPC or feasibility-critical clean-energy planning. Such a surrogate could make local safe projections computationally compatible with downstream optimization while adding an explicit residual margin for approximation error. This is a proposed direction, not a result of the discussed method.
-
-## Korean technical note
-
-이 논문의 핵심은 safety를 위반에 대한 **penalty**로만 처리하는 것이 아니라, 정책 개선이 머물러야 하는 **admissible policy set**으로 다루는 데 있다. 전역 제약 `D^π(x₀) ≤ d₀`를 만족시키기 위해, 각 상태에서 Lyapunov 함수가 허용하는 국소 정책 집합 안에서만 성능을 개선한다.
-
-`Q_T`는 constraint cost가 아니다. 상태 `x`에서 행동 `a`를 선택한 뒤 baseline policy를 따를 때 terminal 상태까지 남은 expected step 수를 추정하는 보조 Q-function이며, 매 step의 cost가 `1`인 auxiliary MDP의 값으로 해석된다. 따라서 `ε̃ Q_T`는 step당 허용한 safety slack이 남은 expected horizon 동안 누적된 양이다. 반면 `Q_D`는 실제 누적 constraint cost를 나타낸다.
-
-국소 LP 제약
-
-```text
-(π(·|x) - π_B(·|x))ᵀ Q_L(x,·) ≤ ε̃(x)
-```
-
-은 candidate policy가 feasible baseline policy보다 Lyapunov safety burden을 얼마나 더 사용할 수 있는지를 제한한다. 즉, objective Q를 개선하더라도 인증된 safety allowance를 과도하게 소비하는 action distribution은 허용하지 않는다.
-
-이 구조는 exact finite CMDP에서는 깔끔하다. 그러나 neural approximation으로 넘어가면 `Q̂_L`의 추정 오차와 LP policy를 neural policy로 distill하는 오차가 생기므로 hard safety guarantee는 약해진다. 실제 운용에서 강한 safety가 필요하다면 실행 시 projection을 유지하거나 보수적 오차 margin을 설계해야 한다.
-
-## Citation and metadata
-
-This note is based only on the supplied discussion of Lyapunov-based safe reinforcement learning for CMDPs, including its Safe Policy Iteration, Safe DQN, and Safe DPI constructions. No verifiable paper title, author list, venue, publication year, DOI, arXiv identifier, or stable source URL was supplied in the repository material; these front matter fields are intentionally blank.
+Chow Y, Nachum O, Duenez-Guzman E, Ghavamzadeh M. A lyapunov-based approach to safe reinforcement learning. Advances in neural information processing systems. 2018;31.
