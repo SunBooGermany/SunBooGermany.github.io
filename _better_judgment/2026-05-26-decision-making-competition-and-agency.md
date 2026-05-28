@@ -33,8 +33,3 @@ A healthier position is not to deny competition, but to place it in a lower rank
 This does not mean romanticizing independence. Most serious work still requires discipline, feedback, institutions, and comparison with others. The point is narrower: freedom in research is not the absence of constraint. It is the ability to choose which constraints are worth accepting.
 
 Competition will not disappear. The practical question is whether it becomes the force that drags one forward, or a reality one manages while pursuing a problem one has chosen with care. A researcher cannot always choose the system. But within the system, there is still a difference between being chased by metrics and being guided by a question.
-
-## Reference
-
-- Merton, R. K. (1968). The Matthew Effect in Science. *Science*, 159(3810), 56-63. https://doi.org/10.1126/science.159.3810.56
-- Bourdieu, P. (1988). *Homo Academicus*. Translated by Peter Collier. Stanford University Press.
