@@ -10,15 +10,30 @@ import re
 import sys
 
 
-CATEGORIES = {
-    "safe-constrained-rl": "Safe & Constrained RL",
-    "nonlinear-optimization": "Nonlinear Optimization",
-    "probabilistic-heuristic-model": "Probabilistic Heuristics & Bayesian Search",
+TAXONOMY = {
+    "application_reviews": {
+        "green-chemical-systems": "Green Chemical Systems",
+        "energy-grids": "Energy Grids",
+        "bioprocess-systems": "Bioprocess Systems",
+        "chemical-plants": "Chemical Plants",
+    },
+    "algorithmic_reviews": {
+        "safe-constrained-rl": "Safe & Constrained RL",
+        "stochastic-nonlinear-optimization": "Stochastic & Nonlinear Optimization",
+        "llm-probabilistic-approaches": "LLM & Probabilistic Approaches",
+        "graph-represented-methods": "Graph-Represented Methods",
+    },
+}
+
+LEGACY_CATEGORY_ALIASES = {
+    "safe-constrained-rl": ("algorithmic_reviews", "safe-constrained-rl"),
+    "nonlinear-optimization": ("algorithmic_reviews", "stochastic-nonlinear-optimization"),
+    "probabilistic-heuristic-model": ("algorithmic_reviews", "llm-probabilistic-approaches"),
 }
 
 
 def yaml_value(value: str) -> str:
-    return value.replace("\\", "\\\\").replace('"', '\\"')
+    return value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ")
 
 
 def slugify(value: str) -> str:
@@ -29,7 +44,13 @@ def slugify(value: str) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Scaffold a daily research note in _posts/.")
     parser.add_argument("--title", required=True, help="Title for the note.")
-    parser.add_argument("--category", choices=CATEGORIES, required=True)
+    parser.add_argument("--research-group", choices=TAXONOMY.keys())
+    parser.add_argument("--research-category", help="Category slug within the selected research group.")
+    parser.add_argument(
+        "--category",
+        choices=LEGACY_CATEGORY_ALIASES.keys(),
+        help="Legacy category argument. Prefer --research-group and --research-category.",
+    )
     parser.add_argument("--date", default=date.today().isoformat(), help="Publication date (YYYY-MM-DD).")
     parser.add_argument("--slug", help="Optional URL/file slug; defaults to a slug of the title.")
     parser.add_argument("--paper-title", default="TODO: paper title")
@@ -39,9 +60,43 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--doi", default="")
     parser.add_argument("--arxiv", default="")
     parser.add_argument("--source-url", default="")
-    parser.add_argument("--tag", action="append", dest="tags", help="Repeat to add tags.")
+    parser.add_argument("--tag", action="append", dest="tag_list", help="Repeat to add tags.")
+    parser.add_argument("--tags", default="", help="Comma-separated tags.")
     parser.add_argument("--excerpt", default="TODO: add a one or two sentence critical summary.")
+    parser.add_argument("--has-korean-note", action="store_true", help="Mark the note as containing a Korean note block.")
     return parser.parse_args()
+
+
+def resolve_taxonomy(args: argparse.Namespace) -> tuple[str, str, str]:
+    group = args.research_group
+    category = args.research_category
+
+    if args.category and not category:
+        group, category = LEGACY_CATEGORY_ALIASES[args.category]
+        if args.category != category:
+            print(
+                f"Warning: legacy category '{args.category}' maps to '{category}'.",
+                file=sys.stderr,
+            )
+
+    if not group or not category:
+        raise ValueError("Provide --research-group and --research-category.")
+
+    valid_categories = TAXONOMY[group]
+    if category not in valid_categories:
+        options = ", ".join(sorted(valid_categories))
+        raise ValueError(f"Category '{category}' is not valid for {group}. Choose one of: {options}.")
+
+    return group, category, valid_categories[category]
+
+
+def collect_tags(args: argparse.Namespace) -> list[str]:
+    tags: list[str] = []
+    if args.tags:
+        tags.extend(tag.strip() for tag in args.tags.split(",") if tag.strip())
+    if args.tag_list:
+        tags.extend(tag.strip() for tag in args.tag_list if tag.strip())
+    return tags or ["TODO"]
 
 
 def main() -> int:
@@ -51,6 +106,17 @@ def main() -> int:
     except ValueError:
         print("Error: --date must be in YYYY-MM-DD format.", file=sys.stderr)
         return 2
+
+    try:
+        research_group, research_category, research_label = resolve_taxonomy(args)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+
+    application_category = research_category if research_group == "application_reviews" else ""
+    application_label = research_label if application_category else ""
+    method_category = research_category if research_group == "algorithmic_reviews" else ""
+    method_label = research_label if method_category else ""
 
     root = Path(__file__).resolve().parents[1]
     template_path = root / "_drafts" / "TEMPLATE-research-note.md"
@@ -62,16 +128,23 @@ def main() -> int:
         print(f"Error: post already exists: {output_path}", file=sys.stderr)
         return 1
 
-    tags = args.tags or ["TODO"]
     template = template_path.read_text(encoding="utf-8")
     body = template.split("---", 2)[2].lstrip("\n")
-    tag_lines = "\n".join(f"  - {yaml_value(tag)}" for tag in tags)
+    tag_lines = "\n".join(f'  - "{yaml_value(tag)}"' for tag in collect_tags(args))
+    has_korean_note = "true" if args.has_korean_note else "false"
     note = f"""---
 layout: post
 title: "{yaml_value(args.title)}"
 date: {note_date.isoformat()}
-category: {args.category}
-category_label: "{yaml_value(CATEGORIES[args.category])}"
+category: {research_category}
+category_label: "{yaml_value(research_label)}"
+research_group: {research_group}
+research_category: {research_category}
+research_category_label: "{yaml_value(research_label)}"
+application_category: "{yaml_value(application_category)}"
+application_category_label: "{yaml_value(application_label)}"
+method_category: "{yaml_value(method_category)}"
+method_category_label: "{yaml_value(method_label)}"
 paper_title: "{yaml_value(args.paper_title)}"
 authors: "{yaml_value(args.authors)}"
 venue: "{yaml_value(args.venue)}"
@@ -82,7 +155,8 @@ source_url: "{yaml_value(args.source_url)}"
 tags:
 {tag_lines}
 excerpt: "{yaml_value(args.excerpt)}"
-language: "en"
+language: "en-ko"
+has_korean_note: {has_korean_note}
 ---
 
 {body}"""

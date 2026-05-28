@@ -6,15 +6,17 @@ This is Sunwoo Kim's academic homepage with a Jekyll-based Research Blog for rev
 
 - `index.html`: main website
 - `styles.css`: website styling
-- `script.js`: English/Korean language toggle and content rendering
-- `favicon.svg`: browser icon
-- `robots.txt`: search-engine crawling rule
-- `sitemap.xml`: Jekyll-rendered sitemap for both writing collections and their category pages
-- `_layouts/`, `_data/`, `categories/`, and `judgment-categories/`: presentation and category infrastructure
+- `script.js`: English/Korean language toggle and homepage content rendering
+- `assets/images/sunwoo-profile.jpg`: local homepage profile photo
+- `_data/research_taxonomy.yml`: two-group Research Blog taxonomy
+- `_data/categories.yml`: flat category list for compatibility and sitemap generation
+- `_data/judgment_categories.yml`: Better Judgment category data
+- `_layouts/`, `categories/`, and `judgment-categories/`: writing layouts and archive pages
 - `_drafts/TEMPLATE-research-note.md`: required structure for a research note
 - `_drafts/TEMPLATE-better-judgment-note.md`: required structure for a Better Judgment note
-- `scripts/new_research_note.py`: scaffolds a post with validated category metadata
+- `scripts/new_research_note.py`: scaffolds a post with validated research taxonomy metadata
 - `scripts/new_better_judgment_note.py`: scaffolds a reflection note with validated category and source metadata
+- `sitemap.xml`: Jekyll-rendered sitemap for homepage, writing pages, archives, and posts
 
 ## Recommended deployment: GitHub Pages
 
@@ -22,7 +24,7 @@ This is Sunwoo Kim's academic homepage with a Jekyll-based Research Blog for rev
 
    `SunBooGermany.github.io`
 
-2. Upload every file in this folder to the root of that repository. Do not add a `.nojekyll` file; GitHub Pages must run Jekyll to publish the research log.
+2. Upload every file in this folder to the root of that repository. Do not add a `.nojekyll` file; GitHub Pages must run Jekyll to publish the Research Blog and Better Judgment pages.
 
 3. GitHub Pages will serve the site at:
 
@@ -32,34 +34,71 @@ This is Sunwoo Kim's academic homepage with a Jekyll-based Research Blog for rev
 
    `https://sunboogermany.github.io/sitemap.xml`
 
-## Add a daily research note
+## Research Blog taxonomy
 
-Only these category slugs are permitted:
+Research Blog posts are organized into two groups.
+
+Application Reviews:
+
+- `green-chemical-systems` (`Green Chemical Systems`)
+- `energy-grids` (`Energy Grids`)
+- `bioprocess-systems` (`Bioprocess Systems`)
+- `chemical-plants` (`Chemical Plants`)
+
+Algorithmic Reviews:
 
 - `safe-constrained-rl` (`Safe & Constrained RL`)
-- `nonlinear-optimization` (`Nonlinear Optimization`)
-- `probabilistic-heuristic-model` (`Probabilistic Heuristics & Bayesian Search`)
+- `stochastic-nonlinear-optimization` (`Stochastic & Nonlinear Optimization`)
+- `llm-probabilistic-approaches` (`LLM & Probabilistic Approaches`)
+- `graph-represented-methods` (`Graph-Represented Methods`)
+
+Legacy archive URLs remain available for older links:
+
+- `/categories/nonlinear-optimization/`
+- `/categories/probabilistic-heuristic-model/`
+
+## Add a daily research note
 
 Create a post skeleton from the template:
 
 ```bash
 python scripts/new_research_note.py \
-  --title "Critical note title" \
-  --category safe-constrained-rl \
-  --paper-title "Paper title" \
-  --authors "Authors" \
-  --venue "Venue" \
-  --year "2026" \
-  --source-url "https://example.org/stable-source" \
-  --tag constrained-rl
+  --date 2026-05-28 \
+  --research-group algorithmic_reviews \
+  --research-category stochastic-nonlinear-optimization \
+  --title "Trust Regions for Nonlinear Stochastic MPC" \
+  --paper-title "..." \
+  --authors "..." \
+  --venue "..." \
+  --tags "trust region, stochastic MPC, nonlinear optimization"
 ```
 
-The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder and write all nine default sections before publishing. Do not add separate research-connection or proposed-extension sections unless explicitly requested.
+For an application-focused review, use `--research-group application_reviews` and one of the application category slugs. For an algorithm-focused review, use `--research-group algorithmic_reviews` and one of the algorithmic category slugs.
+
+The script creates a dated Markdown file in `_posts/`. Replace every `TODO` placeholder and write the required sections before publishing. Do not add separate research-connection or proposed-extension sections unless explicitly requested.
 
 Populate front matter metadata and the `References` section only from the supplied paper, source text, metadata, bibliography, or verified source material. When available from those sources, include the paper's references in `References`; never infer missing citation details, and leave or report missing metadata rather than fabricate it. Do not claim guarantees or results beyond what the cited work establishes.
-New research notes are written in English by default and must not include a `Korean technical note` or `Korean Note` section.
 
-### Format technical equations
+## Add Korean notes
+
+Do not try to trigger Chrome's built-in translation UI. Websites cannot reliably open Chrome Translate through JavaScript.
+
+Use the in-site Korean note convention instead:
+
+1. Set `has_korean_note: true` in the post front matter.
+2. Add a collapsible block where the Korean note should appear:
+
+```html
+<details id="korean-note" class="korean-note-block" lang="ko">
+  <summary>한국어 보기 / Korean Note</summary>
+
+  한국어 노트 또는 번역을 여기에 작성합니다.
+</details>
+```
+
+The post layout shows a `Korean Note / 한국어 보기` button when a Korean note is present. Do not fabricate Korean translations for older posts.
+
+## Format technical equations
 
 Research-note equations use native MathML so superscripts, subscripts, accents, and optimization notation render as mathematical typography without an external script dependency. Use inline `<math>...</math>` notation in prose and a labelled display element for important equations:
 
@@ -78,7 +117,6 @@ Research-note equations use native MathML so superscripts, subscripts, accents, 
 ```
 
 Do not place display equations in fenced `text` blocks. Fenced text blocks remain appropriate for algorithm flows or pseudocode.
-The site intentionally relies on browser-native MathML rendering. Do not style `math` elements with custom layout or font rules unless a separately tested design change requires it.
 
 ## Add a Better Judgment note
 
@@ -89,7 +127,6 @@ Better Judgment Notes use only these categories:
 - `global-affairs` (`Understanding Global Affairs` / `국제 정세의 흐름을 이해하기 위하여`)
 
 Allowed `source_type` values are `book`, `interview`, `lecture`, `essay`, `article`, `personal-reflection`, and `public-affairs`.
-Better Judgment notes are written in English by default and must not include a `Korean Note` section.
 
 Create a note skeleton:
 
@@ -106,7 +143,9 @@ python scripts/new_better_judgment_note.py \
 
 The script writes a collection document beneath `_better_judgment/<category>/<year>/<month>/<day>/`, producing a categorized `/better-judgment/` URL through Jekyll's supported collection `:path` permalink. It refuses to overwrite an existing note unless `--force` is explicitly passed. Replace placeholders before publication and do not present interpretation as verified fact. Any note involving current public affairs or international politics must be checked against reliable sources before it is published.
 
-## Local preview
+Better Judgment Notes can also use the Korean note convention above when a Korean note or translation is provided.
+
+## Local preview and validation
 
 With Ruby and Bundler installed, GitHub Pages-compatible rendering can be previewed with:
 
@@ -115,10 +154,21 @@ gem install bundler jekyll
 jekyll serve
 ```
 
-Open `http://127.0.0.1:4000/` and verify the homepage at desktop and mobile widths, `/research-log/`, `/better-judgment/`, all category pages, and `/sitemap.xml`.
+Open `http://127.0.0.1:4000/` and verify:
+
+- homepage loads correctly
+- profile photo appears without distortion
+- three homepage cards appear: Profile & Credentials, Research Blog, Better Judgment Notes
+- mobile layout has no horizontal overflow
+- `/research-log/` shows Application Reviews and Algorithmic Reviews
+- all eight Research Blog category pages work
+- legacy category URLs still work
+- `/better-judgment/` and Better Judgment category pages work
+- Korean note buttons work on posts that include a Korean note block
+- `/sitemap.xml` includes current writing archives
 
 ## Notes
 
 - The homepage intentionally does not display a phone number.
-- The profile image uses the public GitHub avatar URL. Replace it with a professional photo by saving a file such as `profile.jpg` and editing the `<img>` source in `index.html`.
+- The homepage uses a local profile photo at `assets/images/sunwoo-profile.jpg`.
 - If a custom domain is purchased later, update the canonical URL and sitemap URL.

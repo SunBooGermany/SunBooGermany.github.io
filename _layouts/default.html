@@ -19,12 +19,10 @@
       <span>Sunwoo Kim</span>
     </a>
     <nav class="nav research-nav" aria-label="Main navigation">
-      <a href="{{ '/#research' | relative_url }}">Research</a>
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <a href="{{ '/#profile' | relative_url }}">Profile</a>
       <a href="{{ '/research-log/' | relative_url }}">Research Blog</a>
-      <a href="{{ '/#publications' | relative_url }}">Publications</a>
       <a href="{{ '/better-judgment/' | relative_url }}">Better Judgment</a>
-      <a href="{{ '/#experience' | relative_url }}">Experience</a>
-      <a href="{{ '/#projects' | relative_url }}">Projects</a>
       <a href="{{ '/#contact' | relative_url }}">Contact</a>
     </nav>
     <a class="lang-toggle log-home-link" href="{{ '/' | relative_url }}">Homepage</a>
@@ -38,5 +36,21 @@
     <p>&copy; {{ site.time | date: "%Y" }} Sunwoo Kim. Notes for critical technical and intellectual discussion.</p>
     <p><a href="{{ '/' | relative_url }}">Return to homepage</a></p>
   </footer>
+  <script>
+    document.addEventListener("click", function (event) {
+      var trigger = event.target.closest("[data-korean-note-trigger]");
+      if (!trigger) return;
+
+      var note = document.getElementById("korean-note") ||
+        document.getElementById("korean-technical-note") ||
+        document.querySelector(".korean-note-block");
+
+      if (!note) return;
+      if (note.tagName && note.tagName.toLowerCase() === "details") {
+        note.open = true;
+      }
+      note.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
 </body>
 </html>

@@ -12,7 +12,8 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en"
+language: "en-ko"
+has_korean_note: false
 ---
 
 ## Core insight
@@ -42,6 +43,17 @@ Identify scope conditions, counterexamples, missing evidence, or risks of overge
 ## Connection to my life and research
 
 Explain a thoughtful connection while clearly marking personal interpretation or a possible extension.
+
+<!--
+Optional Korean note:
+Set `has_korean_note: true` in front matter and uncomment this block only when a Korean note or translation is provided.
+
+<details id="korean-note" class="korean-note-block" lang="ko">
+  <summary>한국어 보기 / Korean Note</summary>
+
+  TODO: 한국어 노트 또는 번역을 입력합니다.
+</details>
+-->
 
 ## Source metadata
 

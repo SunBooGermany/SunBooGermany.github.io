@@ -51,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-url", default="")
     parser.add_argument("--tags", default="", help="Comma-separated tags.")
     parser.add_argument("--excerpt", default="TODO: add a one or two sentence analytical summary.")
+    parser.add_argument("--has-korean-note", action="store_true", help="Mark the note as containing a Korean note block.")
     parser.add_argument("--force", action="store_true", help="Overwrite an existing note at the same path.")
     return parser.parse_args()
 
@@ -86,6 +87,7 @@ def main() -> int:
     template = template_path.read_text(encoding="utf-8")
     body = template.split("---", 2)[2].lstrip("\n")
     tag_lines = "\n".join(f'  - "{yaml_value(tag)}"' for tag in tags)
+    has_korean_note = "true" if args.has_korean_note else "false"
     note = f"""---
 layout: judgment-post
 title: "{yaml_value(args.title)}"
@@ -100,7 +102,8 @@ source_url: "{yaml_value(args.source_url)}"
 tags:
 {tag_lines}
 excerpt: "{yaml_value(args.excerpt)}"
-language: "en"
+language: "en-ko"
+has_korean_note: {has_korean_note}
 ---
 
 {body}"""

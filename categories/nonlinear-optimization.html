@@ -1,31 +1,12 @@
 ---
-layout: default
+layout: research-category
 title: "Nonlinear Optimization"
-description: "Research notes on nonlinear optimization for planning, control, and process systems."
+description: "Legacy archive for nonlinear optimization notes. New notes should use Stochastic & Nonlinear Optimization."
 permalink: /categories/nonlinear-optimization/
 category_slug: nonlinear-optimization
 category_label: "Nonlinear Optimization"
+alias_target_slug: stochastic-nonlinear-optimization
+alias_target_label: "Stochastic & Nonlinear Optimization"
+research_group: algorithmic_reviews
+research_group_label: "Legacy Research Blog Category"
 ---
-{% assign category_posts = site.posts | where: "category", page.category_slug %}
-<section class="category-header">
-  <p class="eyebrow">Research Log Category</p>
-  <h1>{{ page.category_label }}</h1>
-  <p>Methods and analysis for nonlinear decision models in planning, control, and process systems.</p>
-  <a class="button secondary" href="{{ '/research-log/' | relative_url }}">All research notes</a>
-</section>
-
-<section class="notes-section">
-  {% if category_posts.size > 0 %}
-    <div class="note-list">
-      {% for post in category_posts %}
-        <article class="note-card research-note-card">
-          <div class="note-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time></div>
-          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-          <p>{{ post.excerpt }}</p>
-        </article>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="empty-notes">No research notes have been published in this category yet.</p>
-  {% endif %}
-</section>

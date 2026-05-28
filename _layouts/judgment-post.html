@@ -11,6 +11,22 @@ layout: default
       <span>{{ page.category_label | escape }}</span>
       {% if page.source_type and page.source_type != "" %}<span>{{ page.source_type | replace: "-", " " | capitalize }}</span>{% endif %}
     </div>
+    {% assign show_korean_note_button = false %}
+    {% if page.has_korean_note %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if content contains 'id="korean-note"' %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if content contains 'korean-note-block' %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if show_korean_note_button %}
+      <button class="korean-note-button" type="button" data-korean-note-trigger>
+        <span lang="en">Korean Note</span>
+        <span lang="ko">한국어 보기</span>
+      </button>
+    {% endif %}
   </header>
 
   {% if page.source_title and page.source_title != "" %}

@@ -4,6 +4,13 @@ title: "Lyapunov Projection for Continuous-Action Safe Reinforcement Learning"
 date: 2026-05-28
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
+research_group: algorithmic_reviews
+research_category: safe-constrained-rl
+research_category_label: "Safe & Constrained RL"
+application_category: ""
+application_category_label: ""
+method_category: safe-constrained-rl
+method_category_label: "Safe & Constrained RL"
 paper_title: "Lyapunov-based Safe Policy Optimization for Continuous Control"
 authors: "Yinlam Chow, Ofir Nachum, Aleksandra Faust, Edgar Duenez-Guzman, Mohammad Ghavamzadeh"
 venue: "arXiv preprint"
@@ -21,6 +28,7 @@ tags:
   - continuous control
 excerpt: "This note reads Lyapunov-based safe policy optimization as a practical projection bridge from finite CMDP safe policy iteration to continuous-action deep reinforcement learning, while separating exact CMDP guarantees from local approximation behavior."
 language: "en"
+has_korean_note: false
 ---
 
 ## Why this problem matters

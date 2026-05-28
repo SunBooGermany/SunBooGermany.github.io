@@ -1,24 +1,61 @@
 ---
 layout: default
 title: "Research Blog"
-description: "Daily critical research notes on optimization, constrained reinforcement learning, and probabilistic search."
+description: "Paper reviews organized by application systems and algorithmic methods."
 permalink: /research-log/
 ---
 <section class="log-hero">
   <p class="eyebrow">Research Blog</p>
-  <h1>Critical notes on learning and optimization</h1>
-  <p>Daily technical notes examining assumptions, mathematical structure, evidence, and possible extensions for feasibility-critical decision making.</p>
+  <h1>Research Blog</h1>
+  <p>Paper reviews organized by application systems and algorithmic methods. Just as elite athletes train every day, serious researchers read strong papers every day.</p>
 </section>
 
-<section class="log-categories" aria-label="Research log categories">
-  {% for category in site.data.categories %}
-    {% assign category_posts = site.posts | where: "category", category.slug %}
-    <a class="category-card" href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">
-      <h2>{{ category.label }}</h2>
-      <p>{{ category.description }}</p>
-      <span>{{ category_posts.size }} note{% unless category_posts.size == 1 %}s{% endunless %}</span>
-    </a>
-  {% endfor %}
+<section class="taxonomy-panel" aria-labelledby="application-reviews-heading">
+  <div class="taxonomy-panel-header">
+    <p class="eyebrow">Application Reviews</p>
+    <h2 id="application-reviews-heading">Application Reviews</h2>
+    <p>Reviews grouped by the systems where optimization, AI, and decision tools are applied.</p>
+  </div>
+  <div class="taxonomy-card-grid">
+    {% for category in site.data.research_taxonomy.application_reviews %}
+      {% assign category_posts = 0 %}
+      {% for post in site.posts %}
+        {% if post.research_category == category.slug or post.application_category == category.slug or post.category == category.slug %}
+          {% assign category_posts = category_posts | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+      <a class="category-card" href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">
+        <h3>{{ category.label }}</h3>
+        <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
+        <p>{{ category.description }}</p>
+        <span>{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="taxonomy-panel algorithmic-panel" aria-labelledby="algorithmic-reviews-heading">
+  <div class="taxonomy-panel-header">
+    <p class="eyebrow">Algorithmic Reviews</p>
+    <h2 id="algorithmic-reviews-heading">Algorithmic Reviews</h2>
+    <p>Reviews grouped by the computational method, with emphasis on assumptions, evidence, and feasibility-critical limits.</p>
+  </div>
+  <div class="taxonomy-card-grid">
+    {% for category in site.data.research_taxonomy.algorithmic_reviews %}
+      {% assign category_posts = 0 %}
+      {% for post in site.posts %}
+        {% if post.research_category == category.slug or post.method_category == category.slug or post.category == category.slug %}
+          {% assign category_posts = category_posts | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+      <a class="category-card" href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">
+        <h3>{{ category.label }}</h3>
+        <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
+        <p>{{ category.description }}</p>
+        <span>{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+      </a>
+    {% endfor %}
+  </div>
 </section>
 
 <section class="notes-section">
@@ -31,7 +68,7 @@ permalink: /research-log/
         <article class="note-card research-note-card">
           <div class="note-meta">
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-            <span>{{ post.category_label }}</span>
+            <span>{{ post.research_category_label | default: post.category_label }}</span>
           </div>
           <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
           <p>{{ post.excerpt }}</p>

@@ -6,7 +6,7 @@ This repository hosts Sunwoo Kim's personal academic homepage:
 
 https://sunboogermany.github.io/
 
-The site is intended to become a global research-brand platform for AI-enabled optimization, safe and constrained reinforcement learning, nonlinear optimization, probabilistic heuristic methods, process systems engineering, chemical engineering, green hydrogen, direct air capture, and decision making under uncertainty.
+The site is a global research-brand platform for AI-enabled optimization, safe and constrained reinforcement learning, stochastic and nonlinear optimization, process systems engineering, chemical engineering, green hydrogen, direct air capture, and decision making under uncertainty.
 
 The site should communicate a serious research identity, not a generic blog.
 
@@ -16,30 +16,58 @@ Do not break the deployed homepage.
 Do not remove existing homepage sections unless explicitly requested.
 Do not remove Google Scholar, LinkedIn, GitHub, or email links.
 Do not remove English/Korean support.
+Do not remove the Research Blog.
+Do not remove Better Judgment Notes.
+Do not merge Better Judgment Notes into the Research Blog.
 Do not fabricate papers, awards, affiliations, citations, or achievements.
 Do not overstate novelty, guarantees, safety, feasibility, or optimality.
 Do not paste long copyrighted passages from papers.
 Summarize papers in original language.
+Do not attempt to trigger Chrome Translate or any browser-level translation UI from site JavaScript.
 
-## Research-log categories
+## Research Blog taxonomy
 
-Use exactly these internal category slugs:
+Research Blog has two fixed groups: Application Reviews and Algorithmic Reviews.
+
+Use exactly these Application Reviews category slugs:
+
+1. green-chemical-systems
+2. energy-grids
+3. bioprocess-systems
+4. chemical-plants
+
+Display labels:
+
+1. Green Chemical Systems
+2. Energy Grids
+3. Bioprocess Systems
+4. Chemical Plants
+
+Use exactly these Algorithmic Reviews category slugs:
 
 1. safe-constrained-rl
-2. nonlinear-optimization
-3. probabilistic-heuristic-model
+2. stochastic-nonlinear-optimization
+3. llm-probabilistic-approaches
+4. graph-represented-methods
 
 Display labels:
 
 1. Safe & Constrained RL
-2. Nonlinear Optimization
-3. Probabilistic Heuristics & Bayesian Search
+2. Stochastic & Nonlinear Optimization
+3. LLM & Probabilistic Approaches
+4. Graph-Represented Methods
 
 Do not create new categories unless explicitly requested.
 
+Legacy category URLs must remain available:
+
+- nonlinear-optimization should point users toward stochastic-nonlinear-optimization.
+- probabilistic-heuristic-model should point users toward llm-probabilistic-approaches.
+- safe-constrained-rl remains a current category.
+
 ## Better Judgment Notes purpose
 
-Better Judgment Notes contain occasional analytical reflections from books, interviews, lectures, essays, social phenomena, and international affairs. They should function as a rigorous but readable guide for better judgment, not as a casual diary or ungrounded self-help writing.
+Better Judgment Notes remain a separate writing section focused on decision making, social phenomena, global affairs, philosophical reflections, and ideas from books, interviews, conversations, lectures, essays, and public affairs.
 
 Use exactly these internal category slugs:
 
@@ -76,8 +104,9 @@ Every Better Judgment note must use the `judgment-post` layout and contain:
 7. Connection to my life and research
 8. Source metadata
 
-The tone must be reflective but analytical, readable, practical without cliché, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
-Do not include a `Korean Note` section in Better Judgment notes.
+The tone must be reflective but analytical, readable, practical without cliche, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
+
+Include Korean notes or translations only when provided. Do not fabricate Korean translations.
 
 ## Daily research-note purpose
 
@@ -101,9 +130,9 @@ Tone:
 - not promotional
 - not exaggerated
 
-## Required post structure
+## Required research-post structure
 
-Each post should contain:
+Each research post should contain:
 
 1. Positioning
 2. Problem setting
@@ -115,8 +144,9 @@ Each post should contain:
 8. Critical assessment
 9. References
 
+Include a Korean note or Korean translation block only when provided. Use the existing collapsible `details` convention with `id="korean-note"` and `class="korean-note-block"` so the Korean Note button works.
+
 Do not add separate sections connecting the paper to Sunwoo Kim's research or proposing extensions by default. Include such sections only when the user explicitly requests them.
-Do not include a `Korean technical note` or `Korean Note` section in research notes.
 
 ## References policy
 
@@ -126,28 +156,40 @@ Do not infer or fabricate missing references.
 If the material does not provide enough reference information, leave missing items blank or report them as missing metadata in the final report.
 Fill front matter metadata fields only when they are confirmed from the provided material or verified source material.
 
-## Front matter schema
+## Research post front matter schema
 
-Every post must use:
+Use this schema for new Research Blog posts:
 
+```yaml
 ---
 layout: post
 title: "..."
 date: YYYY-MM-DD
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
+research_group: algorithmic_reviews
+research_category: safe-constrained-rl
+research_category_label: "Safe & Constrained RL"
+application_category: ""
+application_category_label: ""
+method_category: safe-constrained-rl
+method_category_label: "Safe & Constrained RL"
 paper_title: "..."
 authors: "..."
 venue: "..."
 year: "..."
-doi: "..."
+doi: ""
 arxiv: ""
 source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en"
+language: "en-ko"
+has_korean_note: false
 ---
+```
+
+Keep `category` and `category_label` for backward compatibility. For application-focused reviews, set `research_group: application_reviews`, set `application_category`, and leave `method_category` blank unless a secondary method category is explicitly needed. For algorithm-focused reviews, set `research_group: algorithmic_reviews`, set `method_category`, and leave `application_category` blank unless a secondary application category is explicitly needed.
 
 ## Quality rules
 
@@ -158,6 +200,8 @@ If scalability is unclear, say so.
 If feasibility or safety is approximate, say so.
 Explain important equations intuitively when needed without changing their mathematical meaning.
 If an explicitly requested connection or extension is speculative, label it as a proposed direction rather than a result.
+Use English as the main language for published posts.
+Include Korean notes or translations when provided.
 
 ## Equation rendering policy
 

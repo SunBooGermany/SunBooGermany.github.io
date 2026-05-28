@@ -15,24 +15,23 @@ layout: null
   <meta property="og:title" content="Sunwoo Kim | AI, Optimization, and Chemical Process Systems" />
   <meta property="og:description" content="AI-enabled optimization and mathematical programming for clean-energy systems under uncertainty." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://avatars.githubusercontent.com/u/102637640?v=4" />
+  <meta property="og:image" content="{{ '/assets/images/sunwoo-profile.jpg' | absolute_url }}" />
   <meta property="og:url" content="https://sunboogermany.github.io/" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Sunwoo Kim | AI, Optimization, and Chemical Process Systems" />
   <meta name="twitter:description" content="Optimization-compatible AI for clean-energy systems, hydrogen supply chains, DAC, and decision making under uncertainty." />
-  <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/102637640?v=4" />
+  <meta name="twitter:image" content="{{ '/assets/images/sunwoo-profile.jpg' | absolute_url }}" />
 
   <link rel="canonical" href="https://sunboogermany.github.io/" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml" />
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}?v={{ site.time | date: '%s' }}" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Sunwoo Kim",
-    "alternateName": "김선우",
     "jobTitle": "Ph.D. Candidate",
     "affiliation": {
       "@type": "CollegeOrUniversity",
@@ -64,12 +63,10 @@ layout: null
       <span>Sunwoo Kim</span>
     </a>
     <nav class="nav" aria-label="Main navigation">
-      <a data-i18n="navResearch" href="#research">Research</a>
-      <a data-i18n="navLog" href="#research-blog">Research Blog</a>
-      <a data-i18n="navPublications" href="#publications">Publications</a>
-      <a data-i18n="navJudgment" href="#better-judgment">Better Judgment</a>
-      <a data-i18n="navExperience" href="#experience">Experience</a>
-      <a data-i18n="navProjects" href="#projects">Projects</a>
+      <a data-i18n="navHome" href="#top">Home</a>
+      <a data-i18n="navProfile" href="#profile">Profile</a>
+      <a data-i18n="navLog" href="{{ '/research-log/' | relative_url }}">Research Blog</a>
+      <a data-i18n="navJudgment" href="{{ '/better-judgment/' | relative_url }}">Better Judgment</a>
       <a data-i18n="navContact" href="#contact">Contact</a>
     </nav>
     <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch language">한국어</button>
@@ -77,33 +74,81 @@ layout: null
 
   <main id="top">
     <section class="hero section">
-      <div class="hero-bg"></div>
       <div class="hero-copy">
-        <p class="eyebrow" data-i18n="heroKicker">AI × Optimization × Chemical Process Systems</p>
+        <p class="eyebrow" data-i18n="heroKicker">AI / Optimization / Chemical Process Systems</p>
         <h1 data-i18n="name">Sunwoo Kim</h1>
         <p class="hero-title" data-i18n="title">Ph.D. Candidate in Chemical & Biomolecular Engineering, KAIST</p>
         <p class="hero-text" data-i18n="hero">
-          I develop optimization-compatible learning and mathematical programming frameworks for clean-energy supply chains, hydrogen systems, direct air capture, and long-horizon planning under uncertainty.
+          I study optimization-compatible AI and mathematical programming for clean-energy systems, process systems, and decision making under uncertainty.
         </p>
-        <p class="location" data-i18n="location">Daejeon, Republic of Korea · Global research network across Korea, Europe, and North America</p>
+        <p class="location" data-i18n="location">Daejeon, Republic of Korea - research experience across Korea, Europe, and North America</p>
         <div class="hero-actions">
           <a class="button primary" href="mailto:gloryark@kaist.ac.kr" data-i18n="contactButton">Contact</a>
           <a class="button secondary" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
           <a class="button secondary" href="https://www.linkedin.com/in/sunwoo-kim-25a474261/" target="_blank" rel="noreferrer">LinkedIn</a>
         </div>
       </div>
+
       <aside class="profile-card" aria-label="Profile summary">
-        <img src="https://avatars.githubusercontent.com/u/102637640?v=4" alt="Sunwoo Kim profile" />
+        <img src="{{ '/assets/images/sunwoo-profile.jpg' | relative_url }}" alt="Sunwoo Kim profile photo" />
         <div class="profile-card-inner">
           <p class="profile-label">Profile</p>
-          <div class="stat-grid">
-            <div><strong>Ph.D.</strong><span data-i18n="stat1">KAIST Chemical & Biomolecular Engineering</span></div>
-            <div><strong>USC</strong><span data-i18n="stat2">Visiting Scholar, Chemical Engineering & Materials Science</span></div>
-            <div><strong>AI + OR</strong><span data-i18n="stat3">Reinforcement learning, Bayesian optimization, mathematical programming</span></div>
-            <div><strong>H₂ / DAC</strong><span data-i18n="stat4">Green hydrogen, ammonia, carbon removal, energy systems</span></div>
-          </div>
+          <p data-i18n="profileCardText">KAIST Ph.D. candidate working across AI-enabled optimization, process systems engineering, and clean-energy planning.</p>
         </div>
       </aside>
+
+      <div class="gateway-grid" aria-label="Homepage gateways">
+        <article class="gateway-card">
+          <div>
+            <p class="gateway-kicker">01</p>
+            <h2 data-i18n="gatewayProfileTitle">Profile & Credentials</h2>
+            <p data-i18n="gatewayProfileText">Academic profile, publications, research experience, projects, and selected talks.</p>
+          </div>
+          <a class="button secondary" href="#profile" data-i18n="gatewayProfileButton">View Profile</a>
+        </article>
+        <article class="gateway-card">
+          <div>
+            <p class="gateway-kicker">02</p>
+            <h2 data-i18n="gatewayResearchTitle">Research Blog</h2>
+            <p data-i18n="gatewayResearchText">Reviews of papers on AI, optimization, and decision-making tools, written for researchers and chemical engineers who want to understand modern computational methods.</p>
+          </div>
+          <a class="button secondary" href="{{ '/research-log/' | relative_url }}" data-i18n="gatewayResearchButton">Explore Research Blog</a>
+        </article>
+        <article class="gateway-card">
+          <div>
+            <p class="gateway-kicker">03</p>
+            <h2 data-i18n="gatewayJudgmentTitle">Better Judgment Notes</h2>
+            <p data-i18n="gatewayJudgmentText">Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.</p>
+          </div>
+          <a class="button secondary" href="{{ '/better-judgment/' | relative_url }}" data-i18n="gatewayJudgmentButton">Explore Better Judgment Notes</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="profile" class="section profile-overview">
+      <div class="section-header">
+        <p class="eyebrow">Profile</p>
+        <h2 data-i18n="profileTitle">Profile & Credentials</h2>
+        <p data-i18n="profileIntro">A compact map of academic background, publication record, research experience, projects, and selected talks.</p>
+      </div>
+      <div class="profile-link-grid">
+        <a class="profile-link" href="#publications">
+          <span data-i18n="profilePublications">Publications</span>
+          <small data-i18n="profilePublicationsText">Selected papers and Google Scholar profile.</small>
+        </a>
+        <a class="profile-link" href="#experience">
+          <span data-i18n="profileExperience">Research experience</span>
+          <small data-i18n="profileExperienceText">KAIST, USC, Waterloo, and related academic training.</small>
+        </a>
+        <a class="profile-link" href="#projects">
+          <span data-i18n="profileProjects">Projects</span>
+          <small data-i18n="profileProjectsText">Clean-energy, hydrogen, DAC, and process systems work.</small>
+        </a>
+        <a class="profile-link" href="#projects">
+          <span data-i18n="profileTalks">Conferences</span>
+          <small data-i18n="profileTalksText">Selected talks and technical presentations.</small>
+        </a>
+      </div>
     </section>
 
     <section id="research" class="section">
@@ -140,16 +185,16 @@ layout: null
       <div class="section-header">
         <p class="eyebrow" data-i18n="researchBlogLabel">Research Blog</p>
         <h2 data-i18n="researchBlogTitle">Daily paper reading as research training</h2>
+        <p data-i18n="researchBlogIntro">Paper reviews organized by application systems and algorithmic methods.</p>
       </div>
       <div class="statement-panel">
         <blockquote data-i18n="researchBlogStatement1">I review papers on decision-making tools based on modern AI and mathematical optimization in a way that chemical engineers can understand.</blockquote>
         <blockquote data-i18n="researchBlogStatement2">Just as elite athletes train every day, serious researchers read strong papers every day.</blockquote>
       </div>
       <div class="preview-footer">
-        <div class="category-pills" aria-label="Research Blog categories">
-          <span>Safe &amp; Constrained RL</span>
-          <span>Nonlinear Optimization</span>
-          <span>Probabilistic Heuristics &amp; Bayesian Search</span>
+        <div class="category-pills" aria-label="Research Blog category groups">
+          <span>Application Reviews</span>
+          <span>Algorithmic Reviews</span>
         </div>
         <a class="button secondary" href="{{ '/research-log/' | relative_url }}" data-i18n="exploreResearchBlog">Explore Research Blog</a>
       </div>
@@ -171,7 +216,7 @@ layout: null
       <div class="section-header">
         <p class="eyebrow" data-i18n="judgmentLabel">Better Judgment Notes</p>
         <h2 data-i18n="judgmentTitle">Better Judgment Notes</h2>
-        <p data-i18n="judgmentIntro">Reflections from books, interviews, and public affairs, organized as notes for better decisions, sharper social understanding, and broader geopolitical awareness.</p>
+        <p data-i18n="judgmentIntro">Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.</p>
       </div>
       <div class="insight-grid" aria-label="Better Judgment categories">
         <div class="insight-card" data-i18n="judgmentCategory1">For Wiser Decision-Making</div>
@@ -222,10 +267,10 @@ layout: null
   </main>
 
   <footer class="footer">
-    <p>© <span id="year"></span> Sunwoo Kim. Built for academic and industrial collaboration.</p>
-    <p>KAIST · Chemical & Biomolecular Engineering</p>
+    <p>&copy; <span id="year"></span> Sunwoo Kim. Built for academic and industrial collaboration.</p>
+    <p>KAIST - Chemical & Biomolecular Engineering</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="{{ '/script.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>
 </html>

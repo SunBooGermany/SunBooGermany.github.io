@@ -4,6 +4,13 @@ title: "Lyapunov-Based Safe Policy Improvement for CMDPs"
 date: 2026-05-26
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
+research_group: algorithmic_reviews
+research_category: safe-constrained-rl
+research_category_label: "Safe & Constrained RL"
+application_category: ""
+application_category_label: ""
+method_category: safe-constrained-rl
+method_category_label: "Safe & Constrained RL"
 paper_title: "A lyapunov-based approach to safe reinforcement learning"
 authors: "Chow Y, Nachum O, Duenez-Guzman E, Ghavamzadeh M"
 venue: "Advances in neural information processing systems"
@@ -19,6 +26,7 @@ tags:
   - safe DQN
 excerpt: "Lyapunov constraints turn an expected cumulative safety budget in a CMDP into local restrictions on policy improvement. This note examines the exact certificate logic and the weaker status of neural approximations."
 language: "en-ko"
+has_korean_note: false
 ---
 
 ## Positioning: Why the problem matters

@@ -17,6 +17,7 @@ tags:
 description: "A reflection on conscience as a disciplined but revisable standard for judgment under power, fear, ambition, and convenience."
 excerpt: "A reflection on conscience as a disciplined but revisable standard for judgment under power, fear, ambition, and convenience."
 language: "en"
+has_korean_note: false
 ---
 
 A disciplined life often begins with attention.

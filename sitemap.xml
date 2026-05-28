@@ -21,6 +21,14 @@ layout: null
     <priority>0.7</priority>
   </url>
   {% endfor %}
+  <url>
+    <loc>{{ '/categories/nonlinear-optimization/' | absolute_url }}</loc>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>{{ '/categories/probabilistic-heuristic-model/' | absolute_url }}</loc>
+    <priority>0.4</priority>
+  </url>
   {% for category in site.data.judgment_categories %}
   <url>
     <loc>{{ '/judgment-categories/' | append: category.slug | append: '/' | absolute_url }}</loc>

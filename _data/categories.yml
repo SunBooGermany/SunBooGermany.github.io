@@ -1,11 +1,39 @@
+- slug: green-chemical-systems
+  group: application_reviews
+  label: "Green Chemical Systems"
+  description: "Green hydrogen, green ammonia, DAC, CCUS, carbon management, and sustainable chemical systems."
+
+- slug: energy-grids
+  group: application_reviews
+  label: "Energy Grids"
+  description: "Power systems, microgrids, grid operation, storage, renewable integration, and energy system planning."
+
+- slug: bioprocess-systems
+  group: application_reviews
+  label: "Bioprocess Systems"
+  description: "Bioprocess optimization, biochemical engineering, fermentation, and biological production systems."
+
+- slug: chemical-plants
+  group: application_reviews
+  label: "Chemical Plants"
+  description: "Process control, plant operation, chemical process design, safety, and real-time optimization."
+
 - slug: safe-constrained-rl
+  group: algorithmic_reviews
   label: "Safe & Constrained RL"
-  description: "Critical notes on feasibility, constraint handling, and safety claims in reinforcement learning."
+  description: "CMDP, safe RL, constrained policy optimization, Lyapunov methods, feasibility, and safety guarantees."
 
-- slug: nonlinear-optimization
-  label: "Nonlinear Optimization"
-  description: "Methods and analysis for nonlinear decision models in planning, control, and process systems."
+- slug: stochastic-nonlinear-optimization
+  group: algorithmic_reviews
+  label: "Stochastic & Nonlinear Optimization"
+  description: "Stochastic programming, nonlinear optimization, robust/chance-constrained optimization, MPC, and trust-region methods."
 
-- slug: probabilistic-heuristic-model
-  label: "Probabilistic Heuristics & Bayesian Search"
-  description: "Probabilistic search and heuristic modeling methods, assessed for optimization-relevant decisions."
+- slug: llm-probabilistic-approaches
+  group: algorithmic_reviews
+  label: "LLM & Probabilistic Approaches"
+  description: "LLMs, Bayesian optimization, uncertainty-aware ML, probabilistic search, and related ML-based decision tools."
+
+- slug: graph-represented-methods
+  group: algorithmic_reviews
+  label: "Graph-Represented Methods"
+  description: "Graph neural networks, graph-based optimization, graph-represented systems, network optimization, and structured decision models."

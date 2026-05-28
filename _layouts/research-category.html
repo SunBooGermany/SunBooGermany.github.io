@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<section class="category-header">
+  <p class="eyebrow">{{ page.research_group_label | default: "Research Blog Category" }}</p>
+  <h1>{{ page.category_label }}</h1>
+  <p>{{ page.description }}</p>
+  {% if page.alias_target_slug %}
+    <p class="archive-note">This legacy archive remains available for older links. New notes in this area should use <a href="{{ '/categories/' | append: page.alias_target_slug | append: '/' | relative_url }}">{{ page.alias_target_label }}</a>.</p>
+  {% endif %}
+  <a class="button secondary" href="{{ '/research-log/' | relative_url }}">All research notes</a>
+</section>
+
+<section class="notes-section">
+  {% assign matched_posts = 0 %}
+  <div class="note-list">
+    {% for post in site.posts %}
+      {% if post.research_category == page.category_slug or post.application_category == page.category_slug or post.method_category == page.category_slug or post.category == page.category_slug %}
+        {% assign matched_posts = matched_posts | plus: 1 %}
+        <article class="note-card research-note-card">
+          <div class="note-meta">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+            <span>{{ post.research_category_label | default: post.category_label }}</span>
+          </div>
+          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+          <p>{{ post.excerpt }}</p>
+          {% if post.paper_title and post.paper_title != "" %}<p class="paper-title">{{ post.paper_title }}</p>{% endif %}
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {% if matched_posts == 0 %}
+    <p class="empty-notes">No research notes have been published in this category yet.</p>
+  {% endif %}
+</section>

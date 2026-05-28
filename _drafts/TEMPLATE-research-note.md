@@ -1,21 +1,29 @@
 ---
 layout: post
 title: "..."
-date: 2026-05-26
+date: YYYY-MM-DD
 published: false
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
+research_group: algorithmic_reviews
+research_category: safe-constrained-rl
+research_category_label: "Safe & Constrained RL"
+application_category: ""
+application_category_label: ""
+method_category: safe-constrained-rl
+method_category_label: "Safe & Constrained RL"
 paper_title: "..."
 authors: "..."
 venue: "..."
 year: "..."
-doi: "..."
+doi: ""
 arxiv: ""
 source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
-language: "en"
+language: "en-ko"
+has_korean_note: false
 ---
 
 ## Positioning
@@ -71,6 +79,17 @@ State assumptions, scalability questions, approximation issues, and any limits o
 ## Critical assessment
 
 Evaluate strengths, weaknesses, and the evidence required for broader claims.
+
+<!--
+Optional Korean note:
+Set `has_korean_note: true` in front matter and uncomment this block only when a Korean note or translation is provided.
+
+<details id="korean-note" class="korean-note-block" lang="ko">
+  <summary>한국어 보기 / Korean Note</summary>
+
+  TODO: 한국어 기술 노트 또는 번역을 입력합니다.
+</details>
+-->
 
 ## References
 

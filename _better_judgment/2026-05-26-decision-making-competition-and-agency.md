@@ -17,6 +17,7 @@ tags:
 description: "A short reflection on academic competition, intellectual freedom, and the need to preserve agency inside systems of evaluation."
 excerpt: "A short reflection on academic competition, intellectual freedom, and the need to preserve agency inside systems of evaluation."
 language: "en"
+has_korean_note: false
 ---
 
 Sometimes the academic life appears less like a free pursuit of ideas and more like a sequence of pressures: papers, grants, evaluations, appointments, tenure, reputation, and the next measurable output. One threshold is crossed, and another appears. The anxiety is not only that one might fail, but that there may be no stable place outside the race.

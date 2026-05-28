@@ -3,13 +3,33 @@ layout: default
 ---
 <article class="research-post">
   <header class="post-header">
-    <p class="eyebrow">{{ page.category_label }}</p>
+    <p class="eyebrow">{{ page.research_category_label | default: page.category_label }}</p>
     <h1>{{ page.title | escape }}</h1>
     <p class="post-intro">{{ page.excerpt | escape }}</p>
     <div class="post-meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {% if page.research_group and page.research_group != "" %}<span>{{ page.research_group | replace: "_", " " | capitalize }}</span>{% endif %}
       {% if page.venue and page.venue != "" %}<span>{{ page.venue | escape }}{% if page.year and page.year != "" %}, {{ page.year | escape }}{% endif %}</span>{% endif %}
     </div>
+    {% assign show_korean_note_button = false %}
+    {% if page.has_korean_note %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if content contains 'id="korean-note"' %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if content contains 'id="korean-technical-note"' %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if content contains 'korean-note-block' %}
+      {% assign show_korean_note_button = true %}
+    {% endif %}
+    {% if show_korean_note_button %}
+      <button class="korean-note-button" type="button" data-korean-note-trigger>
+        <span lang="en">Korean Note</span>
+        <span lang="ko">한국어 보기</span>
+      </button>
+    {% endif %}
   </header>
 
   {% if page.paper_title and page.paper_title != "" %}
@@ -19,7 +39,13 @@ layout: default
       {% if page.authors and page.authors != "" %}<p>{{ page.authors | escape }}</p>{% endif %}
       <div class="citation-links">
         {% if page.doi and page.doi != "" %}<a href="https://doi.org/{{ page.doi | escape }}" rel="noreferrer">DOI</a>{% endif %}
-        {% if page.arxiv and page.arxiv != "" %}<a href="{{ page.arxiv | escape }}" rel="noreferrer">arXiv</a>{% endif %}
+        {% if page.arxiv and page.arxiv != "" %}
+          {% assign arxiv_link = page.arxiv %}
+          {% unless arxiv_link contains "://" %}
+            {% assign arxiv_link = "https://arxiv.org/abs/" | append: page.arxiv %}
+          {% endunless %}
+          <a href="{{ arxiv_link | escape }}" rel="noreferrer">arXiv</a>
+        {% endif %}
         {% if page.source_url and page.source_url != "" %}<a href="{{ page.source_url | escape }}" rel="noreferrer">Source</a>{% endif %}
       </div>
     </aside>
@@ -30,7 +56,9 @@ layout: default
   </div>
 
   <footer class="post-footer">
-    <a href="{{ '/categories/' | append: page.category | append: '/' | relative_url }}">More in {{ page.category_label }}</a>
+    {% assign footer_category = page.research_category | default: page.category %}
+    {% assign footer_label = page.research_category_label | default: page.category_label %}
+    <a href="{{ '/categories/' | append: footer_category | append: '/' | relative_url }}">More in {{ footer_label }}</a>
     <a href="{{ '/research-log/' | relative_url }}">All research notes</a>
   </footer>
 </article>
