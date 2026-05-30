@@ -79,24 +79,42 @@ The script creates a dated Markdown file in `_posts/`. Replace every `TODO` plac
 
 Populate front matter metadata and the `References` section only from the supplied paper, source text, metadata, bibliography, or verified source material. When available from those sources, include the paper's references in `References`; never infer missing citation details, and leave or report missing metadata rather than fabricate it. Do not claim guarantees or results beyond what the cited work establishes.
 
-## Add Korean notes
+## Add bilingual versions
 
 Do not try to trigger Chrome's built-in translation UI. Websites cannot reliably open Chrome Translate through JavaScript.
 
-Use the in-site Korean note convention instead:
+Every new homepage post should include a complete English version and a complete Korean version.
 
-1. Set `has_korean_note: true` in the post front matter.
-2. Add a collapsible block where the Korean note should appear:
+Use the in-site language-panel convention:
 
-```html
-<details id="korean-note" class="korean-note-block" lang="ko">
-  <summary>한국어 보기 / Korean Note</summary>
+1. Write the complete English version first.
+2. Keep the English version clean English only; do not mix Korean prose into it.
+3. Add `<!-- ko -->` after the English version.
+4. Write the complete Korean translation after `<!-- ko -->`.
+5. Set `has_korean_note: false`.
+6. Add `title_ko` and `excerpt_ko` in front matter.
 
-  한국어 노트 또는 번역을 여기에 작성합니다.
-</details>
+```markdown
+## Positioning
+
+English version goes here.
+
+## References
+
+English references go here.
+
+<!-- ko -->
+
+## 포지셔닝
+
+한국어 번역본을 여기에 작성합니다.
+
+## 참고문헌
+
+한국어 참고문헌 정보를 여기에 작성합니다.
 ```
 
-The post layout shows a `Korean Note / 한국어 보기` button when a Korean note is present. Do not fabricate Korean translations for older posts.
+Do not add short `Korean Note` or `Korean technical note` blocks for new posts. Legacy note blocks can remain only for older posts that already use them.
 
 ## Format technical equations
 
@@ -143,7 +161,7 @@ python scripts/new_better_judgment_note.py \
 
 The script writes a collection document beneath `_better_judgment/<category>/<year>/<month>/<day>/`, producing a categorized `/better-judgment/` URL through Jekyll's supported collection `:path` permalink. It refuses to overwrite an existing note unless `--force` is explicitly passed. Replace placeholders before publication and do not present interpretation as verified fact. Any note involving current public affairs or international politics must be checked against reliable sources before it is published.
 
-Better Judgment Notes can also use the Korean note convention above when a Korean note or translation is provided.
+Better Judgment Notes should also use the bilingual version convention above for new notes.
 
 ## Local preview and validation
 
@@ -164,7 +182,7 @@ Open `http://127.0.0.1:4000/` and verify:
 - all eight Research Blog category pages work
 - legacy category URLs still work
 - `/better-judgment/` and Better Judgment category pages work
-- Korean note buttons work on posts that include a Korean note block
+- English/Korean language toggle shows the correct version on bilingual posts
 - `/sitemap.xml` includes current writing archives
 
 ## Notes

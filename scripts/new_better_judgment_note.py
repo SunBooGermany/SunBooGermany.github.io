@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
         description="Scaffold a Better Judgment note in _better_judgment/."
     )
     parser.add_argument("--title", required=True, help="Title for the note.")
+    parser.add_argument("--title-ko", default="TODO: Korean title", help="Korean title for the note.")
     parser.add_argument("--category", choices=CATEGORIES, required=True)
     parser.add_argument("--source-type", choices=SOURCE_TYPES, required=True)
     parser.add_argument("--source-title", required=True)
@@ -51,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-url", default="")
     parser.add_argument("--tags", default="", help="Comma-separated tags.")
     parser.add_argument("--excerpt", default="TODO: add a one or two sentence analytical summary.")
-    parser.add_argument("--has-korean-note", action="store_true", help="Mark the note as containing a Korean note block.")
+    parser.add_argument("--excerpt-ko", default="TODO: add the Korean translation of the summary.")
     parser.add_argument("--force", action="store_true", help="Overwrite an existing note at the same path.")
     return parser.parse_args()
 
@@ -87,10 +88,10 @@ def main() -> int:
     template = template_path.read_text(encoding="utf-8")
     body = template.split("---", 2)[2].lstrip("\n")
     tag_lines = "\n".join(f'  - "{yaml_value(tag)}"' for tag in tags)
-    has_korean_note = "true" if args.has_korean_note else "false"
     note = f"""---
 layout: judgment-post
 title: "{yaml_value(args.title)}"
+title_ko: "{yaml_value(args.title_ko)}"
 date: {note_date.isoformat()}
 category: {args.category}
 category_label: "{yaml_value(CATEGORIES[args.category])}"
@@ -102,8 +103,9 @@ source_url: "{yaml_value(args.source_url)}"
 tags:
 {tag_lines}
 excerpt: "{yaml_value(args.excerpt)}"
+excerpt_ko: "{yaml_value(args.excerpt_ko)}"
 language: "en-ko"
-has_korean_note: {has_korean_note}
+has_korean_note: false
 ---
 
 {body}"""

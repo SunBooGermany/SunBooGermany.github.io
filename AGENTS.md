@@ -25,6 +25,15 @@ Do not paste long copyrighted passages from papers.
 Summarize papers in original language.
 Do not attempt to trigger Chrome Translate or any browser-level translation UI from site JavaScript.
 
+## Bilingual publication policy
+
+For every new homepage post or note, create both a complete English version and a complete Korean version.
+The English version must be clean English only: do not include Korean prose, Korean explanatory phrases, or mixed English-Korean sentences in the English panel.
+Do not add short `Korean Note`, `Korean technical note`, or collapsible Korean-note blocks by default.
+For Research Blog posts, write the complete English version before the `<!-- ko -->` marker and the complete Korean translation after it. The post layout will show the appropriate version through the site language toggle.
+Set `has_korean_note: false` for new posts unless maintaining a legacy note that already uses the old collapsible note pattern.
+Use `title_ko` and `excerpt_ko` for the Korean title and listing summary.
+
 ## Research Blog taxonomy
 
 Research Blog has two fixed groups: Application Reviews and Algorithmic Reviews.
@@ -106,7 +115,7 @@ Every Better Judgment note must use the `judgment-post` layout and contain:
 
 The tone must be reflective but analytical, readable, practical without cliche, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
 
-Include Korean notes or translations only when provided. Do not fabricate Korean translations.
+Provide a complete Korean version alongside the English version for new notes. Do not fabricate source facts or translations of quoted/source material beyond the available evidence.
 
 ## Daily research-note purpose
 
@@ -144,7 +153,7 @@ Each research post should contain:
 8. Critical assessment
 9. References
 
-Include a Korean note or Korean translation block only when provided. Use the existing collapsible `details` convention with `id="korean-note"` and `class="korean-note-block"` so the Korean Note button works.
+After the English `References` section, add `<!-- ko -->` and then a complete Korean version of the post with its own references section. Do not add a separate Korean technical note section.
 
 Do not add separate sections connecting the paper to Sunwoo Kim's research or proposing extensions by default. Include such sections only when the user explicitly requests them.
 
@@ -164,6 +173,7 @@ Use this schema for new Research Blog posts:
 ---
 layout: post
 title: "..."
+title_ko: "..."
 date: YYYY-MM-DD
 category: safe-constrained-rl
 category_label: "Safe & Constrained RL"
@@ -184,6 +194,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
+excerpt_ko: "Korean translation of the listing summary."
 language: "en-ko"
 has_korean_note: false
 ---
@@ -201,7 +212,8 @@ If feasibility or safety is approximate, say so.
 Explain important equations intuitively when needed without changing their mathematical meaning.
 If an explicitly requested connection or extension is speculative, label it as a proposed direction rather than a result.
 Use English as the main language for published posts.
-Include Korean notes or translations when provided.
+Include a complete Korean version for published posts, separated from the English version with `<!-- ko -->`.
+The English version must not contain Korean prose or a Korean-note section.
 
 ## Equation rendering policy
 

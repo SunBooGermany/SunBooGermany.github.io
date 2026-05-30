@@ -1,6 +1,7 @@
 ---
 layout: judgment-post
 title: "..."
+title_ko: "..."
 date: YYYY-MM-DD
 category: decision-making
 category_label: "For Wiser Decision-Making"
@@ -12,6 +13,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
+excerpt_ko: "Korean translation of the listing summary."
 language: "en-ko"
 has_korean_note: false
 ---
@@ -44,21 +46,48 @@ Identify scope conditions, counterexamples, missing evidence, or risks of overge
 
 Explain a thoughtful connection while clearly marking personal interpretation or a possible extension.
 
-<!--
-Optional Korean note:
-Set `has_korean_note: true` in front matter and uncomment this block only when a Korean note or translation is provided.
-
-<details id="korean-note" class="korean-note-block" lang="ko">
-  <summary>한국어 보기 / Korean Note</summary>
-
-  TODO: 한국어 노트 또는 번역을 입력합니다.
-</details>
--->
-
 ## Source metadata
 
 - Source type: TODO
 - Source title: TODO
 - Author or speaker: TODO
 - Year: TODO
+- URL: TODO
+
+<!-- ko -->
+
+## 핵심 통찰
+
+영문 본문 전체를 한국어로 번역합니다. 짧은 Korean note가 아니라 완전한 한국어 버전이어야 합니다.
+
+## 왜 중요한가
+
+TODO
+
+## 의사결정 원칙
+
+TODO
+
+## 사람 또는 시스템에 대해 설명해 주는 것
+
+TODO
+
+## 실천적 함의
+
+TODO
+
+## 아이디어의 한계
+
+TODO
+
+## 내 삶과 연구와의 연결
+
+TODO
+
+## 출처 메타데이터
+
+- 출처 유형: TODO
+- 출처 제목: TODO
+- 저자 또는 발화자: TODO
+- 연도: TODO
 - URL: TODO

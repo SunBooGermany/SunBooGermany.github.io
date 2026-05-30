@@ -44,6 +44,7 @@ def slugify(value: str) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Scaffold a daily research note in _posts/.")
     parser.add_argument("--title", required=True, help="Title for the note.")
+    parser.add_argument("--title-ko", default="TODO: Korean title", help="Korean title for the note.")
     parser.add_argument("--research-group", choices=TAXONOMY.keys())
     parser.add_argument("--research-category", help="Category slug within the selected research group.")
     parser.add_argument(
@@ -63,7 +64,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tag", action="append", dest="tag_list", help="Repeat to add tags.")
     parser.add_argument("--tags", default="", help="Comma-separated tags.")
     parser.add_argument("--excerpt", default="TODO: add a one or two sentence critical summary.")
-    parser.add_argument("--has-korean-note", action="store_true", help="Mark the note as containing a Korean note block.")
+    parser.add_argument("--excerpt-ko", default="TODO: add the Korean translation of the summary.")
     return parser.parse_args()
 
 
@@ -131,10 +132,10 @@ def main() -> int:
     template = template_path.read_text(encoding="utf-8")
     body = template.split("---", 2)[2].lstrip("\n")
     tag_lines = "\n".join(f'  - "{yaml_value(tag)}"' for tag in collect_tags(args))
-    has_korean_note = "true" if args.has_korean_note else "false"
     note = f"""---
 layout: post
 title: "{yaml_value(args.title)}"
+title_ko: "{yaml_value(args.title_ko)}"
 date: {note_date.isoformat()}
 category: {research_category}
 category_label: "{yaml_value(research_label)}"
@@ -155,8 +156,9 @@ source_url: "{yaml_value(args.source_url)}"
 tags:
 {tag_lines}
 excerpt: "{yaml_value(args.excerpt)}"
+excerpt_ko: "{yaml_value(args.excerpt_ko)}"
 language: "en-ko"
-has_korean_note: {has_korean_note}
+has_korean_note: false
 ---
 
 {body}"""

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "..."
+title_ko: "..."
 date: YYYY-MM-DD
 published: false
 category: safe-constrained-rl
@@ -22,6 +23,7 @@ source_url: ""
 tags:
   - ...
 excerpt: "One or two sentence summary for listing pages."
+excerpt_ko: "Korean translation of the listing summary."
 language: "en-ko"
 has_korean_note: false
 ---
@@ -80,17 +82,44 @@ State assumptions, scalability questions, approximation issues, and any limits o
 
 Evaluate strengths, weaknesses, and the evidence required for broader claims.
 
-<!--
-Optional Korean note:
-Set `has_korean_note: true` in front matter and uncomment this block only when a Korean note or translation is provided.
-
-<details id="korean-note" class="korean-note-block" lang="ko">
-  <summary>한국어 보기 / Korean Note</summary>
-
-  TODO: 한국어 기술 노트 또는 번역을 입력합니다.
-</details>
--->
-
 ## References
 
 Identify the focal paper and include references from the paper when they are available in the provided paper, source text, metadata, bibliography, or verified source material. Do not infer or fabricate missing reference entries or metadata; leave unavailable items blank and report missing metadata in the final report.
+
+<!-- ko -->
+
+## 포지셔닝
+
+영문 본문 전체를 한국어로 번역합니다. 짧은 Korean note가 아니라 완전한 한국어 버전이어야 합니다.
+
+## 문제 설정
+
+TODO
+
+## 선행 연구 공백
+
+TODO
+
+## 핵심 아이디어
+
+TODO
+
+## 수학적 구조
+
+TODO
+
+## 왜 작동할 수 있는가
+
+TODO
+
+## 가정과 한계
+
+TODO
+
+## 비판적 평가
+
+TODO
+
+## 참고문헌
+
+TODO
