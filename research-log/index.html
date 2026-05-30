@@ -34,7 +34,7 @@ permalink: /research-log/
       <span data-lang-panel="ko" hidden>최적화, AI, 의사결정 도구가 적용되는 시스템별로 묶은 리뷰입니다.</span>
     </p>
   </div>
-  <div class="taxonomy-card-grid">
+  <div class="taxonomy-card-grid research-categories">
     {% for category in site.data.research_taxonomy.application_reviews %}
       {% assign category_posts = 0 %}
       {% for post in site.posts %}
@@ -47,10 +47,6 @@ permalink: /research-log/
           <span data-lang-panel="en">{{ category.label }}</span>
           <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
         </h3>
-        <p>
-          <span data-lang-panel="en">{{ category.description }}</span>
-          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
-        </p>
         <span>
           <span data-lang-panel="en">{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
           <span data-lang-panel="ko" hidden>{{ category_posts }}편</span>
@@ -75,7 +71,7 @@ permalink: /research-log/
       <span data-lang-panel="ko" hidden>계산 방법론별로 묶은 리뷰이며, 가정, 근거, 실행 가능성의 한계를 함께 봅니다.</span>
     </p>
   </div>
-  <div class="taxonomy-card-grid">
+  <div class="taxonomy-card-grid research-categories">
     {% for category in site.data.research_taxonomy.algorithmic_reviews %}
       {% assign category_posts = 0 %}
       {% for post in site.posts %}
@@ -88,10 +84,6 @@ permalink: /research-log/
           <span data-lang-panel="en">{{ category.label }}</span>
           <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
         </h3>
-        <p>
-          <span data-lang-panel="en">{{ category.description }}</span>
-          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
-        </p>
         <span>
           <span data-lang-panel="en">{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
           <span data-lang-panel="ko" hidden>{{ category_posts }}편</span>

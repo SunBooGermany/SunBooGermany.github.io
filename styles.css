@@ -619,6 +619,24 @@ h1 {
 .judgment-panel {
   border-color: rgba(36, 74, 127, .24);
 }
+.research-categories .category-card {
+  justify-content: space-between;
+  min-height: 128px;
+}
+.research-categories .category-card h3 {
+  margin-bottom: 22px;
+  color: #18332d;
+  font-size: 24px;
+  line-height: 1.28;
+  font-weight: 850;
+}
+.research-categories .category-card h3 span {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: none;
+}
 .judgment-categories .category-card {
   justify-content: space-between;
   min-height: 128px;
