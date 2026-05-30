@@ -269,11 +269,11 @@ The supplied material does not establish that such an error-aware theorem is pro
 
 This method is best understood as a data-driven horizon-compression method for NMPC. Its main contribution is not that a neural network appears in the controller. The contribution is the NN-generated Cholesky/Lyapunov metric:
 
-```text
-NN predicts a matrix factor, not an arbitrary scalar value.
-The factor creates a positive-definite terminal metric.
+<p style="color: #1d4ed8;">
+NN predicts a matrix factor, not an arbitrary scalar value.<br>
+The factor creates a positive-definite terminal metric.<br>
 The metric defines a Lyapunov-compatible quadratic terminal cost.
-```
+</p>
 
 That is a meaningful design choice. It gives the learned terminal cost a control-theoretic shape that generic value approximation lacks.
 
@@ -525,11 +525,11 @@ Positive definiteness는 Lyapunov decrease를 의미하지 않는다. 어떤 함
 
 이 방법은 NMPC를 위한 data-driven horizon-compression method로 이해하는 것이 가장 적절하다. 핵심 기여는 controller 안에 neural network가 들어간다는 사실이 아니다. 핵심은 NN-generated Cholesky/Lyapunov metric이다.
 
-```text
-NN predicts a matrix factor, not an arbitrary scalar value.
-The factor creates a positive-definite terminal metric.
-The metric defines a Lyapunov-compatible quadratic terminal cost.
-```
+<p style="color: #1d4ed8;">
+신경망은 임의의 scalar value가 아니라 matrix factor를 예측한다.<br>
+그 factor는 positive-definite terminal metric을 만든다.<br>
+그 metric은 Lyapunov-compatible quadratic terminal cost를 정의한다.
+</p>
 
 이는 의미 있는 설계 선택이다. generic value approximation에는 없는 control-theoretic shape를 learned terminal cost에 부여한다.
 
