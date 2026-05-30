@@ -5,26 +5,51 @@ description: "Reflections from books, interviews, and public affairs for better 
 permalink: /better-judgment/
 ---
 <section class="log-hero judgment-hero">
-  <p class="eyebrow">Better Judgment Notes</p>
-  <h1>Notes for better decisions and clearer understanding</h1>
-  <p>Reflections from books, interviews, conversations, social phenomena, and global affairs. This section is parallel to the Research Blog in structure, but distinct in purpose: it is about judgment rather than paper review.</p>
-  <p class="korean-description" lang="ko">책, 인터뷰, 대화, 사회 현상, 국제 정세에서 얻은 생각을 더 나은 판단과 넓은 이해를 위한 기록으로 정리합니다.</p>
+  <p class="eyebrow">
+    <span data-lang-panel="en">Better Judgment Notes</span>
+    <span data-lang-panel="ko" hidden>더 나은 판단 노트</span>
+  </p>
+  <h1>
+    <span data-lang-panel="en">Notes for better decisions and clearer understanding</span>
+    <span data-lang-panel="ko" hidden>더 나은 결정과 넓은 이해를 위한 노트</span>
+  </h1>
+  <p>
+    <span data-lang-panel="en">Reflections from books, interviews, conversations, social phenomena, and global affairs. This section is parallel to the Research Blog in structure, but distinct in purpose: it is about judgment rather than paper review.</span>
+    <span data-lang-panel="ko" hidden>책, 인터뷰, 대화, 사회 현상, 국제 정세에서 얻은 생각을 더 나은 판단과 넓은 이해를 위한 기록으로 정리합니다. 연구 블로그와 구조는 비슷하지만, 목적은 논문 리뷰가 아니라 판단의 훈련에 있습니다.</span>
+  </p>
 </section>
 
 <section class="taxonomy-panel judgment-panel" aria-labelledby="judgment-categories-heading">
   <div class="taxonomy-panel-header">
-    <p class="eyebrow">Better Judgment</p>
-    <h2 id="judgment-categories-heading">Better Judgment Categories</h2>
-    <p>Decision making, social phenomena, global affairs, and philosophical reflections remain separate from technical paper reviews.</p>
+    <p class="eyebrow">
+      <span data-lang-panel="en">Better Judgment</span>
+      <span data-lang-panel="ko" hidden>더 나은 판단</span>
+    </p>
+    <h2 id="judgment-categories-heading">
+      <span data-lang-panel="en">Better Judgment Categories</span>
+      <span data-lang-panel="ko" hidden>더 나은 판단 카테고리</span>
+    </h2>
+    <p>
+      <span data-lang-panel="en">Decision making, social phenomena, global affairs, and philosophical reflections remain separate from technical paper reviews.</span>
+      <span data-lang-panel="ko" hidden>의사결정, 사회 현상, 국제 정세, 철학적 성찰을 기술 논문 리뷰와 분리해 기록합니다.</span>
+    </p>
   </div>
   <div class="taxonomy-card-grid judgment-categories">
     {% for category in site.data.judgment_categories %}
       {% assign category_notes = site.better_judgment | where: "category", category.slug %}
       <a class="category-card" href="{{ '/judgment-categories/' | append: category.slug | append: '/' | relative_url }}">
-        <h3>{{ category.label }}</h3>
-        <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
-        <p>{{ category.description }}</p>
-        <span>{{ category_notes.size }} note{% unless category_notes.size == 1 %}s{% endunless %}</span>
+        <h3>
+          <span data-lang-panel="en">{{ category.label }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
+        </h3>
+        <p>
+          <span data-lang-panel="en">{{ category.description }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
+        </p>
+        <span>
+          <span data-lang-panel="en">{{ category_notes.size }} note{% unless category_notes.size == 1 %}s{% endunless %}</span>
+          <span data-lang-panel="ko" hidden>{{ category_notes.size }}편</span>
+        </span>
       </a>
     {% endfor %}
   </div>
@@ -33,7 +58,10 @@ permalink: /better-judgment/
 {% assign judgment_notes = site.better_judgment | sort: "date" | reverse %}
 <section class="notes-section">
   <div class="notes-heading">
-    <h2>Latest Better Judgment Notes</h2>
+    <h2>
+      <span data-lang-panel="en">Latest Better Judgment Notes</span>
+      <span data-lang-panel="ko" hidden>최신 더 나은 판단 노트</span>
+    </h2>
   </div>
   {% if judgment_notes.size > 0 %}
     <div class="note-list">
@@ -41,15 +69,34 @@ permalink: /better-judgment/
         <article class="post-card">
           <div class="note-meta">
             <time datetime="{{ note.date | date_to_xmlschema }}">{{ note.date | date: "%B %-d, %Y" }}</time>
-            <span>{{ note.category_label }}</span>
+            <span>
+              <span data-lang-panel="en">{{ note.category_label }}</span>
+              <span data-lang-panel="ko" hidden>{{ note.category_label_ko | default: note.category_label }}</span>
+            </span>
           </div>
-          <h3><a href="{{ note.url | relative_url }}">{{ note.title }}</a></h3>
-          <p>{{ note.excerpt }}</p>
-          {% if note.source_title and note.source_title != "" %}<p class="source-title">{{ note.source_type | replace: "-", " " | capitalize }}: {{ note.source_title }}</p>{% endif %}
+          <h3>
+            <a href="{{ note.url | relative_url }}">
+              <span data-lang-panel="en">{{ note.title }}</span>
+              <span data-lang-panel="ko" hidden>{{ note.title_ko | default: note.title }}</span>
+            </a>
+          </h3>
+          <p>
+            <span data-lang-panel="en">{{ note.excerpt }}</span>
+            <span data-lang-panel="ko" hidden>{{ note.excerpt_ko | default: note.excerpt }}</span>
+          </p>
+          {% if note.source_title and note.source_title != "" %}
+            <p class="source-title">
+              <span data-lang-panel="en">{{ note.source_type | replace: "-", " " | capitalize }}: {{ note.source_title }}</span>
+              <span data-lang-panel="ko" hidden>{{ note.source_type | replace: "-", " " | capitalize }}: {{ note.source_title_ko | default: note.source_title }}</span>
+            </p>
+          {% endif %}
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-notes">No Better Judgment notes have been published yet. Occasional evidence-conscious reflections will appear here.</p>
+    <p class="empty-notes">
+      <span data-lang-panel="en">No Better Judgment notes have been published yet. Occasional evidence-conscious reflections will appear here.</span>
+      <span data-lang-panel="ko" hidden>아직 게시된 더 나은 판단 노트가 없습니다. 근거를 의식한 성찰이 이곳에 표시됩니다.</span>
+    </p>
   {% endif %}
 </section>

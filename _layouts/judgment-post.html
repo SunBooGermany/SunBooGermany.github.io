@@ -1,15 +1,50 @@
 ---
 layout: default
 ---
+{% assign content_parts = content | split: '<!-- ko -->' %}
+{% assign content_english = content_parts | first %}
+{% assign content_korean = content_parts | last %}
+{% assign has_korean_translation = false %}
+{% if content contains '<!-- ko -->' %}
+  {% assign has_korean_translation = true %}
+{% endif %}
 <article class="judgment-post">
   <header class="post-header">
-    <p class="eyebrow">Better Judgment Notes</p>
-    <h1>{{ page.title | escape }}</h1>
-    <p class="post-intro">{{ page.excerpt | escape }}</p>
+    <p class="eyebrow">
+      <span data-lang-panel="en">Better Judgment Notes</span>
+      <span data-lang-panel="ko" hidden>더 나은 판단 노트</span>
+    </p>
+    <h1>
+      <span data-lang-panel="en">{{ page.title | escape }}</span>
+      <span data-lang-panel="ko" hidden>{{ page.title_ko | default: page.title | escape }}</span>
+    </h1>
+    <p class="post-intro">
+      <span data-lang-panel="en">{{ page.excerpt | escape }}</span>
+      <span data-lang-panel="ko" hidden>{{ page.excerpt_ko | default: page.excerpt | escape }}</span>
+    </p>
     <div class="post-meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
-      <span>{{ page.category_label | escape }}</span>
-      {% if page.source_type and page.source_type != "" %}<span>{{ page.source_type | replace: "-", " " | capitalize }}</span>{% endif %}
+      <span>
+        <span data-lang-panel="en">{{ page.category_label | escape }}</span>
+        <span data-lang-panel="ko" hidden>{{ page.category_label_ko | default: page.category_label | escape }}</span>
+      </span>
+      {% if page.source_type and page.source_type != "" %}
+        <span>
+          <span data-lang-panel="en">{{ page.source_type | replace: "-", " " | capitalize }}</span>
+          <span data-lang-panel="ko" hidden>
+            {% case page.source_type %}
+            {% when "book" %}책
+            {% when "interview" %}인터뷰
+            {% when "lecture" %}강연
+            {% when "essay" %}에세이
+            {% when "article" %}기사
+            {% when "personal-reflection" %}개인 성찰
+            {% when "public-affairs" %}공적 이슈
+            {% else %}{{ page.source_type | replace: "-", " " | capitalize }}
+            {% endcase %}
+          </span>
+        </span>
+      {% endif %}
     </div>
     {% assign show_korean_note_button = false %}
     {% if page.has_korean_note %}
@@ -21,7 +56,7 @@ layout: default
     {% if content contains 'korean-note-block' %}
       {% assign show_korean_note_button = true %}
     {% endif %}
-    {% if show_korean_note_button %}
+    {% if show_korean_note_button and has_korean_translation == false %}
       <button class="korean-note-button" type="button" data-korean-note-trigger>
         <span lang="en">Korean Note</span>
         <span lang="ko">한국어 보기</span>
@@ -31,8 +66,14 @@ layout: default
 
   {% if page.source_title and page.source_title != "" %}
     <aside class="paper-citation source-citation" aria-label="Source metadata">
-      <p class="citation-label">Source for reflection</p>
-      <h2>{{ page.source_title | escape }}</h2>
+      <p class="citation-label">
+        <span data-lang-panel="en">Source for reflection</span>
+        <span data-lang-panel="ko" hidden>성찰의 출처</span>
+      </p>
+      <h2>
+        <span data-lang-panel="en">{{ page.source_title | escape }}</span>
+        <span data-lang-panel="ko" hidden>{{ page.source_title_ko | default: page.source_title | escape }}</span>
+      </h2>
       {% if page.author_or_speaker and page.author_or_speaker != "" %}<p>{{ page.author_or_speaker | escape }}{% if page.year and page.year != "" %}, {{ page.year | escape }}{% endif %}</p>{% endif %}
       {% if page.source_url and page.source_url != "" %}
         <div class="citation-links">
@@ -42,8 +83,11 @@ layout: default
     </aside>
   {% endif %}
 
-  <div class="post-content">
-    {{ content }}
+  <div class="post-content" data-lang-panel="en">
+    {{ content_english }}
+  </div>
+  <div class="post-content" data-lang-panel="ko" lang="ko" hidden>
+    {{ content_korean }}
   </div>
 
   {% if page.tags.size > 0 %}
@@ -53,7 +97,13 @@ layout: default
   {% endif %}
 
   <footer class="post-footer">
-    <a href="{{ '/judgment-categories/' | append: page.category | append: '/' | relative_url }}">More in {{ page.category_label }}</a>
-    <a href="{{ '/better-judgment/' | relative_url }}">All Better Judgment notes</a>
+    <a href="{{ '/judgment-categories/' | append: page.category | append: '/' | relative_url }}">
+      <span data-lang-panel="en">More in {{ page.category_label }}</span>
+      <span data-lang-panel="ko" hidden>{{ page.category_label_ko | default: page.category_label }} 글 더 보기</span>
+    </a>
+    <a href="{{ '/better-judgment/' | relative_url }}">
+      <span data-lang-panel="en">All Better Judgment notes</span>
+      <span data-lang-panel="ko" hidden>전체 더 나은 판단 노트</span>
+    </a>
   </footer>
 </article>

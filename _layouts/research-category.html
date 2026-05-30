@@ -1,14 +1,43 @@
 ---
 layout: default
 ---
-<section class="category-header">
-  <p class="eyebrow">{{ page.research_group_label | default: "Research Blog Category" }}</p>
-  <h1>{{ page.category_label }}</h1>
-  <p>{{ page.description }}</p>
-  {% if page.alias_target_slug %}
-    <p class="archive-note">This legacy archive remains available for older links. New notes in this area should use <a href="{{ '/categories/' | append: page.alias_target_slug | append: '/' | relative_url }}">{{ page.alias_target_label }}</a>.</p>
+{% assign category_label_ko = page.category_label_ko %}
+{% assign category_description_ko = page.description_ko %}
+{% for category in site.data.research_taxonomy.application_reviews %}
+  {% if category.slug == page.category_slug %}
+    {% assign category_label_ko = category.label_ko %}
+    {% assign category_description_ko = category.description_ko %}
   {% endif %}
-  <a class="button secondary" href="{{ '/research-log/' | relative_url }}">All research notes</a>
+{% endfor %}
+{% for category in site.data.research_taxonomy.algorithmic_reviews %}
+  {% if category.slug == page.category_slug %}
+    {% assign category_label_ko = category.label_ko %}
+    {% assign category_description_ko = category.description_ko %}
+  {% endif %}
+{% endfor %}
+<section class="category-header">
+  <p class="eyebrow">
+    <span data-lang-panel="en">{{ page.research_group_label | default: "Research Blog Category" }}</span>
+    <span data-lang-panel="ko" hidden>{% if page.research_group == "application_reviews" %}응용 시스템 리뷰{% elsif page.research_group == "algorithmic_reviews" %}알고리즘 리뷰{% else %}연구 블로그 카테고리{% endif %}</span>
+  </p>
+  <h1>
+    <span data-lang-panel="en">{{ page.category_label }}</span>
+    <span data-lang-panel="ko" hidden>{{ category_label_ko | default: page.category_label }}</span>
+  </h1>
+  <p>
+    <span data-lang-panel="en">{{ page.description }}</span>
+    <span data-lang-panel="ko" hidden>{{ category_description_ko | default: page.description }}</span>
+  </p>
+  {% if page.alias_target_slug %}
+    <p class="archive-note">
+      <span data-lang-panel="en">This legacy archive remains available for older links. New notes in this area should use <a href="{{ '/categories/' | append: page.alias_target_slug | append: '/' | relative_url }}">{{ page.alias_target_label }}</a>.</span>
+      <span data-lang-panel="ko" hidden>이 레거시 아카이브는 기존 링크를 위해 유지됩니다. 이 영역의 새 노트는 <a href="{{ '/categories/' | append: page.alias_target_slug | append: '/' | relative_url }}">{{ page.alias_target_label }}</a> 카테고리를 사용해야 합니다.</span>
+    </p>
+  {% endif %}
+  <a class="button secondary" href="{{ '/research-log/' | relative_url }}">
+    <span data-lang-panel="en">All research notes</span>
+    <span data-lang-panel="ko" hidden>전체 연구 노트</span>
+  </a>
 </section>
 
 <section class="notes-section">
@@ -20,17 +49,36 @@ layout: default
         <article class="note-card research-note-card">
           <div class="note-meta">
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-            <span>{{ post.research_category_label | default: post.category_label }}</span>
+            <span>
+              <span data-lang-panel="en">{{ post.research_category_label | default: post.category_label }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.research_category_label_ko | default: post.category_label_ko | default: post.research_category_label | default: post.category_label }}</span>
+            </span>
           </div>
-          <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-          <p>{{ post.excerpt }}</p>
-          {% if post.paper_title and post.paper_title != "" %}<p class="paper-title">{{ post.paper_title }}</p>{% endif %}
+          <h2>
+            <a href="{{ post.url | relative_url }}">
+              <span data-lang-panel="en">{{ post.title }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.title_ko | default: post.title }}</span>
+            </a>
+          </h2>
+          <p>
+            <span data-lang-panel="en">{{ post.excerpt }}</span>
+            <span data-lang-panel="ko" hidden>{{ post.excerpt_ko | default: post.excerpt }}</span>
+          </p>
+          {% if post.paper_title and post.paper_title != "" %}
+            <p class="paper-title">
+              <span data-lang-panel="en">{{ post.paper_title }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.paper_title_ko | default: post.paper_title }}</span>
+            </p>
+          {% endif %}
         </article>
       {% endif %}
     {% endfor %}
   </div>
 
   {% if matched_posts == 0 %}
-    <p class="empty-notes">No research notes have been published in this category yet.</p>
+    <p class="empty-notes">
+      <span data-lang-panel="en">No research notes have been published in this category yet.</span>
+      <span data-lang-panel="ko" hidden>아직 이 카테고리에 게시된 연구 노트가 없습니다.</span>
+    </p>
   {% endif %}
 </section>

@@ -2,6 +2,7 @@
 layout: default
 title: "Understanding Global Affairs"
 description: "Better Judgment notes on international affairs and geopolitical change."
+description_ko: "국제 정세와 지정학적 변화에 관한 더 나은 판단 노트."
 permalink: /judgment-categories/global-affairs/
 category_slug: global-affairs
 category_label: "Understanding Global Affairs"
@@ -9,11 +10,22 @@ category_label_ko: "국제 정세의 흐름을 이해하기 위하여"
 ---
 {% assign category_notes = site.better_judgment | where: "category", page.category_slug | sort: "date" | reverse %}
 <section class="category-header judgment-category-header">
-  <p class="eyebrow">Better Judgment Category</p>
-  <h1>{{ page.category_label }}</h1>
-  <p class="category-korean-heading" lang="ko">{{ page.category_label_ko }}</p>
-  <p>{{ page.description }}</p>
-  <a class="button secondary" href="{{ '/better-judgment/' | relative_url }}">All Better Judgment notes</a>
+  <p class="eyebrow">
+    <span data-lang-panel="en">Better Judgment Category</span>
+    <span data-lang-panel="ko" hidden>더 나은 판단 카테고리</span>
+  </p>
+  <h1>
+    <span data-lang-panel="en">{{ page.category_label }}</span>
+    <span data-lang-panel="ko" hidden>{{ page.category_label_ko }}</span>
+  </h1>
+  <p>
+    <span data-lang-panel="en">{{ page.description }}</span>
+    <span data-lang-panel="ko" hidden>{{ page.description_ko }}</span>
+  </p>
+  <a class="button secondary" href="{{ '/better-judgment/' | relative_url }}">
+    <span data-lang-panel="en">All Better Judgment notes</span>
+    <span data-lang-panel="ko" hidden>전체 더 나은 판단 노트</span>
+  </a>
 </section>
 
 <section class="notes-section">
@@ -22,12 +34,23 @@ category_label_ko: "국제 정세의 흐름을 이해하기 위하여"
       {% for note in category_notes %}
         <article class="post-card">
           <div class="note-meta"><time datetime="{{ note.date | date_to_xmlschema }}">{{ note.date | date: "%B %-d, %Y" }}</time></div>
-          <h2><a href="{{ note.url | relative_url }}">{{ note.title }}</a></h2>
-          <p>{{ note.excerpt }}</p>
+          <h2>
+            <a href="{{ note.url | relative_url }}">
+              <span data-lang-panel="en">{{ note.title }}</span>
+              <span data-lang-panel="ko" hidden>{{ note.title_ko | default: note.title }}</span>
+            </a>
+          </h2>
+          <p>
+            <span data-lang-panel="en">{{ note.excerpt }}</span>
+            <span data-lang-panel="ko" hidden>{{ note.excerpt_ko | default: note.excerpt }}</span>
+          </p>
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-notes">No notes have been published in this category yet.</p>
+    <p class="empty-notes">
+      <span data-lang-panel="en">No notes have been published in this category yet.</span>
+      <span data-lang-panel="ko" hidden>아직 이 카테고리에 게시된 노트가 없습니다.</span>
+    </p>
   {% endif %}
 </section>

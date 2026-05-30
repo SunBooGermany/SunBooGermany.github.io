@@ -2,13 +2,16 @@
   label: "For Wiser Decision-Making"
   label_ko: "더 현명한 의사결정을 내리기 위하여"
   description: "Notes on judgment, trade-offs, incentives, and principles for making consequential decisions more deliberately."
+  description_ko: "중요한 결정을 더 신중하게 내리기 위한 판단, 트레이드오프, 인센티브, 원칙에 관한 노트."
 
 - slug: social-phenomena
   label: "Understanding Social Phenomena"
   label_ko: "사회 현상을 이해하기 위하여"
   description: "Analytical reflections on institutions, collective behavior, and social patterns, with claims kept proportional to evidence."
+  description_ko: "제도, 집단 행동, 사회적 패턴을 근거의 범위 안에서 분석하는 성찰."
 
 - slug: global-affairs
   label: "Understanding Global Affairs"
   label_ko: "국제 정세의 흐름을 이해하기 위하여"
   description: "Evidence-conscious notes on international affairs, geopolitical shifts, and their implications for responsible judgment."
+  description_ko: "국제 정세와 지정학적 변화, 그리고 책임 있는 판단에 대한 함의를 근거 중심으로 정리한 노트."

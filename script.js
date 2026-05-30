@@ -197,7 +197,14 @@ const content = {
   }
 };
 
+const languageStorageKey = "sunwoo-lang";
 let currentLang = "en";
+
+try {
+  currentLang = window.localStorage.getItem(languageStorageKey) === "ko" ? "ko" : "en";
+} catch (error) {
+  currentLang = "en";
+}
 
 function setList(id, items) {
   const element = document.getElementById(id);
@@ -266,6 +273,11 @@ function applyLanguage(lang) {
   setPublications(dict.publications);
   setTimeline(dict.timeline);
   document.getElementById("lang-toggle").textContent = lang === "en" ? "한국어" : "English";
+  try {
+    window.localStorage.setItem(languageStorageKey, lang);
+  } catch (error) {
+    // Ignore storage failures in private or restricted browsing modes.
+  }
 }
 
 document.getElementById("lang-toggle").addEventListener("click", () => {

@@ -19,13 +19,28 @@
       <span>Sunwoo Kim</span>
     </a>
     <nav class="nav research-nav" aria-label="Main navigation">
-      <a href="{{ '/' | relative_url }}">Home</a>
-      <a href="{{ '/#profile' | relative_url }}">Profile</a>
-      <a href="{{ '/research-log/' | relative_url }}">Research Blog</a>
-      <a href="{{ '/better-judgment/' | relative_url }}">Better Judgment</a>
-      <a href="{{ '/#contact' | relative_url }}">Contact</a>
+      <a href="{{ '/' | relative_url }}">
+        <span data-lang-panel="en">Home</span>
+        <span data-lang-panel="ko" hidden>홈</span>
+      </a>
+      <a href="{{ '/#profile' | relative_url }}">
+        <span data-lang-panel="en">Profile</span>
+        <span data-lang-panel="ko" hidden>프로필</span>
+      </a>
+      <a href="{{ '/research-log/' | relative_url }}">
+        <span data-lang-panel="en">Research Blog</span>
+        <span data-lang-panel="ko" hidden>연구 블로그</span>
+      </a>
+      <a href="{{ '/better-judgment/' | relative_url }}">
+        <span data-lang-panel="en">Better Judgment</span>
+        <span data-lang-panel="ko" hidden>더 나은 판단</span>
+      </a>
+      <a href="{{ '/#contact' | relative_url }}">
+        <span data-lang-panel="en">Contact</span>
+        <span data-lang-panel="ko" hidden>연락</span>
+      </a>
     </nav>
-    <a class="lang-toggle log-home-link" href="{{ '/' | relative_url }}">Homepage</a>
+    <button class="lang-toggle" type="button" data-language-toggle aria-label="Switch language">한국어</button>
   </header>
 
   <main class="log-main">
@@ -33,24 +48,83 @@
   </main>
 
   <footer class="footer">
-    <p>&copy; {{ site.time | date: "%Y" }} Sunwoo Kim. Notes for critical technical and intellectual discussion.</p>
-    <p><a href="{{ '/' | relative_url }}">Return to homepage</a></p>
+    <p>
+      <span data-lang-panel="en">&copy; {{ site.time | date: "%Y" }} Sunwoo Kim. Notes for critical technical and intellectual discussion.</span>
+      <span data-lang-panel="ko" hidden>&copy; {{ site.time | date: "%Y" }} Sunwoo Kim. 비판적 기술 및 지적 토론을 위한 노트.</span>
+    </p>
+    <p>
+      <a href="{{ '/' | relative_url }}">
+        <span data-lang-panel="en">Return to homepage</span>
+        <span data-lang-panel="ko" hidden>홈페이지로 돌아가기</span>
+      </a>
+    </p>
   </footer>
   <script>
-    document.addEventListener("click", function (event) {
-      var trigger = event.target.closest("[data-korean-note-trigger]");
-      if (!trigger) return;
+    (function () {
+      var storageKey = "sunwoo-lang";
+      var toggles = document.querySelectorAll("[data-language-toggle]");
+      var panels = document.querySelectorAll("[data-lang-panel]");
 
-      var note = document.getElementById("korean-note") ||
-        document.getElementById("korean-technical-note") ||
-        document.querySelector(".korean-note-block");
-
-      if (!note) return;
-      if (note.tagName && note.tagName.toLowerCase() === "details") {
-        note.open = true;
+      function normalizeLanguage(lang) {
+        return lang === "ko" ? "ko" : "en";
       }
-      note.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+
+      function setLanguage(lang) {
+        var activeLang = normalizeLanguage(lang);
+        document.documentElement.lang = activeLang;
+        document.documentElement.classList.toggle("lang-ko", activeLang === "ko");
+        document.documentElement.classList.toggle("lang-en", activeLang === "en");
+
+        panels.forEach(function (panel) {
+          panel.hidden = panel.getAttribute("data-lang-panel") !== activeLang;
+        });
+
+        toggles.forEach(function (toggle) {
+          toggle.textContent = activeLang === "en" ? "한국어" : "English";
+          toggle.setAttribute(
+            "aria-label",
+            activeLang === "en" ? "Switch to Korean" : "Switch to English"
+          );
+        });
+
+        try {
+          window.localStorage.setItem(storageKey, activeLang);
+        } catch (error) {
+          /* Ignore storage failures in private or restricted browsing modes. */
+        }
+      }
+
+      var savedLanguage = "en";
+      try {
+        savedLanguage = normalizeLanguage(window.localStorage.getItem(storageKey));
+      } catch (error) {
+        savedLanguage = "en";
+      }
+
+      setLanguage(savedLanguage);
+
+      document.addEventListener("click", function (event) {
+        var languageToggle = event.target.closest("[data-language-toggle]");
+        if (languageToggle) {
+          var nextLang = document.documentElement.classList.contains("lang-ko") ? "en" : "ko";
+          setLanguage(nextLang);
+          return;
+        }
+
+        var trigger = event.target.closest("[data-korean-note-trigger]");
+        if (!trigger) return;
+
+        var note = document.getElementById("korean-note") ||
+          document.getElementById("korean-technical-note") ||
+          document.querySelector(".korean-note-block");
+
+        if (!note) return;
+        if (note.tagName && note.tagName.toLowerCase() === "details") {
+          note.open = true;
+        }
+        note.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    })();
   </script>
 </body>
 </html>

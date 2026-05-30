@@ -5,16 +5,34 @@ description: "Paper reviews organized by application systems and algorithmic met
 permalink: /research-log/
 ---
 <section class="log-hero">
-  <p class="eyebrow">Research Blog</p>
-  <h1>Research Blog</h1>
-  <p>Paper reviews organized by application systems and algorithmic methods. Just as elite athletes train every day, serious researchers read strong papers every day.</p>
+  <p class="eyebrow">
+    <span data-lang-panel="en">Research Blog</span>
+    <span data-lang-panel="ko" hidden>연구 블로그</span>
+  </p>
+  <h1>
+    <span data-lang-panel="en">Research Blog</span>
+    <span data-lang-panel="ko" hidden>연구 블로그</span>
+  </h1>
+  <p>
+    <span data-lang-panel="en">Paper reviews organized by application systems and algorithmic methods. Just as elite athletes train every day, serious researchers read strong papers every day.</span>
+    <span data-lang-panel="ko" hidden>응용 시스템과 알고리즘 방법론으로 나누어 정리한 논문 리뷰입니다. 좋은 연구자가 되기 위한 매일의 연구 훈련으로, 핵심 주장과 한계를 함께 읽습니다.</span>
+  </p>
 </section>
 
 <section class="taxonomy-panel" aria-labelledby="application-reviews-heading">
   <div class="taxonomy-panel-header">
-    <p class="eyebrow">Application Reviews</p>
-    <h2 id="application-reviews-heading">Application Reviews</h2>
-    <p>Reviews grouped by the systems where optimization, AI, and decision tools are applied.</p>
+    <p class="eyebrow">
+      <span data-lang-panel="en">Application Reviews</span>
+      <span data-lang-panel="ko" hidden>응용 시스템 리뷰</span>
+    </p>
+    <h2 id="application-reviews-heading">
+      <span data-lang-panel="en">Application Reviews</span>
+      <span data-lang-panel="ko" hidden>응용 시스템 리뷰</span>
+    </h2>
+    <p>
+      <span data-lang-panel="en">Reviews grouped by the systems where optimization, AI, and decision tools are applied.</span>
+      <span data-lang-panel="ko" hidden>최적화, AI, 의사결정 도구가 적용되는 시스템별로 묶은 리뷰입니다.</span>
+    </p>
   </div>
   <div class="taxonomy-card-grid">
     {% for category in site.data.research_taxonomy.application_reviews %}
@@ -25,10 +43,18 @@ permalink: /research-log/
         {% endif %}
       {% endfor %}
       <a class="category-card" href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">
-        <h3>{{ category.label }}</h3>
-        <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
-        <p>{{ category.description }}</p>
-        <span>{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+        <h3>
+          <span data-lang-panel="en">{{ category.label }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
+        </h3>
+        <p>
+          <span data-lang-panel="en">{{ category.description }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
+        </p>
+        <span>
+          <span data-lang-panel="en">{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+          <span data-lang-panel="ko" hidden>{{ category_posts }}편</span>
+        </span>
       </a>
     {% endfor %}
   </div>
@@ -36,9 +62,18 @@ permalink: /research-log/
 
 <section class="taxonomy-panel algorithmic-panel" aria-labelledby="algorithmic-reviews-heading">
   <div class="taxonomy-panel-header">
-    <p class="eyebrow">Algorithmic Reviews</p>
-    <h2 id="algorithmic-reviews-heading">Algorithmic Reviews</h2>
-    <p>Reviews grouped by the computational method, with emphasis on assumptions, evidence, and feasibility-critical limits.</p>
+    <p class="eyebrow">
+      <span data-lang-panel="en">Algorithmic Reviews</span>
+      <span data-lang-panel="ko" hidden>알고리즘 리뷰</span>
+    </p>
+    <h2 id="algorithmic-reviews-heading">
+      <span data-lang-panel="en">Algorithmic Reviews</span>
+      <span data-lang-panel="ko" hidden>알고리즘 리뷰</span>
+    </h2>
+    <p>
+      <span data-lang-panel="en">Reviews grouped by the computational method, with emphasis on assumptions, evidence, and feasibility-critical limits.</span>
+      <span data-lang-panel="ko" hidden>계산 방법론별로 묶은 리뷰이며, 가정, 근거, 실행 가능성의 한계를 함께 봅니다.</span>
+    </p>
   </div>
   <div class="taxonomy-card-grid">
     {% for category in site.data.research_taxonomy.algorithmic_reviews %}
@@ -49,10 +84,18 @@ permalink: /research-log/
         {% endif %}
       {% endfor %}
       <a class="category-card" href="{{ '/categories/' | append: category.slug | append: '/' | relative_url }}">
-        <h3>{{ category.label }}</h3>
-        <p class="category-korean" lang="ko">{{ category.label_ko }}</p>
-        <p>{{ category.description }}</p>
-        <span>{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+        <h3>
+          <span data-lang-panel="en">{{ category.label }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
+        </h3>
+        <p>
+          <span data-lang-panel="en">{{ category.description }}</span>
+          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
+        </p>
+        <span>
+          <span data-lang-panel="en">{{ category_posts }} note{% unless category_posts == 1 %}s{% endunless %}</span>
+          <span data-lang-panel="ko" hidden>{{ category_posts }}편</span>
+        </span>
       </a>
     {% endfor %}
   </div>
@@ -60,7 +103,10 @@ permalink: /research-log/
 
 <section class="notes-section">
   <div class="notes-heading">
-    <h2>Latest Research Notes</h2>
+    <h2>
+      <span data-lang-panel="en">Latest Research Notes</span>
+      <span data-lang-panel="ko" hidden>최신 연구 노트</span>
+    </h2>
   </div>
   {% if site.posts.size > 0 %}
     <div class="note-list">
@@ -68,15 +114,34 @@ permalink: /research-log/
         <article class="note-card research-note-card">
           <div class="note-meta">
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-            <span>{{ post.research_category_label | default: post.category_label }}</span>
+            <span>
+              <span data-lang-panel="en">{{ post.research_category_label | default: post.category_label }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.research_category_label_ko | default: post.category_label_ko | default: post.research_category_label | default: post.category_label }}</span>
+            </span>
           </div>
-          <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-          <p>{{ post.excerpt }}</p>
-          {% if post.paper_title and post.paper_title != "" %}<p class="paper-title">{{ post.paper_title }}</p>{% endif %}
+          <h3>
+            <a href="{{ post.url | relative_url }}">
+              <span data-lang-panel="en">{{ post.title }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.title_ko | default: post.title }}</span>
+            </a>
+          </h3>
+          <p>
+            <span data-lang-panel="en">{{ post.excerpt }}</span>
+            <span data-lang-panel="ko" hidden>{{ post.excerpt_ko | default: post.excerpt }}</span>
+          </p>
+          {% if post.paper_title and post.paper_title != "" %}
+            <p class="paper-title">
+              <span data-lang-panel="en">{{ post.paper_title }}</span>
+              <span data-lang-panel="ko" hidden>{{ post.paper_title_ko | default: post.paper_title }}</span>
+            </p>
+          {% endif %}
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-notes">No research notes have been published yet. Reviewed notes will appear here.</p>
+    <p class="empty-notes">
+      <span data-lang-panel="en">No research notes have been published yet. Reviewed notes will appear here.</span>
+      <span data-lang-panel="ko" hidden>아직 게시된 연구 노트가 없습니다. 검토한 노트가 이곳에 표시됩니다.</span>
+    </p>
   {% endif %}
 </section>

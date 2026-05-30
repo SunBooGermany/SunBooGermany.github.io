@@ -3,33 +3,41 @@ application_reviews:
     label: Green Chemical Systems
     label_ko: 그린 화학 시스템
     description: Green hydrogen, green ammonia, DAC, CCUS, carbon management, and sustainable chemical systems.
+    description_ko: 그린수소, 그린암모니아, DAC, CCUS, 탄소 관리, 지속가능 화학 시스템.
   - slug: energy-grids
     label: Energy Grids
     label_ko: 에너지 그리드
     description: Power systems, microgrids, grid operation, storage, renewable integration, and energy system planning.
+    description_ko: 전력 시스템, 마이크로그리드, 계통 운영, 저장, 재생에너지 통합, 에너지 시스템 계획.
   - slug: bioprocess-systems
     label: Bioprocess Systems
     label_ko: 바이오공정 시스템
     description: Bioprocess optimization, biochemical engineering, fermentation, and biological production systems.
+    description_ko: 바이오공정 최적화, 생물화학공학, 발효, 생물 생산 시스템.
   - slug: chemical-plants
     label: Chemical Plants
     label_ko: 화학 플랜트
     description: Process control, plant operation, chemical process design, safety, and real-time optimization.
+    description_ko: 공정 제어, 플랜트 운영, 화학공정 설계, 안전, 실시간 최적화.
 
 algorithmic_reviews:
   - slug: safe-constrained-rl
     label: Safe & Constrained RL
     label_ko: 안전 및 제약 강화학습
     description: CMDP, safe RL, constrained policy optimization, Lyapunov methods, feasibility, and safety guarantees.
+    description_ko: CMDP, 안전 강화학습, 제약 정책 최적화, Lyapunov 방법, 실행 가능성, 안전 보장.
   - slug: stochastic-nonlinear-optimization
     label: Stochastic & Nonlinear Optimization
     label_ko: 확률 및 비선형 최적화
     description: Stochastic programming, nonlinear optimization, robust/chance-constrained optimization, MPC, and trust-region methods.
+    description_ko: 확률계획, 비선형 최적화, 강건/확률 제약 최적화, MPC, 신뢰영역 방법.
   - slug: llm-probabilistic-approaches
     label: LLM & Probabilistic Approaches
     label_ko: LLM 및 확률론적 접근법
     description: LLMs, Bayesian optimization, uncertainty-aware ML, probabilistic search, and related ML-based decision tools.
+    description_ko: LLM, 베이지안 최적화, 불확실성 인식 머신러닝, 확률적 탐색, 관련 ML 기반 의사결정 도구.
   - slug: graph-represented-methods
     label: Graph-Represented Methods
     label_ko: 그래프 표현 기반 방법론
     description: Graph neural networks, graph-based optimization, graph-represented systems, network optimization, and structured decision models.
+    description_ko: 그래프 신경망, 그래프 기반 최적화, 그래프 표현 시스템, 네트워크 최적화, 구조화된 의사결정 모델.
