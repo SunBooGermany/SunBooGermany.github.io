@@ -42,10 +42,6 @@ permalink: /better-judgment/
           <span data-lang-panel="en">{{ category.label }}</span>
           <span data-lang-panel="ko" hidden>{{ category.label_ko }}</span>
         </h3>
-        <p>
-          <span data-lang-panel="en">{{ category.description }}</span>
-          <span data-lang-panel="ko" hidden>{{ category.description_ko | default: category.description }}</span>
-        </p>
         <span>
           <span data-lang-panel="en">{{ category_notes.size }} note{% unless category_notes.size == 1 %}s{% endunless %}</span>
           <span data-lang-panel="ko" hidden>{{ category_notes.size }}편</span>
