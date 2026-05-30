@@ -7,7 +7,7 @@ This is Sunwoo Kim's academic homepage with a Jekyll-based Research Blog for rev
 - `index.html`: main website
 - `styles.css`: website styling
 - `script.js`: English/Korean language toggle and homepage content rendering
-- `assets/images/sunwoo-profile.jpg`: local homepage profile photo
+- `assets/images/sunwoo-profile-20260530.jpg`: local homepage profile photo
 - `_data/research_taxonomy.yml`: two-group Research Blog taxonomy
 - `_data/categories.yml`: flat category list for compatibility and sitemap generation
 - `_data/judgment_categories.yml`: Better Judgment category data
@@ -188,5 +188,5 @@ Open `http://127.0.0.1:4000/` and verify:
 ## Notes
 
 - The homepage intentionally does not display a phone number.
-- The homepage uses a local profile photo at `assets/images/sunwoo-profile.jpg`.
+- The homepage uses a local profile photo at `assets/images/sunwoo-profile-20260530.jpg`.
 - If a custom domain is purchased later, update the canonical URL and sitemap URL.
