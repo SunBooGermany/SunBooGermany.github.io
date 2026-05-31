@@ -3,15 +3,15 @@ layout: post
 title: "Hard Linear Constraints in Neural Decisions: Feasibility by Decision-Rule Anchoring"
 title_ko: "신경망 의사결정의 하드 선형 제약: 결정규칙 앵커를 통한 실행가능성"
 date: 2026-05-31
-category: nonlinear-optimization
-category_label: "Nonlinear Optimization"
+category: safe-constrained-rl
+category_label: "Safe & Constrained RL"
 research_group: algorithmic_reviews
-research_category: nonlinear-optimization
-research_category_label: "Nonlinear Optimization"
+research_category: safe-constrained-rl
+research_category_label: "Safe & Constrained RL"
 application_category: ""
 application_category_label: ""
-method_category: stochastic-nonlinear-optimization
-method_category_label: "Stochastic & Nonlinear Optimization"
+method_category: safe-constrained-rl
+method_category_label: "Safe & Constrained RL"
 paper_title: "Enforcing hard linear constraints in deep learning models with decision rules"
 authors: "Constante-Flores, G. E., Chen, H., & Li, C."
 venue: "arXiv preprint"
