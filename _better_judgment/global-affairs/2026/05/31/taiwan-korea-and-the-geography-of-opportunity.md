@@ -7,10 +7,10 @@ category: global-affairs
 category_label: "Understanding Global Affairs"
 category_label_ko: "국제 정세의 흐름을 이해하기 위하여"
 source_type: "public-affairs"
-source_title: "Original public-affairs reflection"
-source_title_ko: "공적 이슈에 대한 개인적 분석 메모"
-author_or_speaker: "Sunwoo Kim"
-year: "2026"
+source_title: ""
+source_title_ko: ""
+author_or_speaker: ""
+year: ""
 source_url: ""
 tags:
   - "Taiwan Strait"
@@ -97,13 +97,7 @@ Better judgment is neither fear nor optimism. It is disciplined realism.
 
 ## Source metadata
 
-- Source type: Public affairs and analytical reflection
-- Source title: Original public-affairs reflection
-- Author or speaker: Sunwoo Kim
-- Year: 2026
-- URL:
-- Theoretical reference: John J. Mearsheimer, *The Tragedy of Great Power Politics*
-- Factual checks consulted: Congressional Research Service, [Taiwan: Background and U.S. Relations](https://www.congress.gov/crs-products/product/pdf/IF/IF10275); International Energy Agency, [Korea country profile](https://www.iea.org/countries/korea); National Bureau of Asian Research, [South Korea's Stakes in the Taiwan Strait](https://www.nbr.org/publication/south-koreas-stakes-in-the-taiwan-strait/); CSIS, [Mapping the Semiconductor Supply Chain](https://www.csis.org/analysis/mapping-semiconductor-supply-chain-critical-role-indo-pacific-region)
+- Reference: John J. Mearsheimer, *The Tragedy of Great Power Politics*
 
 <!-- ko -->
 
@@ -179,10 +173,4 @@ Better judgment is neither fear nor optimism. It is disciplined realism.
 
 ## 출처 메타데이터
 
-- 출처 유형: 공적 이슈와 분석적 성찰
-- 출처 제목: 공적 이슈에 대한 개인적 분석 메모
-- 저자 또는 발화자: Sunwoo Kim
-- 연도: 2026
-- URL:
-- 이론적 참고: John J. Mearsheimer, *The Tragedy of Great Power Politics*
-- 사실관계 확인에 참고한 자료: Congressional Research Service, [Taiwan: Background and U.S. Relations](https://www.congress.gov/crs-products/product/pdf/IF/IF10275); International Energy Agency, [Korea country profile](https://www.iea.org/countries/korea); National Bureau of Asian Research, [South Korea's Stakes in the Taiwan Strait](https://www.nbr.org/publication/south-koreas-stakes-in-the-taiwan-strait/); CSIS, [Mapping the Semiconductor Supply Chain](https://www.csis.org/analysis/mapping-semiconductor-supply-chain-critical-role-indo-pacific-region)
+- 참고문헌: John J. Mearsheimer, *The Tragedy of Great Power Politics*
