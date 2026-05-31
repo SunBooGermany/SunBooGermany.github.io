@@ -276,7 +276,7 @@ FlashAttention is an IO-aware reordering of exact attention computation. It keep
 
 ## References
 
-- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training. Bibliographic details beyond the lecture title, course identifier, and year were not provided in the supplied material.
+- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training.
 
 <!-- ko -->
 
@@ -522,4 +522,4 @@ FlashAttention은 정확한 attention computation의 IO-aware reordering이다. 
 
 ## 참고문헌
 
-- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training. 제공된 자료에는 lecture title, course identifier, year 외의 세부 서지 정보가 포함되어 있지 않았다.
+- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training.
