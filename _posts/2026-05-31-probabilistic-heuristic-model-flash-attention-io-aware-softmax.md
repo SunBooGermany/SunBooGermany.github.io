@@ -38,7 +38,9 @@ FlashAttention is best understood as an IO-aware implementation of exact Transfo
 
 This distinction matters for long-context language models. Standard attention is expensive not only because it performs many dot products, but also because a naive implementation moves large intermediate matrices through global GPU memory. When sequence length grows, memory traffic can become a practical bottleneck even when the arithmetic units are powerful.
 
-The useful mental model is therefore not "approximate attention." It is "stream exact attention through fast on-chip memory while keeping only the statistics needed to normalize softmax correctly."
+The compute units that perform matrix operations live inside the GPU chip. SRAM, the small memory placed close to those compute units on the chip, can exchange information with them much more efficiently and quickly. HBM, by contrast, is a much larger memory system outside the compute core region, and its effective data exchange is substantially slower, often discussed at roughly an order-of-magnitude disadvantage in this kind of memory-hierarchy argument.
+
+The core idea of FlashAttention is therefore not to naively store all matrix information in HBM and repeatedly send it back to the compute units. Instead, it uses SRAM to make the calculation faster and more efficient. The more important point is that this is not an approximation: FlashAttention computes softmax attention exactly, up to floating-point differences, by maintaining the right online normalization statistics.
 
 ## Problem setting
 
@@ -73,14 +75,6 @@ O = PV
 ```
 
 Here <math><mi>S</mi></math> and <math><mi>P</mi></math> are both <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> matrices. For <math><mi>N</mi><mo>=</mo><mn>4096</mn></math>, this means more than sixteen million entries per attention matrix per head before considering batch size, precision, layers, or backward-pass storage. The mathematical object is attention, but the implementation has materialized large intermediate objects that are not needed as final outputs.
-
-## Prior research gap
-
-The gap is not that ordinary attention is mathematically wrong. The gap is between the algebraic formula and an efficient memory-access pattern on modern GPUs.
-
-HBM is large enough to store model activations and intermediate tensors, but it is far from the compute units relative to on-chip SRAM, shared memory, and registers. A naive attention kernel repeatedly writes and reads the full <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> score and probability matrices. This creates heavy HBM traffic. As sequence length increases, the cost of moving these matrices can dominate the wall-clock behavior of the kernel.
-
-The prior implementation pattern therefore wastes memory bandwidth by storing an object whose entries are immediately consumed by the following softmax and value multiplication. FlashAttention asks whether the same final output can be produced without ever materializing that object in HBM.
 
 ## Core idea
 
@@ -276,28 +270,6 @@ It also stores the temporary score tile and row-wise statistics:
 
 If <math><mi>N</mi><mo>=</mo><mn>4096</mn></math>, the full score matrix has <math><mn>4096</mn><mo>&times;</mo><mn>4096</mn></math> entries. But if <math><msub><mi>B</mi><mi>q</mi></msub><mo>=</mo><mn>128</mn></math> and <math><msub><mi>B</mi><mi>k</mi></msub><mo>=</mo><mn>64</mn></math>, the temporary score tile has only <math><mn>8192</mn></math> entries. SRAM cannot hold the full attention matrix, but it can hold a carefully chosen tile and the running statistics needed to make the streamed computation exact.
 
-## Assumptions and limitations
-
-The performance benefit comes from memory movement, not magical arithmetic. FLOPs are executed by Tensor Cores, CUDA cores, or similar compute units. SRAM does not make a floating-point multiply-add intrinsically different. Its advantage is that on-chip memory is physically closer to the compute units and can provide lower latency, higher effective bandwidth, lower energy per access, and better data reuse than HBM.
-
-Several limitations should be stated clearly.
-
-- FlashAttention still computes pairwise query-key interactions. The arithmetic complexity remains quadratic in sequence length for standard dense attention.
-- It does not make attention theoretically linear in <math><mi>N</mi></math>.
-- It does not solve the semantic or modeling limitations of attention.
-- Actual speedup depends on GPU architecture, tile size, precision, kernel implementation, sequence length, causal masking, and memory bandwidth.
-- Numerical results can differ slightly from a naive implementation because floating-point operations occur in a different order and precision regime.
-
-The exact claim is therefore narrow but important: FlashAttention computes mathematically equivalent softmax attention up to floating-point differences while avoiding the materialization of full <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> score and probability matrices in HBM.
-
-## Critical assessment
-
-The strongest part of FlashAttention is that it identifies the real implementation bottleneck. A simple reading of the attention formula focuses on <math><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></math> and <math><mi>P</mi><mi>V</mi></math> as matrix multiplications. A systems reading asks where the intermediate tensors live, how often they cross the HBM boundary, and whether they can be consumed before being stored.
-
-The online softmax update is also conceptually clean. It is not a heuristic normalization trick. It preserves the correct numerator and denominator by rescaling previously accumulated terms whenever the running maximum changes. This is why FlashAttention can be exact rather than approximate.
-
-The risk is rhetorical overstatement. FlashAttention should not be described as solving quadratic attention. It reduces memory traffic and improves practical GPU utilization for an important attention workload. That is a major systems contribution, but it is not a new attention model, not a proof of better language modeling, and not a universal speed guarantee.
-
 ## Takeaway
 
 FlashAttention is an IO-aware reordering of exact attention computation. It keeps the same attention semantics, avoids materializing the full <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> intermediate matrices, and uses online softmax statistics to stream the computation through fast on-chip memory. The right claim is precise: less HBM traffic and exact softmax attention up to floating-point differences, not a removal of the quadratic interaction structure.
@@ -314,7 +286,9 @@ FlashAttention은 정확한 Transformer attention을 IO 관점에서 다시 구�
 
 이 구분은 long-context language model에서 중요하다. 표준 attention은 많은 dot product를 수행하기 때문에 비싸지만, 그것만이 문제가 아니다. naive implementation은 큰 중간 행렬을 GPU global memory를 통해 반복적으로 이동시킨다. sequence length가 커질수록 산술 연산보다 memory traffic이 실제 병목이 될 수 있다.
 
-따라서 유용한 관점은 "근사 attention"이 아니다. 더 정확한 관점은 "softmax를 정확히 정규화하는 데 필요한 통계만 유지하면서, 빠른 on-chip memory를 통해 정확한 attention을 stream한다"는 것이다.
+행렬 연산 계산을 수행하는 compute unit은 GPU chip 내부에 존재한다. 마찬가지로 GPU chip 내부에 직접 장착된 작은 memory인 SRAM은 compute unit과의 정보 교환이 훨씬 효율적이고 빠르다. 반면에 GPU chip 외부에 장착된 큰 memory인 HBM은 그보다 정보 교환 속도가 대략 한 order 정도 느린 memory 계층으로 이해할 수 있다.
+
+FlashAttention의 핵심 아이디어는 모든 행렬 정보를 naive하게 HBM에 저장한 뒤 compute unit에게 반복적으로 전달하는 방식이 아니다. SRAM을 활용하여 필요한 tile과 online softmax 통계만 가까운 memory에 두고, 그 상태에서 빠르고 효율적으로 계산을 수행하게 하는 것이다. 더 중요한 점은 이것이 approximation이 아니라는 점이다. FlashAttention은 softmax를 근사하지 않고, 올바른 online normalization statistics를 유지함으로써 floating-point 차이를 제외하면 exact하게 softmax attention을 계산한다.
 
 ## 문제 설정
 
@@ -349,14 +323,6 @@ O = PV
 ```
 
 여기서 <math><mi>S</mi></math>와 <math><mi>P</mi></math>는 모두 <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> 행렬이다. <math><mi>N</mi><mo>=</mo><mn>4096</mn></math>이면 batch size, precision, layer 수, backward-pass 저장량을 고려하기 전에도 한 head의 attention 행렬 하나에 1,600만 개가 넘는 entry가 필요하다. 수학적 대상은 attention이지만, 구현은 최종 출력으로 필요하지 않은 거대한 중간 객체를 materialize하고 있다.
-
-## 선행 접근의 간극
-
-문제는 보통의 attention이 수학적으로 틀렸다는 것이 아니다. 간극은 대수적 공식과 현대 GPU에서 효율적인 memory-access pattern 사이에 있다.
-
-HBM은 model activation과 intermediate tensor를 저장할 만큼 크지만, on-chip SRAM, shared memory, register에 비해 compute unit에서 멀리 있다. naive attention kernel은 전체 <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> score 행렬과 probability 행렬을 반복적으로 쓰고 읽는다. 이것이 큰 HBM traffic을 만든다. sequence length가 증가하면 이러한 행렬 이동 비용이 kernel의 실제 실행 시간을 지배할 수 있다.
-
-따라서 기존 구현 패턴의 낭비는 다음과 같다. 바로 다음 softmax와 value multiplication에서 소비될 객체를 memory bandwidth를 써가며 저장한다. FlashAttention은 같은 최종 출력을 만들면서 그 객체를 HBM에 만들지 않을 수 있는지를 묻는다.
 
 ## 핵심 아이디어
 
@@ -549,28 +515,6 @@ query와 key block size를 <math><msub><mi>B</mi><mi>q</mi></msub></math>, <math
 </math>
 
 <math><mi>N</mi><mo>=</mo><mn>4096</mn></math>이면 full score matrix는 <math><mn>4096</mn><mo>&times;</mo><mn>4096</mn></math> entry를 가진다. 그러나 <math><msub><mi>B</mi><mi>q</mi></msub><mo>=</mo><mn>128</mn></math>, <math><msub><mi>B</mi><mi>k</mi></msub><mo>=</mo><mn>64</mn></math>이면 temporary score tile은 <math><mn>8192</mn></math> entry만 가진다. SRAM은 전체 attention matrix를 담을 수 없지만, 적절히 선택된 tile과 정확한 streamed computation에 필요한 running statistics는 담을 수 있다.
-
-## 가정과 한계
-
-성능 이득은 memory movement에서 온다. 산술 연산 자체가 마법처럼 빨라지는 것이 아니다. FLOP은 Tensor Core, CUDA core 또는 유사한 compute unit에서 실행된다. SRAM의 장점은 on-chip memory가 compute unit에 물리적으로 더 가깝고, HBM보다 낮은 latency, 높은 effective bandwidth, 낮은 access energy, 더 나은 data reuse를 제공할 수 있다는 데 있다.
-
-명확히 말해야 할 한계도 있다.
-
-- FlashAttention은 여전히 pairwise query-key interaction을 계산한다. 표준 dense attention의 arithmetic complexity는 sequence length에 대해 여전히 quadratic이다.
-- attention을 이론적으로 <math><mi>N</mi></math>에 대해 linear하게 만들지 않는다.
-- attention의 semantic 또는 modeling limitation을 해결하지 않는다.
-- 실제 speedup은 GPU architecture, tile size, precision, kernel implementation, sequence length, causal masking, memory bandwidth에 의존한다.
-- floating-point operation의 순서와 precision regime이 달라지기 때문에 naive implementation과 수치적으로 약간 다를 수 있다.
-
-따라서 정확한 주장은 좁지만 중요하다. FlashAttention은 full <math><mi>N</mi><mo>&times;</mo><mi>N</mi></math> score/probability matrix를 HBM에 materialize하지 않으면서, floating-point 차이를 제외하면 수학적으로 동등한 softmax attention을 계산한다.
-
-## 비판적 평가
-
-FlashAttention의 가장 강한 지점은 실제 구현 병목을 정확히 짚는다는 데 있다. attention 공식을 단순히 읽으면 <math><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></math>와 <math><mi>P</mi><mi>V</mi></math>라는 matrix multiplication에 초점이 간다. 그러나 systems 관점에서는 intermediate tensor가 어디에 저장되는지, HBM boundary를 몇 번 건너는지, 저장되기 전에 소비될 수 있는지가 핵심이다.
-
-online softmax update도 개념적으로 깔끔하다. 이는 heuristic normalization trick이 아니다. running maximum이 바뀔 때마다 이전 누적 항들을 rescale함으로써 올바른 numerator와 denominator를 보존한다. 그래서 FlashAttention은 approximate attention이 아니라 exact attention으로 이해될 수 있다.
-
-위험은 수사적 과장이다. FlashAttention을 quadratic attention problem의 해결로 설명해서는 안 된다. 이 방법은 중요한 attention workload에서 memory traffic을 줄이고 GPU utilization을 개선한다. 이는 큰 systems contribution이지만, 새로운 attention model도 아니고, 더 좋은 language modeling을 증명하는 것도 아니며, 모든 환경에서의 속도 향상을 보장하는 것도 아니다.
 
 ## 결론
 
