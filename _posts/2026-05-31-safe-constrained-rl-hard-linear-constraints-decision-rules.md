@@ -207,7 +207,6 @@ This is a useful contribution precisely because it avoids a common overclaim. It
 ## References
 
 - Constante-Flores, G. E., Chen, H., & Li, C. (2025). Enforcing hard linear constraints in deep learning models with decision rules. arXiv preprint arXiv:2505.13858.
-- References from the focal paper: not provided in the supplied material.
 
 <!-- ko -->
 
@@ -387,4 +386,3 @@ robust reformulation에 대해서는, jointly linear 경우의 LP 정식화가 r
 ## References
 
 - Constante-Flores, G. E., Chen, H., & Li, C. (2025). Enforcing hard linear constraints in deep learning models with decision rules. arXiv preprint arXiv:2505.13858.
-- focal paper의 참고문헌 목록: 제공된 자료에 포함되지 않았음.
