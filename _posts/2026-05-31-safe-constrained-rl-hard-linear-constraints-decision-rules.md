@@ -176,13 +176,13 @@ For the robust reformulation, the LP formulation in the jointly linear case is r
 
 The supplied material also points to a universal approximation result. That result should be read cautiously. It depends on strong expressiveness assumptions and should not be interpreted as saying that a practical linear decision-rule implementation is universally expressive in finite data, finite width, or numerically constrained settings.
 
-## Empirical behavior
+## Distinctive contribution
 
-The empirical mechanism is easy to interpret. A pure linear decision rule is feasible but may be conservative. A pure task network can be accurate but infeasible. The proposed architecture uses the task network when it is already feasible and moves toward the safe output only when necessary.
+The distinctive contribution is the way the paper separates feasibility certification from task prediction. A standard task network is allowed to focus on predictive quality. A separate decision-rule anchor is constructed offline to be feasible over the uncertainty set. The final output is then obtained by an explicit interpolation rule whose only job is to restore hard linear feasibility.
 
-This can preserve accuracy while enforcing hard feasibility and avoiding inference-time optimization. The key empirical question is how often the task network is already close to feasible and how far the safe anchor lies from high-quality decisions. If the task network often violates severe constraints, or if the safe anchor is very conservative, interpolation may still degrade decision quality.
+This is more specific than adding a penalty to the loss and less computationally heavy than solving a projection problem at every inference call. The paper's original design choice is to make the safe endpoint a robust decision rule, then compute the minimum line-segment movement needed to satisfy the violated linear inequalities. Feasibility comes from the geometry of linear constraints and the validity of the safe anchor, not from the task network learning the feasible set.
 
-No confirmed numerical results were provided in the supplied material for this note, so the correct interpretation here is qualitative rather than benchmark-specific.
+This contribution is especially relevant to safe and constrained learning because many safety filters repair a learned action by solving an online optimization problem. Here, after the safe rule has been built, the repair is algebraic: check slacks, identify the most restrictive violated constraint, and interpolate only as much as required. The result is a fast feasibility layer with a clear certificate, while still leaving objective optimality and nonlinear constraint handling outside the guarantee.
 
 ## Assumptions and limitations
 
@@ -356,13 +356,13 @@ robust reformulation에 대해서는, jointly linear 경우의 LP 정식화가 r
 
 제공된 자료는 universal approximation 결과도 언급한다. 이 결과는 조심스럽게 읽어야 한다. 강한 표현력 가정에 의존하며, 실제 선형 decision-rule 구현이 유한 데이터, 유한 width, 수치적 제약 아래에서 보편적으로 expressive하다는 뜻으로 해석해서는 안 된다.
 
-## 경험적 작동 방식
+## 이 연구의 독창적인 부분
 
-경험적 메커니즘은 해석하기 쉽다. 순수 선형 decision rule은 feasible하지만 보수적일 수 있다. 순수 task network는 정확할 수 있지만 infeasible할 수 있다. 제안된 아키텍처는 task network가 이미 feasible하면 그대로 사용하고, 필요할 때만 safe output 쪽으로 이동한다.
+이 연구의 독창적인 부분은 실행가능성 인증과 task prediction을 분리하는 방식에 있다. 일반적인 task network는 예측 품질에 집중하게 둔다. 별도의 decision-rule anchor는 uncertainty set 전체에서 실행가능하도록 오프라인에서 구성한다. 최종 출력은 하드 선형 실행가능성을 회복하기 위한 명시적 보간 규칙으로 얻는다.
 
-이 방식은 하드 실행가능성을 강제하면서도 정확도를 보존하고 inference-time optimization을 피할 수 있다. 핵심 경험적 질문은 task network가 얼마나 자주 이미 feasible에 가까운지, 그리고 safe anchor가 좋은 결정으로부터 얼마나 멀리 떨어져 있는지이다. task network가 심각한 제약 위반을 자주 만들거나 safe anchor가 매우 보수적이면, 보간은 여전히 의사결정 품질을 떨어뜨릴 수 있다.
+이는 단순히 loss에 penalty를 더하는 것보다 구체적이고, 매 inference마다 projection 문제를 푸는 방식보다 계산적으로 가볍다. 논문의 독창적인 설계 선택은 safe endpoint를 robust decision rule로 만들고, 위반된 선형 부등식을 만족하기 위해 필요한 최소한의 선분 이동량을 계산한다는 점이다. 실행가능성은 task network가 feasible set을 학습했기 때문에 생기는 것이 아니라, 선형 제약의 기하와 safe anchor의 유효성에서 나온다.
 
-이 노트에 제공된 자료에는 확인된 수치 결과가 없으므로, 여기서의 해석은 특정 benchmark 수치가 아니라 질적 메커니즘에 대한 것이다.
+이 점은 safe and constrained learning 관점에서 특히 중요하다. 많은 safety filter는 학습된 action을 고치기 위해 온라인 최적화 문제를 푼다. 반면 이 방법은 safe rule이 한 번 구성되고 나면 repair가 대수적으로 이루어진다. slack을 확인하고, 가장 제한적인 위반 제약을 찾고, 필요한 만큼만 보간한다. 그 결과 빠른 feasibility layer와 명확한 인증 논리를 얻지만, objective optimality와 비선형 제약 처리는 여전히 보장 밖에 남는다.
 
 ## 가정과 한계
 
