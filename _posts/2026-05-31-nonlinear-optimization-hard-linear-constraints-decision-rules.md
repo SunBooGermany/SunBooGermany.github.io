@@ -192,6 +192,8 @@ Second, the method may become harder to use when the number of constraints is ve
 
 Third, the method may be sensitive when constraint scales differ substantially. Poorly scaled constraints can make the interpolation correction numerically unbalanced, so constraint normalization or scaling may be necessary.
 
+Fourth, the correction is feasibility-oriented rather than objective-oriented. The interpolation coefficient is chosen to remove linear constraint violations, not to minimize the original cost, reward loss, economic objective, or downstream control objective over the feasible region. Therefore, the corrected output can be hard-feasible without being the best feasible decision for the task objective.
+
 These limitations do not undermine the main idea. They specify where the guarantee lives: linear constraints, a valid uncertainty set, and a tractable safe decision rule.
 
 ## Critical assessment
@@ -369,6 +371,8 @@ robust reformulation에 대해서는, jointly linear 경우의 LP 정식화가 r
 둘째, 제약 수가 매우 많아지면 사용이 어려워질 수 있다. 보간 계수는 constraint-wise slack에 의존하고, 가장 제한적인 위반 제약들이 보정을 지배한다.
 
 셋째, 제약들의 scale이 크게 다르면 민감해질 수 있다. poorly scaled constraints는 보간 보정을 수치적으로 불균형하게 만들 수 있으므로 constraint normalization 또는 scaling이 필요할 수 있다.
+
+넷째, 보정은 objective-oriented라기보다 feasibility-oriented이다. 보간 계수는 선형 제약 위반을 제거하기 위해 선택되는 것이지, feasible region 위에서 원래의 비용함수, reward loss, 경제적 목적함수, 또는 downstream control objective를 최소화하도록 선택되는 것은 아니다. 따라서 최종 출력은 하드 실행가능할 수 있지만, task objective 관점에서 가장 좋은 feasible decision이라고 보장되지는 않는다.
 
 이 한계들은 핵심 아이디어를 무너뜨리지 않는다. 오히려 보장이 존재하는 영역을 분명히 한다. 그 영역은 선형 제약, 유효한 uncertainty set, 계산 가능한 safe decision rule이다.
 
