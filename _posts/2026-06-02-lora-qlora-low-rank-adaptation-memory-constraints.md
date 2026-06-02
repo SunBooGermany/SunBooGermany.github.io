@@ -254,7 +254,7 @@ The main risk is over-interpreting the methods. A successful LoRA or QLoRA run d
 
 - Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. "LoRA: Low-Rank Adaptation of Large Language Models." arXiv:2106.09685, 2021.
 - Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. "QLoRA: Efficient Finetuning of Quantized LLMs." arXiv:2305.14314, 2023.
-- Supplied Korean notes on LoRA and QLoRA.
+- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training.
 
 <!-- ko -->
 
@@ -481,4 +481,4 @@ QLoRA의 가치는 memory bottleneck을 옮긴다는 데 있다. LoRA만 사용�
 
 - Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. "LoRA: Low-Rank Adaptation of Large Language Models." arXiv:2106.09685, 2021.
 - Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. "QLoRA: Efficient Finetuning of Quantized LLMs." arXiv:2305.14314, 2023.
-- 사용자가 제공한 LoRA/QLoRA 한국어 설명 노트.
+- Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training.
