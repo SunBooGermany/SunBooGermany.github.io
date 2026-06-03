@@ -12,13 +12,13 @@ application_category: ""
 application_category_label: ""
 method_category: "stochastic-nonlinear-optimization"
 method_category_label: "Stochastic & Nonlinear Optimization"
-paper_title: ""
-authors: ""
-venue: ""
-year: ""
+paper_title: "NLPOpt-Net: A Learning Method for Nonlinear Optimization with Feasibility Guarantees"
+authors: "Roy, B. N.; Golder, R.; Hasan, M. M."
+venue: "arXiv preprint"
+year: "2026"
 doi: ""
-arxiv: ""
-source_url: ""
+arxiv: "2605.00260"
+source_url: "https://arxiv.org/abs/2605.00260"
 tags:
   - "parametric NLP"
   - "differentiable optimization"
@@ -295,6 +295,10 @@ Third, the diagonal Hessian approximation is a computational compromise. It enab
 
 My reading is therefore: NLPOpt-Net should not be described as a neural network that directly solves NLPs. It is better understood as a hybrid method in which a neural network predicts a warm start, and an objective-aware differentiable projection layer performs local constrained optimization. Its value lies in this disciplined combination of solution-map learning, sequential QP approximation, primal-dual first-order solving, and implicit differentiation.
 
+## References
+
+Roy, B. N., Golder, R., & Hasan, M. M. (2026). NLPOpt-Net: A Learning Method for Nonlinear Optimization with Feasibility Guarantees. arXiv preprint arXiv:2605.00260.
+
 <!-- ko -->
 
 ## 문제 설정: 하나의 NLP가 아니라 feasible solution map을 학습하는 문제
@@ -559,3 +563,7 @@ Nonconvex result는 조심해서 읽어야 한다. Architecture가 clean convex 
 셋째, diagonal Hessian approximation은 계산상 타협이다. Update를 싸게 만들지만 cross-variable curvature를 버린다. 변수 간 coupling이 강한 NLP에서는 projection direction이 부정확해질 수 있고, 더 많은 projection layer나 solver iteration이 필요할 수 있다.
 
 따라서 이 논문을 "neural network가 NLP를 직접 푼다"라고 설명하는 것은 부정확하다. 더 정확한 해석은 neural network가 warm start를 예측하고, objective-aware differentiable projection layer가 local constrained optimization을 수행하는 hybrid method라는 것이다. Solution-map learning, sequential QP approximation, primal-dual first-order solving, implicit differentiation을 규율 있게 결합한 점이 이 연구의 본질이다.
+
+## References
+
+Roy, B. N., Golder, R., & Hasan, M. M. (2026). NLPOpt-Net: A Learning Method for Nonlinear Optimization with Feasibility Guarantees. arXiv preprint arXiv:2605.00260.
