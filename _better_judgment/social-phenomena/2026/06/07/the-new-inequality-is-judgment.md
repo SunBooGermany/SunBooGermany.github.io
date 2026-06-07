@@ -43,9 +43,7 @@ Even that is not enough. Information becomes valuable only when interpretation t
 
 The age of information democratization is therefore not only a crisis. It is also a sorting mechanism. It exposes who merely consumes information and who can metabolize it. It rewards those who can resist the instinct to imitate, the desire to sound certain, and the comfort of simple explanations.
 
-The old world allowed many people to outsource their judgment to a few institutions. The new world does not permit that luxury. In a world where bullshit is cheap, judgment becomes the rare asset.
-
-The question is no longer whether we have access to information. We do. The question is whether we have trained ourselves to deserve it.
+The old world allowed many people to outsource their judgment to a few institutions. The new world does not permit that luxury. In a world where bullshit is cheap, good judgment and insight become rare assets.
 
 <!-- ko -->
 
@@ -71,6 +69,4 @@ The question is no longer whether we have access to information. We do. The ques
 
 그래서 정보 민주화의 시대는 단지 위기가 아니다. 그것은 일종의 선별 장치이기도 하다. 누가 정보를 그저 소비하는지, 누가 정보를 소화하여 자기 판단으로 바꾸는지를 드러낸다. 그것은 모방하려는 본능, 확신 있어 보이고 싶은 욕망, 단순한 설명의 편안함을 거부할 수 있는 사람에게 보상을 준다.
 
-과거의 세계는 많은 사람들이 자신의 판단을 몇몇 기관에 외주화하는 것을 허용했다. 새로운 세계는 그런 사치를 허용하지 않는다. 개소리가 싸진 세계에서 판단은 희소한 자산이 된다.
-
-이제 질문은 우리가 정보에 접근할 수 있느냐가 아니다. 우리는 이미 접근할 수 있다. 진짜 질문은 우리가 그 정보에 걸맞은 판단 훈련을 해왔느냐이다.
+과거의 세계는 많은 사람들이 자신의 판단을 몇몇 기관에 외주화하는 것을 허용했다. 새로운 세계는 그런 사치를 허용하지 않는다. 개소리가 싸진 세계에서 질 좋은 판단과 통찰은 희소한 자산이 된다.
