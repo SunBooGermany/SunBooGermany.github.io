@@ -1,250 +1,103 @@
 # AGENTS.md
 
-## Repository purpose
+## Site Scope
 
-This repository hosts Sunwoo Kim's personal academic homepage:
+This is Sunwoo Kim's Jekyll GitHub Pages homepage:
+`https://sunboogermany.github.io/`.
 
-https://sunboogermany.github.io/
+For normal post publishing, do not modify `index.html`, `styles.css`, `script.js`,
+`_config.yml`, layouts, data files, or unrelated posts unless the user explicitly
+requests it.
 
-The site is a global research-brand platform for AI-enabled optimization, safe and constrained reinforcement learning, stochastic and nonlinear optimization, process systems engineering, chemical engineering, green hydrogen, direct air capture, and decision making under uncertainty.
+## Research Blog Posts
 
-The site should communicate a serious research identity, not a generic blog.
+Research Blog posts live in `_posts/` and use `layout: post`.
 
-## Non-negotiable constraints
+For a normal publishing task, create exactly one new Markdown file named
+`YYYY-MM-DD-safe-slug.md`. Prefer:
 
-Do not break the deployed homepage.
-Do not remove existing homepage sections unless explicitly requested.
-Do not remove Google Scholar, LinkedIn, GitHub, or email links.
-Do not remove English/Korean support.
-Do not remove the Research Blog.
-Do not remove Better Judgment Notes.
-Do not merge Better Judgment Notes into the Research Blog.
-Do not fabricate papers, awards, affiliations, citations, or achievements.
-Do not overstate novelty, guarantees, safety, feasibility, or optimality.
-Do not paste long copyrighted passages from papers.
-Summarize papers in original language.
-Do not attempt to trigger Chrome Translate or any browser-level translation UI from site JavaScript.
-
-## Bilingual publication policy
-
-For every new homepage post or note, create both a complete English version and a complete Korean version.
-The English version must be clean English only: do not include Korean prose, Korean explanatory phrases, or mixed English-Korean sentences in the English panel.
-Do not add short `Korean Note`, `Korean technical note`, or collapsible Korean-note blocks by default.
-For Research Blog posts, write the complete English version before the `<!-- ko -->` marker and the complete Korean translation after it. The post layout will show the appropriate version through the site language toggle.
-Set `has_korean_note: false` for new posts unless maintaining a legacy note that already uses the old collapsible note pattern.
-Use `title_ko` and `excerpt_ko` for the Korean title and listing summary.
-
-## Research Blog taxonomy
-
-Research Blog has two fixed groups: Application Reviews and Algorithmic Reviews.
-
-Use exactly these Application Reviews category slugs:
-
-1. green-chemical-systems
-2. energy-grids
-3. bioprocess-systems
-4. chemical-plants
-
-Display labels:
-
-1. Green Chemical Systems
-2. Energy Grids
-3. Bioprocess Systems
-4. Chemical Plants
-
-Use exactly these Algorithmic Reviews category slugs:
-
-1. safe-constrained-rl
-2. stochastic-nonlinear-optimization
-3. llm-probabilistic-approaches
-4. graph-represented-methods
-
-Display labels:
-
-1. Safe & Constrained RL
-2. Stochastic & Nonlinear Optimization
-3. LLM & Probabilistic Approaches
-4. Graph-Represented Methods
-
-Do not create new categories unless explicitly requested.
-
-Legacy category URLs must remain available:
-
-- nonlinear-optimization should point users toward stochastic-nonlinear-optimization.
-- probabilistic-heuristic-model should point users toward llm-probabilistic-approaches.
-- safe-constrained-rl remains a current category.
-
-## Better Judgment Notes purpose
-
-Better Judgment Notes remain a separate writing section focused on decision making, social phenomena, global affairs, philosophical reflections, and ideas from books, interviews, conversations, lectures, essays, and public affairs.
-
-Use exactly these internal category slugs:
-
-1. decision-making
-2. social-phenomena
-3. global-affairs
-
-Display labels:
-
-1. For Wiser Decision-Making / 더 현명한 의사결정을 내리기 위하여
-2. Understanding Social Phenomena / 사회 현상을 이해하기 위하여
-3. Understanding Global Affairs / 국제 정세의 흐름을 이해하기 위하여
-
-Allowed `source_type` values:
-
-- book
-- interview
-- lecture
-- essay
-- article
-- personal-reflection
-- public-affairs
-
-## Better Judgment post format
-
-Every Better Judgment note must use the `judgment-post` layout and contain:
-
-1. Core insight
-2. Why this matters
-3. Decision-making principle
-4. What this explains about people or systems
-5. Practical implication
-6. Limits of the idea
-7. Connection to my life and research
-8. Source metadata
-
-The tone must be reflective but analytical, readable, practical without cliche, and intellectually serious. Clearly distinguish personal interpretation from verified facts. For public affairs or international politics, check factual claims against reliable sources before publication; do not make unsupported political or social claims.
-
-Provide a complete Korean version alongside the English version for new notes. Do not fabricate source facts or translations of quoted/source material beyond the available evidence.
-
-## Daily research-note purpose
-
-Each daily note should show critical research judgment, not just summarize a paper.
-
-Target readers:
-- RL researchers
-- safe/constrained RL researchers
-- AI researchers
-- optimization researchers
-- process systems engineering researchers
-- chemical engineering researchers
-- clean-energy system researchers
-- technical entrepreneurs
-
-Tone:
-- rigorous
-- critical
-- precise
-- readable
-- not promotional
-- not exaggerated
-
-## Required research-post structure
-
-Each research post should contain:
-
-1. Positioning
-2. Problem setting
-3. Prior research gap
-4. Core idea
-5. Mathematical structure
-6. Why it can work
-7. Assumptions and limitations
-8. Critical assessment
-9. References
-
-After the English `References` section, add `<!-- ko -->` and then a complete Korean version of the post with its own references section. Do not add a separate Korean technical note section.
-
-Do not add separate sections connecting the paper to Sunwoo Kim's research or proposing extensions by default. Include such sections only when the user explicitly requests them.
-
-## References policy
-
-The `References` section must identify the focal paper and include references from the paper when they are available in the provided material.
-Use reference details only from the provided paper, supplied source text, supplied metadata or bibliography, or verified source material.
-Do not infer or fabricate missing references.
-If the material does not provide enough reference information, leave missing items blank or report them as missing metadata in the final report.
-Fill front matter metadata fields only when they are confirmed from the provided material or verified source material.
-
-## Research post front matter schema
-
-Use this schema for new Research Blog posts:
-
-```yaml
----
-layout: post
-title: "..."
-title_ko: "..."
-date: YYYY-MM-DD
-category: safe-constrained-rl
-category_label: "Safe & Constrained RL"
-research_group: algorithmic_reviews
-research_category: safe-constrained-rl
-research_category_label: "Safe & Constrained RL"
-application_category: ""
-application_category_label: ""
-method_category: safe-constrained-rl
-method_category_label: "Safe & Constrained RL"
-paper_title: "..."
-authors: "..."
-venue: "..."
-year: "..."
-doi: ""
-arxiv: ""
-source_url: ""
-tags:
-  - ...
-excerpt: "One or two sentence summary for listing pages."
-excerpt_ko: "Korean translation of the listing summary."
-language: "en-ko"
-has_korean_note: false
----
+```bash
+python scripts/new_research_note.py --title "..." --category safe-constrained-rl --tags "tag one,tag two" --draft path/to/draft.md
 ```
 
-Keep `category` and `category_label` for backward compatibility. For application-focused reviews, set `research_group: application_reviews`, set `application_category`, and leave `method_category` blank unless a secondary method category is explicitly needed. For algorithm-focused reviews, set `research_group: algorithmic_reviews`, set `method_category`, and leave `application_category` blank unless a secondary application category is explicitly needed.
+Use current category slugs from `_data/research_taxonomy.yml`. Legacy archive
+slugs must remain available, but do not use them for new posts unless explicitly
+requested. The generator fills taxonomy labels and application/method fields.
 
-## Quality rules
+Write a complete English version first, then `<!-- ko -->`, then a complete
+Korean version. Keep English panels clean English only. Set `language: "en-ko"`
+and `has_korean_note: false` for new posts.
 
-If a paper proves a theorem, state precisely what is proved.
-If a paper only provides empirical evidence, do not describe it as a guarantee.
-If assumptions are strong, say so.
-If scalability is unclear, say so.
-If feasibility or safety is approximate, say so.
-Explain important equations intuitively when needed without changing their mathematical meaning.
-If an explicitly requested connection or extension is speculative, label it as a proposed direction rather than a result.
-Use English as the main language for published posts.
-Include a complete Korean version for published posts, separated from the English version with `<!-- ko -->`.
-The English version must not contain Korean prose or a Korean-note section.
+Use only confirmed paper metadata, source URLs, references, authors, venues, and
+years. Leave unavailable metadata blank and report it at the end.
 
-## Equation rendering policy
+## Writing Style
 
-Use native MathML for equations in research notes when notation requires mathematical layout, including superscripts, subscripts, accents, summations, matrices, expectations, or optimization constraints.
-Do not render mathematical equations as fenced `text` code blocks or approximate mathematical layout with plain-text symbols when MathML can express the notation precisely.
-Use inline `<math>...</math>` for mathematical notation inside prose and `<math display="block" aria-label="...">...</math>` for displayed equations.
-Include an informative `aria-label` on displayed equations.
-Plain-text code blocks may still be used for algorithm flows, pseudocode, or terminal-like sequences that are not mathematical notation.
-Rely on the browser's native MathML layout by default; do not add global or research-post CSS that changes the `math` display mode, font, sizing, wrapping, overflow, or alignment unless it has been explicitly tested and requested.
+For Research Blog posts and Better Judgment essays, write like a researcher
+thinking in public: technical, skeptical, concise, and concrete. Preserve the
+user's core argument, notation, and level of detail when editing supplied text.
+Use first person only for reflective or personal writing; use direct analytical
+prose for technical posts. Keep necessary mathematical, optimization, and
+engineering terms; do not oversimplify them.
 
-## Sunwoo Kim's research positioning
+Avoid generic AI essay style. Do not use filler such as "In today's rapidly
+evolving world," "delve into," "tapestry," "realm," "unlock," "seamless,"
+"robust" as vague praise, "crucial," "pivotal," "it is important to note,"
+"not only...but also," or similar inflated phrasing. Avoid forced three-part
+lists, motivational endings, and generic concluding paragraphs. Remove empty
+transitions such as "Moreover," "Furthermore," and "Additionally" unless the
+logical relation is specific.
 
-When relevant, connect papers to:
-- stochastic optimization
-- robust optimization
-- safe and constrained RL
-- nonlinear optimization
-- model predictive control
-- multi-timescale decision making
-- hydrogen and clean-energy supply chains
-- direct air capture
-- feasibility-critical planning and control
-- optimization-compatible neural networks
-- ICNN/PICNN/convexity-preserving surrogates
-- Bellman/continuation-value approximation
-- planning under exogenous Markovian uncertainty
+Prefer concrete claims over vague framing. Preserve uncertainty when the evidence
+is limited: say "this is weak," "this assumption is strong," "this only works
+if...," or "the argument does not prove..." when appropriate. Use varied sentence
+length. Allow short blunt sentences.
 
-## Commit style
+Bad: "This study provides a crucial and robust framework for addressing complex
+challenges in modern energy systems."
 
-For infrastructure:
-Add Jekyll research-log infrastructure
+Good: "This framework is useful only if the learned continuation value remains
+reliable inside the optimization loop. The main risk is not approximation error
+itself, but biased decisions caused by locally wrong value gradients."
 
-For daily notes:
-Add research note: <short title>
+Bad: "In this post, I will delve into the fascinating world of reinforcement
+learning and optimization."
+
+Good: "This post is about one narrow question: when does an RL policy become
+unreliable because it confuses epistemic and aleatoric uncertainty?"
+
+Before finalizing a post, run this short self-audit:
+
+1. Does any paragraph sound like generic AI filler?
+2. Are there inflated adjectives or vague claims?
+3. Is the conclusion saying something real, or just wrapping up?
+4. Would a skeptical researcher find the statement precise?
+
+## Research Writing Constraints
+
+Summarize papers in original language; do not paste long copyrighted passages. Do
+not fabricate sources or references. Do not overstate novelty, guarantees, safety,
+feasibility, optimality, or theorem-backed claims. If a connection or extension is
+speculative, label it as a proposed direction.
+
+Use native MathML for mathematical notation that needs superscripts, subscripts,
+summations, matrices, or optimization constraints. Use fenced code blocks only for
+pseudocode, algorithm sketches, or terminal-like text.
+
+## Better Judgment Notes
+
+Better Judgment Notes are separate from the Research Blog. They live in
+`_better_judgment/` and use `layout: judgment-post`. Prefer
+`scripts/new_better_judgment_note.py` for new notes. Do not merge Better Judgment
+content into Research Blog posts unless explicitly requested.
+
+When the user asks to publish their pasted Better Judgment essay as-is, preserve
+the supplied essay structure and make only the minimum front matter/path changes.
+
+## Finish Checklist
+
+Before finishing, verify the changed file list. Run feasible syntax/build checks.
+Confirm the Research Blog index and relevant category page will include a new
+post. Summarize files changed, missing metadata, and any checks that could not be
+run. Commit or push only when the user explicitly asks to publish, upload, or
+commit.
