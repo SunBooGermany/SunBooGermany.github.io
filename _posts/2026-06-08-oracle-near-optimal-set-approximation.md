@@ -34,17 +34,9 @@ has_korean_note: false
 
 In fact, this paper is a very sophisticated method for finding the convex near-optimal solution space of a linear-programming energy system. It is therefore not a natural fit for Stochastic & Nonlinear Optimization. Still, I am writing this review because the paper contains ideas that are too original, precise, and frankly lovely not to record and share.
 
-The main contribution is not a new energy-system optimization model. The model is still a large LP, and the near-optimal set is defined by the usual cost-budget constraint. The contribution is the reframing: near-optimal exploration is treated as a geometry problem.
+In energy-system planning, the single cost-optimal solution is often too thin a basis for decision-making. It tells us which design is cheapest under the model's objective and constraints, but it does not tell us what else remains possible when the planner accepts a small cost increase. That surrounding near-optimal set is where many real decisions are made: one design may be slightly more expensive but easier to permit, less exposed to supply-chain risk, more politically acceptable, or better aligned with a technology preference that the model did not encode. The need is therefore not just to find alternative points, but to understand the shape of the acceptable design space. ORACLE's contribution begins there. It does not propose a fundamentally new energy-system model; it changes near-optimal exploration from point generation into a geometry problem over the convex set of acceptable designs.
 
-Classical Modelling to Generate Alternatives (MGA) mostly follows this philosophy:
-
-> Choose several directions and solve optimization problems to obtain diverse points.
-
-ORACLE follows a different philosophy:
-
-> Maintain inner and outer approximations of the near-optimal region, then reduce the largest approximation error.
-
-That difference is not cosmetic. MGA is centered on solution generation. ORACLE is centered on set approximation and certified convergence.
+Classical Modelling to Generate Alternatives (MGA) usually operationalizes this need through repeated directional searches. Each run selects a weight vector or diversity criterion and returns one more feasible near-optimal design. This is useful, but the object produced by the algorithm is still a finite set of sampled points. ORACLE changes the object being computed. It maintains an inner approximation that is guaranteed feasible and an outer approximation that is guaranteed to contain the true region, then uses the largest distance between the two as both an error certificate and the next exploration target. The distinction is therefore not cosmetic: MGA is centered on solution generation, while ORACLE is centered on set approximation with a computable convergence metric.
 
 ## The Region Being Approximated
 
@@ -176,11 +168,7 @@ This is the clever convergence metric. If the exploratory variables are capacity
 
 ## Step 2: Find the Most Suspicious Outer Point
 
-Step 2 asks:
-
-> Where is the current outer approximation farthest from what we have already certified?
-
-Using the convex-combination form of the inner hull, the abstract problem is
+Step 2 asks, "Where is the current outer approximation farthest from what we have already certified?" Using the convex-combination form of the inner hull, the abstract problem is
 
 <math display="block" aria-label="Step 2 max min formulation">
   <msub><mi>d</mi><mi>k</mi></msub>
@@ -226,11 +214,7 @@ The output of Step 2 is <math><msup><mi>z</mi><mrow><mi>O</mi><mo>*</mo></mrow><
 
 ## Step 3: Project the Trial Point Back to the True Model
 
-Step 3 asks a different question:
-
-> Is there an actual near-optimal energy-system design close to this aggressive trial point?
-
-It solves the projection problem
+Step 3 asks a different question: "Is there an actual near-optimal energy-system design close to this aggressive trial point?" It solves the projection problem
 
 <math display="block" aria-label="Step 3 projection to true near optimal region">
   <msup><mi>z</mi><mrow><mi>f</mi><mo>*</mo></mrow></msup>
@@ -326,17 +310,9 @@ Turan, E. M.; Moret, S.; Bardow, A. "ORACLE: A rigorous metric and method to exp
 
 사실 이 논문은 LP 에너지 시스템의 convex near optimal solution space를 찾기 위한 매우 정교한 방법이다. 따라서 stochastic & nonlinear optimization에 들어가기에 적절한 논문은 아니다. 하지만 이 논문의 너무나 독창적이고 사랑스러운 아이디어들을 기록하고 공유하기 위해서 리뷰를 작성한다.
 
-이 논문의 contribution은 새로운 에너지 시스템 최적화 모델 자체에 있지 않다. 모델은 여전히 대규모 LP이고, near-optimal set도 비용 상한 제약으로 정의된다. 핵심은 문제를 다시 정의하는 방식에 있다. Near-optimal exploration을 point generation 문제가 아니라 geometry problem으로 바꾼다.
+에너지 시스템 계획에서 단일 cost-optimal solution은 의사결정의 근거로 너무 얇다. 그것은 주어진 목적함수와 제약 아래에서 어떤 설계가 가장 싼지는 말해주지만, 비용을 조금 더 허용했을 때 무엇이 여전히 가능한지는 말해주지 않는다. 실제 의사결정은 바로 그 near-optimal set 안에서 일어난다. 어떤 설계는 조금 더 비싸더라도 인허가가 쉽고, 공급망 리스크가 작고, 정치적으로 수용 가능하고, 모델에 직접 넣지 못한 기술 선호와 더 잘 맞을 수 있다. 그래서 필요한 것은 단순히 alternative point 몇 개를 찾는 것이 아니라, 허용 가능한 설계공간의 모양을 이해하는 것이다. ORACLE의 contribution은 여기서 시작한다. 이 논문은 완전히 새로운 에너지 시스템 모델을 제안하지 않는다. 대신 near-optimal exploration을 point generation 문제가 아니라, convex acceptable design set을 approximating하는 geometry problem으로 바꾼다.
 
-기존 Modelling to Generate Alternatives, 즉 MGA는 대체로 다음 철학에 가깝다.
-
-> 여러 방향으로 최적화해서 diverse points를 얻자.
-
-ORACLE은 다른 철학을 따른다.
-
-> 현재까지 아는 near-optimal region의 inner/outer approximation을 만들고, 가장 큰 approximation error가 있는 곳을 줄이자.
-
-이 차이는 크다. 기존 MGA는 solution generation 중심이고, ORACLE은 set approximation과 certified convergence 중심이다.
+기존 Modelling to Generate Alternatives, 즉 MGA는 보통 이 필요성을 반복적인 방향 탐색으로 구현한다. 매번 weight vector나 diversity criterion을 정하고, 그 기준에서 하나의 feasible near-optimal design을 더 얻는다. 이 접근은 유용하지만, 알고리즘이 실제로 만들어내는 대상은 여전히 유한한 sampled points다. ORACLE은 계산하려는 대상을 바꾼다. 이미 보장된 feasible region인 inner approximation과 true region을 포함하는 outer approximation을 동시에 유지하고, 두 approximation 사이의 최대 거리를 error certificate이자 다음 탐색 위치로 사용한다. 따라서 이 차이는 표현상의 차이가 아니다. 기존 MGA는 solution generation 중심이고, ORACLE은 계산 가능한 convergence metric을 가진 set approximation 중심이다.
 
 ## Approximation하려는 region
 
@@ -468,11 +444,7 @@ Inner approximation <math><msub><mi>I</mi><mi>k</mi></msub></math>는 지금까�
 
 ## Step 2: 가장 의심스러운 outer point 찾기
 
-Step 2는 다음 질문을 푼다.
-
-> 현재 outer approximation 안에서, 지금까지 확실히 안다고 말할 수 있는 inner approximation과 가장 멀리 떨어진 곳은 어디인가?
-
-Inner hull을 convex combination으로 쓰면 추상적인 formulation은 다음과 같다.
+Step 2는 "현재 outer approximation 안에서, 지금까지 확실히 안다고 말할 수 있는 inner approximation과 가장 멀리 떨어진 곳은 어디인가?"라는 질문을 푼다. Inner hull을 convex combination으로 쓰면 추상적인 formulation은 다음과 같다.
 
 <math display="block" aria-label="Step 2 max min formulation">
   <msub><mi>d</mi><mi>k</mi></msub>
@@ -518,11 +490,7 @@ Step 2의 output은 <math><msup><mi>z</mi><mrow><mi>O</mi><mo>*</mo></mrow></msu
 
 ## Step 3: trial point를 true model로 projection하기
 
-Step 3는 완전히 다른 질문을 푼다.
-
-> 이 공격적인 trial point와 최대한 비슷한 실제 near-optimal energy-system design이 존재하는가?
-
-즉 다음 projection problem을 푼다.
+Step 3는 "이 공격적인 trial point와 최대한 비슷한 실제 near-optimal energy-system design이 존재하는가?"라는 완전히 다른 질문을 푼다. 즉 다음 projection problem을 푼다.
 
 <math display="block" aria-label="Step 3 projection to true near optimal region">
   <msup><mi>z</mi><mrow><mi>f</mi><mo>*</mo></mrow></msup>
