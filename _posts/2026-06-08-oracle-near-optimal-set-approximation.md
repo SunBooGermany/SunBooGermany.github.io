@@ -12,13 +12,13 @@ application_category: ""
 application_category_label: ""
 method_category: "stochastic-nonlinear-optimization"
 method_category_label: "Stochastic & Nonlinear Optimization"
-paper_title: ""
-authors: ""
-venue: ""
-year: ""
-doi: ""
-arxiv: ""
-source_url: ""
+paper_title: "ORACLE: A rigorous metric and method to explore all near-optimal designs for energy systems"
+authors: "Turan, E. M.; Moret, S.; Bardow, A."
+venue: "arXiv preprint"
+year: "2025"
+doi: "10.48550/arXiv.2509.26452"
+arxiv: "2509.26452"
+source_url: "https://arxiv.org/abs/2509.26452"
 tags:
   - "near-optimality"
   - "MGA"
@@ -318,6 +318,10 @@ The limitation is just as important. The argument depends on convexity. Many rea
 
 That is why I would not classify this paper as a core nonlinear-optimization paper. But as an algorithmic idea, it is unusually elegant: it turns "generate diverse alternatives" into "approximate the feasible alternative landscape with an error certificate."
 
+## References
+
+Turan, E. M.; Moret, S.; Bardow, A. "ORACLE: A rigorous metric and method to explore all near-optimal designs for energy systems." arXiv preprint arXiv:2509.26452, 2025. <https://arxiv.org/abs/2509.26452>
+
 <!-- ko -->
 
 사실 이 논문은 LP 에너지 시스템의 convex near optimal solution space를 찾기 위한 매우 정교한 방법이다. 따라서 stochastic & nonlinear optimization에 들어가기에 적절한 논문은 아니다. 하지만 이 논문의 너무나 독창적이고 사랑스러운 아이디어들을 기록하고 공유하기 위해서 리뷰를 작성한다.
@@ -607,3 +611,7 @@ Near-optimal region이 convex라면, 발견한 near-optimal points의 convex hul
 하지만 이 논리는 convexity에 기대고 있다. 실제 에너지 시스템 모델에는 unit commitment, binary investment, modular technology, minimum-load constraint, startup/shutdown cost, nonlinear efficiency, degradation effect가 들어갈 수 있다. 이런 경우 near-optimal region은 일반적으로 nonconvex이고, 두 feasible design의 convex combination이 실제 feasible design이 아닐 수 있다. 따라서 ORACLE은 continuous LP, convex, 또는 quasiconvex planning model에 가장 자연스럽게 맞는다.
 
 이 때문에 이 논문을 핵심 nonlinear optimization 논문으로 분류하기는 어렵다. 그럼에도 algorithmic idea로서는 매우 우아하다. "다양한 대안을 많이 찍자"라는 문제를 "feasible alternative landscape를 error certificate와 함께 approximate하자"라는 문제로 바꾸기 때문이다.
+
+## References
+
+Turan, E. M.; Moret, S.; Bardow, A. "ORACLE: A rigorous metric and method to explore all near-optimal designs for energy systems." arXiv preprint arXiv:2509.26452, 2025. <https://arxiv.org/abs/2509.26452>
