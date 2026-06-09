@@ -20,9 +20,57 @@ tags:
   - "agency"
 excerpt: "A reflection on why AI may reduce the cost of technical execution while making human judgment, intention, and responsibility more valuable."
 excerpt_ko: "AI가 기술적 실행 비용을 낮출수록 인간의 판단, 의도, 책임이 더 희소하고 중요한 능력이 될 수 있다는 성찰."
-language: "ko"
+language: "en-ko"
 has_korean_note: false
 ---
+
+# As AI Makes Technology Cheaper, Judgment Becomes More Expensive
+
+For a while, using AI well seemed to mean writing good prompts.
+
+People learned how to specify roles, constraints, examples, output formats, and hidden preferences. They wrote instruction documents, project settings, and reusable templates. Early AI systems needed delicate adjustment. Ambiguous requests produced ambiguous answers, and more precise prompts produced better results.
+
+But this stage may not last very long in its current form.
+
+New AI systems are increasingly able to repair prompts on their own. Even if a human begins with an incomplete request, AI can now ask back: "There are three possible directions here. Each has different trade-offs. Which one do you want?" In other words, AI has begun to clarify the user's intention together with the user and compensate for weak instructions.
+
+Agentic AI will likely follow a similar path. For now, using coding agents or research agents well still requires substantial trial and error. People experiment with instruction files, tool settings, task decomposition, checkpoints, and review workflows. The process feels technical and unstable. But the direction is relatively clear. Much of this technical friction will eventually be absorbed into the agent itself. Future agents may not require perfectly designed prompts. They may first create their own working prompts, make execution plans, ask for missing constraints, and then proceed with the task.
+
+If so, the scarce human ability is not prompt engineering in the narrow sense. It is judgment.
+
+The difficult part is deciding which problems are worth solving, defining those problems accurately, breaking them into smaller problems that can be handled, translating human intention into language that AI can execute, and understanding and interpreting AI-generated results well enough to take responsibility for them.
+
+This distinction matters. When I use AI in a field I know well, AI feels like a powerful extension of my thinking. If I have already drawn the structure of the problem, identified the key elements, and built the work step by step, AI is extremely useful. Execution becomes faster, while the ability to inspect the logic remains.
+
+By contrast, when I hand a large project in a field I do not know well entirely to AI, the experience becomes completely different. The result may look plausible. But the burden shifts to interpretation. What did the AI actually do? Which files are connected in which ways? Which assumptions entered quietly? Which parts are solid, and which parts only happened to work? As the problem grows and the agent becomes more autonomous, this interpretation cost grows with it.
+
+This is one reason AI may not eliminate expertise as quickly as some people imagine. AI can lower the cost of production. But it does not remove the need for responsibility. Someone still has to judge whether the result is meaningful, correct, safe, and aligned with the original purpose.
+
+As AI becomes stronger, the ability to keep problems at an understandable size becomes more important. A good human-AI workflow is probably not "hand everything over and wait." It is closer to an iterative loop of defining, decomposing, executing, reviewing, revising, and continuing. Humans do not need to perform every task by hand. But they need to stay close enough to the structure of the work to understand what they are making.
+
+This creates a strange kind of superpower. Problems that once required large organizations, long experience, and specialized operational knowledge can now be handled by much smaller groups. An excellent engineer with good judgment may be able to coordinate a system that once required an entire organization. Ordinary people may also be able to perform, to some degree, work that once required trained experts or operators. Not because they suddenly become experts, but because AI can provide much of the procedural knowledge.
+
+This change will create anxiety. That anxiety is not irrational. Work is not only a way to earn money. It also provides identity, status, rhythm, and social belonging. When people say they fear a future without work, they may not simply fear hunger. They may fear the disappearance of the structure that made their lives understandable.
+
+But two fears that are often mixed together need to be separated.
+
+One is material fear. Will people be able to live well enough? This is a real institutional problem. If AI greatly reduces demand for human labor, society will need to find new ways to distribute income, security, and dignity.
+
+The other is existential fear. If work no longer defines me, what should I live for? This problem cannot be solved by policy alone. It demands much harder self-reflection.
+
+Historically, technological progress has made ordinary people's lives safer and more comfortable than the lives of past elites. Modern people enjoy medicine, heating, sanitation, transportation, communication, and access to food in ways that earlier generations could hardly imagine. This does not mean modern poverty is acceptable. It means material progress changes the nature of human anxiety. As uncertainty about survival decreases, the problem of meaning becomes more exposed.
+
+The deeper risk is that many people may enter this future without having trained their judgment. Without inner standards, an independent sense of purpose, and practice thinking beyond the crowd, an age of abundant AI may not make people free. It may make them more easily programmable. People may become less like workers and more like consumers of moods and language delivered by algorithms, repeating the words supplied by the information ecosystem.
+
+Therefore, the future may not divide people only by technical ability. The more important distinction may be the ability to form intention.
+
+AI can help us write, code, design, analyze, and operate. It can reduce the need for repetitive labor. It can give small teams far greater influence than before. But it cannot decide for us what kind of life is worth building.
+
+The central question is not whether humans will still have work left to do.
+
+The central question is whether, when less work is forcibly given to us, humans will know what to do with that freedom.
+
+<!-- ko -->
 
 # AI가 기술을 싸게 만들수록, 판단은 비싸진다
 
