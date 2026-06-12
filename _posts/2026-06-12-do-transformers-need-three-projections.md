@@ -31,11 +31,9 @@ language: "en-ko"
 has_korean_note: false
 ---
 
-## The question is not whether attention can be made smaller
+## Motivation
 
-The useful question is more specific: which part of the Query, Key, Value split is actually doing work?
-
-Standard self-attention takes an input sequence and forms three projected representations:
+In a standard Transformer layer, the setup is:
 
 <math display="block" aria-label="Standard attention projections">
   <mi>Q</mi><mo>=</mo><mi>X</mi><msub><mi>W</mi><mi>q</mi></msub>
@@ -236,9 +234,9 @@ Kayyam, A., Gopal, A. M., & Lewis, M. A. (2026). Do Transformers Need Three Proj
 
 <!-- ko -->
 
-## 질문은 attention을 작게 만들 수 있느냐가 아니다
+## Motivation
 
-표준 self-attention은 입력 sequence에서 세 개의 projection을 만든다.
+기본 구조는 다음과 같다.
 
 <math display="block" aria-label="Standard attention projections">
   <mi>Q</mi><mo>=</mo><mi>X</mi><msub><mi>W</mi><mi>q</mi></msub>
