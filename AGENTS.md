@@ -53,6 +53,12 @@ is limited: say "this is weak," "this assumption is strong," "this only works
 if...," or "the argument does not prove..." when appropriate. Use varied sentence
 length. Allow short blunt sentences.
 
+Do not put ordinary prose, slogans, takeaways, question prompts, role labels, or
+short contrastive statements inside fenced code blocks. Write them as normal
+paragraphs, or use quotation marks inline when the user wants the wording visibly
+marked. Reserve fenced blocks for actual code, terminal output, pseudocode, or
+algorithm sketches.
+
 Bad: "This study provides a crucial and robust framework for addressing complex
 challenges in modern energy systems."
 
@@ -72,6 +78,8 @@ Before finalizing a post, run this short self-audit:
 2. Are there inflated adjectives or vague claims?
 3. Is the conclusion saying something real, or just wrapping up?
 4. Would a skeptical researcher find the statement precise?
+5. Are any fenced code blocks being used for prose that should be a normal
+   paragraph?
 
 ## Research Writing Constraints
 
