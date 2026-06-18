@@ -269,6 +269,9 @@ function applyLanguage(lang) {
     const key = node.getAttribute("data-i18n");
     if (dict[key]) node.textContent = dict[key];
   });
+  document.querySelectorAll("[data-lang-panel]").forEach((node) => {
+    node.hidden = node.getAttribute("data-lang-panel") !== lang;
+  });
   setList("featured-list", dict.featured);
   setList("project-list", dict.projects);
   setList("conference-list", dict.conferences);
