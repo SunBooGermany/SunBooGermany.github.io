@@ -12,10 +12,10 @@ application_category: ""
 application_category_label: ""
 method_category: stochastic-nonlinear-optimization
 method_category_label: "Stochastic & Nonlinear Optimization"
-paper_title: ""
-authors: ""
-venue: ""
-year: ""
+paper_title: "Learning Lyapunov terminal costs from data for complexity reduction in nonlinear model predictive control"
+authors: "S. Abdufattokhov, M. Zanon, and A. Bemporad"
+venue: "International Journal of Robust and Nonlinear Control"
+year: "2024"
 doi: ""
 arxiv: ""
 source_url: ""
@@ -283,8 +283,7 @@ So the right claim is moderate: this is a promising structured surrogate for fas
 
 ## References
 
-- Focal paper: bibliographic metadata was not provided in the supplied source material. This note is based on the supplied description of a learned terminal/continuation cost for NMPC using an NN-generated Cholesky-type positive-definite metric.
-- References from the focal paper: not provided in the supplied material.
+- Abdufattokhov, S., Zanon, M., & Bemporad, A. (2024). Learning Lyapunov terminal costs from data for complexity reduction in nonlinear model predictive control. International Journal of Robust and Nonlinear Control, 34(13), 8676-8691.
 
 <!-- ko -->
 
@@ -539,5 +538,4 @@ Positive definiteness는 Lyapunov decrease를 의미하지 않는다. 어떤 함
 
 ## 참고문헌
 
-- 대상 논문: 제공된 source material에는 bibliographic metadata가 없었다. 이 글은 NN-generated Cholesky-type positive-definite metric을 사용하는 NMPC용 learned terminal/continuation cost에 대한 제공 설명을 바탕으로 작성되었다.
-- 대상 논문의 참고문헌: 제공된 자료에 포함되어 있지 않았다.
+- Abdufattokhov, S., Zanon, M., & Bemporad, A. (2024). Learning Lyapunov terminal costs from data for complexity reduction in nonlinear model predictive control. International Journal of Robust and Nonlinear Control, 34(13), 8676-8691.
