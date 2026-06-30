@@ -142,7 +142,7 @@ This distinction is important in safety-critical or regulation-constrained setti
 
 ## High-Dimensional Outputs
 
-The high-dimensional output case is delicate. The pasted notes highlight the molecular-weight-distribution example, where the output can be a 100-dimensional compositional vector. Treating this as an ordinary Euclidean vector with independent output GPs and an isotropic covariance approximation is strong.
+The high-dimensional output case is delicate. In the molecular-weight-distribution example, the output can be a 100-dimensional compositional vector. Treating this as an ordinary Euclidean vector with independent output GPs and an isotropic covariance approximation is strong.
 
 There are two problems.
 
@@ -164,7 +164,7 @@ The closed-form acquisition is also attractive. Methods that estimate feasible s
 
 ## Reading the Experiments
 
-The reported benchmarks are broad: synthetic functions, pool-based materials datasets, polymerization design with molecular-weight-distribution targets, and sequence-defined oligomer libraries. The compared methods include TB, HV, EI, LCB, BAX, and random sampling. The notes report that TB obtains the best average rank overall and strong diversity scores in the polymerization case.
+The reported benchmarks are broad: synthetic functions, pool-based materials datasets, polymerization design with molecular-weight-distribution targets, and sequence-defined oligomer libraries. The compared methods include TB, HV, EI, LCB, BAX, and random sampling. In the reported results, TB obtains the best average rank overall and strong diversity scores in the polymerization case.
 
 That is meaningful evidence that the acquisition works well in the tested settings. The polymerization result is particularly useful from a process-design viewpoint: finding different reaction conditions that lead to similar target MWDs can give a real operator more flexibility.
 
@@ -179,10 +179,6 @@ The clean guarantee is narrow. If the posterior approximation is correct, TB com
 What is not guaranteed is just as important: global feasible-set recovery, boundary coverage, disconnected-component discovery, batch diversity optimality, long-horizon portfolio diversity, regret bounds, or global convergence.
 
 So the right reading is modest. TB is a good acquisition when the feasible region is at least partly known, the model is reasonably calibrated, and the goal is to collect valid candidates efficiently near target specifications. It is less convincing when the design space is unknown, feasible islands are sparse and disconnected, outputs are high-dimensional and correlated, or the actual goal is useful diversity rather than valid-hit rate.
-
-The method is valuable because it asks the right first question for many design tasks: "Will this candidate satisfy the specification?" It becomes overclaimed only if that question is quietly replaced by a stronger one: "Will this strategy discover the diverse structure of all feasible designs?"
-
-Those are different problems.
 
 ## References
 
@@ -300,7 +296,7 @@ TB는 high-confidence interior를 선호한다. Boundary-learning method라면 f
 
 ## 고차원 output 문제
 
-High-dimensional output에서는 문제가 더 민감해진다. 첨부 노트는 molecular-weight-distribution 예를 강조한다. 이 경우 output은 100-dimensional compositional vector일 수 있다. 이를 ordinary Euclidean vector로 보고 independent output GP와 isotropic covariance approximation을 적용하는 것은 강한 가정이다.
+High-dimensional output에서는 문제가 더 민감해진다. Molecular-weight-distribution 예에서는 output이 100-dimensional compositional vector일 수 있다. 이를 ordinary Euclidean vector로 보고 independent output GP와 isotropic covariance approximation을 적용하는 것은 강한 가정이다.
 
 문제는 두 가지다.
 
@@ -322,7 +318,7 @@ Closed-form acquisition도 매력적이다. Posterior sampling으로 feasible se
 
 ## 실험을 읽는 법
 
-보고된 benchmark는 넓다. Synthetic functions, pool-based materials datasets, molecular-weight-distribution target을 갖는 polymerization design, sequence-defined oligomer libraries가 포함된다. 비교 대상은 TB, HV, EI, LCB, BAX, random sampling이다. 첨부 노트에 따르면 TB는 전체 average rank가 가장 좋고 polymerization case에서 강한 diversity score를 보인다.
+보고된 benchmark는 넓다. Synthetic functions, pool-based materials datasets, molecular-weight-distribution target을 갖는 polymerization design, sequence-defined oligomer libraries가 포함된다. 비교 대상은 TB, HV, EI, LCB, BAX, random sampling이다. 보고된 결과에서 TB는 전체 average rank가 가장 좋고 polymerization case에서 강한 diversity score를 보인다.
 
 이는 테스트된 설정에서 acquisition이 잘 작동했다는 의미 있는 근거다. Polymerization 결과는 공정 설계 관점에서 특히 유용하다. 서로 다른 reaction condition이 유사한 target MWD를 만들 수 있다면 실제 운영자는 더 많은 유연성을 갖는다.
 
@@ -337,12 +333,6 @@ Oligomer case는 TB의 약한 regime도 보여준다. Finite library에 valid ca
 반대로 보장되지 않는 부분도 중요하다. Global feasible-set recovery, boundary coverage, disconnected-component discovery, batch diversity optimality, long-horizon portfolio diversity, regret bound, global convergence는 보장되지 않는다.
 
 따라서 가장 정확한 독해는 겸손하다. TB는 feasible region이 어느 정도 알려져 있고, model이 reasonably calibrated되어 있으며, target specification 근처에서 valid candidate를 효율적으로 모으는 것이 목표일 때 좋은 acquisition이다. 반대로 design space가 알려져 있지 않고, feasible island가 sparse하고 disconnected되어 있으며, output이 high-dimensional correlated structure를 갖거나, 실제 목표가 valid-hit rate가 아니라 useful diversity라면 설득력이 약해진다.
-
-이 방법의 가치는 많은 design task에서 첫 질문을 제대로 묻는 데 있다. "이 후보가 specification을 만족할 가능성이 있는가?"
-
-과장은 그 질문이 조용히 더 강한 질문으로 바뀔 때 생긴다. "이 전략이 feasible design 전체의 다양한 구조를 발견할 것인가?"
-
-둘은 다른 문제다.
 
 ## 참고문헌
 
