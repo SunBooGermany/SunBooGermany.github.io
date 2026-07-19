@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Where the Novelty Lies: Differentiable Hybrid Modeling for Industrial Distillation"
-title_ko: "독창성은 어디에 있는가: 산업 증류를 위한 미분 가능한 하이브리드 모델링"
+title: "Differentiable Hybrid Modeling for Industrial Distillation"
+title_ko: "산업 증류를 위한 미분 가능한 하이브리드 모델링"
 date: 2026-07-19
 category: chemical-plants
 category_label: "Chemical Plants"
@@ -32,7 +32,7 @@ language: "en-ko"
 has_korean_note: false
 ---
 
-The strongest contribution of this paper is not that it attaches a neural network to distillation. That description is too broad to identify what is technically difficult or scientifically useful. The novelty is better understood in three layers: the paper localizes the dominant plant-model mismatch, differentiates through a staged Peng–Robinson equation-of-state column solver, and restricts learning to a small thermodynamic correction rather than replacing the column model.
+The paper's contribution can be divided into three layers. It localizes the dominant plant-model mismatch, differentiates through a staged Peng–Robinson equation-of-state column solver, and restricts learning to a small thermodynamic correction rather than replacing the column model.
 
 Together, these choices form a series hybrid architecture:
 
@@ -91,7 +91,11 @@ The word “effective” is essential. If a learned correction drives a binary i
 
 The originality is the composition of the three layers, not any one layer in isolation.
 
-First, the paper localizes the error at a plausible thermodynamic bottleneck rather than assigning all discrepancy to a free residual. Second, it constructs a trainable path through a realistic sequence of EOS, Newton, linear-solve, and column-iteration operations using different differentiation strategies. Third, it keeps the neural component small and places it before the first-principles model.
+First, the paper localizes the error at a plausible thermodynamic bottleneck rather than assigning all discrepancy to a free residual.
+
+Second, it constructs a trainable path through a realistic sequence of EOS, Newton, linear-solve, and column-iteration operations using different differentiation strategies.
+
+Third, it keeps the neural component small and places it before the first-principles model.
 
 That combination creates a credible small-data design for industrial modeling. It offers more extrapolation discipline than a direct black-box surrogate and more adaptability than a fixed rigorous model. It does not guarantee global differentiability, unique parameter identification, or generalization to new feeds and operating regimes. Its contribution is narrower and more defensible: it shows how to insert learning at a diagnosed source of thermodynamic mismatch while preserving most of the column model's computational and physical structure.
 
