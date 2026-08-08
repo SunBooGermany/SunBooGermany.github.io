@@ -5,6 +5,7 @@ title_ko: "새로운 불평등은 판단이다"
 date: 2026-06-07
 category: social-phenomena
 category_label: "Understanding Social Phenomena"
+category_label_ko: "사회 현상을 이해하기 위하여"
 source_type: "personal-reflection"
 source_title: ""
 author_or_speaker: ""
