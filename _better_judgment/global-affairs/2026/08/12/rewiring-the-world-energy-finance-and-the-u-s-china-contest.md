@@ -26,15 +26,13 @@ has_korean_note: false
 
 # Rewiring the World: Energy, Finance, and the U.S.–China Contest
 
-When judging foreign policy, it is tempting to evaluate each event separately.
+Many Koreans around me describe Donald Trump as an impulsive decision-maker who has made a series of unwise choices: the war with Iran, the operation in Venezuela, and continued support for Ukraine. Much of the Korean media appears to present a similar picture. Viewed one headline at a time, these decisions can look reckless, contradictory, or improvised.
 
-Was the attack on Iran reckless? Was the intervention in Venezuela excessive? Why continue supporting Ukraine while claiming to seek peace with Russia? Viewed one headline at a time, American foreign policy under Donald Trump can easily look contradictory—or simply impulsive.
+I think that interpretation is too narrow and, as a result, distorts what is happening.
 
-There is another way to read it.
+My working hypothesis is almost the opposite. Trump has placed a full-spectrum contest with China—one fought mostly without direct gunfire between the two powers—at the center of American foreign and economic policy. From that perspective, his decisions involving Iran, Venezuela, Russia, and Ukraine look less like disconnected impulses and more like deliberate moves within a longer contest. This does not mean that every move belongs to a flawless master plan. It means that “Trump is simply impulsive” is too weak an explanation.
 
-Instead of following the rhetoric, follow the flows.
-
-Follow where oil moves. Follow where gas moves. Follow the corridors through which goods, energy, capital, and eventually money must pass. Viewed at that level, several seemingly disconnected American actions begin to resemble parts of the same structural contest.
+To test this interpretation, the unit of analysis has to change. After each American intervention, sanction, tariff, or agreement, where does the energy supply move? Which shipping route, pipeline, long-term contract, transit corridor, currency, or payment system becomes more important? Whose alternatives shrink, and whose leverage increases? Once the events are compared through these changes in dependence, several apparently unrelated American actions begin to form a coherent pattern.
 
 China is extraordinarily powerful in electricity generation, manufacturing, renewable energy, batteries, and increasingly electric transportation. Yet hydrocarbons remain a different problem. China is still the world's largest crude-oil importer, importing a record 11.6 million barrels per day in 2025, and it remains heavily exposed to external oil and gas supply routes.
 
@@ -122,15 +120,13 @@ What network is being rewired, whose alternatives are disappearing, and who beco
 
 # 세계를 다시 연결하다: 에너지, 금융, 그리고 미중 패권 경쟁
 
-외교 정책을 판단할 때 우리는 각각의 사건을 따로 평가하기 쉽다.
+내 주변의 많은 한국인은 트럼프가 이란 전쟁, 베네수엘라 작전, 우크라이나 지원 등에서 충동적이고 현명하지 못한 선택을 내렸다고 말한다. 한국의 여러 언론 보도에서도 트럼프는 일관된 전략 없이 즉흥적으로 움직이는 결정권자처럼 비치는 듯하다. 각각의 사건을 헤드라인 단위로 떼어 놓고 보면 그렇게 판단하기 쉽다.
 
-이란에 대한 공격은 무모했는가? 베네수엘라 개입은 과도했는가? 러시아와의 평화를 추구한다고 말하면서 왜 우크라이나를 계속 지원하는가? 헤드라인을 하나씩 떼어 놓고 보면 도널드 트럼프 행정부의 미국 외교 정책은 서로 모순되거나 단순히 충동적으로 보일 수 있다.
+하지만 나는 이러한 시각이 지나치게 좁고, 그 결과 지금 벌어지는 일을 왜곡한다고 생각한다.
 
-그러나 이를 읽는 다른 방법도 있다.
+내 가설은 오히려 정반대다. 트럼프는 중국과의 총성 없는 총력전을 미국의 외교·경제 정책 중심에 두었고, 이란, 베네수엘라, 러시아, 우크라이나와 관련된 결정도 이 장기 경쟁의 맥락에서 상당히 계획적이고 신중하게 수행해 왔다고 본다. 물론 모든 행동이 하나의 완벽한 계획에 따라 움직였다는 뜻은 아니다. 다만 이 모든 일을 “트럼프가 충동적이기 때문”이라고 설명하는 것은 너무 빈약하다.
 
-수사를 좇는 대신 흐름을 좇는 것이다.
-
-석유가 어디로 이동하는지 본다. 천연가스가 어디로 이동하는지 본다. 상품과 에너지, 자본, 그리고 결국 돈이 어떤 회랑을 통과해야 하는지 본다. 이 수준에서 바라보기 시작하면 서로 무관해 보이던 미국의 여러 행동은 하나의 구조적 경쟁 안에 놓이기 시작한다.
+이 가설을 검토하려면 분석의 단위를 개별 사건에서 전략적 연결망으로 바꿔야 한다. 미국이 군사적으로 개입하거나 제재와 관세를 부과하고 새로운 협정을 맺은 뒤, 에너지 공급은 어느 나라에서 어느 나라로 이동했는가? 어떤 해상 운송로와 송유관, 장기 계약, 대륙 회랑, 통화, 결제망이 더 중요해졌는가? 누구의 대안은 줄었고 누구의 영향력은 커졌는가? 이런 의존 관계의 변화를 함께 놓고 보면 서로 무관해 보이던 미국의 행동에서 하나의 일관된 방향이 드러나기 시작한다.
 
 중국은 전력 생산, 제조업, 재생에너지, 배터리, 그리고 점차 전기 운송 분야에서 막강한 경쟁력을 갖고 있다. 그러나 탄화수소는 다른 문제다. 중국은 여전히 세계 최대 원유 수입국이다. 2025년에는 하루 1,160만 배럴이라는 사상 최대 규모의 원유를 수입했고, 석유와 천연가스의 상당 부분을 외부 공급망에 의존하는 구조적 특성도 남아 있다.
 
