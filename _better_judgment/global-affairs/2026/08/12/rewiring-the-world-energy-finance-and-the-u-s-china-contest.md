@@ -86,8 +86,6 @@ Oil pipelines, shipping routes, LNG contracts, transit corridors, payment rails,
 
 Geopolitical power often belongs to whoever can shape the flow without having to own everything that flows through it.
 
-What network is being rewired, whose alternatives are disappearing, and who becomes more indispensable when the rewiring is complete?
-
 <!-- ko -->
 
 # 세계를 다시 연결하다: 에너지, 금융, 그리고 미중 패권 경쟁
@@ -149,5 +147,3 @@ What network is being rewired, whose alternatives are disappearing, and who beco
 송유관, 해상 운송로, LNG 장기 계약, 대륙 회랑, 결제 레일, 스테이블코인, 디지털 결제망은 서로 다른 정책 영역에 속한다. 그러나 전략적으로는 모두 같은 것이다. 흐름을 위한 인프라다.
 
 모든 것을 직접 소유하지 않고도 그 흐름이 지나가는 길을 결정할 수 있는 국가가 강한 지정학적 영향력을 갖게 된다.
-
-어떤 네트워크가 다시 연결되고 있는가? 그 과정에서 누구의 대안이 줄어들고 있는가? 그리고 재연결이 끝났을 때 누가 이전보다 더 없어서는 안 되는 존재가 되는가?
