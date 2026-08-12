@@ -30,7 +30,7 @@ Many Koreans around me describe Donald Trump as an impulsive decision-maker who 
 
 I think that interpretation is too narrow and, as a result, distorts what is happening.
 
-My working hypothesis is almost the opposite. Trump has placed a full-spectrum contest with China—one fought mostly without direct gunfire between the two powers—at the center of American foreign and economic policy. From that perspective, his decisions involving Iran, Venezuela, Russia, and Ukraine look less like disconnected impulses and more like deliberate moves within a longer contest. This does not mean that every move belongs to a flawless master plan. It means that “Trump is simply impulsive” is too weak an explanation.
+My working hypothesis is almost the opposite. Trump has placed a full-spectrum contest with China—one fought mostly without direct gunfire between the two powers—at the center of American foreign and economic policy. From that perspective, his decisions involving Iran, Venezuela, Russia, and Ukraine look less like disconnected impulses and more like deliberate moves within a longer contest.
 
 To test this interpretation, the unit of analysis has to change. After each American intervention, sanction, tariff, or agreement, where does the energy supply move? Which shipping route, pipeline, long-term contract, transit corridor, currency, or payment system becomes more important? Whose alternatives shrink, and whose leverage increases? Once the events are compared through these changes in dependence, several apparently unrelated American actions begin to form a coherent pattern.
 
@@ -124,7 +124,7 @@ What network is being rewired, whose alternatives are disappearing, and who beco
 
 하지만 나는 이러한 시각이 지나치게 좁고, 그 결과 지금 벌어지는 일을 왜곡한다고 생각한다.
 
-내 가설은 오히려 정반대다. 트럼프는 중국과의 총성 없는 총력전을 미국의 외교·경제 정책 중심에 두었고, 이란, 베네수엘라, 러시아, 우크라이나와 관련된 결정도 이 장기 경쟁의 맥락에서 상당히 계획적이고 신중하게 수행해 왔다고 본다. 물론 모든 행동이 하나의 완벽한 계획에 따라 움직였다는 뜻은 아니다. 다만 이 모든 일을 “트럼프가 충동적이기 때문”이라고 설명하는 것은 너무 빈약하다.
+내 가설은 오히려 정반대다. 트럼프는 중국과의 총성 없는 총력전을 미국의 외교·경제 정책 중심에 두었고, 이란, 베네수엘라, 러시아, 우크라이나와 관련된 결정도 이 장기 경쟁의 맥락에서 상당히 계획적이고 신중하게 수행해 왔다고 본다.
 
 이 가설을 검토하려면 분석의 단위를 개별 사건에서 전략적 연결망으로 바꿔야 한다. 미국이 군사적으로 개입하거나 제재와 관세를 부과하고 새로운 협정을 맺은 뒤, 에너지 공급은 어느 나라에서 어느 나라로 이동했는가? 어떤 해상 운송로와 송유관, 장기 계약, 대륙 회랑, 통화, 결제망이 더 중요해졌는가? 누구의 대안은 줄었고 누구의 영향력은 커졌는가? 이런 의존 관계의 변화를 함께 놓고 보면 서로 무관해 보이던 미국의 행동에서 하나의 일관된 방향이 드러나기 시작한다.
 
