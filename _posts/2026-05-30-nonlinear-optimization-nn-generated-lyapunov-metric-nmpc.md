@@ -11,7 +11,7 @@ research_category_label: "Nonlinear Optimization"
 application_category: ""
 application_category_label: ""
 method_category: stochastic-nonlinear-optimization
-method_category_label: "Stochastic & Nonlinear Optimization"
+method_category_label: "Mathematical Optimization"
 paper_title: "Learning Lyapunov terminal costs from data for complexity reduction in nonlinear model predictive control"
 authors: "S. Abdufattokhov, M. Zanon, and A. Bemporad"
 venue: "International Journal of Robust and Nonlinear Control"

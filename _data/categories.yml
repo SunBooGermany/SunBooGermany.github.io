@@ -25,8 +25,8 @@
 
 - slug: stochastic-nonlinear-optimization
   group: algorithmic_reviews
-  label: "Stochastic & Nonlinear Optimization"
-  description: "Stochastic programming, nonlinear optimization, robust/chance-constrained optimization, MPC, and trust-region methods."
+  label: "Mathematical Optimization"
+  description: "Linear, mixed-integer, stochastic, nonlinear, robust, inverse, and control-oriented optimization methods."
 
 - slug: llm-probabilistic-approaches
   group: algorithmic_reviews

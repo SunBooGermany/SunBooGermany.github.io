@@ -4,14 +4,14 @@ title: "ORACLE: Near-Optimal Exploration as Certified Set Approximation"
 title_ko: "ORACLE: near-optimal 탐색을 certified set approximation으로 바꾸기"
 date: 2026-06-08
 category: stochastic-nonlinear-optimization
-category_label: "Stochastic & Nonlinear Optimization"
+category_label: "Mathematical Optimization"
 research_group: algorithmic_reviews
 research_category: stochastic-nonlinear-optimization
-research_category_label: "Stochastic & Nonlinear Optimization"
+research_category_label: "Mathematical Optimization"
 application_category: ""
 application_category_label: ""
 method_category: "stochastic-nonlinear-optimization"
-method_category_label: "Stochastic & Nonlinear Optimization"
+method_category_label: "Mathematical Optimization"
 paper_title: "ORACLE: A rigorous metric and method to explore all near-optimal designs for energy systems"
 authors: "Turan, E. M.; Moret, S.; Bardow, A."
 venue: "arXiv preprint"
@@ -32,7 +32,7 @@ language: "en-ko"
 has_korean_note: false
 ---
 
-In fact, this paper is a very sophisticated method for finding the convex near-optimal solution space of a linear-programming energy system. It is therefore not a natural fit for Stochastic & Nonlinear Optimization. Still, I am writing this review because the paper contains ideas that are too original, precise, and frankly lovely not to record and share.
+In fact, this paper is a very sophisticated method for finding the convex near-optimal solution space of a linear-programming energy system. Its emphasis is set approximation rather than stochastic or nonlinear optimization, but it fits naturally within the broader Mathematical Optimization category. I am writing this review because the paper contains ideas that are too original, precise, and frankly lovely not to record and share.
 
 In energy-system planning, the single cost-optimal solution is often too thin a basis for decision-making. It tells us which design is cheapest under the model's objective and constraints, but it does not tell us what else remains possible when the planner accepts a small cost increase. That surrounding near-optimal set is where many real decisions are made: one design may be slightly more expensive but easier to permit, less exposed to supply-chain risk, more politically acceptable, or better aligned with a technology preference that the model did not encode. The need is therefore not just to find alternative points, but to understand the shape of the acceptable design space. ORACLE's contribution begins there. It does not propose a fundamentally new energy-system model; it changes near-optimal exploration from point generation into a geometry problem over the convex set of acceptable designs.
 
