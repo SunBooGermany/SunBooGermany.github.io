@@ -3,11 +3,11 @@ layout: post
 title: "NN-Generated Lyapunov Metrics for Fast NMPC: What Is Actually Guaranteed?"
 title_ko: "빠른 NMPC를 위한 신경망 생성 Lyapunov 메트릭: 실제로 무엇이 보장되는가?"
 date: 2026-05-30
-category: nonlinear-optimization
-category_label: "Nonlinear Optimization"
+category: stochastic-nonlinear-optimization
+category_label: "Mathematical Optimization"
 research_group: algorithmic_reviews
-research_category: nonlinear-optimization
-research_category_label: "Nonlinear Optimization"
+research_category: stochastic-nonlinear-optimization
+research_category_label: "Mathematical Optimization"
 application_category: ""
 application_category_label: ""
 method_category: stochastic-nonlinear-optimization
