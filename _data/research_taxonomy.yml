@@ -27,10 +27,10 @@ algorithmic_reviews:
     description: CMDP, safe RL, constrained policy optimization, Lyapunov methods, feasibility, and safety guarantees.
     description_ko: CMDP, 안전 강화학습, 제약 정책 최적화, Lyapunov 방법, 실행 가능성, 안전 보장.
   - slug: stochastic-nonlinear-optimization
-    label: Stochastic & Nonlinear Optimization
-    label_ko: 확률 및 비선형 최적화
-    description: Stochastic programming, nonlinear optimization, robust/chance-constrained optimization, MPC, and trust-region methods.
-    description_ko: 확률계획, 비선형 최적화, 강건/확률 제약 최적화, MPC, 신뢰영역 방법.
+    label: Mathematical Optimization
+    label_ko: 수학적 최적화
+    description: Linear, mixed-integer, stochastic, nonlinear, robust, inverse, and control-oriented optimization methods.
+    description_ko: 선형, 혼합정수, 확률, 비선형, 강건, 역최적화 및 제어 지향 최적화 방법론.
   - slug: llm-probabilistic-approaches
     label: LLM & Probabilistic Approaches
     label_ko: LLM 및 확률론적 접근법

@@ -4,14 +4,14 @@ title: "MadNCL: GPU-Friendly NCL for Degenerate Nonlinear Programs"
 title_ko: "MadNCL: 퇴화된 비선형계획을 위한 GPU 친화적 NCL"
 date: 2026-06-05
 category: stochastic-nonlinear-optimization
-category_label: "Stochastic & Nonlinear Optimization"
+category_label: "Mathematical Optimization"
 research_group: algorithmic_reviews
 research_category: stochastic-nonlinear-optimization
-research_category_label: "Stochastic & Nonlinear Optimization"
+research_category_label: "Mathematical Optimization"
 application_category: ""
 application_category_label: ""
 method_category: "stochastic-nonlinear-optimization"
-method_category_label: "Stochastic & Nonlinear Optimization"
+method_category_label: "Mathematical Optimization"
 paper_title: "MADNCL: a GPU implementation of algorithm NCL for large-scale, degenerate nonlinear programs"
 authors: "Montoison, A.; Pacaud, F.; Saunders, M.; Shin, S.; Orban, D."
 venue: "arXiv preprint"

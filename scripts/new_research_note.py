@@ -20,7 +20,7 @@ TAXONOMY = {
     },
     "algorithmic_reviews": {
         "safe-constrained-rl": "Safe & Constrained RL",
-        "stochastic-nonlinear-optimization": "Stochastic & Nonlinear Optimization",
+        "stochastic-nonlinear-optimization": "Mathematical Optimization",
         "llm-probabilistic-approaches": "LLM & Probabilistic Approaches",
         "graph-represented-methods": "Graph-Represented Methods",
     },

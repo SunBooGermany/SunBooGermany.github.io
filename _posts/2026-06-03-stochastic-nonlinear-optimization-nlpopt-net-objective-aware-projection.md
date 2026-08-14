@@ -4,14 +4,14 @@ title: "NLPOpt-Net: Objective-Aware Projection for Parametric Nonlinear Programs
 title_ko: "NLPOpt-Net: 파라메트릭 비선형계획을 위한 목적함수 인식 projection"
 date: 2026-06-03
 category: stochastic-nonlinear-optimization
-category_label: "Stochastic & Nonlinear Optimization"
+category_label: "Mathematical Optimization"
 research_group: algorithmic_reviews
 research_category: stochastic-nonlinear-optimization
-research_category_label: "Stochastic & Nonlinear Optimization"
+research_category_label: "Mathematical Optimization"
 application_category: ""
 application_category_label: ""
 method_category: "stochastic-nonlinear-optimization"
-method_category_label: "Stochastic & Nonlinear Optimization"
+method_category_label: "Mathematical Optimization"
 paper_title: "NLPOpt-Net: A Learning Method for Nonlinear Optimization with Feasibility Guarantees"
 authors: "Roy, B. N.; Golder, R.; Hasan, M. M."
 venue: "arXiv preprint"
