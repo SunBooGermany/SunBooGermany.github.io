@@ -44,6 +44,42 @@ Here the allowable output changes with the current state <math><mi>x</mi></math>
 
 CAffNet takes a different route. It puts the affine constraints into the output architecture itself. Its central result is a feasibility guarantee for arbitrary numbers of input-dependent affine constraints, without requiring the constraint matrix to have full row rank. This is a useful distinction from earlier hard-constraint architectures. It is also a narrow guarantee: the architecture enforces the constraints supplied to it, not every condition required for a physically safe closed loop.
 
+## Why a fixed hard projection was not enough
+
+Hard feasibility is not new. One natural earlier design is to let a network propose an unconstrained output and linearly project it back to the constraint boundary or feasible set. This is attractive because the correction is explicit: an infeasible point is replaced by a valid one.
+
+The limitation is that a fixed projection rule makes a task decision using geometry alone. Suppose a safety boundary fixes one component of a control action but leaves another component free. Orthogonal projection preserves or changes that free component according to its fixed formula; it does not ask whether the resulting action tracks the goal, saves energy, or gives the controller room for a future maneuver. The correction can therefore discard useful degrees of freedom even while it removes violation.
+
+There is a second limitation when the constraints depend on the input. Earlier hard-constraint affine architectures such as HardNet-Aff handle this setting under structural conditions, including a full-row-rank requirement on the constraint matrix and a restriction tied to the number of constraints. Real feasible action sets can have redundant or dependent constraints, and a low-dimensional action can be enclosed by many inequalities. Those are ordinary cases for polytopes, not pathological edge cases.
+
+CAffNet is motivated by both failures. It seeks a hard-feasible layer that does not require full row rank or a small constraint count, while preserving a learnable direction along each candidate constraint face. The next two-dimensional example makes the distinction concrete.
+
+## The picture to keep in mind
+
+Consider a network that outputs two numbers, <math><mi>y</mi><mo>=</mo><mo>(</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo>)</mo></math>, subject to
+
+<math display="block" aria-label="Simple triangular feasible region">
+  <msub><mi>y</mi><mn>1</mn></msub><mo>+</mo><msub><mi>y</mi><mn>2</mn></msub><mo>&le;</mo><mn>10</mn><mo>,</mo>
+  <mspace width="0.5em"/><msub><mi>y</mi><mn>1</mn></msub><mo>&ge;</mo><mn>0</mn><mo>,</mo>
+  <mspace width="0.5em"/><msub><mi>y</mi><mn>2</mn></msub><mo>&ge;</mo><mn>0</mn><mo>.</mo>
+</math>
+
+The allowable outputs form a triangle. An ordinary network can still propose a point outside it. A soft constraint says, in effect, “leaving the triangle will cost you in the loss.” Even a large penalty does not make violation impossible at inference time.
+
+CAffNet instead follows a simple sequence:
+
+<math display="block" aria-label="CAffNet output flow">
+  <mtext>unconstrained neural prediction</mtext><mo>&rarr;</mo>
+  <mtext>constraint-aware correction</mtext><mo>&rarr;</mo>
+  <mtext>feasible output</mtext><mo>.</mo>
+</math>
+
+The network first proposes <math><mover><mi>y</mi><mo>^</mo></mover><mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo></math>. If that proposal is outside the allowable region, the CAffNet layer returns a point inside it. Under the nonempty-feasible-set assumption, the final output satisfies the supplied affine constraints by construction.
+
+This is not merely “project to the closest point.” A boundary contains many feasible points. A fixed geometric projection may choose one point, while another point on the same boundary may be much better for the task: a robot can be safe at both points, but only one may also move efficiently toward its goal. CAffNet's trainable null-space term lets learning choose along directions that do not change the active equality constraints. In that limited but useful sense, it learns not only how to correct an infeasible proposal, but where on a feasible face to place the corrected output.
+
+The same picture explains the active-set construction. With many inequalities, a point on a two-dimensional polygon is usually determined by one active edge or two active edges at a vertex, not all of its walls. CAffNet builds candidates from small constraint subsets, tests those candidates against the full constraint set, and selects among the feasible ones. It is this combination—input-dependent constraints, rank-tolerant active-set candidates, and a trainable feasible direction—that is more distinctive than projection alone.
+
 ## Parameterizing candidate faces of a polyhedron
 
 For a constraint subset <math><mi>&gamma;</mi></math>, let <math><msub><mi>A</mi><mi>&gamma;</mi></msub></math> and <math><msub><mi>b</mi><mi>&gamma;</mi></msub></math> denote the corresponding rows. CAffNet forms one candidate per subset,
@@ -126,6 +162,42 @@ Yang Zhao, Jungeun Lee, Jeong Hwan Jeon, and Sze Zheng Yong. *CAffNet: Hard Cons
 여기서 허용되는 출력은 현재 상태 <math><mi>x</mi></math>에 따라 달라진다. 예를 들어 obstacle avoidance에서는 로봇이 움직일수록 안전한 control action의 집합이 바뀐다. Penalty loss는 위반을 드물게 만들 수 있지만 불가능하게 만들지는 못한다. Optimization layer는 제안된 출력을 보정할 수 있지만 매 forward pass마다 반복 solve가 필요할 수 있다.
 
 CAffNet은 다른 길을 택한다. Affine constraint를 output architecture 자체에 넣는다. 핵심 결과는 constraint matrix가 full row rank일 필요 없이, 임의 개수의 input-dependent affine constraint에 대해 feasibility를 보장한다는 것이다. 이는 기존 hard-constraint architecture와 구별되는 장점이다. 동시에 좁은 보장이다. Architecture는 주어진 constraint를 만족시킬 뿐, 실제 폐루프 시스템에 필요한 모든 물리적 안전 조건을 보장하지는 않는다.
+
+## 고정된 hard projection만으로는 왜 부족했나
+
+Hard feasibility 자체가 새로운 것은 아니다. 자연스러운 기존 설계는 network가 unconstrained output을 제안하면 이를 linear projection으로 constraint boundary 또는 feasible set 안으로 되돌리는 방식이다. Infeasible point를 valid point로 바꾸므로 correction이 명시적이라는 장점이 있다.
+
+한계는 고정된 projection rule이 geometry만으로 task decision까지 내린다는 데 있다. Safety boundary가 control action의 한 component를 고정하지만 다른 component는 자유롭게 남긴다고 하자. Orthogonal projection은 고정된 수식에 따라 그 자유 component를 보존하거나 바꾼다. 그 결과가 goal tracking, energy use, 다음 maneuver의 여유에 좋은지 묻지 않는다. 따라서 violation은 제거해도 task에 유용한 degree of freedom을 버릴 수 있다.
+
+Input-dependent constraint에서는 두 번째 한계가 있다. HardNet-Aff 같은 기존 hard-constraint affine architecture는 constraint matrix의 full-row-rank와 constraint 수에 연결된 구조적 조건 아래에서 이 문제를 다룬다. 그러나 실제 feasible action set에는 redundant하거나 dependent한 constraint가 있을 수 있고, 낮은 차원의 action도 많은 inequality로 둘러싸일 수 있다. 이는 polytope에서 예외적 상황이 아니라 흔한 경우다.
+
+CAffNet은 이 두 한계에서 출발한다. Full row rank나 작은 constraint count를 요구하지 않는 hard-feasible layer를 만들면서, candidate constraint face를 따라 학습 가능한 방향을 남기려 한다. 다음 2차원 예시가 그 차이를 구체적으로 보여 준다.
+
+## 머릿속에 남겨 둘 그림
+
+두 숫자를 출력하는 network를 생각해 보자. 출력은 <math><mi>y</mi><mo>=</mo><mo>(</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo>)</mo></math>이고, 다음을 만족해야 한다.
+
+<math display="block" aria-label="간단한 삼각형 feasible region">
+  <msub><mi>y</mi><mn>1</mn></msub><mo>+</mo><msub><mi>y</mi><mn>2</mn></msub><mo>&le;</mo><mn>10</mn><mo>,</mo>
+  <mspace width="0.5em"/><msub><mi>y</mi><mn>1</mn></msub><mo>&ge;</mo><mn>0</mn><mo>,</mo>
+  <mspace width="0.5em"/><msub><mi>y</mi><mn>2</mn></msub><mo>&ge;</mo><mn>0</mn><mo>.</mo>
+</math>
+
+허용되는 출력은 삼각형을 이룬다. 그렇다고 일반 network가 그 바깥의 점을 내지 않는 것은 아니다. Soft constraint는 사실상 “삼각형 밖으로 나가면 loss에서 대가를 치르게 하겠다”는 방식이다. Penalty가 아주 커도 inference-time violation을 불가능하게 만들지는 못한다.
+
+CAffNet은 대신 다음 순서를 따른다.
+
+<math display="block" aria-label="CAffNet 출력 흐름">
+  <mtext>unconstrained neural prediction</mtext><mo>&rarr;</mo>
+  <mtext>constraint-aware correction</mtext><mo>&rarr;</mo>
+  <mtext>feasible output</mtext><mo>.</mo>
+</math>
+
+Network가 먼저 <math><mover><mi>y</mi><mo>^</mo></mover><mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo></math>를 제안한다. 이 제안이 허용 영역 밖이면 CAffNet layer가 영역 안의 점을 반환한다. Feasible set이 nonempty라는 가정 아래, 최종 출력은 주어진 affine constraint를 구조적으로 만족한다.
+
+이것은 단순히 “가장 가까운 점으로 projection한다”는 말보다 넓다. Boundary 위에는 feasible point가 많다. 고정된 geometric projection은 그중 하나를 선택하지만, 같은 boundary 위의 다른 점이 task에는 훨씬 나을 수 있다. 로봇은 두 점에서 모두 안전할 수 있지만 그중 하나에서만 목표로 효율적으로 갈 수 있다. CAffNet의 trainable null-space term은 active equality constraint를 바꾸지 않는 방향에서 학습하게 한다. 제한적이지만 유용한 의미에서, infeasible proposal을 보정하는 방법뿐 아니라 feasible face 위에서 어디에 보정된 출력을 놓을지도 학습한다.
+
+이 그림은 active-set construction도 설명한다. Inequality가 많아도 2차원 polygon의 점은 보통 모든 벽이 아니라 active edge 하나, 또는 vertex에서 만나는 두 edge로 정해진다. CAffNet은 작은 constraint subset으로 candidate를 만들고, 전체 constraint set으로 다시 검사한 뒤 feasible candidate 중 하나를 선택한다. Input-dependent constraint, rank에 덜 민감한 active-set candidate, trainable feasible direction의 조합이 이 논문을 단순 projection보다 더 특징짓는다.
 
 ## Polyhedron의 candidate face를 parameterize한다
 
