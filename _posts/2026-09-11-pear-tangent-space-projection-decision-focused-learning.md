@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "PEAR: Tangent-Space Projection for Decision-Focused Learning—and Where the Exact Gradient Claim Stops"
-title_ko: "PEAR: 의사결정 중심 학습의 접공간 투영과 정확한 gradient 주장의 경계"
+title: "PEAR: Which Prediction Errors Actually Change the Decision?"
+title_ko: "PEAR: 어떤 예측 오차가 실제 의사결정을 바꾸는가?"
 date: 2026-09-11
 category: stochastic-nonlinear-optimization
 category_label: "Mathematical Optimization"
@@ -26,28 +26,28 @@ tags:
   - "KKT sensitivity"
   - "quadratic programming"
   - "linear programming"
-excerpt: "PEAR turns the local regret gradient of a strictly convex predict-then-optimize problem into a curvature-scaled tangent-space projection of prediction error. The theorem is clean, but the LP heuristic and covariance-dependent portfolio experiment sit outside its exact scope."
-excerpt_ko: "PEAR는 strictly convex predict-then-optimize 문제의 local regret gradient를 curvature-scaled tangent-space projection으로 바꾼다. 정리는 깔끔하지만 LP heuristic과 covariance-dependent portfolio 실험은 그 정확한 적용 범위를 벗어난다."
+excerpt: "A constrained optimizer cannot react to every prediction error. PEAR keeps the directions that can move the decision, making it most natural when system dynamics and constraints stay fixed while objective coefficients change across instances."
+excerpt_ko: "제약 최적화기는 모든 예측 오차에 반응하지 않는다. PEAR는 의사결정을 움직일 수 있는 오차만 남기며, 시스템의 동역학과 제약은 같고 목적함수 계수만 달라지는 문제에 특히 잘 맞는다."
 language: "en-ko"
 has_korean_note: false
 ---
 
-## The theorem is cleaner than the method's broadest claims
+This paper argues that a model need not predict every objective coefficient equally well. Some prediction errors may be large without changing the optimizer at all. A much smaller error in another direction can change the selected solution and sharply increase the realized cost. PEAR uses this difference: it trains the predictor on the part of its error that can move the downstream decision under the current constraints.
 
-*Decision-Focused Learning via Tangent-Space Projection of Prediction Error* is interesting because it does not introduce another neural architecture. It reinterprets the gradient in decision-focused learning (DFL) geometrically. Under a strictly convex optimization model and a locally fixed active set, differentiating the solver reduces to two operations: rescale the prediction error by objective curvature, then project it onto the tangent space of the active constraints.
+The approach is especially relevant when the system dynamics and constraints are reused while cost or reward coefficients change from one instance to the next. Examples include process operation with a fixed plant model but changing electricity prices, dispatch over the same network with changing marginal costs, and portfolio optimization with a fixed risk model but changing expected returns.
 
-That result is clean. It says that DFL need not abandon prediction error; it can filter that error through downstream decision geometry. But the exact statement has a narrower scope than the full method and experiments. The linear-programming version adds quadratic smoothing and a normal-space injection, so its update is no longer the true gradient of the original LP regret. The portfolio QP also lets the predicted returns determine the covariance matrix, while the released PEAR backward pass stops the covariance gradient. The theorem remains valid. The issue is that some experimental claims extend beyond the problem covered by the theorem.
+For a regular strictly convex problem, the paper shows that this intuition is exactly the local gradient of decision regret. The scope is narrower for the LP method and the portfolio experiment. The former adds smoothing and a heuristic normal component; the latter stops a covariance-gradient path that is present in the experimental optimization problem. The distinction between the theorem and these extensions is the main point to keep in view.
 
-## The predict-then-optimize problem
+## 1. Repeated system, changing objective coefficients
 
-Let <math><mi>x</mi></math> be observed features and <math><mi>c</mi><mo>&isin;</mo><msup><mi>&Ropf;</mi><mi>n</mi></msup></math> the unknown objective coefficient. A neural network predicts
+Let <math><mi>x</mi></math> denote the information available before a decision and <math><mi>c</mi><mo>&isin;</mo><msup><mi>&Ropf;</mi><mi>n</mi></msup></math> an objective coefficient that is not yet known. A neural network predicts
 
-<math display="block" aria-label="Predicted cost parameter">
+<math display="block" aria-label="Predicted objective coefficient">
   <mover accent="true"><mi>c</mi><mo>^</mo></mover>
-  <mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>,</mo>
+  <mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>.</mo>
 </math>
 
-and the predicted coefficient is passed to an optimization problem:
+The prediction is not the final decision. It enters an optimization problem:
 
 <math display="block" aria-label="Predict then optimize problem">
   <msup><mi>z</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>)</mo>
@@ -59,15 +59,17 @@ and the predicted coefficient is passed to an optimization problem:
   <mspace width="0.4em"/><mi>G</mi><mi>z</mi><mo>&le;</mo><mi>h</mi><mo>.</mo>
 </math>
 
-Ordinary prediction learning minimizes a loss such as
+Here <math><mi>&phi;</mi></math> and the constraint system describe the part of the optimization model that is already known. PEAR's exact theorem treats the prediction as entering only through the linear coefficient <math><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>. In a control problem, for example, the plant dynamics, input bounds, and quadratic control penalty may be fixed while a model predicts a linear cost term associated with the current operating condition. In a mean-variance portfolio, the same structure appears if covariance and portfolio constraints are fixed while expected returns are predicted.
 
-<math display="block" aria-label="Mean squared prediction loss">
+Ordinary supervised learning minimizes the coefficient error,
+
+<math display="block" aria-label="Mean squared prediction error">
   <msub><mi>L</mi><mtext>MSE</mtext></msub>
   <mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac>
   <msup><mrow><mo>&Vert;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>.</mo>
 </math>
 
-DFL instead evaluates the decision made with the prediction under the true coefficient:
+Decision-focused learning instead evaluates the decision made with the prediction under the true coefficient:
 
 <math display="block" aria-label="Decision regret">
   <mi mathvariant="script">R</mi><mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>;</mo><mi>c</mi><mo>)</mo>
@@ -79,29 +81,35 @@ DFL instead evaluates the decision made with the prediction under the true coeff
   <mo>+</mo><msup><mi>c</mi><mo>&top;</mo></msup><msup><mi>z</mi><mo>*</mo></msup><mo>(</mo><mi>c</mi><mo>)</mo><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-The difficult term in backpropagation is the solution sensitivity <math><mo>&part;</mo><msup><mi>z</mi><mo>*</mo></msup><mo>/</mo><mo>&part;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>. Differentiable optimization layers obtain it from a KKT system, surrogate methods replace the regret, and perturbation methods repeatedly solve nearby optimization problems. PEAR attacks this sensitivity term directly.
+The first term is the realized cost of the decision induced by the prediction. The second is the perfect-information optimum. Training on this regret requires the sensitivity <math><mo>&part;</mo><msup><mi>z</mi><mo>*</mo></msup><mo>/</mo><mo>&part;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>, which is usually the expensive part of differentiating through the optimizer.
 
-## Why only tangent error changes a decision
+## 2. Discard errors that cannot move the decision
 
-Consider the constraint <math><msub><mi>z</mi><mn>1</mn></msub><mo>+</mo><msub><mi>z</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></math>. Feasible decisions lie on a line. The error direction <math><mo>(</mo><mn>1</mn><mo>,</mo><mo>&minus;</mo><mn>1</mn><mo>)</mo></math> runs along that line and can change the optimizer. The direction <math><mo>(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>)</mo></math> is normal to it. Adding the latter to the objective coefficients only adds the same constant to every feasible objective value:
+Consider the constraint <math><msub><mi>z</mi><mn>1</mn></msub><mo>+</mo><msub><mi>z</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></math>. Feasible decisions lie on a line. Compare the prediction errors <math><mo>(</mo><mn>1</mn><mo>,</mo><mo>&minus;</mo><mn>1</mn><mo>)</mo></math> and <math><mo>(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>)</mo></math>.
 
-<math display="block" aria-label="Normal objective shift is constant on the feasible set">
+The first changes the relative costs of <math><msub><mi>z</mi><mn>1</mn></msub></math> and <math><msub><mi>z</mi><mn>2</mn></msub></math>, so it can move the solution along the feasible line. The second raises both costs equally. For every feasible decision,
+
+<math display="block" aria-label="A normal objective shift is constant on the feasible set">
   <mo>(</mo><msub><mi>c</mi><mn>1</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><msub><mi>z</mi><mn>1</mn></msub>
   <mo>+</mo><mo>(</mo><msub><mi>c</mi><mn>2</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><msub><mi>z</mi><mn>2</mn></msub>
   <mo>=</mo><msub><mi>c</mi><mn>1</mn></msub><msub><mi>z</mi><mn>1</mn></msub>
   <mo>+</mo><msub><mi>c</mi><mn>2</mn></msub><msub><mi>z</mi><mn>2</mn></msub><mo>+</mo><mn>1</mn><mo>.</mo>
 </math>
 
-The prediction error can therefore be large in Euclidean norm yet irrelevant to the decision.
+It adds the same constant to every feasible objective value, so the optimizer does not change. MSE tries to correct both errors. PEAR removes the second type before sending the learning signal back to the predictor.
 
-At the current optimum, collect the equality constraints and active inequalities in
+This is a statement about directions, not individual coefficients. PEAR does not label one coefficient important and another irrelevant. A combination of coefficient errors can be invisible to the optimizer because it lies normal to the feasible set. Another combination of the same size can be tangent to that set and change the decision.
+
+## 3. Active constraints define the relevant directions
+
+At the current solution, collect the equality constraints and active inequalities in
 
 <math display="block" aria-label="Active constraint Jacobian">
   <mi>J</mi><mo>=</mo>
   <mrow><mo>[</mo><mtable><mtr><mtd><mi>A</mi></mtd></mtr><mtr><mtd><msub><mi>G</mi><mi mathvariant="script">A</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-A locally feasible displacement <math><mi>d</mi><mi>z</mi></math> must satisfy <math><mi>J</mi><mi>d</mi><mi>z</mi><mo>=</mo><mn>0</mn></math>. Hence the tangent and normal spaces are
+A small feasible displacement must satisfy <math><mi>J</mi><mi>d</mi><mi>z</mi><mo>=</mo><mn>0</mn></math>. The local tangent and normal spaces are therefore
 
 <math display="block" aria-label="Tangent and normal spaces">
   <mi mathvariant="script">T</mi><mo>=</mo><mi>ker</mi><mo>(</mo><mi>J</mi><mo>)</mo><mo>,</mo>
@@ -109,11 +117,17 @@ A locally feasible displacement <math><mi>d</mi><mi>z</mi></math> must satisfy <
   <mi mathvariant="script">N</mi><mo>=</mo><mi>range</mi><mo>(</mo><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo><mo>.</mo>
 </math>
 
-PEAR keeps the part of prediction error that can move the decision along <math><mi mathvariant="script">T</mi></math>.
+The simple two-variable example used ordinary Euclidean geometry. A general strictly convex objective has its own local curvature. With
 
-## KKT sensitivity becomes a curvature-aware projection
+<math display="block" aria-label="Objective Hessian">
+  <mi>H</mi><mo>=</mo><msup><mo>&nabla;</mo><mn>2</mn></msup><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>,</mo>
+</math>
 
-Suppose the active set stays fixed in a neighborhood of the current solution. Locally, the KKT conditions are
+PEAR first scales the error by <math><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup></math> and then projects it onto <math><mi mathvariant="script">T</mi></math> in the metric defined by <math><mi>H</mi></math>. Calling the entire operation a Euclidean projection would be inaccurate unless <math><mi>H</mi><mo>=</mo><mi>&alpha;</mi><mi>I</mi></math>.
+
+## 4. The projected error is the exact local regret gradient
+
+Assume the active set does not change under a small perturbation. The local KKT conditions are
 
 <math display="block" aria-label="Local KKT conditions">
   <mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo>
@@ -123,7 +137,7 @@ Suppose the active set stays fixed in a neighborhood of the current solution. Lo
   <mi>J</mi><msup><mi>z</mi><mo>*</mo></msup><mo>=</mo><mover><mi>b</mi><mo>~</mo></mover><mo>.</mo>
 </math>
 
-Let <math><mi>H</mi><mo>=</mo><msup><mo>&nabla;</mo><mn>2</mn></msup><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo></math>. Differentiating the KKT system gives
+Differentiating them gives
 
 <math display="block" aria-label="Differentiated KKT system">
   <mrow><mo>[</mo><mtable>
@@ -141,11 +155,11 @@ Let <math><mi>H</mi><mo>=</mo><msup><mo>&nabla;</mo><mn>2</mn></msup><mi>&phi;</
   </mtable><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-Eliminating the dual displacement with a Schur complement yields
+Eliminating the dual displacement yields
 
-<math display="block" aria-label="Curvature scaled tangent projection operator">
+<math display="block" aria-label="Projected sensitivity operator">
   <mi>d</mi><mi>z</mi><mo>=</mo><mo>&minus;</mo><msub><mi>P</mi><mi>H</mi></msub><mi>d</mi><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>,</mo>
-  <mspace width="0.8em"/>
+  <mspace width="0.7em"/>
   <msub><mi>P</mi><mi>H</mi></msub>
   <mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup>
   <mo>&minus;</mo>
@@ -154,97 +168,53 @@ Eliminating the dual displacement with a Schur complement yields
   <mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mo>.</mo>
 </math>
 
-Define
+Let <math><mi>e</mi><mo>=</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi></math>. Stationarity gives <math><mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi><mo>=</mo><mo>&minus;</mo><mi>e</mi><mo>&minus;</mo><msup><mi>J</mi><mo>&top;</mo></msup><msup><mi>y</mi><mo>*</mo></msup></math>. Since <math><msub><mi>P</mi><mi>H</mi></msub><msup><mi>J</mi><mo>&top;</mo></msup><mo>=</mo><mn>0</mn></math>, the dual term disappears from the chain rule, leaving
 
-<math display="block" aria-label="H orthogonal tangent projector">
-  <msub><mi>&Pi;</mi><mi>H</mi></msub>
-  <mo>=</mo><mi>I</mi>
-  <mo>&minus;</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup>
-  <msup><mrow><mo>(</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo></mrow><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>J</mi><mo>.</mo>
-</math>
-
-Then <math><msub><mi>P</mi><mi>H</mi></msub><mo>=</mo><msub><mi>&Pi;</mi><mi>H</mi></msub><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup></math>. This distinction matters. <math><msub><mi>P</mi><mi>H</mi></msub></math> is not generally a Euclidean projector. It first applies inverse-curvature scaling, then an <math><mi>H</mi></math>-orthogonal projection onto <math><mi>ker</mi><mo>(</mo><mi>J</mi><mo>)</mo></math>. Only when <math><mi>H</mi><mo>=</mo><mi>&alpha;</mi><mi>I</mi></math> does the geometry essentially reduce to Euclidean projection.
-
-## The regret gradient collapses to projected prediction error
-
-Write the prediction error as <math><mi>e</mi><mo>=</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi></math>. Chain rule gives
-
-<math display="block" aria-label="Regret gradient before KKT simplification">
-  <msub><mo>&nabla;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></msub><mi mathvariant="script">R</mi>
-  <mo>=</mo><mo>&minus;</mo><msub><mi>P</mi><mi>H</mi></msub>
-  <mrow><mo>[</mo><mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi><mo>]</mo></mrow><mo>.</mo>
-</math>
-
-Stationarity implies
-
-<math display="block" aria-label="KKT stationarity substitution">
-  <mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi>
-  <mo>=</mo><mo>&minus;</mo><mi>e</mi><mo>&minus;</mo><msup><mi>J</mi><mo>&top;</mo></msup><msup><mi>y</mi><mo>*</mo></msup><mo>.</mo>
-</math>
-
-Because <math><msub><mi>P</mi><mi>H</mi></msub><msup><mi>J</mi><mo>&top;</mo></msup><mo>=</mo><mn>0</mn></math>, the dual term vanishes:
-
-<math display="block" aria-label="PEAR exact local regret gradient">
+<math display="block" aria-label="Exact local regret gradient">
   <msub><mo>&nabla;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></msub><mi mathvariant="script">R</mi>
   <mo>=</mo><msub><mi>P</mi><mi>H</mi></msub>
   <mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi><mo>)</mo><mo>.</mo>
 </math>
 
-The MSE gradient is the raw error <math><mi>e</mi></math>. The PEAR gradient is that same error after removing directions that are locally invisible to the optimizer, with the curvature of the objective setting the metric. This is the paper's strongest conceptual contribution.
+This is the paper's main result. Under its assumptions, PEAR is not merely a plausible surrogate direction. It equals the local gradient of regret with respect to the predicted linear coefficient.
 
-## PEAR is a custom backward rule, not a new scalar loss
+## 5. The implementation changes the backward signal
 
-The released implementation clarifies an easy point to miss from the mathematical presentation. The forward value of the QP projection loss is still
+The released QP code returns an ordinary squared error as its forward value. Its backward method overrides the MSE derivative and returns <math><msub><mi>P</mi><mi>H</mi></msub><mi>e</mi></math>. PEAR is therefore better understood as a custom gradient rule than as a new scalar loss.
 
-<math display="block" aria-label="PEAR forward value">
-  <msub><mi>L</mi><mtext>forward</mtext></msub>
-  <mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac>
-  <msup><mrow><mo>&Vert;</mo><msub><mi>&mu;</mi><mtext>pred</mtext></msub><mo>&minus;</mo><msub><mi>&mu;</mi><mtext>true</mtext></msub><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>.</mo>
-</math>
+The full <math><mi>n</mi><mo>&times;</mo><mi>n</mi></math> matrix <math><msub><mi>P</mi><mi>H</mi></msub></math> need not be formed. If <math><mi>k</mi></math> constraints are active, the method solves
 
-The backward method overrides the derivative and returns the projected error. PEAR is therefore better described as a gradient transformation than as a conventional scalar loss whose automatic derivative produces the update.
-
-For each training sample, the method solves the forward optimization problem, identifies active constraints, and forms <math><mi>J</mi></math>. It does not need to materialize the full <math><mi>n</mi><mo>&times;</mo><mi>n</mi></math> matrix <math><msub><mi>P</mi><mi>H</mi></msub></math>. With <math><mi>k</mi></math> active constraints, it computes
-
-<math display="block" aria-label="PEAR Schur complement solve">
-  <msub><mi>x</mi><mi>H</mi></msub><mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi><mo>,</mo>
-  <mspace width="0.6em"/>
+<math display="block" aria-label="Schur complement system used by PEAR">
   <mo>(</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo><mi>v</mi>
-  <mo>=</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi><mo>,</mo>
+  <mo>=</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi>
 </math>
 
-then returns
+and returns
 
-<math display="block" aria-label="PEAR gradient signal">
+<math display="block" aria-label="PEAR backward signal">
   <mi>g</mi><mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi>
   <mo>&minus;</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mi>v</mi><mo>.</mo>
 </math>
 
-The central solve is <math><mi>k</mi><mo>&times;</mo><mi>k</mi></math>, which can be attractive when <math><mi>k</mi><mo>&ll;</mo><mi>n</mi></math> and the Hessian has exploitable structure.
+The central solve is <math><mi>k</mi><mo>&times;</mo><mi>k</mi></math>. This is attractive when relatively few constraints are active and solves with <math><mi>H</mi></math> are cheap.
 
-## The exact theorem is local and strictly convex
+## 6. Where the exact theorem stops
 
-The derivation needs three strong conditions. The Hessian must be positive definite, the active constraint Jacobian must satisfy the linear independence constraint qualification, and active inequalities must satisfy strict complementarity. These conditions support a locally stable active set and differentiable solution map.
+The derivation requires <math><mi>H</mi><mo>&succ;</mo><mn>0</mn></math>, linearly independent active constraints, and strict complementarity. These assumptions keep the active set locally fixed and the solution map differentiable. The result is local. At an active-set boundary, <math><mi>J</mi></math> changes and the gradient can be nonsmooth.
 
-The result is therefore local. Crossing an active-set boundary changes <math><mi>J</mi></math>, and the solution map can become nonsmooth. Degenerate or weakly active constraints also weaken the argument. The theorem says something precise about a smooth neighborhood of a strictly convex problem; it is not a global differentiability result for arbitrary mathematical programs.
+A pure LP does not satisfy the curvature assumption because <math><mi>H</mi><mo>=</mo><mn>0</mn></math>. Its optimizer is piecewise constant in the cost vector: a small cost change usually leaves the optimal vertex unchanged, while crossing a normal-cone boundary can make the solution jump.
 
-## The LP version is a modified problem, then a heuristic
+The paper handles this by adding quadratic smoothing,
 
-For a linear program, <math><mi>&phi;</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>=</mo><mn>0</mn></math> and <math><mi>H</mi><mo>=</mo><mn>0</mn></math>, so the inverse Hessian in PEAR does not exist. More fundamentally, an LP optimizer is piecewise constant in the cost vector. Within one normal cone the optimal vertex does not move; at a boundary it may jump. The classical derivative is thus zero almost everywhere or undefined at the transition.
-
-The paper adds quadratic smoothing,
-
-<math display="block" aria-label="Quadratically smoothed LP objective">
+<math display="block" aria-label="Quadratic smoothing for an LP">
   <mi>&phi;</mi><mo>(</mo><mi>z</mi><mo>)</mo>
   <mo>=</mo><mfrac><mi>&lambda;</mi><mn>2</mn></mfrac><msup><mrow><mo>&Vert;</mo><mi>z</mi><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>,</mo>
   <mspace width="0.7em"/><mi>H</mi><mo>=</mo><mi>&lambda;</mi><mi>I</mi><mo>.</mo>
 </math>
 
-This produces a useful gradient, but it is the gradient of the smoothed problem rather than the true regret gradient of the original LP.
+The resulting gradient belongs to the smoothed problem, not the original LP. The implementation then adds a normalized normal component,
 
-The implementation goes further by injecting a normalized normal component:
-
-<math display="block" aria-label="Normal space injection for LP training">
+<math display="block" aria-label="Normal component injection">
   <mi>n</mi><mo>=</mo><msup><mi>&lambda;</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mi>v</mi><mo>,</mo>
   <mspace width="0.7em"/>
   <msub><mi>g</mi><mtext>inj</mtext></msub>
@@ -252,17 +222,9 @@ The implementation goes further by injecting a normalized normal component:
   <mfrac><mrow><mo>&Vert;</mo><mi>g</mi><mo>&Vert;</mo></mrow><mrow><mo>&Vert;</mo><mi>n</mi><mo>&Vert;</mo></mrow></mfrac><mi>n</mi><mo>.</mo>
 </math>
 
-This is pragmatically understandable: a tangent signal can be too weak to escape an LP plateau. It is also conceptually ironic. The theorem removes the normal component as decision-irrelevant, while the LP training rule adds it back to obtain a useful update. Once injected, <math><msub><mi>g</mi><mtext>inj</mtext></msub></math> is not the regret gradient.
+This can help escape a flat LP region, but it is a heuristic. It also reintroduces the normal direction that the original geometric argument removed as locally decision-irrelevant. The strictly convex QP result, the smoothed LP gradient, and the LP gradient with normal injection are three different claims.
 
-The method should therefore be described in three layers:
-
-- Strictly convex QP: an exact local regret-gradient result under the stated regularity assumptions.
-- Quadratically smoothed LP: a gradient for a modified optimization problem.
-- Smoothed LP with normal injection: a heuristic training direction.
-
-Those layers can all be useful. They should not share the same exact-gradient label.
-
-## The portfolio experiment drops a predicted covariance path
+## 7. The portfolio experiment omits the covariance path
 
 The portfolio problem is
 
@@ -276,15 +238,10 @@ The portfolio problem is
   <mspace width="0.4em"/><mi>w</mi><mo>&ge;</mo><mn>0</mn><mo>.</mo>
 </math>
 
-The theorem treats <math><mi>&phi;</mi><mo>(</mo><mi>w</mi><mo>)</mo><mo>=</mo><mi>&lambda;</mi><msup><mi>w</mi><mo>&top;</mo></msup><mi>&Sigma;</mi><mi>w</mi><mo>/</mo><mn>2</mn></math> as known and prediction-independent, while the model predicts only the linear coefficient <math><mo>&minus;</mo><mi>&mu;</mi></math>. In the experiment, however, the network predicts a 21-day return path. Both its mean and a covariance matrix constructed from historical and predicted returns enter the optimizer. The actual decision is therefore <math><msup><mi>w</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover><mo>,</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover><mo>)</mo></math>.
+The theorem matches this problem when <math><mi>&Sigma;</mi></math> is fixed and only <math><mi>&mu;</mi></math> is predicted. In the experiment, the network predicts a 21-day return path. Both the sample mean and a covariance matrix constructed from historical and predicted returns enter the optimizer. The decision is therefore <math><msup><mi>w</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover><mo>,</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover><mo>)</mo></math>, and the total derivative with respect to predicted returns has two paths:
 
-The full derivative with respect to predicted returns <math><mover accent="true"><mi>r</mi><mo>^</mo></mover></math> has two paths:
-
-<math display="block" aria-label="Mean and covariance gradient paths">
-  <mfrac>
-    <mrow><mi>d</mi><mi mathvariant="script">R</mi></mrow>
-    <mrow><mi>d</mi><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow>
-  </mfrac>
+<math display="block" aria-label="Mean and covariance derivative paths">
+  <mfrac><mrow><mi>d</mi><mi mathvariant="script">R</mi></mrow><mrow><mi>d</mi><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac>
   <mo>=</mo>
   <mfrac><mrow><mo>&part;</mo><mi mathvariant="script">R</mi></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover></mrow></mfrac>
   <mfrac><mrow><mo>&part;</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac>
@@ -293,35 +250,31 @@ The full derivative with respect to predicted returns <math><mover accent="true"
   <mfrac><mrow><mo>&part;</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac><mo>.</mo>
 </math>
 
-In the released PEAR backward implementation, the projected gradient is returned for the predicted mean and `None` is returned for the predicted covariance. The covariance path is stopped. PEAR therefore computes a partial regret gradient with respect to the mean while treating the current predicted covariance as fixed. That is not the total derivative of the optimization problem used in the experiment.
+The released PEAR backward pass returns the projected gradient for the predicted mean and `None` for the predicted covariance. It computes a partial derivative with respect to the mean while treating the current covariance as fixed. Differentiable QP baselines can receive gradients through both inputs. Without an ablation, it is unclear how much of PEAR's portfolio result comes from the projection and how much comes from stopping the covariance gradient.
 
-This difference also complicates baseline comparisons. A differentiable QP layer receives both the predicted mean and a covariance factor and can propagate through both. PEAR uses less gradient information. Its performance may reflect the projection geometry, the covariance stop-gradient acting as regularization, or both. A direct ablation is needed to separate them.
+## 8. The computational advantage is conditional
 
-## Active-set numerics and computational cost remain conditional
+PEAR reads the active set from a finite-tolerance primal-dual solution. A nearly binding constraint can enter or leave the set when the numerical threshold changes. Near degeneracy, <math><mi>J</mi></math> may be unstable and <math><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup></math> may be ill-conditioned. Numerical stability relative to a differentiable solver is therefore an empirical question.
 
-PEAR identifies binding inequalities from a finite-tolerance primal-dual solution. When <math><msub><mi>G</mi><mi>i</mi></msub><msup><mi>z</mi><mo>*</mo></msup><mo>&minus;</mo><msub><mi>h</mi><mi>i</mi></msub><mo>&approx;</mo><mn>0</mn></math>, membership in the active set can change with the numerical threshold. Near degeneracy, <math><mi>J</mi></math> may be unstable and <math><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup></math> may be ill-conditioned. The claim that this route is more numerically stable than differentiating a solver is empirical, not a consequence of the theorem.
+Runtime also depends on problem structure. PEAR is most favorable when <math><mi>k</mi><mo>&ll;</mo><mi>n</mi></math> and the Hessian is sparse, diagonal, or already factorized. If many nonnegativity constraints are active, as can happen in a sparse portfolio, <math><mi>k</mi></math> can approach <math><mi>n</mi></math>. A dense covariance matrix still requires expensive solves with <math><mi>H</mi></math>.
 
-The cost advantage is conditional as well. A small active set and structured Hessian favor PEAR. If many assets have zero weight, many nonnegativity constraints are active and <math><mi>k</mi></math> can approach <math><mi>n</mi></math>. A dense covariance matrix still requires a factorization or solves with <math><mi>H</mi></math>. PEAR does not become cheap merely by writing the sensitivity as a smaller Schur system.
+## 9. Strong results, but not a universal win
 
-## What the experiments establish
+The LP benchmarks use a 5-by-5 shortest-path problem and a 100-item knapsack, with increasingly nonlinear feature-to-cost mappings. PEAR and LAVA train on an LP relaxation for knapsack and are evaluated on the original integer problem.
 
-The LP benchmarks are a 5-by-5 shortest-path problem and a 100-item knapsack. The polynomial degree of the feature-to-cost mapping increases from 2 to 8. PEAR and LAVA train on an LP relaxation for knapsack and are evaluated on the original integer problem.
+At polynomial degree 8, normalized regret on knapsack is 2.285% for MSE, 0.763% for SPO+, and 0.437% for PEAR. PEAR also records the best degree-8 shortest-path result at 4.246%. It does not win every setting: at degree 4, SPO+ obtains 0.761% and PEAR 0.774%. The phrase “best decision quality among all baselines” is slightly broader than the table supports.
 
-The decision results are strong. For degree-8 knapsack, normalized regret is 2.285% for MSE, 0.763% for SPO+, and 0.437% for PEAR. PEAR also gives the best reported result for degree-8 shortest path at 4.246%. It does not win every setting: at degree 4, SPO+ records 0.761% and PEAR 0.774%. The broad phrase “best decision quality among all baselines” is therefore slightly stronger than the table supports.
+PEAR is faster than the differentiable QP layers in the reported portfolio comparison: 122.3 seconds versus 147.6 for QPTH and 321.9 for CVXPYLayers. MSE takes only 33.0 seconds. The defensible claim is that PEAR is one of the faster decision-focused methods, not the fastest baseline without qualification.
 
-The same qualification applies to computational efficiency. At shortest-path degree 8, MSE takes 6.1 seconds and PEAR 38.4 seconds. In the portfolio task, MSE takes 33.0 seconds and PEAR 122.3 seconds. PEAR is faster than QPTH at 147.6 seconds and CVXPYLayers at 321.9 seconds in that portfolio comparison, making it one of the faster decision-focused methods rather than the fastest baseline without qualification.
+The portfolio results are promising but variable. PEAR reports normalized regret of 85.38%, a Sharpe ratio of 1.44, and the lowest maximum drawdown. Across five seeds, cumulative return is <math><mn>184.19</mn><mo>&PlusMinus;</mo><mn>86.24</mn><mo>%</mo></math>, compared with <math><mn>139.77</mn><mo>&PlusMinus;</mo><mn>115.74</mn><mo>%</mo></math> for QPTH. That uncertainty is too large to establish clear economic superiority.
 
-For portfolio optimization, PEAR reports the lowest normalized regret at 85.38%, a Sharpe ratio of 1.44 versus 0.92 for MSE and 1.15 for QPTH/CVXPYLayers, and the lowest maximum drawdown. The uncertainty is large across five seeds. Cumulative return is <math><mn>184.19</mn><mo>&PlusMinus;</mo><mn>86.24</mn><mo>%</mo></math> for PEAR and <math><mn>139.77</mn><mo>&PlusMinus;</mo><mn>115.74</mn><mo>%</mo></math> for QPTH. These results are promising but too variable to settle economic superiority, especially without the covariance-gradient ablation.
+The constraint-shift experiment exposes a useful limitation. When the shortest-path source and target change, MSE is best at every tested degree. At degree 8, MSE scores 14.00, PEAR 21.42, and SPO+ 43.40. DFL deliberately concentrates accuracy on the training-time decision geometry. When that geometry changes, the same specialization can hurt transfer.
 
-The constraint-shift experiment may be more revealing. Training and testing use different optimization geometries: a changed source-target direction for shortest path, a changed knapsack capacity, and short selling at test time after long-only portfolio training. MSE remains strong. Under the shortest-path direction shift at degree 8, MSE scores 14.00, PEAR 21.42, and SPO+ 43.40. DFL deliberately shapes prediction error around the training-time feasible geometry. When that geometry changes, its inductive bias can become a liability. This is not a side result; it identifies a real boundary between in-distribution decision quality and transfer across constraints.
+## 10. Assessment
 
-## Assessment
+The paper's main theorem is both simple and useful. When a regular strictly convex optimizer repeatedly solves the same system with changing linear objective coefficients, the regret gradient is ordinary prediction error after curvature scaling and tangent-space projection. This gives a clear answer to which prediction errors deserve learning capacity.
 
-The exact result is worth keeping. For a prediction-independent, strictly convex objective with a regular and locally fixed active set, the regret gradient is a curvature-scaled tangent-space projection of ordinary prediction error. The proof follows cleanly from KKT sensitivity and stationarity, and the interpretation makes DFL easier to reason about.
-
-The practical method occupies a wider territory. The LP variant optimizes a smoothed surrogate and then injects a heuristic normal component. The portfolio experiment differentiates only the mean-return path even though predicted returns also determine covariance. Active-set identification and runtime gains depend on numerical tolerances, sparsity, and Hessian structure.
-
-The right conclusion is not that the theorem is wrong. It is that the theorem, the LP training rule, and the covariance-dependent QP experiment should be reported as three distinct objects. PEAR's geometry is most convincing when those boundaries are explicit.
+The qualifications are equally concrete. The LP version is a smoothed and then heuristically modified method. The portfolio implementation omits a covariance-gradient path. The speed advantage depends on a small, stable active set and cheap Hessian solves. None of these points invalidates the theorem; they mark the boundary between the theorem and the broader experimental method.
 
 ## Reference
 
@@ -329,44 +282,46 @@ Junhyeong Lee, Sangjin Jin, and Yongjae Lee. *Decision-Focused Learning via Tang
 
 <!-- ko -->
 
-## 정리는 method의 가장 넓은 주장보다 깔끔하다
+이 논문은 모든 목적함수 계수를 똑같이 정확하게 예측하기보다, 최종 의사결정의 질에 영향을 주는 예측 오차에 학습을 집중하자는 연구다. 제약 최적화에서는 어떤 예측 오차가 크더라도 최적해가 전혀 바뀌지 않을 수 있다. 반대로 특정 방향의 작은 오차가 선택되는 해와 실제 비용을 크게 바꿀 수도 있다. PEAR는 이러한 차이를 이용해, 예측 오차 중 현재 제약조건 아래에서 의사결정을 움직일 수 있는 방향만 학습에 사용한다.
 
-*Decision-Focused Learning via Tangent-Space Projection of Prediction Error*가 흥미로운 이유는 새로운 neural architecture를 제안해서가 아니다. 이 논문은 decision-focused learning(DFL)의 gradient를 기하학적으로 다시 해석한다. Strictly convex optimization model과 locally fixed active set 아래에서 solver differentiation은 두 단계로 줄어든다. Prediction error를 objective curvature로 rescale한 뒤 active constraint의 tangent space에 project한다.
+이 접근법은 시스템의 동역학과 제약조건은 반복해서 동일하게 사용되지만, 비용이나 수익률과 같은 목적함수 계수가 문제마다 달라지는 경우에 특히 유용하다. 예를 들어 동일한 공정 모델을 사용하는 운전 최적화에서 전력가격이나 한계운전비용이 변하는 경우, 같은 전력망에서 발전비용 계수가 달라지는 경우, 또는 위험모형은 고정하고 기대수익률만 예측하는 포트폴리오 문제를 생각할 수 있다.
 
-이 결과는 깔끔하다. DFL은 prediction error를 버리는 것이 아니라 downstream decision geometry를 통해 filtering하는 것으로 이해할 수 있다. 그러나 정확한 정리의 범위는 전체 method와 experiment보다 좁다. LP 버전은 quadratic smoothing과 normal-space injection을 추가하므로 update가 원래 LP regret의 true gradient가 아니다. Portfolio QP에서는 predicted return이 covariance matrix까지 결정하지만 공개된 PEAR backward는 covariance gradient를 끊는다. 정리 자체는 유효하다. 문제는 일부 experimental claim이 정리가 다루는 문제보다 넓다는 데 있다.
+논문의 핵심 정리는 엄밀히 볼록한 최적화 문제에서 이 생각이 단순한 직관이 아니라 실제 후회값의 기울기와 일치한다는 것을 보인다. 다만 선형계획에 적용한 방법과 예측 공분산을 사용하는 포트폴리오 실험은 이 정리의 정확한 범위를 벗어난다. 이 글에서는 먼저 PEAR의 단순한 기하학적 아이디어를 설명하고, 그다음 정리가 성립하는 조건과 실제 구현 및 실험 사이의 차이를 살펴본다.
 
-## Predict-then-optimize 문제
+## 1. 동일한 시스템에서 목적함수 계수만 달라지는 문제
 
-관측 feature를 <math><mi>x</mi></math>, 알 수 없는 objective coefficient를 <math><mi>c</mi><mo>&isin;</mo><msup><mi>&Ropf;</mi><mi>n</mi></msup></math>이라고 하자. Neural network는
+의사결정을 내리기 전에 알 수 있는 정보를 <math><mi>x</mi></math>, 아직 알 수 없는 목적함수 계수를 <math><mi>c</mi><mo>&isin;</mo><msup><mi>&Ropf;</mi><mi>n</mi></msup></math>이라고 하자. 신경망은 다음 값을 예측한다.
 
-<math display="block" aria-label="예측된 cost parameter">
+<math display="block" aria-label="예측 목적함수 계수">
   <mover accent="true"><mi>c</mi><mo>^</mo></mover>
-  <mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo>
+  <mo>=</mo><msub><mi>f</mi><mi>&theta;</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>.</mo>
 </math>
 
-를 예측하고, 그 coefficient를 optimization problem에 넣는다.
+이 예측값이 곧 최종 결정은 아니다. 예측값은 다음 최적화 문제의 목적함수에 들어간다.
 
-<math display="block" aria-label="Predict then optimize 문제">
+<math display="block" aria-label="예측 후 최적화 문제">
   <msup><mi>z</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>)</mo>
   <mo>=</mo>
   <munder><mo>arg min</mo><mi>z</mi></munder>
   <mrow><mo>[</mo><mi>&phi;</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>+</mo><msup><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&top;</mo></msup><mi>z</mi><mo>]</mo></mrow>
-  <mspace width="0.8em"/><mtext>subject to</mtext><mspace width="0.5em"/>
+  <mspace width="0.8em"/><mtext>제약조건</mtext><mspace width="0.5em"/>
   <mi>A</mi><mi>z</mi><mo>=</mo><mi>b</mi><mo>,</mo>
   <mspace width="0.4em"/><mi>G</mi><mi>z</mi><mo>&le;</mo><mi>h</mi><mo>.</mo>
 </math>
 
-일반적인 prediction learning은 다음과 같은 loss를 최소화한다.
+여기서 <math><mi>&phi;</mi></math>와 제약식은 이미 알고 있는 시스템 구조를 나타낸다. PEAR의 정확한 정리는 예측값이 선형 목적함수 계수 <math><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>로만 들어가는 경우를 다룬다. 제어 문제라면 공정 동역학, 입력 한계, 이차 제어비용은 고정하고 현재 운전조건에 따른 선형 비용항만 예측하는 경우다. 평균–분산 포트폴리오에서는 공분산과 투자 제약은 고정하고 기대수익률만 예측할 때 같은 구조가 된다.
 
-<math display="block" aria-label="Mean squared prediction loss">
+일반적인 지도학습은 계수의 평균제곱오차(MSE)를 최소화한다.
+
+<math display="block" aria-label="평균제곱 예측오차">
   <msub><mi>L</mi><mtext>MSE</mtext></msub>
   <mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac>
   <msup><mrow><mo>&Vert;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>.</mo>
 </math>
 
-DFL은 prediction으로 내린 decision을 true coefficient 아래에서 평가한다.
+의사결정 중심 학습은 예측값으로 내린 결정을 실제 계수 아래에서 평가한다.
 
-<math display="block" aria-label="의사결정 regret">
+<math display="block" aria-label="의사결정 후회값">
   <mi mathvariant="script">R</mi><mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>;</mo><mi>c</mi><mo>)</mo>
   <mo>=</mo>
   <mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>)</mo><mo>)</mo>
@@ -376,43 +331,55 @@ DFL은 prediction으로 내린 decision을 true coefficient 아래에서 평가�
   <mo>+</mo><msup><mi>c</mi><mo>&top;</mo></msup><msup><mi>z</mi><mo>*</mo></msup><mo>(</mo><mi>c</mi><mo>)</mo><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-Backpropagation에서 어려운 항은 solution sensitivity <math><mo>&part;</mo><msup><mi>z</mi><mo>*</mo></msup><mo>/</mo><mo>&part;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>다. Differentiable optimization layer는 KKT system에서 이를 구하고, surrogate method는 regret을 다른 loss로 대체하며, perturbation method는 주변 optimization problem을 여러 번 푼다. PEAR는 이 sensitivity term을 직접 공략한다.
+첫 항은 예측값으로 선택한 결정을 실제 계수로 평가한 비용이다. 두 번째 항은 실제 계수를 미리 알았을 때 얻는 최적값이다. 이 후회값으로 신경망을 학습하려면 예측값이 바뀔 때 최적해가 어떻게 움직이는지, 즉 <math><mo>&part;</mo><msup><mi>z</mi><mo>*</mo></msup><mo>/</mo><mo>&part;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></math>를 구해야 한다. 보통은 이 계산이 최적화기를 미분할 때 가장 부담스러운 부분이다.
 
-## Tangent error만 decision을 바꾸는 이유
+## 2. 의사결정을 움직이지 않는 오차는 학습에서 제외한다
 
-Constraint가 <math><msub><mi>z</mi><mn>1</mn></msub><mo>+</mo><msub><mi>z</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></math>이라고 하자. Feasible decision은 하나의 직선 위에 있다. Error direction <math><mo>(</mo><mn>1</mn><mo>,</mo><mo>&minus;</mo><mn>1</mn><mo>)</mo></math>은 그 직선을 따라가므로 optimizer를 바꿀 수 있다. 반면 <math><mo>(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>)</mo></math>은 직선에 수직이다. 이 방향을 objective coefficient에 더하면 모든 feasible objective value에 같은 상수만 더해진다.
+가능한 결정이 <math><msub><mi>z</mi><mn>1</mn></msub><mo>+</mo><msub><mi>z</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></math>을 만족해야 한다고 하자. 예측 오차 <math><mo>(</mo><mn>1</mn><mo>,</mo><mo>&minus;</mo><mn>1</mn><mo>)</mo></math>과 <math><mo>(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>)</mo></math>을 비교해 보자.
 
-<math display="block" aria-label="Normal objective shift는 feasible set에서 상수다">
+첫 번째 오차는 <math><msub><mi>z</mi><mn>1</mn></msub></math>과 <math><msub><mi>z</mi><mn>2</mn></msub></math>의 상대적인 비용을 바꾼다. 따라서 최적해를 실행 가능한 직선을 따라 움직일 수 있다. 두 번째 오차는 두 비용을 같은 크기로 올린다. 모든 실행 가능한 결정에서
+
+<math display="block" aria-label="법선방향 목적함수 변화는 실행가능집합에서 상수다">
   <mo>(</mo><msub><mi>c</mi><mn>1</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><msub><mi>z</mi><mn>1</mn></msub>
   <mo>+</mo><mo>(</mo><msub><mi>c</mi><mn>2</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><msub><mi>z</mi><mn>2</mn></msub>
   <mo>=</mo><msub><mi>c</mi><mn>1</mn></msub><msub><mi>z</mi><mn>1</mn></msub>
   <mo>+</mo><msub><mi>c</mi><mn>2</mn></msub><msub><mi>z</mi><mn>2</mn></msub><mo>+</mo><mn>1</mn><mo>.</mo>
 </math>
 
-따라서 prediction error는 Euclidean norm으로 클 수 있지만 decision 관점에서는 아무 의미가 없을 수 있다.
+목적함수에 같은 상수 1만 더해지므로 최적해는 변하지 않는다. 평균제곱오차는 두 오차를 모두 줄이려 하지만, PEAR는 두 번째와 같은 오차를 신경망에 되돌려 보낼 학습신호에서 제거한다.
 
-현재 optimum에서 equality constraint와 active inequality를 모아 다음과 같이 쓴다.
+여기서 구분하는 대상은 개별 계수가 아니라 오차의 방향이다. PEAR가 특정 계수 하나를 중요하거나 불필요하다고 판정하는 것은 아니다. 여러 계수의 오차가 결합된 방향이 실행가능집합에 수직이면 최적해가 보지 못한다. 같은 크기의 오차라도 실행가능집합을 따라가는 방향이면 의사결정을 바꿀 수 있다.
 
-<math display="block" aria-label="Active constraint Jacobian">
+## 3. 활성 제약조건이 중요한 방향을 결정한다
+
+현재 최적해에서 등식 제약과 활성화된 부등식 제약을 모아 다음 행렬을 만든다.
+
+<math display="block" aria-label="활성 제약조건 행렬">
   <mi>J</mi><mo>=</mo>
   <mrow><mo>[</mo><mtable><mtr><mtd><mi>A</mi></mtd></mtr><mtr><mtd><msub><mi>G</mi><mi mathvariant="script">A</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-Locally feasible displacement <math><mi>d</mi><mi>z</mi></math>는 <math><mi>J</mi><mi>d</mi><mi>z</mi><mo>=</mo><mn>0</mn></math>을 만족해야 한다. 따라서 tangent space와 normal space는
+제약을 깨지 않는 작은 이동은 <math><mi>J</mi><mi>d</mi><mi>z</mi><mo>=</mo><mn>0</mn></math>을 만족해야 한다. 따라서 국소 접공간과 법선공간은
 
-<math display="block" aria-label="Tangent space와 normal space">
+<math display="block" aria-label="접공간과 법선공간">
   <mi mathvariant="script">T</mi><mo>=</mo><mi>ker</mi><mo>(</mo><mi>J</mi><mo>)</mo><mo>,</mo>
   <mspace width="1em"/>
   <mi mathvariant="script">N</mi><mo>=</mo><mi>range</mi><mo>(</mo><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo><mo>.</mo>
 </math>
 
-PEAR는 prediction error 중 <math><mi mathvariant="script">T</mi></math>를 따라 decision을 실제로 움직일 수 있는 부분만 남긴다.
+이다. 앞의 두 변수 예에서는 평범한 유클리드 기하만 생각했다. 일반적인 엄밀히 볼록한 목적함수에는 고유한 국소 곡률이 있다.
 
-## KKT sensitivity는 curvature-aware projection이 된다
+<math display="block" aria-label="목적함수 헤시안">
+  <mi>H</mi><mo>=</mo><msup><mo>&nabla;</mo><mn>2</mn></msup><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>.</mo>
+</math>
 
-현재 solution 근방에서 active set이 유지된다고 하자. Local KKT condition은
+PEAR는 먼저 <math><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup></math>로 오차의 크기를 조정하고, 그다음 <math><mi>H</mi></math>가 정하는 거리 아래에서 접공간으로 투영한다. 따라서 전체 연산을 단순한 유클리드 투영이라고 부르면 정확하지 않다. <math><mi>H</mi><mo>=</mo><mi>&alpha;</mi><mi>I</mi></math>일 때만 두 해석이 사실상 같아진다.
 
-<math display="block" aria-label="Local KKT condition">
+## 4. 투영된 오차가 실제 후회값의 기울기가 된다
+
+작은 변화에 대해 활성 제약집합이 바뀌지 않는다고 하자. 국소 KKT 조건은
+
+<math display="block" aria-label="국소 KKT 조건">
   <mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo>
   <mo>+</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover>
   <mo>+</mo><msup><mi>J</mi><mo>&top;</mo></msup><msup><mi>y</mi><mo>*</mo></msup><mo>=</mo><mn>0</mn><mo>,</mo>
@@ -420,9 +387,9 @@ PEAR는 prediction error 중 <math><mi mathvariant="script">T</mi></math>를 따
   <mi>J</mi><msup><mi>z</mi><mo>*</mo></msup><mo>=</mo><mover><mi>b</mi><mo>~</mo></mover><mo>.</mo>
 </math>
 
-이다. <math><mi>H</mi><mo>=</mo><msup><mo>&nabla;</mo><mn>2</mn></msup><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo></math>라고 하고 KKT system을 미분하면
+이다. 이를 미분하면
 
-<math display="block" aria-label="미분한 KKT system">
+<math display="block" aria-label="미분한 KKT 연립방정식">
   <mrow><mo>[</mo><mtable>
     <mtr><mtd><mi>H</mi></mtd><mtd><msup><mi>J</mi><mo>&top;</mo></msup></mtd></mtr>
     <mtr><mtd><mi>J</mi></mtd><mtd><mn>0</mn></mtd></mtr>
@@ -438,11 +405,11 @@ PEAR는 prediction error 중 <math><mi mathvariant="script">T</mi></math>를 따
   </mtable><mo>]</mo></mrow><mo>.</mo>
 </math>
 
-Schur complement로 dual displacement를 제거하면
+쌍대변수의 변화를 슈어 여수로 제거하면 다음을 얻는다.
 
-<math display="block" aria-label="Curvature scaled tangent projection operator">
+<math display="block" aria-label="투영된 민감도 연산자">
   <mi>d</mi><mi>z</mi><mo>=</mo><mo>&minus;</mo><msub><mi>P</mi><mi>H</mi></msub><mi>d</mi><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>,</mo>
-  <mspace width="0.8em"/>
+  <mspace width="0.7em"/>
   <msub><mi>P</mi><mi>H</mi></msub>
   <mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup>
   <mo>&minus;</mo>
@@ -451,97 +418,53 @@ Schur complement로 dual displacement를 제거하면
   <mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mo>.</mo>
 </math>
 
-다음을 정의하자.
+예측 오차를 <math><mi>e</mi><mo>=</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi></math>라고 하자. 정상성 조건을 이용하면 <math><mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi><mo>=</mo><mo>&minus;</mo><mi>e</mi><mo>&minus;</mo><msup><mi>J</mi><mo>&top;</mo></msup><msup><mi>y</mi><mo>*</mo></msup></math>이다. 또 <math><msub><mi>P</mi><mi>H</mi></msub><msup><mi>J</mi><mo>&top;</mo></msup><mo>=</mo><mn>0</mn></math>이므로 연쇄법칙에서 쌍대변수 항이 사라진다.
 
-<math display="block" aria-label="H orthogonal tangent projector">
-  <msub><mi>&Pi;</mi><mi>H</mi></msub>
-  <mo>=</mo><mi>I</mi>
-  <mo>&minus;</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup>
-  <msup><mrow><mo>(</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo></mrow><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>J</mi><mo>.</mo>
-</math>
-
-그러면 <math><msub><mi>P</mi><mi>H</mi></msub><mo>=</mo><msub><mi>&Pi;</mi><mi>H</mi></msub><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup></math>이다. 이 구분은 중요하다. <math><msub><mi>P</mi><mi>H</mi></msub></math> 자체는 일반적으로 Euclidean projector가 아니다. 먼저 inverse-curvature scaling을 하고, 그 뒤 <math><mi>ker</mi><mo>(</mo><mi>J</mi><mo>)</mo></math> 위로 <math><mi>H</mi></math>-orthogonal projection을 한다. <math><mi>H</mi><mo>=</mo><mi>&alpha;</mi><mi>I</mi></math>일 때만 geometry가 essentially Euclidean projection으로 줄어든다.
-
-## Regret gradient는 projected prediction error로 줄어든다
-
-Prediction error를 <math><mi>e</mi><mo>=</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi></math>라고 하자. Chain rule을 쓰면
-
-<math display="block" aria-label="KKT 단순화 전 regret gradient">
-  <msub><mo>&nabla;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></msub><mi mathvariant="script">R</mi>
-  <mo>=</mo><mo>&minus;</mo><msub><mi>P</mi><mi>H</mi></msub>
-  <mrow><mo>[</mo><mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi><mo>]</mo></mrow><mo>.</mo>
-</math>
-
-Stationarity에서
-
-<math display="block" aria-label="KKT stationarity 대입">
-  <mo>&nabla;</mo><mi>&phi;</mi><mo>(</mo><msup><mi>z</mi><mo>*</mo></msup><mo>)</mo><mo>+</mo><mi>c</mi>
-  <mo>=</mo><mo>&minus;</mo><mi>e</mi><mo>&minus;</mo><msup><mi>J</mi><mo>&top;</mo></msup><msup><mi>y</mi><mo>*</mo></msup><mo>.</mo>
-</math>
-
-또 <math><msub><mi>P</mi><mi>H</mi></msub><msup><mi>J</mi><mo>&top;</mo></msup><mo>=</mo><mn>0</mn></math>이므로 dual term이 사라진다.
-
-<math display="block" aria-label="PEAR의 정확한 local regret gradient">
+<math display="block" aria-label="정확한 국소 후회값 기울기">
   <msub><mo>&nabla;</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover></msub><mi mathvariant="script">R</mi>
   <mo>=</mo><msub><mi>P</mi><mi>H</mi></msub>
   <mo>(</mo><mover accent="true"><mi>c</mi><mo>^</mo></mover><mo>&minus;</mo><mi>c</mi><mo>)</mo><mo>.</mo>
 </math>
 
-MSE gradient는 raw error <math><mi>e</mi></math>다. PEAR gradient는 같은 error에서 optimizer가 locally 볼 수 없는 방향을 제거하고 objective curvature로 metric을 조정한 것이다. 이것이 이 논문의 가장 강한 conceptual contribution이다.
+이것이 논문의 핵심 정리다. 가정이 성립하는 범위에서는 PEAR가 그럴듯한 대체 방향을 만드는 것이 아니다. 예측된 선형 계수에 대한 실제 후회값의 국소 기울기와 정확히 일치한다.
 
-## PEAR는 새로운 scalar loss보다 custom backward rule에 가깝다
+## 5. 구현에서는 역전파 신호를 바꾼다
 
-공개된 implementation을 보면 수학적 설명에서 놓치기 쉬운 점이 드러난다. QP projection loss의 forward value는 여전히
+공개된 이차계획 코드는 순전파에서 평범한 제곱오차를 반환한다. 대신 역전파 함수를 직접 정의해 평균제곱오차의 기울기 대신 <math><msub><mi>P</mi><mi>H</mi></msub><mi>e</mi></math>를 신경망에 전달한다. 따라서 PEAR는 새로운 스칼라 손실함수라기보다 사용자 정의 기울기 규칙으로 이해하는 편이 정확하다.
 
-<math display="block" aria-label="PEAR forward value">
-  <msub><mi>L</mi><mtext>forward</mtext></msub>
-  <mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac>
-  <msup><mrow><mo>&Vert;</mo><msub><mi>&mu;</mi><mtext>pred</mtext></msub><mo>&minus;</mo><msub><mi>&mu;</mi><mtext>true</mtext></msub><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>.</mo>
-</math>
+<math><msub><mi>P</mi><mi>H</mi></msub></math>라는 <math><mi>n</mi><mo>&times;</mo><mi>n</mi></math> 행렬 전체를 만들 필요는 없다. 활성 제약조건이 <math><mi>k</mi></math>개라면 다음 연립방정식을 푼다.
 
-이다. Backward method가 derivative를 override해 projected error를 반환한다. 따라서 PEAR는 automatic differentiation이 update를 만들어 내는 conventional scalar loss라기보다 gradient transformation이라고 부르는 편이 정확하다.
-
-Training sample마다 forward optimization을 풀고 active constraint를 식별해 <math><mi>J</mi></math>를 만든다. Full <math><mi>n</mi><mo>&times;</mo><mi>n</mi></math> matrix <math><msub><mi>P</mi><mi>H</mi></msub></math>를 만들 필요는 없다. Active constraint가 <math><mi>k</mi></math>개라면
-
-<math display="block" aria-label="PEAR Schur complement solve">
-  <msub><mi>x</mi><mi>H</mi></msub><mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi><mo>,</mo>
-  <mspace width="0.6em"/>
+<math display="block" aria-label="PEAR가 사용하는 슈어 여수 연립방정식">
   <mo>(</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mo>)</mo><mi>v</mi>
   <mo>=</mo><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi>
 </math>
 
-를 계산한 뒤
+그다음 아래 값을 역전파한다.
 
-<math display="block" aria-label="PEAR gradient signal">
+<math display="block" aria-label="PEAR 역전파 신호">
   <mi>g</mi><mo>=</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><mi>e</mi>
   <mo>&minus;</mo><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mi>v</mi><mo>.</mo>
 </math>
 
-를 반환한다. 핵심 solve는 <math><mi>k</mi><mo>&times;</mo><mi>k</mi></math>다. <math><mi>k</mi><mo>&ll;</mo><mi>n</mi></math>이고 Hessian structure를 활용할 수 있다면 상당히 매력적이다.
+핵심 연립방정식의 크기는 <math><mi>k</mi><mo>&times;</mo><mi>k</mi></math>다. 활성 제약조건이 적고 <math><mi>H</mi></math>에 대한 선형연립방정식을 싸게 풀 수 있을 때 계산상 이점이 생긴다.
 
-## 정확한 정리는 local하고 strictly convex하다
+## 6. 정확한 정리가 끝나는 지점
 
-유도에는 세 가지 강한 조건이 필요하다. Hessian이 positive definite여야 하고, active constraint Jacobian이 linear independence constraint qualification을 만족해야 하며, active inequality에 strict complementarity가 성립해야 한다. 이 조건들이 locally stable active set과 differentiable solution map을 뒷받침한다.
+앞의 유도에는 <math><mi>H</mi><mo>&succ;</mo><mn>0</mn></math>, 활성 제약조건의 선형독립성, 엄격한 상보성이라는 조건이 필요하다. 이 조건들이 활성 제약집합을 국소적으로 고정하고 최적해 사상을 미분 가능하게 만든다. 따라서 정리는 국소 결과다. 활성 제약집합의 경계를 넘으면 <math><mi>J</mi></math>가 바뀌고 기울기가 매끄럽지 않을 수 있다.
 
-따라서 결과는 local이다. Active-set boundary를 넘으면 <math><mi>J</mi></math>가 바뀌고 solution map이 nonsmooth해질 수 있다. Degenerate하거나 weakly active한 constraint도 논리를 약하게 만든다. 정리는 strictly convex problem의 smooth neighborhood에 대해 정확한 결과를 준다. 임의의 mathematical program에 대한 global differentiability theorem은 아니다.
+순수 선형계획에서는 <math><mi>H</mi><mo>=</mo><mn>0</mn></math>이므로 곡률 조건이 성립하지 않는다. 선형계획의 최적해는 비용계수에 대해 구간별로 일정하다. 비용이 조금 변해도 같은 꼭짓점이 최적해로 남다가, 법선뿔의 경계를 넘으면 다른 꼭짓점으로 갑자기 이동한다.
 
-## LP 버전은 modified problem이고, 그다음에는 heuristic이다
+논문은 다음과 같은 이차 평활화를 추가한다.
 
-LP에서는 <math><mi>&phi;</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>=</mo><mn>0</mn></math>이고 <math><mi>H</mi><mo>=</mo><mn>0</mn></math>이므로 PEAR의 inverse Hessian이 존재하지 않는다. 더 근본적으로 LP optimizer는 cost vector에 대해 piecewise constant다. 하나의 normal cone 안에서는 optimal vertex가 움직이지 않고 boundary에서는 jump할 수 있다. Classical derivative는 거의 모든 곳에서 zero이고 transition에서는 undefined다.
-
-논문은 quadratic smoothing을 추가한다.
-
-<math display="block" aria-label="Quadratically smoothed LP objective">
+<math display="block" aria-label="선형계획을 위한 이차 평활화">
   <mi>&phi;</mi><mo>(</mo><mi>z</mi><mo>)</mo>
   <mo>=</mo><mfrac><mi>&lambda;</mi><mn>2</mn></mfrac><msup><mrow><mo>&Vert;</mo><mi>z</mi><mo>&Vert;</mo></mrow><mn>2</mn></msup><mo>,</mo>
   <mspace width="0.7em"/><mi>H</mi><mo>=</mo><mi>&lambda;</mi><mi>I</mi><mo>.</mo>
 </math>
 
-이렇게 하면 유용한 gradient가 생기지만, 그것은 원래 LP regret의 true gradient가 아니라 smoothed problem의 gradient다.
+이때 얻는 기울기는 원래 선형계획이 아니라 평활화된 문제의 기울기다. 구현에서는 여기에 정규화된 법선성분도 더한다.
 
-Implementation은 normalized normal component까지 주입한다.
-
-<math display="block" aria-label="LP training을 위한 normal space injection">
+<math display="block" aria-label="법선성분 주입">
   <mi>n</mi><mo>=</mo><msup><mi>&lambda;</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup><mi>v</mi><mo>,</mo>
   <mspace width="0.7em"/>
   <msub><mi>g</mi><mtext>inj</mtext></msub>
@@ -549,39 +472,26 @@ Implementation은 normalized normal component까지 주입한다.
   <mfrac><mrow><mo>&Vert;</mo><mi>g</mi><mo>&Vert;</mo></mrow><mrow><mo>&Vert;</mo><mi>n</mi><mo>&Vert;</mo></mrow></mfrac><mi>n</mi><mo>.</mo>
 </math>
 
-Practical motivation은 이해할 수 있다. Tangent signal이 너무 약하면 LP plateau를 벗어나기 어렵다. 그러나 conceptually 역설적이다. 정리는 normal component를 decision-irrelevant하다고 제거하지만, LP training rule은 유용한 update를 얻기 위해 이를 다시 넣는다. Injection 이후의 <math><msub><mi>g</mi><mtext>inj</mtext></msub></math>는 regret gradient가 아니다.
+평평한 선형계획 영역을 벗어나기 위한 실용적 장치로는 이해할 수 있다. 그러나 이는 경험적 보정이다. 원래 기하학적 설명에서 의사결정과 무관하다고 제거한 법선방향을 다시 넣는 것이기도 하다. 엄밀히 볼록한 이차계획의 정확한 결과, 평활화된 선형계획의 기울기, 법선성분까지 넣은 선형계획의 학습방향은 서로 다른 주장이다.
 
-따라서 method는 세 층으로 구분해야 한다.
+## 7. 포트폴리오 실험에서는 공분산 경로가 빠진다
 
-- Strictly convex QP: 명시된 regularity assumption 아래의 exact local regret gradient.
-- Quadratically smoothed LP: modified optimization problem의 gradient.
-- Normal injection을 더한 smoothed LP: heuristic training direction.
+포트폴리오 문제는 다음과 같다.
 
-세 층 모두 유용할 수 있다. 그러나 모두를 같은 exact-gradient label로 부르면 안 된다.
-
-## Portfolio experiment는 predicted covariance 경로를 버린다
-
-Portfolio problem은
-
-<math display="block" aria-label="Mean variance portfolio problem">
+<math display="block" aria-label="평균 분산 포트폴리오 문제">
   <munder><mo>min</mo><mi>w</mi></munder>
   <mspace width="0.5em"/>
   <mfrac><mi>&lambda;</mi><mn>2</mn></mfrac><msup><mi>w</mi><mo>&top;</mo></msup><mi>&Sigma;</mi><mi>w</mi>
   <mo>&minus;</mo><msup><mi>&mu;</mi><mo>&top;</mo></msup><mi>w</mi>
-  <mspace width="0.8em"/><mtext>subject to</mtext><mspace width="0.5em"/>
+  <mspace width="0.8em"/><mtext>제약조건</mtext><mspace width="0.5em"/>
   <msup><mn>1</mn><mo>&top;</mo></msup><mi>w</mi><mo>=</mo><mn>1</mn><mo>,</mo>
   <mspace width="0.4em"/><mi>w</mi><mo>&ge;</mo><mn>0</mn><mo>.</mo>
 </math>
 
-정리에서는 <math><mi>&phi;</mi><mo>(</mo><mi>w</mi><mo>)</mo><mo>=</mo><mi>&lambda;</mi><msup><mi>w</mi><mo>&top;</mo></msup><mi>&Sigma;</mi><mi>w</mi><mo>/</mo><mn>2</mn></math>가 known하고 prediction-independent이며 model은 linear coefficient <math><mo>&minus;</mo><mi>&mu;</mi></math>만 예측한다. 그러나 experiment에서 network는 21일 return path를 예측한다. 그 평균뿐 아니라 historical return과 predicted return에서 구성한 covariance matrix도 optimizer에 들어간다. 실제 decision은 <math><msup><mi>w</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover><mo>,</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover><mo>)</mo></math>이다.
+공분산 <math><mi>&Sigma;</mi></math>가 고정되고 평균수익률 <math><mi>&mu;</mi></math>만 예측된다면 논문의 정리와 정확히 맞는다. 그러나 실험에서는 신경망이 21일 수익률 경로를 예측한다. 이 예측으로 평균수익률뿐 아니라 과거 및 예측 수익률을 결합한 공분산도 만든다. 따라서 실제 결정은 <math><msup><mi>w</mi><mo>*</mo></msup><mo>(</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover><mo>,</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover><mo>)</mo></math>이고, 예측 수익률에 대한 전체 미분에는 두 경로가 있어야 한다.
 
-Predicted return <math><mover accent="true"><mi>r</mi><mo>^</mo></mover></math>에 대한 total derivative에는 두 경로가 있다.
-
-<math display="block" aria-label="Mean과 covariance gradient 경로">
-  <mfrac>
-    <mrow><mi>d</mi><mi mathvariant="script">R</mi></mrow>
-    <mrow><mi>d</mi><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow>
-  </mfrac>
+<math display="block" aria-label="평균과 공분산을 통한 미분 경로">
+  <mfrac><mrow><mi>d</mi><mi mathvariant="script">R</mi></mrow><mrow><mi>d</mi><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac>
   <mo>=</mo>
   <mfrac><mrow><mo>&part;</mo><mi mathvariant="script">R</mi></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover></mrow></mfrac>
   <mfrac><mrow><mo>&part;</mo><mover accent="true"><mi>&mu;</mi><mo>^</mo></mover></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac>
@@ -590,36 +500,32 @@ Predicted return <math><mover accent="true"><mi>r</mi><mo>^</mo></mover></math>�
   <mfrac><mrow><mo>&part;</mo><mover accent="true"><mi>&Sigma;</mi><mo>^</mo></mover></mrow><mrow><mo>&part;</mo><mover accent="true"><mi>r</mi><mo>^</mo></mover></mrow></mfrac><mo>.</mo>
 </math>
 
-공개된 PEAR backward implementation은 predicted mean에 대해 projected gradient를 반환하고 predicted covariance에는 `None`을 반환한다. Covariance path가 stop-gradient 처리된다. 따라서 PEAR가 계산하는 것은 현재 predicted covariance를 fixed로 둔 채 mean에 대해서만 구한 partial regret gradient다. Experiment에서 사용한 optimization problem의 total derivative가 아니다.
+공개 코드의 PEAR 역전파는 예측 평균에는 투영 기울기를 반환하지만 예측 공분산에는 `None`을 반환한다. 즉 현재 공분산을 고정한 채 평균에 대한 편미분만 계산한다. 반면 미분 가능한 이차계획 비교방법은 두 입력을 모두 통해 기울기를 전달할 수 있다. 별도의 제거실험이 없으므로 PEAR의 포트폴리오 성능이 투영에서 얼마나 왔고 공분산 기울기 차단에서 얼마나 왔는지 분리하기 어렵다.
 
-이 차이는 baseline comparison도 복잡하게 만든다. Differentiable QP layer는 predicted mean과 covariance factor를 모두 받아 두 경로로 gradient를 보낼 수 있다. PEAR는 더 적은 gradient information을 사용한다. 성능 차이가 projection geometry 때문인지, covariance stop-gradient가 regularization처럼 작동했기 때문인지, 둘 다인지 알 수 없다. 이를 분리하는 direct ablation이 필요하다.
+## 8. 계산상 이점은 문제 구조에 달려 있다
 
-## Active-set numerics와 computational cost는 조건부다
+PEAR는 유한한 허용오차로 계산된 원문제 및 쌍대문제의 해에서 활성 제약집합을 찾는다. 거의 활성화된 제약조건은 판정 기준이 조금만 바뀌어도 집합에 들어오거나 빠질 수 있다. 퇴화점 근처에서는 <math><mi>J</mi></math>가 불안정하고 <math><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup></math>의 조건수가 나빠질 수 있다. 미분 가능한 최적화기보다 수치적으로 안정적인지는 정리가 아니라 실험으로 확인해야 할 문제다.
 
-PEAR는 finite-tolerance primal-dual solution에서 binding inequality를 식별한다. <math><msub><mi>G</mi><mi>i</mi></msub><msup><mi>z</mi><mo>*</mo></msup><mo>&minus;</mo><msub><mi>h</mi><mi>i</mi></msub><mo>&approx;</mo><mn>0</mn></math>이면 active-set membership이 numerical threshold에 따라 바뀔 수 있다. Degeneracy 근방에서는 <math><mi>J</mi></math>가 불안정해지고 <math><mi>J</mi><msup><mi>H</mi><mrow><mo>&minus;</mo><mn>1</mn></mrow></msup><msup><mi>J</mi><mo>&top;</mo></msup></math>가 ill-conditioned해질 수 있다. 이 방식이 solver differentiation보다 numerically stable하다는 주장은 theorem의 결과가 아니라 empirical claim이다.
+계산시간도 구조에 좌우된다. <math><mi>k</mi><mo>&ll;</mo><mi>n</mi></math>이고 헤시안이 희소하거나 대각행렬이거나 이미 분해되어 있을 때 PEAR가 가장 유리하다. 희소 포트폴리오처럼 많은 비음수 제약이 활성화되면 <math><mi>k</mi></math>가 <math><mi>n</mi></math>에 가까워질 수 있다. 조밀한 공분산 행렬을 사용하면 <math><mi>H</mi></math>에 대한 연립방정식도 여전히 비싸다.
 
-Cost advantage도 조건부다. Active set이 작고 Hessian structure가 좋으면 PEAR가 유리하다. 그러나 많은 asset weight가 zero라면 nonnegativity constraint가 대량으로 active해져 <math><mi>k</mi></math>가 <math><mi>n</mi></math>에 가까워질 수 있다. Dense covariance matrix는 여전히 <math><mi>H</mi></math> factorization이나 solve를 요구한다. Sensitivity를 작은 Schur system으로 썼다는 이유만으로 PEAR가 자동으로 싸지는 것은 아니다.
+## 9. 결과는 강하지만 모든 조건에서 이기지는 않는다
 
-## 실험이 실제로 보여 주는 것
+선형계획 실험은 5×5 최단경로 문제와 100개 물품의 배낭문제를 사용한다. 입력에서 비용으로 가는 함수의 다항식 차수를 높여 예측 난도를 조절한다. 배낭문제에서 PEAR와 LAVA는 선형계획 완화문제로 학습하고, 평가는 원래 정수문제에서 수행한다.
 
-LP benchmark는 5×5 shortest path와 100-item knapsack이다. Feature-to-cost mapping의 polynomial degree를 2에서 8까지 높인다. Knapsack에서 PEAR와 LAVA는 LP relaxation으로 training하고 original integer problem에서 evaluation한다.
+다항식 차수 8인 배낭문제의 정규화 후회값은 MSE 2.285%, SPO+ 0.763%, PEAR 0.437%다. 차수 8 최단경로에서도 PEAR가 4.246%로 가장 좋다. 그러나 모든 조건에서 이기는 것은 아니다. 차수 4에서는 SPO+가 0.761%, PEAR가 0.774%다. 따라서 “모든 비교방법보다 가장 좋은 의사결정 품질”이라는 문구는 표가 보여 주는 범위보다 조금 넓다.
 
-Decision result는 강하다. Degree-8 knapsack의 normalized regret은 MSE 2.285%, SPO+ 0.763%, PEAR 0.437%다. Degree-8 shortest path에서도 PEAR가 4.246%로 가장 좋다. 그러나 모든 setting에서 이기지는 않는다. Degree 4에서는 SPO+가 0.761%, PEAR가 0.774%다. 따라서 “best decision quality among all baselines”라는 넓은 문구는 table이 지지하는 범위보다 약간 강하다.
+포트폴리오 비교에서 PEAR의 학습시간은 122.3초로 QPTH의 147.6초와 CVXPYLayers의 321.9초보다 짧다. MSE는 33.0초다. 따라서 PEAR를 아무 조건 없이 가장 빠른 방법이라고 하기보다는, 의사결정 중심 학습방법 중 비교적 빠른 방법이라고 하는 편이 정확하다.
 
-Computational efficiency도 같은 식으로 한정해야 한다. Shortest-path degree 8에서 MSE는 6.1초, PEAR는 38.4초다. Portfolio에서는 MSE 33.0초, PEAR 122.3초다. 같은 portfolio comparison에서 QPTH는 147.6초, CVXPYLayers는 321.9초이므로 PEAR가 더 빠르다. 정확한 표현은 “가장 빠른 baseline”이 아니라 “빠른 decision-focused method 중 하나”다.
+포트폴리오 결과는 유망하지만 변동이 크다. PEAR는 정규화 후회값 85.38%, 샤프지수 1.44, 가장 낮은 최대낙폭을 기록했다. 다섯 개 초기값에서 누적수익률은 PEAR가 <math><mn>184.19</mn><mo>&PlusMinus;</mo><mn>86.24</mn><mo>%</mo></math>, QPTH가 <math><mn>139.77</mn><mo>&PlusMinus;</mo><mn>115.74</mn><mo>%</mo></math>다. 이 정도 불확실성으로 경제적 우위를 확정하기는 어렵다.
 
-Portfolio optimization에서 PEAR는 가장 낮은 normalized regret 85.38%, MSE의 0.92와 QPTH/CVXPYLayers의 1.15보다 높은 Sharpe ratio 1.44, 가장 낮은 maximum drawdown을 보고한다. 하지만 5개 seed 사이의 uncertainty가 크다. Cumulative return은 PEAR가 <math><mn>184.19</mn><mo>&PlusMinus;</mo><mn>86.24</mn><mo>%</mo></math>, QPTH가 <math><mn>139.77</mn><mo>&PlusMinus;</mo><mn>115.74</mn><mo>%</mo></math>다. 결과는 유망하지만 economic superiority를 확정하기에는 variance가 크고 covariance-gradient ablation도 없다.
+제약조건을 바꾼 실험은 방법의 한계를 더 분명하게 보여 준다. 학습 때와 다른 출발점 및 도착점을 사용하는 최단경로 문제에서는 모든 다항식 차수에서 MSE가 가장 좋다. 차수 8의 결과는 MSE 14.00, PEAR 21.42, SPO+ 43.40이다. 의사결정 중심 학습은 학습 당시의 최적화 구조에 맞춰 예측 정확도를 집중한다. 시험 시점의 제약구조가 달라지면 같은 특화가 전이성능을 떨어뜨릴 수 있다.
 
-Constraint-shift experiment가 오히려 더 많은 것을 말해 준다. Training과 test에서 optimization geometry를 바꾼다. Shortest path의 source-target direction, knapsack capacity, portfolio의 long-only constraint가 달라진다. MSE는 상당히 강하다. Degree-8 shortest-path direction shift에서 MSE는 14.00, PEAR는 21.42, SPO+는 43.40이다. DFL은 training-time feasible geometry에 맞춰 prediction error를 의도적으로 변형한다. Geometry가 바뀌면 그 inductive bias가 약점이 될 수 있다. 이것은 부차적 결과가 아니라 in-distribution decision quality와 constraint transfer 사이의 실제 경계를 보여 준다.
+## 10. 판단
 
-## 판단
+논문의 핵심 정리는 단순하면서 유용하다. 같은 시스템을 반복해서 풀되 선형 목적함수 계수만 달라지는 엄밀히 볼록한 문제에서는, 예측 오차에 곡률 조정과 접공간 투영을 적용하면 실제 후회값의 기울기가 된다. 어떤 예측 오차에 학습 능력을 집중해야 하는지 분명한 답을 준다.
 
-정확한 결과는 남길 가치가 있다. Prediction-independent한 strictly convex objective, regular하고 locally fixed된 active set 아래에서 regret gradient는 ordinary prediction error의 curvature-scaled tangent-space projection이다. Proof는 KKT sensitivity와 stationarity에서 깔끔하게 나오며, 이 해석은 DFL을 훨씬 이해하기 쉽게 만든다.
-
-Practical method는 더 넓은 영역에 있다. LP variant는 smoothed surrogate를 최적화한 뒤 heuristic normal component를 넣는다. Portfolio experiment는 predicted return이 covariance도 결정하는데 mean-return path만 미분한다. Active-set identification과 runtime gain은 numerical tolerance, sparsity, Hessian structure에 의존한다.
-
-올바른 결론은 theorem이 틀렸다는 것이 아니다. Theorem, LP training rule, covariance-dependent QP experiment를 서로 다른 세 개의 대상으로 구분해야 한다는 것이다. 이 경계를 명시할 때 PEAR의 geometry가 가장 설득력 있다.
+한계도 구체적이다. 선형계획 버전은 평활화한 뒤 경험적 보정을 추가한 방법이다. 포트폴리오 구현은 공분산을 통한 기울기 경로를 빠뜨린다. 속도상 이점은 작고 안정적인 활성 제약집합과 계산하기 쉬운 헤시안에 의존한다. 이 문제들이 핵심 정리를 반박하는 것은 아니다. 정리와 더 넓은 실험방법 사이의 경계를 보여 줄 뿐이다.
 
 ## 참고문헌
 
-Junhyeong Lee, Sangjin Jin, and Yongjae Lee. *Decision-Focused Learning via Tangent-Space Projection of Prediction Error*. ICML, 2026. 검토에 사용한 자료에는 source URL, DOI, arXiv identifier가 제공되지 않았다.
+Junhyeong Lee, Sangjin Jin, and Yongjae Lee. *Decision-Focused Learning via Tangent-Space Projection of Prediction Error*. ICML, 2026. 검토 자료에는 원문 링크, DOI, arXiv 식별자가 제공되지 않았다.
