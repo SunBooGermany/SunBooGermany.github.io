@@ -14,18 +14,22 @@
 </head>
 <body class="writing-page">
   <header class="site-header">
-    <a class="brand" href="{{ '/' | relative_url }}" aria-label="Sunwoo Kim homepage">
+    <a class="brand" href="{{ '/' | relative_url }}" aria-label="Sunwoo Kim profile">
       <span class="brand-mark">SK</span>
       <span>Sunwoo Kim</span>
     </a>
     <nav class="nav research-nav" aria-label="Main navigation">
       <a href="{{ '/' | relative_url }}">
-        <span data-lang-panel="en">Home</span>
-        <span data-lang-panel="ko" hidden>홈</span>
-      </a>
-      <a href="{{ '/#profile' | relative_url }}">
         <span data-lang-panel="en">Profile</span>
         <span data-lang-panel="ko" hidden>프로필</span>
+      </a>
+      <a href="{{ '/publications/' | relative_url }}">
+        <span data-lang-panel="en">Publications</span>
+        <span data-lang-panel="ko" hidden>논문 실적</span>
+      </a>
+      <a href="{{ '/paper-resources/' | relative_url }}">
+        <span data-lang-panel="en">Paper Notes &amp; Code</span>
+        <span data-lang-panel="ko" hidden>논문 해설·코드</span>
       </a>
       <a href="{{ '/research-log/' | relative_url }}">
         <span data-lang-panel="en">Research Blog</span>
@@ -54,8 +58,8 @@
     </p>
     <p>
       <a href="{{ '/' | relative_url }}">
-        <span data-lang-panel="en">Return to homepage</span>
-        <span data-lang-panel="ko" hidden>홈페이지로 돌아가기</span>
+        <span data-lang-panel="en">Return to profile</span>
+        <span data-lang-panel="ko" hidden>프로필로 돌아가기</span>
       </a>
     </p>
   </footer>

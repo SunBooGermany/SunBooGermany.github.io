@@ -423,7 +423,7 @@ h1 {
   color: var(--green);
 }
 .publication-record {
-  padding-top: 42px;
+  padding-top: 0;
 }
 .publication-summary {
   display: grid;
@@ -551,6 +551,7 @@ h1 {
 }
 .paper-resources {
   border-top: 1px solid var(--line);
+  padding-top: 32px;
 }
 .paper-resources-empty {
   padding: 30px 34px;

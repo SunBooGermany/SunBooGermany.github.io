@@ -63,15 +63,14 @@ layout: null
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="Sunwoo Kim homepage">
+    <a class="brand" href="#top" aria-label="Sunwoo Kim profile">
       <span class="brand-mark">SK</span>
       <span>Sunwoo Kim</span>
     </a>
     <nav class="nav" aria-label="Main navigation">
-      <a data-i18n="navHome" href="#top">Home</a>
-      <a data-i18n="navPublications" href="#publication-record">Publications</a>
-      <a data-i18n="navPaperResources" href="#paper-resources">Paper Notes &amp; Code</a>
-      <a data-i18n="navProfile" href="#profile">Profile</a>
+      <a data-i18n="navProfile" href="#top">Profile</a>
+      <a data-i18n="navPublications" href="{{ '/publications/' | relative_url }}">Publications</a>
+      <a data-i18n="navPaperResources" href="{{ '/paper-resources/' | relative_url }}">Paper Notes &amp; Code</a>
       <a data-i18n="navLog" href="{{ '/research-log/' | relative_url }}">Research Blog</a>
       <a data-i18n="navJudgment" href="{{ '/better-judgment/' | relative_url }}">Better Judgment</a>
       <a data-i18n="navContact" href="#contact">Contact</a>
@@ -104,7 +103,7 @@ layout: null
         </div>
       </aside>
 
-      <div class="gateway-grid" aria-label="Homepage gateways">
+      <div class="gateway-grid" aria-label="Site sections">
         <article class="gateway-card">
           <div>
             <p class="gateway-kicker">01</p>
@@ -132,343 +131,49 @@ layout: null
       </div>
     </section>
 
-    <section id="publication-record" class="section publication-record">
+    <section id="publication-record" class="section publication-preview" aria-labelledby="publication-preview-title">
       <div class="section-header row">
         <div>
           <p class="eyebrow">
             <span data-lang-panel="en">Publication Record</span>
             <span data-lang-panel="ko" hidden>논문 실적</span>
           </p>
-          <h2>
+          <h2 id="publication-preview-title">
             <span data-lang-panel="en">Publications by year</span>
             <span data-lang-panel="ko" hidden>연도별 논문 실적</span>
           </h2>
           <p>
-            <span data-lang-panel="en">Peer-reviewed journal articles and conference proceedings are grouped by publication year. Manuscripts under review are listed separately because a publication year has not yet been assigned.</span>
-            <span data-lang-panel="ko" hidden>게재된 학술지 논문과 학회 프로시딩을 출판 연도별로 정리했습니다. 심사 중 원고는 아직 출판 연도가 확정되지 않아 별도로 표시합니다.</span>
+            <span data-lang-panel="en">17 journal articles, 3 conference proceedings, and 2 manuscripts under review.</span>
+            <span data-lang-panel="ko" hidden>학술지 논문 17편, 학회 프로시딩 3편, 심사 중 원고 2편을 정리했습니다.</span>
           </p>
         </div>
-        <a class="button secondary" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
+        <a class="button secondary" href="{{ '/publications/' | relative_url }}">
+          <span data-lang-panel="en">View publication record</span>
+          <span data-lang-panel="ko" hidden>논문 실적 보기</span>
+        </a>
       </div>
-
-      <div class="publication-summary" aria-label="Publication record summary">
-        <div>
-          <strong>17</strong>
-          <span data-lang-panel="en">Peer-reviewed journal articles</span>
-          <span data-lang-panel="ko" hidden>게재 학술지 논문</span>
-        </div>
-        <div>
-          <strong>2</strong>
-          <span data-lang-panel="en">Manuscripts under review</span>
-          <span data-lang-panel="ko" hidden>심사 중 원고</span>
-        </div>
-        <div>
-          <strong>3</strong>
-          <span data-lang-panel="en">Conference proceedings</span>
-          <span data-lang-panel="ko" hidden>학회 프로시딩</span>
-        </div>
-        <div>
-          <strong>2022–2026</strong>
-          <span data-lang-panel="en">Publication years</span>
-          <span data-lang-panel="ko" hidden>출판 연도</span>
-        </div>
-      </div>
-
-      <div class="publication-years">
-        <section class="publication-year" aria-labelledby="publication-year-2026">
-          <div class="publication-year-header">
-            <h3 id="publication-year-2026">2026</h3>
-            <p>
-              <span data-lang-panel="en">Peer-reviewed journal articles</span>
-              <span data-lang-panel="ko" hidden>게재 학술지 논문</span>
-            </p>
-          </div>
-          <ol class="publication-record-list" start="1">
-            <li>
-              <span class="record-number">01</span>
-              <div>
-                <p class="record-authors">S. K. Heo, M. Moosazadeh, S. Y. Kim, C. Jeong, S. Kim, J. Byun, C. K. Yoo</p>
-                <h4>Techno-economic and environmental assessments of implementable wastewater-to-hydrogen production technologies: Pathway towards circular hydrogen economy in South Korea</h4>
-                <p class="record-citation"><em>Energy</em> (2026) · <a href="https://doi.org/10.1016/j.energy.2026.141780" target="_blank" rel="noreferrer">DOI: 10.1016/j.energy.2026.141780</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">02</span>
-              <div>
-                <p class="record-authors">S. Kim, J. H. Lee</p>
-                <h4>Decarbonization as a systems and control challenge: From superstructure optimization to multi-period decision-making under uncertainty</h4>
-                <p class="record-citation"><em>Journal of Process Control</em> (2026) · <a href="https://doi.org/10.1016/j.jprocont.2026.103775" target="_blank" rel="noreferrer">DOI: 10.1016/j.jprocont.2026.103775</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">03</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, A. Jamal, J. H. Lee</p>
-                <h4>Joint planning of sustainable hydrogen supply chains and electricity sourcing portfolios: Impacts of hydrogen-demand variability and scale</h4>
-                <p class="record-citation"><em>Computers &amp; Chemical Engineering</em> (2026) · <a href="https://doi.org/10.1016/j.compchemeng.2026.109594" target="_blank" rel="noreferrer">DOI: 10.1016/j.compchemeng.2026.109594</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">04</span>
-              <div>
-                <p class="record-authors">I. Park<sup>†</sup>, S. Kim<sup>†</sup>, B. Jeon, H. Heo, S. Q. Choi, J. H. Lee, D. Y. Koh</p>
-                <h4>Additive manufacturing of architected Ca(OH)<sub>2</sub> monoliths for accelerated CO<sub>2</sub> mineralization</h4>
-                <p class="record-citation"><em>Carbon Capture Science &amp; Technology</em> (2026) · <a href="https://doi.org/10.1016/j.ccst.2026.100568" target="_blank" rel="noreferrer">DOI: 10.1016/j.ccst.2026.100568</a></p>
-              </div>
-            </li>
-          </ol>
-        </section>
-
-        <section class="publication-year" aria-labelledby="publication-year-2025">
-          <div class="publication-year-header">
-            <h3 id="publication-year-2025">2025</h3>
-            <p>
-              <span data-lang-panel="en">Peer-reviewed journal articles</span>
-              <span data-lang-panel="ko" hidden>게재 학술지 논문</span>
-            </p>
-          </div>
-          <ol class="publication-record-list" start="5">
-            <li>
-              <span class="record-number">05</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kim, H. Kim, J. H. Lee</p>
-                <h4>Strategies for achieving a techno-economic threshold of 1 USD/kg for green hydrogen</h4>
-                <p class="record-citation"><em>Chemical Engineering Journal</em> (2025) · <a href="https://doi.org/10.1016/j.cej.2025.167069" target="_blank" rel="noreferrer">DOI: 10.1016/j.cej.2025.167069</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">06</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, J. H. Lee</p>
-                <h4>Integrating solid direct air capture systems with green hydrogen production: Economic benefits and curtailment reduction</h4>
-                <p class="record-citation"><em>Computers &amp; Chemical Engineering</em> (2025) · <a href="https://doi.org/10.1016/j.compchemeng.2025.109102" target="_blank" rel="noreferrer">DOI: 10.1016/j.compchemeng.2025.109102</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">07</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kang, S. Kim, H. Kim, H. Cho, C. Lee, M. Kim, J. H. Lee</p>
-                <h4>The impact of degradation on the economics of green hydrogen</h4>
-                <p class="record-citation"><em>Renewable and Sustainable Energy Reviews</em> (2025) · <a href="https://doi.org/10.1016/j.rser.2025.115472" target="_blank" rel="noreferrer">DOI: 10.1016/j.rser.2025.115472</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">08</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, J. H. Lee</p>
-                <h4>Design and analysis of wind-based hydrogen production using rule-based operation</h4>
-                <p class="record-citation"><em>Renewable and Sustainable Energy Reviews</em> (2025) · <a href="https://doi.org/10.1016/j.rser.2025.115459" target="_blank" rel="noreferrer">DOI: 10.1016/j.rser.2025.115459</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">09</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kang, S. Kim, H. Kim, J. H. Lee</p>
-                <h4>Comparative techno-economic evaluation of alkaline and proton exchange membrane electrolysis for hydrogen production amidst renewable energy source volatility</h4>
-                <p class="record-citation"><em>Energy Conversion and Management</em> (2025) · <a href="https://doi.org/10.1016/j.enconman.2024.119423" target="_blank" rel="noreferrer">DOI: 10.1016/j.enconman.2024.119423</a></p>
-              </div>
-            </li>
-          </ol>
-        </section>
-
-        <section class="publication-year" aria-labelledby="publication-year-2024">
-          <div class="publication-year-header">
-            <h3 id="publication-year-2024">2024</h3>
-            <p>
-              <span data-lang-panel="en">Peer-reviewed journal articles</span>
-              <span data-lang-panel="ko" hidden>게재 학술지 논문</span>
-            </p>
-          </div>
-          <ol class="publication-record-list" start="10">
-            <li>
-              <span class="record-number">10</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kang, S. Kim, H. Kim, S. Kim, J. H. Lee</p>
-                <h4>Optimizing green hydrogen systems: Balancing economic viability and reliability in the face of supply-demand volatility</h4>
-                <p class="record-citation"><em>Applied Energy</em> (2024) · <a href="https://doi.org/10.1016/j.apenergy.2024.123492" target="_blank" rel="noreferrer">DOI: 10.1016/j.apenergy.2024.123492</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">11</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, S. Heo, J. H. Lee</p>
-                <h4>Green hydrogen vs green ammonia: A hierarchical optimization-based integrated temporal approach for comparative techno-economic analysis of international supply chains</h4>
-                <p class="record-citation"><em>Journal of Cleaner Production</em> (2024) · <a href="https://doi.org/10.1016/j.jclepro.2024.142750" target="_blank" rel="noreferrer">DOI: 10.1016/j.jclepro.2024.142750</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">12</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kang, S. Kim, H. Kim, H. Cho, J. H. Lee</p>
-                <h4>Enhancing the economic viability and reliability of renewables based electricity supply through Power-to-Gas-to-Power with green hydrogen</h4>
-                <p class="record-citation"><em>Energy Conversion and Management</em> (2024) · <a href="https://doi.org/10.1016/j.enconman.2024.118485" target="_blank" rel="noreferrer">DOI: 10.1016/j.enconman.2024.118485</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">13</span>
-              <div>
-                <p class="record-authors">S. Kim, Y. Choi, J. Park, D. Adams, S. Heo, J. H. Lee</p>
-                <h4>Multi-period, multi-timescale stochastic optimization model for simultaneous capacity investment and energy management decisions for hybrid Micro-Grids with green hydrogen production under uncertainty</h4>
-                <p class="record-citation"><em>Renewable and Sustainable Energy Reviews</em> (2024) · <a href="https://doi.org/10.1016/j.rser.2023.114049" target="_blank" rel="noreferrer">DOI: 10.1016/j.rser.2023.114049</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">14</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, W. Chung, D. Adams, J. H. Lee</p>
-                <h4>Techno-economic analysis for design and management of international green hydrogen supply chain under uncertainty: An integrated temporal planning approach</h4>
-                <p class="record-citation"><em>Energy Conversion and Management</em> (2024) · <a href="https://doi.org/10.1016/j.enconman.2023.118010" target="_blank" rel="noreferrer">DOI: 10.1016/j.enconman.2023.118010</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">15</span>
-              <div>
-                <p class="record-authors">J. Park, S. Kang, S. Kim, H. Kim, H. Cho, S. Heo, J. H. Lee</p>
-                <h4>Techno-economic analysis of solar powered green hydrogen system based on multi-objective optimization of economics and productivity</h4>
-                <p class="record-citation"><em>Energy Conversion and Management</em> (2024) · <a href="https://doi.org/10.1016/j.enconman.2023.117823" target="_blank" rel="noreferrer">DOI: 10.1016/j.enconman.2023.117823</a></p>
-              </div>
-            </li>
-          </ol>
-          <div class="publication-subgroup">
-            <h4>
-              <span data-lang-panel="en">Conference proceedings</span>
-              <span data-lang-panel="ko" hidden>학회 프로시딩</span>
-            </h4>
-            <ol class="publication-record-list">
-              <li>
-                <span class="record-number">C-01</span>
-                <div>
-                  <p class="record-authors">S. Kim, J. Park, J. H. Lee</p>
-                  <h4>Integrated Temporal Planning for Design and Operation of the International Green Ammonia Supply Chain</h4>
-                  <p class="record-citation"><em>Systems and Control Transactions (FOCAPD)</em> (2024) · <a href="https://doi.org/10.69997/sct.156355" target="_blank" rel="noreferrer">DOI: 10.69997/sct.156355</a></p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-
-        <section class="publication-year" aria-labelledby="publication-year-2023">
-          <div class="publication-year-header">
-            <h3 id="publication-year-2023">2023</h3>
-            <p>
-              <span data-lang-panel="en">Peer-reviewed journal articles</span>
-              <span data-lang-panel="ko" hidden>게재 학술지 논문</span>
-            </p>
-          </div>
-          <ol class="publication-record-list" start="16">
-            <li>
-              <span class="record-number">16</span>
-              <div>
-                <p class="record-authors">W. Chung, S. Kim, A. Hunaidy, H. Imran, A. Jamil, J. H. Lee</p>
-                <h4>Identification of sustainable carbon capture and utilization (CCU) pathways using state-task network representation</h4>
-                <p class="record-citation"><em>Computers &amp; Chemical Engineering</em> (2023) · <a href="https://doi.org/10.1016/j.compchemeng.2023.108408" target="_blank" rel="noreferrer">DOI: 10.1016/j.compchemeng.2023.108408</a></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">17</span>
-              <div>
-                <p class="record-authors">S. Kim<sup>†</sup>, S. Kang<sup>†</sup>, J. H. Lee</p>
-                <h4>Optimal design of offshore wind power farm in high resolution using geographical information system</h4>
-                <p class="record-citation"><em>Computers &amp; Chemical Engineering</em> (2023) · <a href="https://doi.org/10.1016/j.compchemeng.2023.108253" target="_blank" rel="noreferrer">DOI: 10.1016/j.compchemeng.2023.108253</a></p>
-              </div>
-            </li>
-          </ol>
-          <div class="publication-subgroup">
-            <h4>
-              <span data-lang-panel="en">Conference proceedings</span>
-              <span data-lang-panel="ko" hidden>학회 프로시딩</span>
-            </h4>
-            <ol class="publication-record-list">
-              <li>
-                <span class="record-number">C-02</span>
-                <div>
-                  <p class="record-authors">S. Kim, J. H. Lee</p>
-                  <h4>Multi-period design of hybrid microgrid under multi-timescale uncertainties</h4>
-                  <p class="record-citation"><em>IFAC-PapersOnLine</em> (2023) · <a href="https://doi.org/10.1016/j.ifacol.2023.10.1827" target="_blank" rel="noreferrer">DOI: 10.1016/j.ifacol.2023.10.1827</a></p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-
-        <section class="publication-year" aria-labelledby="publication-year-2022">
-          <div class="publication-year-header">
-            <h3 id="publication-year-2022">2022</h3>
-            <p>
-              <span data-lang-panel="en">Conference proceedings</span>
-              <span data-lang-panel="ko" hidden>학회 프로시딩</span>
-            </p>
-          </div>
-          <ol class="publication-record-list">
-            <li>
-              <span class="record-number">C-03</span>
-              <div>
-                <p class="record-authors">S. Kim, S. Kang, J. H. Lee</p>
-                <h4>Optimal Design of Offshore Wind Power Farm Considering Wind Uncertainty</h4>
-                <p class="record-citation"><em>Computer Aided Chemical Engineering</em> (2022) · <a href="https://doi.org/10.1016/B978-0-323-85159-6.50175-5" target="_blank" rel="noreferrer">DOI: 10.1016/B978-0-323-85159-6.50175-5</a></p>
-              </div>
-            </li>
-          </ol>
-        </section>
-
-        <section class="publication-year manuscripts-under-review" aria-labelledby="manuscripts-under-review">
-          <div class="publication-year-header">
-            <h3 id="manuscripts-under-review">
-              <span data-lang-panel="en">Manuscripts under review</span>
-              <span data-lang-panel="ko" hidden>심사 중 원고</span>
-            </h3>
-            <p>
-              <span data-lang-panel="en">Not yet assigned a publication year</span>
-              <span data-lang-panel="ko" hidden>출판 연도 미정</span>
-            </p>
-          </div>
-          <ol class="publication-record-list">
-            <li>
-              <span class="record-number">UR-01</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, A. Jamal, A. Izgorodin, A. Alsuhaibani, B. Ryu, S. Heo, J. H. Lee</p>
-                <h4>Partial Input Convex Neural Network-Embedded Value-Guided Decomposition for Feasibility-Critical Multistage Stochastic Capacity Planning</h4>
-                <p class="record-citation"><em>Computers &amp; Chemical Engineering</em> · <span data-lang-panel="en">Under review</span><span data-lang-panel="ko" hidden>심사 중</span></p>
-              </div>
-            </li>
-            <li>
-              <span class="record-number">UR-02</span>
-              <div>
-                <p class="record-authors">S. Kim, J. Park, A. Jamal, A. Izgorodin, A. Alsuhaibani, J. H. Lee</p>
-                <h4>Fiscally Efficient Carbon Tax–Credit Policy Design with Endogenous Firm Responses: A Bilevel Programming Framework</h4>
-                <p class="record-citation"><em>Applied Energy</em> · <span data-lang-panel="en">Under review</span><span data-lang-panel="ko" hidden>심사 중</span></p>
-              </div>
-            </li>
-          </ol>
-        </section>
-      </div>
-      <p class="equal-contribution-note"><sup>†</sup> <span data-lang-panel="en">Equal contribution (co-first author).</span><span data-lang-panel="ko" hidden>동등 기여(공동 제1저자).</span></p>
     </section>
 
-    <section id="paper-resources" class="section paper-resources" aria-labelledby="paper-resources-title">
-      <div class="section-header">
-        <p class="eyebrow">
-          <span data-lang-panel="en">Paper Notes &amp; Code</span>
-          <span data-lang-panel="ko" hidden>논문 해설·코드</span>
-        </p>
-        <h2 id="paper-resources-title">
-          <span data-lang-panel="en">Published paper explanations and code</span>
-          <span data-lang-panel="ko" hidden>출판 논문 해설과 코드</span>
-        </h2>
-        <p>
-          <span data-lang-panel="en">A place for explanations of my published papers and the code used in them.</span>
-          <span data-lang-panel="ko" hidden>출판한 논문의 설명문과 연구에 사용한 코드를 모을 공간입니다.</span>
-        </p>
-      </div>
-      <div class="paper-resources-empty">
-        <span class="paper-resources-status">
-          <span data-lang-panel="en">Coming soon</span>
-          <span data-lang-panel="ko" hidden>준비 중</span>
-        </span>
-        <p>
-          <span data-lang-panel="en">Paper explanations and code will be added here as they become available.</span>
-          <span data-lang-panel="ko" hidden>논문별 해설과 코드는 준비되는 대로 이곳에 추가하겠습니다.</span>
-        </p>
+    <section id="paper-resources" class="section paper-resources-preview" aria-labelledby="paper-resources-preview-title">
+      <div class="section-header row">
+        <div>
+          <p class="eyebrow">
+            <span data-lang-panel="en">Paper Notes &amp; Code</span>
+            <span data-lang-panel="ko" hidden>논문 해설·코드</span>
+          </p>
+          <h2 id="paper-resources-preview-title">
+            <span data-lang-panel="en">Published paper explanations and code</span>
+            <span data-lang-panel="ko" hidden>출판 논문 해설과 코드</span>
+          </h2>
+          <p>
+            <span data-lang-panel="en">A dedicated space for paper explanations and code. Content is coming soon.</span>
+            <span data-lang-panel="ko" hidden>논문별 해설과 코드를 위한 별도 공간입니다. 내용은 준비 중입니다.</span>
+          </p>
+        </div>
+        <a class="button secondary" href="{{ '/paper-resources/' | relative_url }}">
+          <span data-lang-panel="en">Explore Paper Notes &amp; Code</span>
+          <span data-lang-panel="ko" hidden>논문 해설·코드 보기</span>
+        </a>
       </div>
     </section>
 
@@ -479,7 +184,7 @@ layout: null
         <p data-i18n="profileIntro">A compact map of academic background, research experience, projects, and selected talks. The full publication record is listed separately by year.</p>
       </div>
       <div class="profile-link-grid">
-        <a class="profile-link" href="#publication-record">
+        <a class="profile-link" href="{{ '/publications/' | relative_url }}">
           <span data-i18n="profilePublications">Publication record</span>
           <small data-i18n="profilePublicationsText">Journal articles and conference proceedings by year, plus manuscripts under review.</small>
         </a>

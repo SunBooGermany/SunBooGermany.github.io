@@ -1,6 +1,5 @@
 const content = {
   en: {
-    navHome: "Home",
     navPublications: "Publications",
     navPaperResources: "Paper Notes & Code",
     navProfile: "Profile",
@@ -102,7 +101,6 @@ const content = {
     ]
   },
   ko: {
-    navHome: "홈",
     navPublications: "논문 실적",
     navPaperResources: "논문 해설·코드",
     navProfile: "프로필",
