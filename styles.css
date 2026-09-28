@@ -422,6 +422,154 @@ h1 {
   background: var(--green-soft);
   color: var(--green);
 }
+.publication-record {
+  padding-top: 42px;
+}
+.publication-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 0 0 38px;
+}
+.publication-summary > div {
+  display: grid;
+  gap: 3px;
+  min-height: 112px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+.publication-summary strong {
+  color: var(--green);
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.publication-summary span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+.publication-years {
+  border-bottom: 1px solid var(--line);
+}
+.publication-year {
+  padding: 30px 0;
+  border-top: 1px solid var(--line);
+}
+.publication-year-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+.publication-year-header h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 25px;
+  letter-spacing: -0.02em;
+}
+.publication-year-header p {
+  margin: 0;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 850;
+  text-align: right;
+}
+.publication-record-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.publication-record-list > li {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid #edf1ef;
+}
+.publication-record-list > li:first-child {
+  border-top: 0;
+}
+.publication-subgroup {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--line);
+}
+.publication-subgroup > h4 {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-size: 14px;
+}
+.record-number {
+  color: #aab9b2;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.55;
+}
+.record-authors {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.publication-record-list h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.42;
+  letter-spacing: 0;
+}
+.record-citation {
+  margin: 8px 0 0;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+}
+.record-citation a {
+  text-decoration: underline;
+  text-decoration-color: rgba(11, 107, 87, .35);
+  text-underline-offset: 2px;
+}
+.record-citation a:hover {
+  color: var(--blue);
+  text-decoration-color: currentColor;
+}
+.manuscripts-under-review {
+  background: linear-gradient(90deg, var(--green-soft), transparent 72%);
+}
+.manuscripts-under-review .record-number {
+  color: var(--green);
+}
+.equal-contribution-note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.paper-resources {
+  border-top: 1px solid var(--line);
+}
+.paper-resources-empty {
+  padding: 30px 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+.paper-resources-status {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 850;
+}
+.paper-resources-empty p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+}
 .publication-list {
   display: grid;
   gap: 14px;
@@ -958,6 +1106,7 @@ h1 {
   .insight-grid,
   .gateway-grid,
   .profile-link-grid,
+  .publication-summary,
   .taxonomy-card-grid,
   .log-categories {
     grid-template-columns: 1fr;
@@ -974,6 +1123,8 @@ h1 {
   }
   .feature-panel ul { grid-template-columns: 1fr; }
   .section-header.row { align-items: start; flex-direction: column; }
+  .publication-year-header { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .publication-year-header p { text-align: left; }
   .publication { grid-template-columns: 1fr; }
   .publication .num { font-size: 22px; }
   .contact { margin-top: 40px; margin-bottom: 40px; padding: 30px; }
@@ -1138,6 +1289,28 @@ h1 {
   .publication,
   .timeline-item {
     padding: 20px;
+  }
+  .publication-summary > div {
+    min-height: 0;
+    padding: 18px 20px;
+  }
+  .publication-year {
+    padding: 24px 0;
+  }
+  .publication-record-list > li {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+  }
+  .publication-record-list h4 {
+    font-size: 17px;
+  }
+  .paper-resources-empty {
+    padding: 22px 20px;
+  }
+  .record-authors,
+  .record-citation {
+    font-size: 13px;
   }
   .timeline-item .top {
     flex-direction: column;
