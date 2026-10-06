@@ -1,0 +1,39 @@
+---
+layout: default
+---
+{% assign content_parts = content | split: '<!-- ko -->' %}
+{% assign english_content = content_parts | first | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="Scrollable table"><table>' | replace: '</table>', '</table></div>' %}
+{% assign korean_content = content_parts | last | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="가로로 스크롤할 수 있는 표"><table>' | replace: '</table>', '</table></div>' %}
+<article class="course-note{% if page.material_label == 'Syllabus' %} course-syllabus{% endif %}">
+  <header class="post-header">
+    <p class="eyebrow">
+      <span data-lang-panel="en">AI for Chemical Engineers · {{ page.material_label | escape }}</span>
+      <span data-lang-panel="ko" hidden>화학공학자를 위한 AI 강의 · {{ page.material_label_ko | escape }}</span>
+    </p>
+    <h1>
+      <span data-lang-panel="en">{{ page.title | escape }}</span>
+      <span data-lang-panel="ko" hidden>{{ page.title_ko | escape }}</span>
+    </h1>
+    <p class="post-intro">
+      <span data-lang-panel="en">{{ page.description | escape }}</span>
+      <span data-lang-panel="ko" hidden>{{ page.description_ko | escape }}</span>
+    </p>
+    <div class="post-meta">
+      <span data-lang-panel="en">Course design and notes: Sunwoo Kim · Graduate entry · Updated {{ page.updated }}</span>
+      <span data-lang-panel="ko" hidden>과목 설계·강의 노트: Sunwoo Kim · 대학원 입문 · 수정 {{ page.updated }}</span>
+    </div>
+    <nav class="course-actions" aria-label="Course materials">
+      <a class="button secondary" href="{{ '/courses/surrogate-models/' | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
+      {% if page.pdf_en %}<a class="button secondary" data-lang-panel="en" href="{{ page.pdf_en | relative_url }}" download>Download PDF (English)</a>{% endif %}
+      {% if page.pdf_ko %}<a class="button secondary" data-lang-panel="ko" hidden href="{{ page.pdf_ko | relative_url }}" download>PDF 다운로드 (한국어)</a>{% endif %}
+      {% if page.notebook %}<a class="button secondary" href="{{ page.notebook | relative_url }}" download><span data-lang-panel="en">Download notebook</span><span data-lang-panel="ko" hidden>Notebook 다운로드</span></a>{% endif %}
+      {% if page.lab_script %}<a class="button secondary" href="{{ page.lab_script | relative_url }}" download><span data-lang-panel="en">Python script</span><span data-lang-panel="ko" hidden>Python 스크립트</span></a>{% endif %}
+    </nav>
+  </header>
+  <div class="post-content" data-lang-panel="en" lang="en">{{ english_content }}</div>
+  <div class="post-content" data-lang-panel="ko" lang="ko" hidden>{{ korean_content }}</div>
+  <footer class="post-footer">
+    <a href="{{ '/courses/surrogate-models/' | relative_url }}"><span data-lang-panel="en">Course overview and weekly materials</span><span data-lang-panel="ko" hidden>과목 안내와 주차별 자료</span></a>
+    <a href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All AI courses</span><span data-lang-panel="ko" hidden>전체 AI 강의</span></a>
+  </footer>
+</article>

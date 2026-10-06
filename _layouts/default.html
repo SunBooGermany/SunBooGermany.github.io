@@ -11,6 +11,7 @@
   <link rel="canonical" href="{{ page.url | absolute_url }}" />
   <link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml" />
   <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}?v={{ site.time | date: '%s' }}" />
+  {% if page.url contains '/courses/' %}<link rel="stylesheet" href="{{ '/assets/courses/courses.css' | relative_url }}?v={{ site.time | date: '%s' }}" />{% endif %}
 </head>
 <body class="writing-page">
   <header class="site-header">
@@ -38,6 +39,10 @@
       <a href="{{ '/better-judgment/' | relative_url }}">
         <span data-lang-panel="en">Better Judgment</span>
         <span data-lang-panel="ko" hidden>더 나은 판단</span>
+      </a>
+      <a href="{{ '/courses/' | relative_url }}">
+        <span data-lang-panel="en">AI Courses</span>
+        <span data-lang-panel="ko" hidden>AI 강의</span>
       </a>
       <a href="{{ '/#contact' | relative_url }}">
         <span data-lang-panel="en">Contact</span>

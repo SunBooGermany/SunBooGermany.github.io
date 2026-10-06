@@ -1,0 +1,59 @@
+.course-card, .course-summary {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.course-card h2, .course-card h3 { font-size: 28px; line-height: 1.22; }
+.course-card p, .course-summary p, .course-week p { color: var(--muted); }
+.course-catalog { display: grid; gap: 24px; }
+.course-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.course-summary { margin: 32px 0 48px; }
+.course-summary p:last-child { margin-bottom: 0; }
+.course-weeks > h2 { margin-bottom: 24px; font-size: 30px; }
+.course-week-list { display: grid; gap: 14px; }
+.course-week { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 20px; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+.course-week.is-available { border-left: 4px solid var(--green); }
+.course-week-number { color: var(--green); font-size: 14px; font-weight: 800; }
+.course-week h3 { font-size: 21px; margin-bottom: 8px; }
+.course-week h3 a:hover, .course-card h2 a:hover, .course-card h3 a:hover { color: var(--green); }
+.course-status { font-size: 13px; font-weight: 750; color: var(--green); }
+.course-status.planned { color: var(--muted); }
+.course-note .post-header { margin-bottom: 42px; }
+.course-note .post-content table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 24px 0; }
+.course-note .post-content th, .course-note .post-content td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+.course-note .post-content th { background: var(--green-soft); }
+.course-note .post-content figure { margin: 28px 0; }
+.course-note .post-content figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
+.course-note .post-content pre { padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: #f0f4f2; overflow-x: auto; font-size: 14px; }
+.course-note .post-content code { overflow-wrap: anywhere; }
+.course-note .post-content blockquote { border-left: 3px solid var(--green); margin-left: 0; padding-left: 18px; }
+.course-note .post-content math[display="block"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 12px 0; }
+.course-note .post-content .table-scroll { overflow-x: auto; }
+.course-note .post-content .equation-caption { font-size: 15px; color: var(--muted); }
+.course-note .post-header [data-lang-panel="ko"], .course-note .post-content[lang="ko"], .course-hero [data-lang-panel="ko"], .course-card [data-lang-panel="ko"], .course-week [data-lang-panel="ko"] { word-break: keep-all; }
+@media (max-width: 600px) {
+  .course-card, .course-summary { padding: 20px; }
+  .course-card h2, .course-card h3 { font-size: 23px; }
+  .course-week { grid-template-columns: 1fr; gap: 8px; padding: 20px; }
+  .course-hero > p, .courses-preview .section-header p, .courses-preview .course-card p { display: block !important; overflow: visible; max-height: none; -webkit-line-clamp: unset; }
+}
+@media print {
+  @page { size: A4; margin: 18mm 17mm 20mm; }
+  body:has(.course-note) { background: white; font-size: 10.5pt; }
+  body:has(.course-note) .site-header, body:has(.course-note) > .footer, .course-note .course-actions, .course-note .post-footer { display: none !important; }
+  body:has(.course-note) .log-main { width: 100%; padding: 0; }
+  .course-note .post-header h1 { font-size: 26pt; line-height: 1.15; }
+  .course-note .post-intro { font-size: 11pt; }
+  .course-note .post-header { margin-bottom: 24px; }
+  .course-note .post-content { font-size: 10.5pt; line-height: 1.45; }
+  .course-syllabus .post-content { font-size: 10pt; line-height: 1.45; }
+  .course-note .post-content h2 { font-size: 17pt; margin-top: 25px; break-after: avoid; }
+  .course-note .post-content h3 { font-size: 12pt; break-after: avoid; }
+  .course-note .post-content p, .course-note .post-content li { orphans: 3; widows: 3; }
+  .course-note .post-content figure, .course-note .post-content math[display="block"], .course-note .post-content pre { break-inside: avoid; }
+  .course-note .post-content figure img { max-height: 80mm; display: block; margin: auto; }
+  .course-note .post-content th, .course-note .post-content td { padding: 7px; font-size: 9pt; }
+  .course-note .post-content .table-scroll { overflow: visible; }
+  .course-note .post-content a { color: #17201c; }
+}

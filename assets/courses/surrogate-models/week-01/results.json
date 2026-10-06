@@ -1,0 +1,79 @@
+{
+  "seed": 42,
+  "parameters": {
+    "k_ref_per_min": 0.2,
+    "t_ref_k": 330.0,
+    "beta_k": 6000.0
+  },
+  "input_columns": [
+    "temperature_k",
+    "residence_time_min",
+    "feed_ca_mol_per_l"
+  ],
+  "output_columns": [
+    "outlet_ca_mol_per_l",
+    "conversion"
+  ],
+  "lower_bounds": [
+    300.0,
+    1.0,
+    0.8
+  ],
+  "upper_bounds": [
+    360.0,
+    10.0,
+    1.5
+  ],
+  "split_sizes": {
+    "train": 400,
+    "validation": 120,
+    "test": 160
+  },
+  "baseline": "ordinary least squares on ten fixed quadratic features; not a neural network",
+  "numpy_version": "2.5.3",
+  "prediction_metrics": {
+    "train": {
+      "ca_rmse_mol_per_l": 0.03022969518182382,
+      "conversion_rmse": 0.02496203411651959,
+      "output_consistency_rmse_mol_per_l": 0.00592043855504738,
+      "max_abs_output_consistency_mol_per_l": 0.019625837295148107
+    },
+    "validation": {
+      "ca_rmse_mol_per_l": 0.026703380447027737,
+      "conversion_rmse": 0.023522294793252744,
+      "output_consistency_rmse_mol_per_l": 0.006300904823947189,
+      "max_abs_output_consistency_mol_per_l": 0.018236088828365693
+    },
+    "test": {
+      "ca_rmse_mol_per_l": 0.03262293820597088,
+      "conversion_rmse": 0.025608257579503652,
+      "output_consistency_rmse_mol_per_l": 0.005671547252803907,
+      "max_abs_output_consistency_mol_per_l": 0.022756718226720762
+    }
+  },
+  "decision": {
+    "benchmark_kind": "lowest-cost feasible point on the declared finite grid",
+    "candidate_count": 11011,
+    "temperature_step_k": 0.5,
+    "residence_time_step_min": 0.10000000000000009,
+    "fixed_feed_mol_per_l": 1.2,
+    "target_conversion": 0.8,
+    "surrogate_selected": {
+      "temperature_k": 347.0,
+      "residence_time_min": 8.100000000000001,
+      "predicted_conversion": 0.8001438811282473,
+      "reference_conversion": 0.7978931298985088,
+      "reference_conversion_shortfall": 0.0021068701014912428,
+      "reference_feasible": false,
+      "cost_index": 3.16,
+      "feasible_cost_gap_to_reference_grid": null
+    },
+    "reference_grid_benchmark": {
+      "temperature_k": 343.5,
+      "residence_time_min": 9.8,
+      "conversion": 0.8001950303336811,
+      "cost_index": 3.155
+    }
+  },
+  "dynamic_indexing": "N piecewise-constant input intervals and N+1 output boundary times"
+}

@@ -15,6 +15,26 @@ layout: null
     <loc>{{ '/better-judgment/' | absolute_url }}</loc>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>{{ '/courses/' | absolute_url }}</loc>
+    <priority>0.8</priority>
+  </url>
+  {% for course in site.data.courses %}
+  <url>
+    <loc>{{ course.url | absolute_url }}</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>{{ course.syllabus_url | absolute_url }}</loc>
+    <priority>0.7</priority>
+  </url>
+  {% for week in course.weeks %}{% if week.url %}
+  <url>
+    <loc>{{ week.url | absolute_url }}</loc>
+    <priority>0.7</priority>
+  </url>
+  {% endif %}{% endfor %}
+  {% endfor %}
   {% for category in site.data.categories %}
   <url>
     <loc>{{ '/categories/' | append: category.slug | append: '/' | absolute_url }}</loc>
