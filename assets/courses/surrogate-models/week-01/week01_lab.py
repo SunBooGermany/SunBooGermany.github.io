@@ -1,8 +1,8 @@
 """Week 1: synthetic CSTR prediction and decision workflow.
 
-Course design and notes: Sunwoo Kim. Educational parameters, not plant data.
+Course design and notes: Sunwoo Kim.
 Run: python week01_lab.py --output-dir week01-results --seed 42
-Python 3.10+; NumPy and Matplotlib. No network or external dataset is used.
+Python 3.10+; NumPy and Matplotlib.
 """
 
 # %% Imports and data contract
