@@ -22,7 +22,7 @@ For consecutive first-order reactions A → B → C, setting each derivative to 
 
 At 330 K, the first and second reaction rates are 0.2/min and 0.1/min. With 5 min residence time and 1.2 mol/L feed, the three concentrations are **[0.6, 0.4, 0.2] mol/L**. Their sum is 1.2. These are the labels for one steady-state training row.
 
-The input is [T, τ, C_Af] and the output is [C_A, C_B, C_C]. Each row is one steady operating condition. State transitions and future input histories are introduced in Week 3.
+The input is [T, τ, C_Af] and the output is [C_A, C_B, C_C]. Each row is one steady operating condition.
 
 <!-- lecture-page -->
 
@@ -87,8 +87,6 @@ optimizer.step()
 
 Evaluate validation loss after an epoch and retain the weights at its minimum. Keep the test set out of parameter fitting and model selection. Compute prediction metrics after undoing output standardization.
 
-In dynamic data, assign whole trajectories to train, validation, or test. A random split of neighboring transitions can make the evaluation less independent.
-
 Original explanations: PyTorch [training loop](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) and [model construction](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html).
 
 <!-- lecture-page -->
@@ -103,7 +101,7 @@ The component errors are **[0.02, −0.01, −0.01] mol/L**. Both sums equal 1.2
 
 **Answer check:** report A/B/C RMSE in physical units, concentration-sum residual, and minimum predicted concentration. Fit on train, choose with validation, and leave test out of both steps.
 
-These are independent prediction diagnostics. Week 3 adds one-step and trajectory errors; Week 4 studies physical constraints. Selecting an operating point is a later task. Return to the [Week 2 core lab]({{ page.lecture_note | relative_url }}).
+Return to the [Week 2 core lab]({{ page.lecture_note | relative_url }}).
 
 <!-- ko -->
 
@@ -115,7 +113,7 @@ These are independent prediction diagnostics. Week 3 adds one-step and trajector
 
 330 K에서 첫 번째와 두 번째 반응의 속도상수는 0.2/min, 0.1/min이다. 체류시간 5 min·유입 농도 1.2 mol/L이면 세 농도는 **[0.6, 0.4, 0.2] mol/L**다. 합은 1.2다. 정상상태 학습 행 하나의 label이 된다.
 
-입력은 [T, τ, C_Af], 출력은 [C_A, C_B, C_C]다. 한 행은 하나의 정상상태 운전 조건이다. 상태전이와 미래 입력 이력은 3주차에서 다룬다.
+입력은 [T, τ, C_Af], 출력은 [C_A, C_B, C_C]다. 한 행은 하나의 정상상태 운전 조건이다.
 
 <!-- lecture-page -->
 
@@ -180,8 +178,6 @@ optimizer.step()
 
 Epoch 뒤 validation loss를 평가하고 최솟값의 weight를 보관한다. Test는 파라미터 학습과 모델 선택에 사용하지 않는다. 예측 지표는 출력 표준화를 되돌린 뒤 계산한다.
 
-동적 데이터는 전체 궤적을 train·validation·test에 배정한다. 서로 이웃한 transition을 무작위 분할하면 평가의 독립성이 약해질 수 있다.
-
 원문 해설: PyTorch [학습 loop](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html), [모델 구성](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html).
 
 <!-- lecture-page -->
@@ -196,4 +192,4 @@ Epoch 뒤 validation loss를 평가하고 최솟값의 weight를 보관한다. T
 
 **확인 답:** 물리 단위의 A·B·C RMSE, 농도 합 residual, 최소 예측 농도를 보고한다. Train으로 학습하고 validation으로 선택하며, test는 두 단계에 사용하지 않는다.
 
-이것은 독립 예측의 진단이다. 3주차는 one-step·궤적 오차, 4주차는 물리 제약을 다룬다. 운전점 선택은 이후의 과제다. [2주차 필수 실습]({{ page.lecture_note | relative_url }})으로 돌아간다.
+[2주차 필수 실습]({{ page.lecture_note | relative_url }})으로 돌아간다.

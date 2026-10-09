@@ -11,7 +11,6 @@ permalink: /courses/surrogate-models/week-02/
 pdf_en: /assets/courses/surrogate-models/week-02-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-02-ko.pdf
 notebook: /assets/courses/surrogate-models/week-02/week02_steady.ipynb
-notebook_2: /assets/courses/surrogate-models/week-02/week02_dynamic.ipynb
 lab_script: /assets/courses/surrogate-models/week-02/week02_lab.py
 reading_note: /courses/surrogate-models/week-02-reading/
 reading_pdf_en: /assets/courses/surrogate-models/week-02-reading-en.pdf
@@ -267,20 +266,20 @@ KKT-hPINN computes loss on the projected output and backpropagates through the p
 
 **Week 4** derives the projection and KKT conditions, checks rank assumptions, and follows the gradient. The guarantee concerns the specified linear equalities, up to numerical arithmetic; nonnegativity needs an additional constraint.
 
-Source: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764). [Open-access version: Section 3 and Remark 3](https://arxiv.org/html/2402.07251v1#S3).
+Source: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764).
 
 <!-- lecture-page -->
 
 ## 7. Run the required steady-state lab
 
-Download the [steady-state notebook]({{ page.notebook | relative_url }}) or [lab bundle]({{ '/assets/courses/surrogate-models/week-02/week02-labs.zip' | relative_url }}). The bundle also preserves optional later-topic materials.
+Download the [steady-state notebook]({{ page.notebook | relative_url }}).
 
 ```bash
 python -m pip install -r requirements.txt
 python week02_lab.py --mode steady --output-dir week02-results
 ```
 
-Evaluate the trained predictor by component RMSE and concentration-sum residual. The stored operating-selection results belong to the later optimization part.
+Evaluate the trained predictor by component RMSE and concentration-sum residual.
 
 <!-- lecture-page -->
 
@@ -302,106 +301,6 @@ Original explanations: PyTorch [model construction](https://docs.pytorch.org/tut
 The [Week 2 companion]({{ page.reading_note | relative_url }}) and [English PDF]({{ page.reading_pdf_en | relative_url }}) explain the three-output map, parameter count, scaling, gradient update, training loop, and independent diagnostics.
 
 **KKT-hPINN reference:** Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, **189**, 108764.
-
-<!-- lecture-page -->
-
-## Generate dynamic concentration data
-
-Use the same balances to generate 30 min trajectories at **Δt = 0.2 min**. There are 150 input intervals and 151 concentration times. Feed concentration and residence time are fixed within each trajectory; temperature can change between intervals. Each initial concentration vector sums to the feed concentration.
-
-Adding the balances gives the evolution of total concentration:
-
-<math display="block" aria-label="Dynamics of total concentration"><mrow><mfrac><mrow><mi>d</mi><mrow><mo>(</mo><msub><mi>C</mi><mi>A</mi></msub><mo>+</mo><msub><mi>C</mi><mi>B</mi></msub><mo>+</mo><msub><mi>C</mi><mi>C</mi></msub><mo>)</mo></mrow></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mi>Af</mi></msub><mo>−</mo><mo>(</mo><msub><mi>C</mi><mi>A</mi></msub><mo>+</mo><msub><mi>C</mi><mi>B</mi></msub><mo>+</mo><msub><mi>C</mi><mi>C</mi></msub><mo>)</mo></mrow><mi>τ</mi></mfrac></mrow></math>
-
-With this initial condition and fixed feed concentration, the reference concentration sum stays equal to C_Af throughout the trajectory.
-
-Generate **60 train, 15 validation, and 20 test trajectories**. Their transition counts are 9000, 2250, and 3000. Assign whole trajectories to the three sets. Each transition row contains the current concentrations, operating inputs, and the next concentrations.
-
-<!-- lecture-page -->
-
-## Learn a dynamic MLP
-
-The network receives six values: three current concentrations and [T, τ, C_Af]. Use a **6 → 32 → 32 → 3** architecture, containing **1379 parameters**. Train its three outputs on concentration increments Δc = c_next − c_current. Standardize both inputs and increments with training statistics.
-
-<math display="block" aria-label="Dynamic MLP inputs and concentration-increment update"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">v</mi><mi>k</mi></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><msub><msub><mi>C</mi><mi>A</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><msub><mi>C</mi><mi>B</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><msub><mi>C</mi><mi>C</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>T</mi><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>τ</mi><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>C</mi><mi>Af</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi mathvariant="bold">c</mi><mi>k</mi></msub><mo>+</mo><msub><mi mathvariant="bold">μ</mi><mi>Δ</mi></msub><mo>+</mo><msub><mi mathvariant="bold">s</mi><mi>Δ</mi></msub><mo>⊙</mo><msub><mi>g</mi><mi>θ</mi></msub><mo>(</mo><msub><mi mathvariant="bold">ṽ</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr></mtable></math>
-
-Here μ_Δ and s_Δ restore the increment to mol/L units. Adding it to the current concentration produces the next state. Train with Adam, learning rate 0.001, batches of 512, and up to 800 epochs; retain the validation-minimum weights.
-
-<!-- lecture-page -->
-
-## Dynamic model training history
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-training.png' | relative_url }}" alt="Training and validation losses for standardized concentration increments." /><figcaption>The dynamic loss is measured on standardized increments.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## One-step prediction and time-series rollout
-
-For one-step evaluation, supply the reference concentration at each time. For rollout, begin with the specified initial concentration and then supply the model's previous prediction:
-
-<math display="block" aria-label="One-step prediction versus autoregressive rollout"><mtable columnalign="left"><mtr><mtd><mrow><mtext>one-step:</mtext><mspace width="1em"/><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mi>θ</mi></msub><mo>(</mo><msub><mi mathvariant="bold">c</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="bold">u</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mtext>rollout:</mtext><mspace width="1em"/><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mi>θ</mi></msub><mo>(</mo><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="bold">u</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr></mtable></math>
-
-The future input sequence remains prescribed in both evaluations. Compare a constant 330 K plan with a plan that changes from 330 to 345 K at 10 min. Both use τ = 5 min, feed = 1.2 mol/L, and initial concentrations [1.2, 0, 0] mol/L.
-
-<!-- lecture-page -->
-
-## Two temperature plans: full time series
-
-<figure class="tall-figure"><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-rollout.png' | relative_url }}" alt="Two prescribed temperature plans and reference-versus-MLP time series for A, B, and C." /><figcaption>Solid curves are reference concentrations; dashed curves are MLP rollout. The temperature plan changes all three concentration histories.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## One-step and rollout errors
-
-| Test RMSE, mol/L | A | B | C |
-| --- | --- | --- | --- |
-| One-step | {{ result.one_step_a_rmse }} | {{ result.one_step_b_rmse }} | {{ result.one_step_c_rmse }} |
-| 30 min rollout | {{ result.rollout_a_rmse }} | {{ result.rollout_b_rmse }} | {{ result.rollout_c_rmse }} |
-
-| Physical check | One-step | Rollout |
-| --- | --- | --- |
-| Concentration-sum RMSE, mol/L | {{ result.one_step_balance }} | {{ result.rollout_balance }} |
-| Minimum predicted concentration, mol/L | {{ result.one_step_min }} | {{ result.rollout_min }} |
-
-The rollout errors are larger because the next prediction uses an already predicted state. The minimum concentration also reveals small negative predictions. Follow the component errors and concentration sum along the full trajectory.
-
-<!-- lecture-page -->
-
-## Follow errors over the prediction horizon
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-errors.png' | relative_url }}" alt="Component rollout RMSE and concentration-sum residual over the prediction horizon." /><figcaption>Errors over 20 test trajectories. Dotted lines show the corresponding one-step RMSE.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## Compare the final B concentration
-
-| Final B concentration at 30 min, mol/L | Reference | MLP rollout |
-| --- | --- | --- |
-| Constant 330 K | {{ result.constant_reference_b }} | {{ result.constant_predicted_b }} |
-| Step from 330 to 345 K | {{ result.step_reference_b }} | {{ result.step_predicted_b }} |
-
-The temperature-step plan gives a higher final B concentration in both calculations. The MLP underestimates the step plan's final concentration; the time-series comparison shows where the discrepancy develops.
-
-<!-- lecture-page -->
-
-## Later preview: Select an operating point for B production
-
-Fix the feed at 1.2 mol/L and maximize predicted B concentration. Enumerate temperature in 0.5 K steps and residence time in 0.1 min steps, retaining candidates whose predicted component concentrations lie between zero and the feed concentration. Evaluate the selected point with the reference map.
-
-| Quantity | Result |
-| --- | --- |
-| MLP-selected temperature; residence time | {{ result.selected_temperature_K }} K; {{ result.selected_tau_min }} min |
-| Predicted B concentration | {{ result.predicted_C_B_mol_L }} mol/L |
-| Reference B concentration at this point | {{ result.reference_C_B_mol_L }} mol/L |
-| Reference-grid maximizing temperature; residence time | {{ result.reference_temperature_K }} K; {{ result.reference_tau_min }} min |
-| Reference-grid maximum B concentration | {{ result.reference_grid_C_B_mol_L }} mol/L |
-| Reference B yield at the MLP-selected point | {{ result.reference_yield_B }} |
-
-<!-- lecture-page -->
-
-## Later preview: Compare the selected operating points
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/steady-decision.png' | relative_url }}" alt="Reference B concentration over temperature and residence time, with MLP-selected and reference-grid maximizing points." /><figcaption>The selected residence time is 1.7 min; the reference grid selects 1.8 min. Compare their reference B concentrations.</figcaption></figure>
 
 <!-- ko -->
 
@@ -653,20 +552,20 @@ KKT-hPINN은 projection을 거친 출력으로 loss를 계산하고, projection�
 
 **4주차**에서 projection·KKT 조건을 유도하고 rank 가정과 gradient를 확인한다. 보장 범위는 명시한 선형 등식의 만족(수치 연산 오차 범위)이며, 비음수성은 별도 제약이 필요하다.
 
-출처: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764). [공개 원문: 3절과 Remark 3](https://arxiv.org/html/2402.07251v1#S3).
+출처: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764).
 
 <!-- lecture-page -->
 
 ## 7. 필수 정상상태 실습 실행
 
-[정상상태 Notebook]({{ page.notebook | relative_url }}) 또는 [실습 묶음]({{ '/assets/courses/surrogate-models/week-02/week02-labs.zip' | relative_url }})을 받는다. 묶음에는 후반부의 선택 자료도 보존했다.
+[정상상태 Notebook]({{ page.notebook | relative_url }})을 받는다.
 
 ```bash
 python -m pip install -r requirements.txt
 python week02_lab.py --mode steady --output-dir week02-results
 ```
 
-학습한 predictor의 성분별 RMSE와 농도 합 residual을 평가한다. 기록된 운전점 선택 결과는 후반부 최적화 내용이다.
+학습한 predictor의 성분별 RMSE와 농도 합 residual을 평가한다.
 
 <!-- lecture-page -->
 
@@ -688,103 +587,3 @@ python week02_lab.py --mode steady --output-dir week02-results
 [2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력 mapping, 파라미터 수, scaling, gradient 갱신, 학습 loop와 독립 진단을 읽는다.
 
 **KKT-hPINN 참고문헌:** Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, **189**, 108764.
-
-<!-- lecture-page -->
-
-## 동적 농도 데이터 생성
-
-같은 수지식으로 **Δt = 0.2 min**, 30 min 길이의 궤적을 생성한다. 입력 구간은 150개, 농도 시점은 151개다. 한 궤적 안에서 유입 농도·체류시간은 고정하고 온도를 구간 사이에서 바꾼다. 각 초기 농도 벡터의 합은 유입 농도와 같다.
-
-세 수지를 더하면 전체 농도의 시간 변화를 얻는다.
-
-<math display="block" aria-label="Dynamics of total concentration"><mrow><mfrac><mrow><mi>d</mi><mrow><mo>(</mo><msub><mi>C</mi><mi>A</mi></msub><mo>+</mo><msub><mi>C</mi><mi>B</mi></msub><mo>+</mo><msub><mi>C</mi><mi>C</mi></msub><mo>)</mo></mrow></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mi>Af</mi></msub><mo>−</mo><mo>(</mo><msub><mi>C</mi><mi>A</mi></msub><mo>+</mo><msub><mi>C</mi><mi>B</mi></msub><mo>+</mo><msub><mi>C</mi><mi>C</mi></msub><mo>)</mo></mrow><mi>τ</mi></mfrac></mrow></math>
-
-이 초기 조건과 고정 유입 농도에서 기준 농도의 합은 궤적 전체에 걸쳐 C_Af를 유지한다.
-
-**Train 60개, validation 15개, test 20개 궤적**을 생성한다. 상태전이 표본 수는 각각 9000, 2250, 3000개다. 궤적 전체를 세 집합에 배정한다. 각 행은 현재 농도, 운전 입력, 다음 농도를 포함한다.
-
-<!-- lecture-page -->
-
-## 동적 MLP 학습
-
-현재 세 농도와 [T, τ, C_Af]를 합친 여섯 값을 입력한다. **6 → 32 → 32 → 3** 구조이며 parameter는 **1379개**다. 세 출력의 학습 target은 농도 변화량 Δc = c_next − c_current다. 입력과 변화량 모두 train 통계량으로 표준화한다.
-
-<math display="block" aria-label="Dynamic MLP inputs and concentration-increment update"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">v</mi><mi>k</mi></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><msub><msub><mi>C</mi><mi>A</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><msub><mi>C</mi><mi>B</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><msub><mi>C</mi><mi>C</mi></msub><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>T</mi><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>τ</mi><mi>k</mi></msub></mtd></mtr><mtr><mtd><msub><mi>C</mi><mi>Af</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi mathvariant="bold">c</mi><mi>k</mi></msub><mo>+</mo><msub><mi mathvariant="bold">μ</mi><mi>Δ</mi></msub><mo>+</mo><msub><mi mathvariant="bold">s</mi><mi>Δ</mi></msub><mo>⊙</mo><msub><mi>g</mi><mi>θ</mi></msub><mo>(</mo><msub><mi mathvariant="bold">ṽ</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr></mtable></math>
-
-μ_Δ와 s_Δ로 변화량을 mol/L 단위로 복원한다. 이를 현재 농도에 더하면 다음 상태를 얻는다. Adam, learning rate 0.001, batch 512, 최대 800 epoch로 학습하고 validation 최소값의 가중치를 저장한다.
-
-<!-- lecture-page -->
-
-## 동적 모델 학습 곡선
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-training.png' | relative_url }}" alt="표준화한 농도 변화량을 학습하는 동적 MLP의 train·validation loss." /><figcaption>동적 loss는 표준화된 농도 변화량에서 계산한다.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## One-step 예측과 시계열 rollout
-
-One-step 평가에서는 각 시점의 기준 농도를 입력한다. Rollout에서는 지정한 초기 농도로 시작한 뒤 직전 예측값을 다음 입력으로 사용한다.
-
-<math display="block" aria-label="One-step prediction versus autoregressive rollout"><mtable columnalign="left"><mtr><mtd><mrow><mtext>one-step:</mtext><mspace width="1em"/><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mi>θ</mi></msub><mo>(</mo><msub><mi mathvariant="bold">c</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="bold">u</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mtext>rollout:</mtext><mspace width="1em"/><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mi>θ</mi></msub><mo>(</mo><msub><mover><mi mathvariant="bold">c</mi><mo>^</mo></mover><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="bold">u</mi><mi>k</mi></msub><mo>)</mo></mrow></mtd></mtr></mtable></math>
-
-두 평가 모두 미래 운전 입력은 주어진 계획을 사용한다. 온도 330 K 유지와 10 min에 330 → 345 K로 바꾸는 계획을 비교한다. 두 계획의 τ는 5 min, 유입 농도는 1.2 mol/L, 초기 농도는 [1.2, 0, 0] mol/L다.
-
-<!-- lecture-page -->
-
-## 두 온도 계획의 전체 시계열
-
-<figure class="tall-figure"><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-rollout.png' | relative_url }}" alt="두 온도 계획과 A·B·C의 기준 농도·MLP rollout 시계열." /><figcaption>실선은 기준 농도, 점선은 MLP rollout이다. 온도 계획에 따라 세 성분의 시간 응답이 달라진다.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## One-step과 rollout 오차
-
-| Test RMSE, mol/L | A | B | C |
-| --- | --- | --- | --- |
-| One-step | {{ result.one_step_a_rmse }} | {{ result.one_step_b_rmse }} | {{ result.one_step_c_rmse }} |
-| 30 min rollout | {{ result.rollout_a_rmse }} | {{ result.rollout_b_rmse }} | {{ result.rollout_c_rmse }} |
-
-| 물리적 확인 | One-step | Rollout |
-| --- | --- | --- |
-| 농도 합 RMSE, mol/L | {{ result.one_step_balance }} | {{ result.rollout_balance }} |
-| 최소 예측 농도, mol/L | {{ result.one_step_min }} | {{ result.rollout_min }} |
-
-Rollout은 이미 예측한 상태에서 다음 값을 계산하므로 오차가 더 크다. 최소 농도에서는 작은 음수 예측도 확인된다. 전체 궤적에서 성분별 오차와 농도 합을 함께 살핀다.
-
-<!-- lecture-page -->
-
-## 예측 horizon에 따른 오차
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-errors.png' | relative_url }}" alt="예측 horizon에 따른 성분별 rollout RMSE와 농도 합 residual." /><figcaption>Test 궤적 20개의 시간별 오차. 점선은 성분별 one-step RMSE다.</figcaption></figure>
-
-<!-- lecture-page -->
-
-## 최종 B 농도 비교
-
-| 30 min의 B 농도, mol/L | 기준 모델 | MLP rollout |
-| --- | --- | --- |
-| 330 K 유지 | {{ result.constant_reference_b }} | {{ result.constant_predicted_b }} |
-| 330 → 345 K step | {{ result.step_reference_b }} | {{ result.step_predicted_b }} |
-
-두 계산 모두 온도 step 계획의 마지막 B 농도가 더 높다. MLP는 step 계획의 마지막 농도를 작게 예측하며, 시계열 비교에서 차이가 생기는 구간을 확인할 수 있다.
-
-<!-- lecture-page -->
-
-## 후반부 미리보기: B 생산을 위한 운전점 선택
-
-유입 농도를 1.2 mol/L로 고정하고 예측 B 농도를 최대화한다. 온도 간격 0.5 K, 체류시간 간격 0.1 min의 grid를 평가한다. 예측한 각 성분 농도가 0과 유입 농도 사이인 후보를 사용하고, 선택한 운전점을 기준 mapping으로 확인한다.
-
-| 항목 | 결과 |
-| --- | --- |
-| MLP가 선택한 온도·체류시간 | {{ result.selected_temperature_K }} K; {{ result.selected_tau_min }} min |
-| 예측 B 농도 | {{ result.predicted_C_B_mol_L }} mol/L |
-| 선택한 지점의 기준 B 농도 | {{ result.reference_C_B_mol_L }} mol/L |
-| 기준 grid 최대점의 온도·체류시간 | {{ result.reference_temperature_K }} K; {{ result.reference_tau_min }} min |
-| 기준 grid의 최대 B 농도 | {{ result.reference_grid_C_B_mol_L }} mol/L |
-| MLP 선택점의 기준 B 수율 | {{ result.reference_yield_B }} |
-
-<!-- lecture-page -->
-
-## 후반부 미리보기: 선택한 운전점 비교
-
-<figure><img src="{{ '/assets/courses/surrogate-models/week-02/steady-decision.png' | relative_url }}" alt="온도·체류시간에 따른 기준 B 농도와 MLP 선택점·기준 grid 최대점." /><figcaption>MLP가 선택한 체류시간은 1.7 min, 기준 grid는 1.8 min이다. 두 지점의 기준 B 농도를 비교한다.</figcaption></figure>
