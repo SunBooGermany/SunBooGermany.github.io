@@ -258,8 +258,8 @@ layout: null
         <h3><a href="{{ first_course.url | relative_url }}"><span data-lang-panel="en">{{ first_course.title }}</span><span data-lang-panel="ko" hidden>{{ first_course.title_ko }}</span></a></h3>
         <p><span data-lang-panel="en">{{ first_course.description }}</span><span data-lang-panel="ko" hidden>{{ first_course.description_ko }}</span></p>
         <div class="course-actions">
-          <a class="button primary" href="{{ first_course.syllabus_url | relative_url }}"><span data-lang-panel="en">Read syllabus</span><span data-lang-panel="ko" hidden>Syllabus 보기</span></a>
-          <a class="button secondary" href="{{ first_course.weeks.first.url | relative_url }}"><span data-lang-panel="en">Start Week 1</span><span data-lang-panel="ko" hidden>1주차 시작하기</span></a>
+          <a class="button primary" href="{{ first_course.url | relative_url }}"><span data-lang-panel="en">Let's start learning!</span><span data-lang-panel="ko" hidden>학습을 시작해봅시다!</span></a>
+          <a class="button secondary" href="{{ first_course.syllabus_url | relative_url }}"><span data-lang-panel="en">What is this course about? (Syllabus)</span><span data-lang-panel="ko" hidden>어떤 강의인지 살펴볼까요? (실라버스)</span></a>
         </div>
       </article>
     </section>

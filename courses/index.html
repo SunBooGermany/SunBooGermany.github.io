@@ -16,9 +16,8 @@ permalink: /courses/
     <h2><a href="{{ course.url | relative_url }}"><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></a></h2>
     <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
     <div class="course-actions">
-      <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Explore course</span><span data-lang-panel="ko" hidden>과목 살펴보기</span></a>
-      <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Read syllabus</span><span data-lang-panel="ko" hidden>Syllabus 보기</span></a>
-      <a class="button secondary" href="{{ course.weeks.first.url | relative_url }}"><span data-lang-panel="en">Start Week 1</span><span data-lang-panel="ko" hidden>1주차 시작하기</span></a>
+      <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Let's start learning!</span><span data-lang-panel="ko" hidden>학습을 시작해봅시다!</span></a>
+      <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">What is this course about? (Syllabus)</span><span data-lang-panel="ko" hidden>어떤 강의인지 살펴볼까요? (실라버스)</span></a>
     </div>
   </article>
   {% endfor %}
