@@ -47,11 +47,9 @@ An engineer needs all three outlet concentrations at each condition. One convers
 
 ## Three outputs, different errors
 
-All three concentrations have the same units, but their variation differs. An unscaled loss can emphasize one component. Predictions can also disagree with the concentration sum.
+All three concentrations have the same units, but their variation differs. An unscaled loss can emphasize one component.
 
 This week learns how an MLP computes these outputs, how one gradient update changes its parameters, and how to evaluate each component.
-
-**If the concentration sum is correct, must each concentration also be correct?**
 
 <!-- lecture-page -->
 
@@ -60,10 +58,6 @@ This week learns how an MLP computes these outputs, how one gradient update chan
 1. Derive steady-state labels for A, B, and C.
 2. Scale the data and follow a forward pass, backpropagation, and one parameter update.
 3. Train the MLP and compare component RMSE and concentration-sum residuals.
-
-The required output is an evaluated steady-state predictor. Dynamic state transitions are Week 3; physical-consistency methods are Week 4; operating selection is Weeks 5–8.
-
-The appendix preserves optional Week 3 and operating-optimization previews. Read the [companion]({{ page.reading_note | relative_url }}) for this week’s core calculations.
 
 <!-- lecture-page -->
 
@@ -286,7 +280,7 @@ python -m pip install -r requirements.txt
 python week02_lab.py --mode steady --output-dir week02-results
 ```
 
-Evaluate the trained predictor by component RMSE and concentration-sum residual. The [dynamic notebook]({{ page.notebook_2 | relative_url }}) and `--mode dynamic` are optional Week 3 previews. The stored operating-selection results belong to the later optimization part.
+Evaluate the trained predictor by component RMSE and concentration-sum residual. The stored operating-selection results belong to the later optimization part.
 
 <!-- lecture-page -->
 
@@ -299,21 +293,17 @@ Evaluate the trained predictor by component RMSE and concentration-sum residual.
 
 Submit the steady-state model, split/scaling details, checked gradient update, and component/consistency evaluation.
 
-Optional: work through the following dynamic preview for Week 3; revisit operating selection in Weeks 5–8.
-
 Original explanations: PyTorch [model construction](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), and [training](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 
 <!-- lecture-page -->
 
-## Reading and optional previews
+## Reading companion
 
 The [Week 2 companion]({{ page.reading_note | relative_url }}) and [English PDF]({{ page.reading_pdf_en | relative_url }}) explain the three-output map, parameter count, scaling, gradient update, training loop, and independent diagnostics.
 
-Finish the steady-state lab first. The remaining pages are **optional previews**: dynamic data and rollout for Week 3, then operating selection for Weeks 5–8. These previews are outside this week’s required submission.
-
 <!-- lecture-page -->
 
-## Week 3 preview: Generate dynamic concentration data
+## Generate dynamic concentration data
 
 Use the same balances to generate 30 min trajectories at **Δt = 0.2 min**. There are 150 input intervals and 151 concentration times. Feed concentration and residence time are fixed within each trajectory; temperature can change between intervals. Each initial concentration vector sums to the feed concentration.
 
@@ -327,7 +317,7 @@ Generate **60 train, 15 validation, and 20 test trajectories**. Their transition
 
 <!-- lecture-page -->
 
-## Week 3 preview: Learn a dynamic MLP
+## Learn a dynamic MLP
 
 The network receives six values: three current concentrations and [T, τ, C_Af]. Use a **6 → 32 → 32 → 3** architecture, containing **1379 parameters**. Train its three outputs on concentration increments Δc = c_next − c_current. Standardize both inputs and increments with training statistics.
 
@@ -337,13 +327,13 @@ Here μ_Δ and s_Δ restore the increment to mol/L units. Adding it to the curre
 
 <!-- lecture-page -->
 
-## Week 3 preview: Dynamic model training history
+## Dynamic model training history
 
 <figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-training.png' | relative_url }}" alt="Training and validation losses for standardized concentration increments." /><figcaption>The dynamic loss is measured on standardized increments.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## Week 3 preview: One-step prediction and time-series rollout
+## One-step prediction and time-series rollout
 
 For one-step evaluation, supply the reference concentration at each time. For rollout, begin with the specified initial concentration and then supply the model's previous prediction:
 
@@ -353,13 +343,13 @@ The future input sequence remains prescribed in both evaluations. Compare a cons
 
 <!-- lecture-page -->
 
-## Week 3 preview: Two temperature plans: full time series
+## Two temperature plans: full time series
 
 <figure class="tall-figure"><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-rollout.png' | relative_url }}" alt="Two prescribed temperature plans and reference-versus-MLP time series for A, B, and C." /><figcaption>Solid curves are reference concentrations; dashed curves are MLP rollout. The temperature plan changes all three concentration histories.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## Week 3 preview: One-step and rollout errors
+## One-step and rollout errors
 
 | Test RMSE, mol/L | A | B | C |
 | --- | --- | --- | --- |
@@ -375,13 +365,13 @@ The rollout errors are larger because the next prediction uses an already predic
 
 <!-- lecture-page -->
 
-## Week 3 preview: Follow errors over the prediction horizon
+## Follow errors over the prediction horizon
 
 <figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-errors.png' | relative_url }}" alt="Component rollout RMSE and concentration-sum residual over the prediction horizon." /><figcaption>Errors over 20 test trajectories. Dotted lines show the corresponding one-step RMSE.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## Week 3 preview: Compare the final B concentration
+## Compare the final B concentration
 
 | Final B concentration at 30 min, mol/L | Reference | MLP rollout |
 | --- | --- | --- |
@@ -441,11 +431,9 @@ Fix the feed at 1.2 mol/L and maximize predicted B concentration. Enumerate temp
 
 ## 출력은 세 개, 오차의 크기도 다르다
 
-세 농도의 단위는 같아도 변화 폭은 다르다. Scaling 없는 loss는 한 성분을 더 강조할 수 있다. 예측된 농도 합도 물질수지와 어긋날 수 있다.
+세 농도의 단위는 같아도 변화 폭은 다르다. Scaling 없는 loss는 한 성분을 더 강조할 수 있다.
 
 이번 주는 MLP가 출력을 계산하는 방법, 한 번의 gradient 갱신으로 파라미터가 바뀌는 과정, 성분별 평가를 배운다.
-
-**농도 합이 맞으면 각 성분의 농도도 맞을까?**
 
 <!-- lecture-page -->
 
@@ -454,10 +442,6 @@ Fix the feed at 1.2 mol/L and maximize predicted B concentration. Enumerate temp
 1. A·B·C의 정상상태 label을 유도한다.
 2. 데이터를 scaling하고 forward·backpropagation·파라미터 갱신 한 번을 따라간다.
 3. MLP를 학습하고 성분별 RMSE와 농도 합 residual을 비교한다.
-
-필수 결과물은 평가한 정상상태 predictor다. 동적 상태전이는 3주차, 물리적 일관성을 반영하는 방법은 4주차, 운전점 선택은 5–8주차에서 다룬다.
-
-부록에 선택적인 3주차·운전 최적화 미리보기를 보존했다. 이번 주 핵심 계산은 [읽기자료]({{ page.reading_note | relative_url }})에서 따라간다.
 
 <!-- lecture-page -->
 
@@ -680,7 +664,7 @@ python -m pip install -r requirements.txt
 python week02_lab.py --mode steady --output-dir week02-results
 ```
 
-학습한 predictor의 성분별 RMSE와 농도 합 residual을 평가한다. [동적 Notebook]({{ page.notebook_2 | relative_url }})과 `--mode dynamic`은 선택적인 3주차 미리보기다. 기록된 운전점 선택 결과는 후반부 최적화 내용이다.
+학습한 predictor의 성분별 RMSE와 농도 합 residual을 평가한다. 기록된 운전점 선택 결과는 후반부 최적화 내용이다.
 
 <!-- lecture-page -->
 
@@ -693,21 +677,17 @@ python week02_lab.py --mode steady --output-dir week02-results
 
 정상상태 모델, 분할·scaling 정보, 확인한 gradient 갱신, 성분별 오차·일관성 평가를 제출한다.
 
-선택: 다음 동적 미리보기는 3주차를 준비하는 자료다. 운전점 선택은 5–8주차에서 다시 다룬다.
-
 원문 해설: PyTorch [모델 구성](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), [학습](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 
 <!-- lecture-page -->
 
-## 읽기자료와 선택 미리보기
+## 읽기자료
 
 [2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력 mapping, 파라미터 수, scaling, gradient 갱신, 학습 loop와 독립 진단을 읽는다.
 
-정상상태 실습을 먼저 마친다. 뒤의 페이지는 **선택 미리보기**다. 3주차의 동적 데이터·rollout과 5–8주차의 운전점 선택을 준비하며, 이번 주 필수 제출물에 포함하지 않는다.
-
 <!-- lecture-page -->
 
-## 3주차 미리보기: 동적 농도 데이터 생성
+## 동적 농도 데이터 생성
 
 같은 수지식으로 **Δt = 0.2 min**, 30 min 길이의 궤적을 생성한다. 입력 구간은 150개, 농도 시점은 151개다. 한 궤적 안에서 유입 농도·체류시간은 고정하고 온도를 구간 사이에서 바꾼다. 각 초기 농도 벡터의 합은 유입 농도와 같다.
 
@@ -721,7 +701,7 @@ python week02_lab.py --mode steady --output-dir week02-results
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: 동적 MLP 학습
+## 동적 MLP 학습
 
 현재 세 농도와 [T, τ, C_Af]를 합친 여섯 값을 입력한다. **6 → 32 → 32 → 3** 구조이며 parameter는 **1379개**다. 세 출력의 학습 target은 농도 변화량 Δc = c_next − c_current다. 입력과 변화량 모두 train 통계량으로 표준화한다.
 
@@ -731,13 +711,13 @@ python week02_lab.py --mode steady --output-dir week02-results
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: 동적 모델 학습 곡선
+## 동적 모델 학습 곡선
 
 <figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-training.png' | relative_url }}" alt="표준화한 농도 변화량을 학습하는 동적 MLP의 train·validation loss." /><figcaption>동적 loss는 표준화된 농도 변화량에서 계산한다.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: One-step 예측과 시계열 rollout
+## One-step 예측과 시계열 rollout
 
 One-step 평가에서는 각 시점의 기준 농도를 입력한다. Rollout에서는 지정한 초기 농도로 시작한 뒤 직전 예측값을 다음 입력으로 사용한다.
 
@@ -747,13 +727,13 @@ One-step 평가에서는 각 시점의 기준 농도를 입력한다. Rollout에
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: 두 온도 계획의 전체 시계열
+## 두 온도 계획의 전체 시계열
 
 <figure class="tall-figure"><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-rollout.png' | relative_url }}" alt="두 온도 계획과 A·B·C의 기준 농도·MLP rollout 시계열." /><figcaption>실선은 기준 농도, 점선은 MLP rollout이다. 온도 계획에 따라 세 성분의 시간 응답이 달라진다.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: One-step과 rollout 오차
+## One-step과 rollout 오차
 
 | Test RMSE, mol/L | A | B | C |
 | --- | --- | --- | --- |
@@ -769,13 +749,13 @@ Rollout은 이미 예측한 상태에서 다음 값을 계산하므로 오차가
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: 예측 horizon에 따른 오차
+## 예측 horizon에 따른 오차
 
 <figure><img src="{{ '/assets/courses/surrogate-models/week-02/dynamic-errors.png' | relative_url }}" alt="예측 horizon에 따른 성분별 rollout RMSE와 농도 합 residual." /><figcaption>Test 궤적 20개의 시간별 오차. 점선은 성분별 one-step RMSE다.</figcaption></figure>
 
 <!-- lecture-page -->
 
-## 3주차 미리보기: 최종 B 농도 비교
+## 최종 B 농도 비교
 
 | 30 min의 B 농도, mol/L | 기준 모델 | MLP rollout |
 | --- | --- | --- |

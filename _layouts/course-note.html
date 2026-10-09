@@ -34,7 +34,7 @@ layout: default
       {% if page.reading_pdf_ko %}<a class="button secondary" data-lang-panel="ko" hidden href="{{ page.reading_pdf_ko | relative_url }}" download>읽기자료 PDF (한국어)</a>{% endif %}
       {% if page.lecture_note %}<a class="button secondary" href="{{ page.lecture_note | relative_url }}"><span data-lang-panel="en">Return to the lecture</span><span data-lang-panel="ko" hidden>강의노트로 돌아가기</span></a>{% endif %}
       {% if page.notebook %}<a class="button secondary" href="{{ page.notebook | relative_url }}" download><span data-lang-panel="en">{% if page.notebook_2 %}Core lab: steady-state notebook{% else %}Download notebook{% endif %}</span><span data-lang-panel="ko" hidden>{% if page.notebook_2 %}필수 실습: 정상상태 notebook{% else %}Notebook 다운로드{% endif %}</span></a>{% endif %}
-      {% if page.notebook_2 %}<a class="button secondary" href="{{ page.notebook_2 | relative_url }}" download><span data-lang-panel="en">Optional: Week 3 dynamic preview</span><span data-lang-panel="ko" hidden>선택: 3주차 동적 실습 미리보기</span></a>{% endif %}
+      {% if page.notebook_2 %}<a class="button secondary" href="{{ page.notebook_2 | relative_url }}" download><span data-lang-panel="en">Dynamic notebook</span><span data-lang-panel="ko" hidden>동적 notebook</span></a>{% endif %}
       {% if page.lab_script %}<a class="button secondary" href="{{ page.lab_script | relative_url }}" download><span data-lang-panel="en">Python script</span><span data-lang-panel="ko" hidden>Python 스크립트</span></a>{% endif %}
     </nav>
   </header>

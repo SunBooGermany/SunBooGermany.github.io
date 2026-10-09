@@ -183,3 +183,13 @@ Confirm the Research Blog index and relevant category page will include a new
 post. Summarize files changed, missing metadata, and any checks that could not be
 run. Commit or push only when the user explicitly asks to publish, upload, or
 commit.
+
+## Current Course Review Workflow (2026-10-09)
+
+The user approved publication of the reviewed Week 2 lecture and reading materials
+on 2026-10-09, including both language PDFs. Review drafts are published only after
+the user's approval. Week 3 materials remain local review drafts until the user
+authorizes publication. Keep the Week 3 draft outside the deployable site, and do
+not mark Week 3 as available in the course catalog. Remove Week 3 preview notices
+and heading prefixes from the Week 2 lecture while preserving its technical
+examples.
