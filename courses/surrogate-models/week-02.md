@@ -267,7 +267,7 @@ KKT-hPINN computes loss on the projected output and backpropagates through the p
 
 **Week 4** derives the projection and KKT conditions, checks rank assumptions, and follows the gradient. The guarantee concerns the specified linear equalities, up to numerical arithmetic; nonnegativity needs an additional constraint.
 
-Source: Chen et al., [Section 3 and Remark 3](https://arxiv.org/html/2402.07251v1#S3).
+Source: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764). [Open-access version: Section 3 and Remark 3](https://arxiv.org/html/2402.07251v1#S3).
 
 <!-- lecture-page -->
 
@@ -300,6 +300,8 @@ Original explanations: PyTorch [model construction](https://docs.pytorch.org/tut
 ## Reading companion
 
 The [Week 2 companion]({{ page.reading_note | relative_url }}) and [English PDF]({{ page.reading_pdf_en | relative_url }}) explain the three-output map, parameter count, scaling, gradient update, training loop, and independent diagnostics.
+
+**KKT-hPINN reference:** Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, **189**, 108764.
 
 <!-- lecture-page -->
 
@@ -651,7 +653,7 @@ KKT-hPINN은 projection을 거친 출력으로 loss를 계산하고, projection�
 
 **4주차**에서 projection·KKT 조건을 유도하고 rank 가정과 gradient를 확인한다. 보장 범위는 명시한 선형 등식의 만족(수치 연산 오차 범위)이며, 비음수성은 별도 제약이 필요하다.
 
-원문: Chen et al., [3절과 Remark 3](https://arxiv.org/html/2402.07251v1#S3).
+출처: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764). [공개 원문: 3절과 Remark 3](https://arxiv.org/html/2402.07251v1#S3).
 
 <!-- lecture-page -->
 
@@ -684,6 +686,8 @@ python week02_lab.py --mode steady --output-dir week02-results
 ## 읽기자료
 
 [2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력 mapping, 파라미터 수, scaling, gradient 갱신, 학습 loop와 독립 진단을 읽는다.
+
+**KKT-hPINN 참고문헌:** Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, **189**, 108764.
 
 <!-- lecture-page -->
 
