@@ -1,24 +1,25 @@
 ---
 layout: default
-title: "Surrogate Models for Process Decision-Making"
+title: "Surrogate Modeling for Process Prediction and Optimization"
 description: "An eight-week graduate-entry course by Sunwoo Kim: process surrogates, physics-informed learning, and optimization embedding."
 permalink: /courses/surrogate-models/
 ---
 {% assign course = site.data.courses | where: 'id', 'surrogate-models' | first %}
 <section class="log-hero course-hero">
-  <p class="eyebrow"><span data-lang-panel="en">AI for Chemical Engineers · Course 01</span><span data-lang-panel="ko" hidden>화학공학자를 위한 AI 강의 · 첫 번째 과목</span></p>
+  <p class="eyebrow"><span data-lang-panel="en">Chemical Engineering Courses · Course 01</span><span data-lang-panel="ko" hidden>화학공학 강의 · 첫 번째 과목</span></p>
   <h1><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></h1>
-  <p><span data-lang-panel="en">{{ course.subtitle }}. Learn to build vector and sequence surrogates, examine physical consistency, and use trained models inside mathematical optimization.</span><span data-lang-panel="ko" hidden>{{ course.subtitle_ko }}. 변수 벡터와 시계열 surrogate를 만들고, 물리적 일관성을 평가하며, 학습된 모델을 수리 최적화에 넣는 방법을 공부합니다.</span></p>
+  <p><span data-lang-panel="en">{{ course.subtitle }}. Build and validate process predictors first, then study physical consistency, optimization formulations, and model structure before selecting operating conditions.</span><span data-lang-panel="ko" hidden>{{ course.subtitle_ko }}. 공정 예측 모델을 먼저 학습·검증하고, 물리적 일관성·최적화 정식화·모델 구조를 배운 뒤 운전 조건을 선택합니다.</span></p>
   <div class="note-meta"><span data-lang-panel="en">Designed by Sunwoo Kim · Graduate entry · 8-week self-paced course</span><span data-lang-panel="ko" hidden>Sunwoo Kim 설계 · 화학공학 대학원 입문 · 8주 자율 학습 과정</span></div>
   <div class="course-actions">
     <a class="button primary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Syllabus and reading list</span><span data-lang-panel="ko" hidden>Syllabus와 읽기자료</span></a>
     <a class="button secondary" href="{{ course.weeks.first.url | relative_url }}"><span data-lang-panel="en">Week 1: notes and lab</span><span data-lang-panel="ko" hidden>1주차: 강의 노트와 실습</span></a>
+    <a class="button secondary" href="{{ '/courses/surrogate-models/week-02/' | relative_url }}"><span data-lang-panel="en">Week 2: multicomponent MLPs</span><span data-lang-panel="ko" hidden>2주차: 다성분 MLP</span></a>
   </div>
 </section>
 <section class="course-summary">
   <h2><span data-lang-panel="en">What this course asks</span><span data-lang-panel="ko" hidden>이 과목에서 다루는 질문</span></h2>
-  <p><span data-lang-panel="en">If a model predicts a process well, when can it also support good operating decisions? We study prediction error, physical constraints, formulation equivalence, and decision quality as separate properties that must be checked together.</span><span data-lang-panel="ko" hidden>공정을 잘 예측하는 모델은 언제 좋은 운전 결정을 돕는가? 예측 오차, 물리 제약, formulation의 동치성, 의사결정 품질을 각각 평가하고 그 관계를 살펴봅니다.</span></p>
-  <p><span data-lang-panel="en">Prerequisites: basic Python, calculus, linear algebra, and material balances. LP/MILP, convexity, and KKT are introduced as needed. Current materials: syllabus and Week 1. Later weeks will be released as they are completed.</span><span data-lang-panel="ko" hidden>선수 지식은 Python 기초, 미적분, 선형대수, 물질수지입니다. LP/MILP, convexity, KKT는 필요한 시점에 설명합니다. 현재 syllabus와 1주차 자료를 공개했으며, 이후 자료는 완성되는 대로 추가합니다.</span></p>
+  <p><span data-lang-panel="en">How do we build a reliable process predictor, and what must change before using it to select operating conditions? The course progresses through prediction, physical consistency, optimization formulations and model structure, and reference-checked decisions.</span><span data-lang-panel="ko" hidden>공정 응답을 예측하는 모델은 어떻게 만들며, 운전 조건을 선택하는 데 쓰려면 무엇이 더 필요할까요? 예측, 물리적 일관성, 최적화 정식화와 모델 구조, 기준 모델로 재검증한 의사결정을 순서대로 공부합니다.</span></p>
+  <p><span data-lang-panel="en">Prerequisites: basic Python, calculus, linear algebra, and material balances. LP/MILP, convexity, and KKT are introduced as needed. Current materials: syllabus and Weeks 1–2. Later weeks will be released as they are completed.</span><span data-lang-panel="ko" hidden>선수 지식은 Python 기초, 미적분, 선형대수, 물질수지입니다. LP/MILP, convexity, KKT는 필요한 시점에 설명합니다. 현재 syllabus와 1–2주차 자료를 공개했으며, 이후 자료는 완성되는 대로 추가합니다.</span></p>
 </section>
 <section class="course-weeks" aria-labelledby="weekly-materials">
   <h2 id="weekly-materials"><span data-lang-panel="en">Weekly materials</span><span data-lang-panel="ko" hidden>주차별 학습자료</span></h2>

@@ -1,26 +1,29 @@
 ---
 layout: course-note
-title: "Syllabus: Surrogate Models for Process Decision-Making"
-title_ko: "Syllabus: 공정 의사결정을 위한 서로게이트 모델"
-description: "An eight-week graduate-entry course connecting process prediction, physics-informed learning, and optimization embedding."
-description_ko: "공정 예측, physics-informed learning, 최적화 embedding을 연결하는 화학공학 대학원 입문 8주 과정입니다."
+title: "Syllabus: Surrogate Modeling for Process Prediction and Optimization"
+title_ko: "Syllabus: 공정 예측과 최적화를 위한 서로게이트 모델링"
+description: "Build validated process predictors, learn optimization formulations and model structures, then select and revalidate operating conditions."
+description_ko: "공정 예측 모델을 학습·검증하고, 최적화 정식화와 모델 구조를 배운 뒤 운전 조건을 선택하고 재검증하는 8주 과정입니다."
 material_label: "Syllabus"
 material_label_ko: "강의 계획"
-updated: "2026-10-06"
+updated: "2026-10-09"
 permalink: /courses/surrogate-models/syllabus/
 pdf_en: /assets/courses/surrogate-models/syllabus-en.pdf
 pdf_ko: /assets/courses/surrogate-models/syllabus-ko.pdf
+course_id: "surrogate-models"
 ---
 
 ## Course purpose
 
-A process surrogate approximates the response of a process model or measurements. A decision system also needs a choice of operating variables, an objective, constraints, and a way to check the selected operating point. This course connects these tasks without treating prediction accuracy as evidence of good decisions.
+Start by learning a process response from data: define inputs and outputs, fit a surrogate, and check its predictions on independent conditions. Then examine physical consistency and learn how a trained function can be represented inside an optimization problem. Finally, choose operating conditions and revalidate them with the reference process.
 
-Designed by Sunwoo Kim as an independent, self-paced learning course for chemical engineers entering graduate study. The materials combine original explanations and exercises with cited research papers.
+The course follows **prediction → physical consistency → optimization formulations and model structure → operating decisions**. It covers both formulating an already-trained model and designing a model structure for an intended optimization use. Prediction error, physical consistency, formulation agreement, and decision quality are evaluated separately.
+
+Designed by Sunwoo Kim as an independent, self-paced course for chemical engineers entering graduate study. Original explanations, worked readings, and runnable examples accompany verified research sources.
 
 ## Audience and prerequisites
 
-Basic Python, derivatives, matrix operations, linear algebra, and material balances are expected. Prior neural-network or mathematical-programming research experience is not required. LP/MILP, convexity, and KKT conditions are introduced when they are needed.
+Basic Python, derivatives, matrix operations, linear algebra, and material balances are expected. Prior neural-network or mathematical-programming research experience is not required. LP/MILP, convexity, and KKT conditions are introduced when needed.
 
 Suggested weekly workload: 90 minutes of theory, 60–90 minutes of guided coding, and 2–3 hours of reading or exercises. These are study recommendations, not scheduled classes.
 
@@ -28,12 +31,12 @@ Suggested weekly workload: 90 minutes of theory, 60–90 minutes of guided codin
 
 By the end of the course, learners should be able to:
 
-1. Define decision variables, fixed context, states, outputs, units, and a valid operating domain.
-2. Build and evaluate steady-state vector-to-vector and dynamic sequence-to-sequence surrogates, including conditioning on future control inputs.
-3. Compare data-driven, soft physics-informed, and hard linear-equality-constrained models using both prediction errors and constraint residuals.
-4. Derive a valid MILP graph formulation for a frozen ReLU network and check its numerical agreement with a forward pass.
-5. Explain when a ReLU ICNN/PICNN admits an LP epigraph formulation and when that formulation is not equivalent to the intended problem.
-6. Report simulator revalidation, feasibility, decision quality, bounds, solver termination, and computation time separately.
+1. Define a process prediction task: inputs, outputs, fixed context, states, units, data splits, and valid domain.
+2. Fit steady-state and dynamic surrogates, and evaluate component errors and trajectory errors using independent data and prescribed future inputs.
+3. Compare unconstrained, soft-physics, and hard linear-equality models, separating prediction accuracy from physical consistency.
+4. Define operating variables, an objective, and constraints; formulate a frozen ReLU model as a valid MILP and check agreement with its forward pass.
+5. Select model structure and formulation for the intended use, including the conditions under which ReLU ICNN/PICNN epigraphs permit an equivalent LP problem.
+6. Solve a surrogate-based operating problem and report reference-model feasibility, economic performance, solver termination, gaps, and time separately.
 
 ## Eight-week sequence
 
@@ -44,7 +47,9 @@ By the end of the course, learners should be able to:
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title }}.** {{ week.topics }} | {{ week.deliverable }} |
 {% endfor %}
 
-Weeks 2–4 focus on building and evaluating models. Weeks 5–7 focus on optimization embedding. Week 8 joins the two parts. The syllabus and [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url }}) are available now; Weeks 2–8 describe planned content and do not yet have released lecture notes.
+Weeks 1–3 establish prediction. Week 4 examines physical consistency. Weeks 5–6 formulate and solve problems with trained models; Week 7 designs model structure for optimization. Week 8 integrates the full workflow. Operating decisions are introduced briefly as the course destination in Week 1.
+
+The syllabus and [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[Week 2]({{ '/courses/surrogate-models/week-02/' | relative_url }}) core materials are available. Weeks 3–8 remain planned. The existing dynamic material in the Week 2 appendix is an optional Week 3 preview; later operating-point examples are also optional.
 
 ## Reading assignments
 
@@ -53,11 +58,12 @@ Weeks 2–4 focus on building and evaluating models. Weeks 5–7 focus on optimi
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading }} |
 {% endfor %}
 
-The reading list is for selected sections, not six full-paper assignments each week. Advanced formulation proofs and operator-learning extensions are optional.
+Start with the supplied [Week 1 reading companion]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}) and [Week 2 reading companion]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), each available as English/Korean PDFs. External readings use selected sections. RNN/LSTM, encoder–decoder, DeepONet, advanced formulation proofs, and longer-horizon examples are optional extensions.
 
 ## Core sources
 
 - **Convex optimization background:** S. Boyd and L. Vandenberghe, *Convex Optimization* (2004). Read selected parts of Chapters 2–4 for convex sets, convex functions, epigraphs, and optimization problems; return to Chapter 5 for duality and KKT. [Official book and downloads](https://web.stanford.edu/~boyd/cvxbook/) · [EE364a slides](https://web.stanford.edu/class/ee364a/lectures.html).
+- **Neural-network implementation:** PyTorch tutorials on [model construction](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), and [training](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 - **ICNN/PICNN:** B. Amos, L. Xu, and J. Z. Kolter, *Input Convex Neural Networks*, ICML (2017). Section 3 gives architecture conditions; Supplement B gives LP inference for ReLU/linear units. [Paper](https://proceedings.mlr.press/v70/amos17b.html) · [PDF](https://proceedings.mlr.press/v70/amos17b/amos17b.pdf) · [Supplement](https://proceedings.mlr.press/v70/amos17b/amos17b-supp.pdf).
 - **ReLU formulations:** R. Anderson, J. Huchette, W. Ma, C. Tjandraatmadja, and J. P. Vielma, *Strong mixed-integer programming formulations for trained neural networks*, Mathematical Programming (2020). The public manuscript was first submitted in 2018 and revised in 2020. [Public manuscript](https://arxiv.org/abs/1811.01988).
 - **Embedding software:** F. Ceccon, J. Jalving, J. Haddad, A. Thebelt, C. Tsay, C. D. Laird, and R. Misener, *OMLT: Optimization & Machine Learning Toolkit*, JMLR 23(349), 1–8 (2022). [Paper and PDF](https://jmlr.org/papers/v23/22-0277.html) · [Code](https://github.com/cog-imperial/OMLT) · [Documentation](https://omlt.readthedocs.io/en/stable/).
@@ -69,11 +75,11 @@ Optional extensions: [DeepONet, Nature Machine Intelligence (2021)](https://www.
 
 ## Process examples and software
 
-The main educational example is a small isothermal CSTR with a first-order reaction. Week 1 supplies its equations, synthetic parameters, steady-state map, and dynamic simulation. It can be run without Aspen or a plant dataset. The public KKT-hPINN datasets provide a separate research-reproduction exercise; they are not generated by our teaching simulator.
+Week 1 uses a small ideal isothermal CSTR, reference-generated data, and a quadratic regression baseline. Week 2 extends to A → B → C and a steady-state MLP. Week 3 uses state transitions and rollout as the common dynamic example. These teaching models run without Aspen or plant data; they do not establish the computational cost or fidelity of an industrial simulator.
 
-Convexity and LP equivalence are first checked on a separate example with a known convex target. Convexity of an ICNN approximation does not establish convexity of an actual CSTR or of every output of a flowsheet.
+Week 4 uses residual losses and consistent linear equalities; public KKT-hPINN datasets are a separate reproduction exercise. Weeks 5–6 reuse a frozen ReLU predictor for optimization. Week 7 first checks convexity and LP equivalence on a separate known convex target; an ICNN approximation does not prove that a CSTR or every flowsheet output is convex.
 
-Week 1 requires Python, NumPy, and Matplotlib. Later materials will introduce PyTorch and Pyomo/OMLT with a suitable solver. A notebook and a standalone Python script are both supplied so that Jupyter is optional for the first lab.
+Week 1 requires Python, NumPy, and Matplotlib. Week 2 adds PyTorch. Later weeks introduce Pyomo/OMLT and a suitable solver. The Week 1 script runs prediction by default; `--extensions` retains the earlier operating-selection and dynamic examples for later study.
 
 ## What “exact” and “hard” mean here
 
@@ -84,19 +90,21 @@ Week 1 requires Python, NumPy, and Matplotlib. Later materials will introduce Py
 
 ## Exercises and final project
 
-Each week pairs a derivation or problem specification with an executable check. The final report should state the data domain, split method, model architecture, frozen weights, scaling, formulation assumptions, solver and termination status, and simulator used for revalidation.
+Week 1 submits a prediction specification, fitted baseline, and held-out evaluation. Week 2 submits a steady-state MLP, checked gradient update, and component/consistency diagnostics. Later weeks add verified elements.
 
-Evaluate prediction error and constraint violations at held-out points and at selected decisions. Compare economic performance using the reference process model. If a grid or local solver is the benchmark, call it a grid or local benchmark; do not call it a certified global process optimum.
+Document the domain, data split, model structure, frozen weights, scaling, formulation assumptions, solver termination, and reference process. Report prediction error, physical consistency, formulation agreement, and decision quality separately. Compare economics with the reference model. Identify grid or local-solver benchmarks without claiming certified global process optimality.
 
-For self-study, assess the final project on four dimensions: correctness of the mathematical formulation, reproducibility, evidence about decision quality, and honesty about unresolved error or feasibility. An incomplete solve or a failed operating point is useful evidence when it is reported accurately.
+Assessment covers mathematical correctness, reproducibility, decision evidence, and accurate reporting of unresolved error or feasibility. Include failed operating points and incomplete solves.
 
 <!-- ko -->
 
 ## 과목의 목적
 
-공정 surrogate는 공정 모델이나 측정값의 입력–출력 관계를 근사한다. 의사결정 시스템에는 조작변수, 목적함수, 제약, 그리고 선택한 운전점을 검증하는 절차도 필요하다. 이 과목은 예측 정확도만으로 좋은 의사결정을 주장하지 않고, 이 과정을 연결해 공부한다.
+먼저 공정 응답을 데이터로 예측하는 모델을 만든다. 입력과 출력을 정의하고 surrogate를 학습한 뒤, 독립적인 조건에서 예측을 확인한다. 이어서 물리적 일관성을 평가하고, 학습된 함수를 최적화 문제 안에 표현하는 방법을 배운다. 마지막으로 운전 조건을 선택하고 기준 공정 모델로 재검증한다.
 
-Sunwoo Kim이 화학공학 대학원 입문자를 위해 직접 구성한 독립적인 자율 학습 과정이다. 직접 작성한 설명과 연습문제를 인용한 연구 논문에 연결한다.
+전체 흐름은 **공정 예측 → 물리적 일관성 → 최적화 정식화와 모델 구조 설계 → 운전 의사결정**이다. 이미 학습된 모델을 정식화하는 접근과 최적화 활용을 고려해 모델 구조를 설계하는 접근을 함께 다룬다. 예측 오차, 물리적 일관성, 정식화의 일치성, 의사결정 품질은 구분해 평가한다.
+
+Sunwoo Kim이 화학공학 대학원 입문자를 위해 구성한 독립적인 자율 학습 과정이다. 직접 작성한 설명·계산 읽기자료·실행 예제를 검증된 연구 원문에 연결한다.
 
 ## 수강 대상과 선수 지식
 
@@ -108,21 +116,23 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지를 알고 있�
 
 과정을 마친 뒤에는 다음을 할 수 있어야 한다.
 
-1. 의사결정 변수, 고정 context, 상태, 출력, 단위, 유효한 운전 영역을 정의한다.
-2. 미래 조작변수 계획을 입력으로 받는 모델을 포함해 정상상태 vector-to-vector와 동적 sequence-to-sequence surrogate를 구축하고 평가한다.
-3. 데이터 기반, soft physics-informed, hard 선형 등식 제약 모델을 예측 오차와 제약 residual로 각각 비교한다.
-4. 학습 후 고정된 ReLU 신경망의 유효한 MILP graph formulation을 유도하고 forward 출력과 수치적으로 대조한다.
-5. ReLU ICNN/PICNN의 LP epigraph formulation이 가능한 조건과 원래 문제와 동치가 아닌 경우를 설명한다.
-6. 공정 모델 재검증, feasibility, 의사결정 품질, bounds, solver 종료 상태, 계산 시간을 각각 보고한다.
+1. 공정 예측 문제의 입력·출력·고정 context·상태·단위·데이터 분할·유효한 영역을 정의한다.
+2. 정상상태·동적 surrogate를 학습하고, 독립 데이터와 정해진 미래 입력에서 성분별·궤적 예측 오차를 평가한다.
+3. 일반 모델, soft physics 모델, hard 선형 등식 모델을 비교하고 예측 정확도와 물리적 일관성을 구분한다.
+4. 조작변수·목적함수·제약을 정의하고, 고정된 ReLU 모델의 유효한 MILP 표현을 작성해 forward 출력과 대조한다.
+5. 활용 목적에 맞는 모델 구조와 정식화를 선택하고, ReLU ICNN/PICNN epigraph가 동치인 LP 문제를 허용하는 조건을 확인한다.
+6. Surrogate 기반 운전 최적화를 풀고 기준 공정 모델의 제약 만족·경제성·solver 종료 상태·gap·시간을 각각 보고한다.
 
 ## 8주 구성
 
-| 주차 | 주제와 범위 | 결과물 |
+| 주차 | 주제와 범위 | 필수 결과물 |
 | --- | --- | --- |
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title_ko }}.** {{ week.topics_ko }} | {{ week.deliverable_ko }} |
 {% endfor %}
 
-2–4주차는 모델 구축과 평가, 5–7주차는 최적화 embedding에 집중한다. 8주차에서 두 부분을 연결한다. 현재 syllabus와 [1주차]({{ '/courses/surrogate-models/week-01/' | relative_url }})를 공개했다. 2–8주차는 강의 계획이며 해당 주차의 강의 노트는 아직 공개하지 않았다.
+1–3주차는 예측 모델을 구축한다. 4주차는 물리적 일관성, 5–6주차는 학습된 모델의 정식화와 풀이, 7주차는 최적화 활용을 위한 모델 구조 설계를 다룬다. 8주차에서 전체 과정을 연결한다. 1주차의 운전 의사결정은 과목의 도착점을 짧게 보여주는 예고다.
+
+현재 syllabus와 [1주차]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[2주차]({{ '/courses/surrogate-models/week-02/' | relative_url }}) 필수 자료를 제공한다. 3–8주차는 강의 계획이다. 기존 2주차 부록의 동적 자료는 선택적인 3주차 미리보기이며, 후반부 운전점 선택 예제도 선택 내용이다.
 
 ## 주차별 읽기 안내
 
@@ -131,11 +141,12 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지를 알고 있�
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading_ko }} |
 {% endfor %}
 
-지정된 절을 읽는 방식이다. 매주 여러 논문 전체를 읽도록 요구하지 않는다. 고급 formulation 증명과 operator learning 확장은 선택 내용이다.
+직접 제공하는 [1주차 읽기자료]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }})와 [2주차 읽기자료]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }})부터 읽는다. 각 자료는 국문·영문 PDF를 제공한다. 외부 원문은 지정된 절을 읽는다. RNN/LSTM·encoder–decoder·DeepONet, 고급 formulation 증명과 긴 horizon 예제는 선택 확장이다.
 
 ## 핵심 참고자료
 
 - **Convex optimization 기초:** S. Boyd와 L. Vandenberghe, *Convex Optimization* (2004). 2–4장의 convex set, convex function, epigraph, 최적화 문제 관련 내용을 읽고, duality와 KKT는 5장으로 돌아온다. [공식 교재·다운로드](https://web.stanford.edu/~boyd/cvxbook/) · [EE364a 슬라이드](https://web.stanford.edu/class/ee364a/lectures.html).
+- **신경망 구현:** PyTorch tutorial의 [모델 구성](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), [학습](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 - **ICNN/PICNN:** B. Amos, L. Xu, J. Z. Kolter, *Input Convex Neural Networks*, ICML (2017). 3절은 구조 조건, Supplement B는 ReLU/linear unit의 LP inference를 설명한다. [논문](https://proceedings.mlr.press/v70/amos17b.html) · [PDF](https://proceedings.mlr.press/v70/amos17b/amos17b.pdf) · [Supplement](https://proceedings.mlr.press/v70/amos17b/amos17b-supp.pdf).
 - **ReLU formulation:** R. Anderson, J. Huchette, W. Ma, C. Tjandraatmadja, J. P. Vielma, *Strong mixed-integer programming formulations for trained neural networks*, Mathematical Programming (2020). 공개 원고는 2018년 처음 제출되었고 2020년 수정되었다. [공개 원고](https://arxiv.org/abs/1811.01988).
 - **Embedding 소프트웨어:** F. Ceccon, J. Jalving, J. Haddad, A. Thebelt, C. Tsay, C. D. Laird, R. Misener, *OMLT: Optimization & Machine Learning Toolkit*, JMLR 23(349), 1–8 (2022). [논문·PDF](https://jmlr.org/papers/v23/22-0277.html) · [코드](https://github.com/cog-imperial/OMLT) · [문서](https://omlt.readthedocs.io/en/stable/).
@@ -147,11 +158,11 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지를 알고 있�
 
 ## 공정 예제와 소프트웨어
 
-주요 교육 예제는 1차 반응을 갖는 작은 등온 CSTR이다. 1주차에 지배식, 교육용 가상 파라미터, 정상상태 mapping, 동적 시뮬레이션을 제공한다. Aspen이나 플랜트 데이터 없이 실행할 수 있다. 공개 KKT-hPINN 데이터는 별도의 연구 재현 실습에 활용하며, 이 강의의 교육용 simulator가 생성한 데이터와 구분한다.
+1주차는 작은 이상적 등온 CSTR, 기준 모델로 생성한 데이터, quadratic 회귀 baseline을 사용한다. 2주차는 A → B → C와 정상상태 MLP로 확장한다. 3주차의 공통 동적 예제는 상태전이와 rollout이다. Aspen이나 플랜트 데이터 없이 실행할 수 있는 교육 모델이며, 산업용 simulator의 계산 비용이나 fidelity를 입증하지 않는다.
 
-Convexity와 LP 동치성은 convex target이 알려진 별도 예제에서 먼저 확인한다. ICNN 근사 함수가 convex라는 사실이 실제 CSTR나 flowsheet의 모든 출력이 convex라는 뜻은 아니다.
+4주차는 residual loss와 일관된 선형 등식을 다룬다. 공개 KKT-hPINN 데이터는 별도의 연구 재현 실습이다. 5–6주차는 고정된 ReLU predictor를 최적화에 재사용한다. 7주차는 알려진 convex target의 별도 예제에서 convexity와 LP 동치성을 먼저 확인한다. ICNN 근사 함수가 convex라는 사실이 실제 CSTR나 flowsheet의 모든 출력이 convex라는 뜻은 아니다.
 
-1주차에는 Python, NumPy, Matplotlib이 필요하다. 이후 PyTorch, Pyomo/OMLT와 적절한 solver를 소개한다. 첫 실습은 notebook과 독립 Python 스크립트를 함께 제공하므로 Jupyter가 필수는 아니다.
+1주차에는 Python·NumPy·Matplotlib, 2주차에는 PyTorch가 필요하다. 이후 Pyomo/OMLT와 적절한 solver를 소개한다. 1주차 스크립트의 기본 실행은 예측 실습이며, `--extensions`로 기존 운전점 선택·동적 예제를 후반부 학습용으로 실행할 수 있다.
 
 ## 이 과목에서 exact와 hard가 뜻하는 것
 
@@ -162,8 +173,8 @@ Convexity와 LP 동치성은 convex target이 알려진 별도 예제에서 먼�
 
 ## 연습문제와 종합 프로젝트
 
-매주 수식 유도 또는 문제 정의를 실행 가능한 확인 절차에 연결한다. 최종 보고서에는 데이터 영역, 분할 방법, 모델 구조, 고정된 가중치, scaling, formulation 가정, solver·종료 상태, 재검증용 simulator를 명시한다.
+1주차는 예측 문제 정의·학습한 baseline·독립 test 평가를 제출한다. 2주차는 정상상태 MLP·손 계산으로 확인한 gradient 갱신·성분별 오차와 일관성 진단을 제출한다. 이후 주차마다 확인된 요소 하나씩을 연결한다.
 
-독립 평가점과 선택한 의사결정 지점 모두에서 예측 오차와 제약 위반을 평가한다. 경제성은 기준 공정 모델로 비교한다. Grid나 local solver를 기준으로 사용했다면 grid 또는 local benchmark라고 쓰며, 인증된 공정 전역 최적해라고 부르지 않는다.
+최종 프로젝트에는 영역·데이터 분할·모델 구조·고정 가중치·scaling·정식화 가정·solver 종료 상태·기준 공정을 명시한다. 독립 데이터의 예측 오차, 물리적 일관성, 정식화의 일치성, 선택한 운전 조건의 품질을 구분해 평가한다. 경제성은 기준 모델로 비교한다. Grid나 local solver를 기준으로 사용했다면 그 이름을 정확히 쓰며 인증된 공정 전역 최적해라고 부르지 않는다.
 
-자율 학습에서는 수리 formulation의 정확성, 재현성, 의사결정 품질의 근거, 남은 오차·feasibility 문제에 대한 정확한 보고로 프로젝트를 평가한다. 미완료 solve나 실패한 운전점도 정확하게 보고하면 유용한 근거가 된다.
+수리적 정확성, 재현성, 의사결정 품질의 근거, 남은 오차·feasibility에 대한 정확한 보고를 평가한다. 실패한 운전점이나 미완료 solve도 보고할 수 있는 결과다.

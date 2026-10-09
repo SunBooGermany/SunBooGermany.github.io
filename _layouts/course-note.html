@@ -2,13 +2,16 @@
 layout: default
 ---
 {% assign content_parts = content | split: '<!-- ko -->' %}
+{% assign course_id = page.course_id | default: 'surrogate-models' %}
+{% assign course = site.data.courses | where: 'id', course_id | first %}
 {% assign english_content = content_parts | first | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="Scrollable table"><table>' | replace: '</table>', '</table></div>' %}
 {% assign korean_content = content_parts | last | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="가로로 스크롤할 수 있는 표"><table>' | replace: '</table>', '</table></div>' %}
-<article class="course-note{% if page.material_label == 'Syllabus' %} course-syllabus{% endif %}">
+{% unless page.material_label == 'Syllabus' %}<link rel="stylesheet" href="{{ '/assets/courses/lecture-notes.css' | relative_url }}?v={{ site.time | date: '%s' }}" />{% endunless %}
+<article class="course-note{% if page.material_label == 'Syllabus' %} course-syllabus{% else %} course-lecture{% endif %}">
   <header class="post-header">
     <p class="eyebrow">
-      <span data-lang-panel="en">AI for Chemical Engineers · {{ page.material_label | escape }}</span>
-      <span data-lang-panel="ko" hidden>화학공학자를 위한 AI 강의 · {{ page.material_label_ko | escape }}</span>
+      <span data-lang-panel="en">{{ course.title | escape }} · {{ page.material_label | escape }}</span>
+      <span data-lang-panel="ko" hidden>{{ course.title_ko | escape }} · {{ page.material_label_ko | escape }}</span>
     </p>
     <h1>
       <span data-lang-panel="en">{{ page.title | escape }}</span>
@@ -26,14 +29,24 @@ layout: default
       <a class="button secondary" href="{{ '/courses/surrogate-models/' | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
       {% if page.pdf_en %}<a class="button secondary" data-lang-panel="en" href="{{ page.pdf_en | relative_url }}" download>Download PDF (English)</a>{% endif %}
       {% if page.pdf_ko %}<a class="button secondary" data-lang-panel="ko" hidden href="{{ page.pdf_ko | relative_url }}" download>PDF 다운로드 (한국어)</a>{% endif %}
-      {% if page.notebook %}<a class="button secondary" href="{{ page.notebook | relative_url }}" download><span data-lang-panel="en">Download notebook</span><span data-lang-panel="ko" hidden>Notebook 다운로드</span></a>{% endif %}
+      {% if page.reading_note %}<a class="button secondary" href="{{ page.reading_note | relative_url }}"><span data-lang-panel="en">Read the companion</span><span data-lang-panel="ko" hidden>읽기자료 보기</span></a>{% endif %}
+      {% if page.reading_pdf_en %}<a class="button secondary" data-lang-panel="en" href="{{ page.reading_pdf_en | relative_url }}" download>Reading PDF (English)</a>{% endif %}
+      {% if page.reading_pdf_ko %}<a class="button secondary" data-lang-panel="ko" hidden href="{{ page.reading_pdf_ko | relative_url }}" download>읽기자료 PDF (한국어)</a>{% endif %}
+      {% if page.lecture_note %}<a class="button secondary" href="{{ page.lecture_note | relative_url }}"><span data-lang-panel="en">Return to the lecture</span><span data-lang-panel="ko" hidden>강의노트로 돌아가기</span></a>{% endif %}
+      {% if page.notebook %}<a class="button secondary" href="{{ page.notebook | relative_url }}" download><span data-lang-panel="en">{% if page.notebook_2 %}Core lab: steady-state notebook{% else %}Download notebook{% endif %}</span><span data-lang-panel="ko" hidden>{% if page.notebook_2 %}필수 실습: 정상상태 notebook{% else %}Notebook 다운로드{% endif %}</span></a>{% endif %}
+      {% if page.notebook_2 %}<a class="button secondary" href="{{ page.notebook_2 | relative_url }}" download><span data-lang-panel="en">Optional: Week 3 dynamic preview</span><span data-lang-panel="ko" hidden>선택: 3주차 동적 실습 미리보기</span></a>{% endif %}
       {% if page.lab_script %}<a class="button secondary" href="{{ page.lab_script | relative_url }}" download><span data-lang-panel="en">Python script</span><span data-lang-panel="ko" hidden>Python 스크립트</span></a>{% endif %}
     </nav>
   </header>
+  {% if page.material_label == 'Syllabus' %}
   <div class="post-content" data-lang-panel="en" lang="en">{{ english_content }}</div>
   <div class="post-content" data-lang-panel="ko" lang="ko" hidden>{{ korean_content }}</div>
+  {% else %}
+  <div class="post-content lecture-pages" data-lang-panel="en" lang="en">{% include lecture-pages.html note_content=english_content language='en' label=page.material_label %}</div>
+  <div class="post-content lecture-pages" data-lang-panel="ko" lang="ko" hidden>{% include lecture-pages.html note_content=korean_content language='ko' label=page.material_label_ko %}</div>
+  {% endif %}
   <footer class="post-footer">
     <a href="{{ '/courses/surrogate-models/' | relative_url }}"><span data-lang-panel="en">Course overview and weekly materials</span><span data-lang-panel="ko" hidden>과목 안내와 주차별 자료</span></a>
-    <a href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All AI courses</span><span data-lang-panel="ko" hidden>전체 AI 강의</span></a>
+    <a href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All courses</span><span data-lang-panel="ko" hidden>전체 강의</span></a>
   </footer>
 </article>

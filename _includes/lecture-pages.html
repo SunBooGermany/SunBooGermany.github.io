@@ -1,0 +1,13 @@
+{% assign lecture_pages = include.note_content | split: '<!-- lecture-page -->' %}
+{% for lecture_page in lecture_pages %}
+<section class="lecture-page" id="{{ include.language }}-page-{{ forloop.index }}" aria-label="{% if include.language == 'ko' %}페이지{% else %}Page{% endif %} {{ forloop.index }}">
+  <div class="lecture-page-content">
+    {% if forloop.first %}<p class="lecture-title">{% if include.language == 'ko' %}{{ page.title_ko | escape }}{% else %}{{ page.title | escape }}{% endif %}</p>{% endif %}
+    {{ lecture_page }}
+  </div>
+  <footer class="lecture-page-footer">
+    <span>Sunwoo Kim · {% if include.language == 'ko' %}{{ course.title_ko | escape }}{% else %}{{ course.title | escape }}{% endif %}</span>
+    <span>{{ include.label | escape }} · {{ forloop.index }} / {{ forloop.length }}</span>
+  </footer>
+</section>
+{% endfor %}

@@ -1,8 +1,9 @@
-"""Week 1: synthetic CSTR prediction and decision workflow.
+"""Week 1: Process Prediction and Surrogate Modeling Basics.
 
 Course design and notes: Sunwoo Kim.
 Run: python week01_lab.py --output-dir week01-results --seed 42
 Python 3.10+; NumPy and Matplotlib.
+Optional later-topic examples: add --extensions.
 """
 
 # %% Imports and data contract
@@ -20,7 +21,7 @@ K_REF = 0.2  # 1/min
 T_REF = 330.0  # K
 BETA = 6000.0  # K
 TARGET = 0.8
-DECISION_FEED = 1.2  # mol/L; fixed context for the optimization
+DECISION_FEED = 1.2  # mol/L; reference plot slice and optional operating comparison
 
 
 # %% Reference process model
@@ -164,6 +165,39 @@ def simulate_dynamic(step_time=10.0, dt=0.2, end_time=30.0):
 
 
 # %% Figures and downloadable results
+def make_prediction_figures(output_dir, weights, splits):
+    """Required prediction views: a reference map and independent parity plots."""
+    plt.rcParams.update({"font.size": 11, "axes.spines.top": False,
+                         "axes.spines.right": False, "figure.dpi": 150})
+    temperatures = np.linspace(LOWER[0], UPPER[0], 121)
+    residence_times = np.linspace(LOWER[1], UPPER[1], 91)
+    tt, rr = np.meshgrid(temperatures, residence_times)
+    inputs = np.column_stack((tt.ravel(), rr.ravel(), np.full(tt.size, 1.2)))
+    conversion = steady_state(inputs)[:, 1].reshape(tt.shape)
+    fig, ax = plt.subplots(figsize=(8.2, 4.8), layout="constrained")
+    color = ax.contourf(temperatures, residence_times, conversion,
+                        levels=np.linspace(0, 1, 21), cmap="viridis")
+    ax.set(xlabel="Maintained temperature [K]", ylabel="Residence time [min]",
+           title="Reference CSTR response: feed = 1.2 mol/L")
+    fig.colorbar(color, ax=ax, label="Conversion [-]")
+    fig.savefig(output_dir / "conversion-map.png")
+    plt.close(fig)
+
+    inputs, truth = splits["test"]
+    prediction = features(inputs) @ weights
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 4.1), layout="constrained")
+    for j, (ax, unit, label) in enumerate(zip(axes, ("mol/L", "-"),
+                                             ("Outlet A concentration", "Conversion"))):
+        ax.scatter(truth[:, j], prediction[:, j], s=16, color="#244a7f", alpha=0.7)
+        lo = min(truth[:, j].min(), prediction[:, j].min())
+        hi = max(truth[:, j].max(), prediction[:, j].max())
+        ax.plot([lo, hi], [lo, hi], "--", color="#6b7280")
+        ax.set(xlabel=f"Reference [{unit}]", ylabel=f"Prediction [{unit}]", title=label)
+        ax.set_aspect("equal", adjustable="box")
+    fig.savefig(output_dir / "prediction-check.png")
+    plt.close(fig)
+
+
 def make_figures(output_dir, weights, decision, trajectory):
     plt.rcParams.update({"font.size": 11, "axes.spines.top": False,
                          "axes.spines.right": False, "figure.dpi": 150})
@@ -218,7 +252,7 @@ def write_dataset(output_dir, splits):
                 writer.writerow([split, *values.tolist()])
 
 
-def run_lab(output_dir="week01-results", seed=42):
+def run_lab(output_dir="week01-results", seed=42, extensions=False):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     splits = generate_splits(seed)
@@ -227,9 +261,8 @@ def run_lab(output_dir="week01-results", seed=42):
         raise RuntimeError("Training design does not have full feature rank.")
     errors = {name: evaluate_predictions(inputs, truth, features(inputs) @ weights)
               for name, (inputs, truth) in splits.items()}
-    decision = compare_decisions(weights)
-    trajectory = simulate_dynamic()
     metrics = {
+        "workflow": "prediction",
         "seed": seed,
         "parameters": {"k_ref_per_min": K_REF, "t_ref_k": T_REF, "beta_k": BETA},
         "input_columns": ["temperature_k", "residence_time_min", "feed_ca_mol_per_l"],
@@ -239,19 +272,24 @@ def run_lab(output_dir="week01-results", seed=42):
         "baseline": "ordinary least squares on ten fixed quadratic features; not a neural network",
         "numpy_version": np.__version__,
         "prediction_metrics": errors,
-        "decision": decision,
-        "dynamic_indexing": "N piecewise-constant input intervals and N+1 output boundary times",
     }
-    (output_dir / "results.json").write_text(json.dumps(metrics, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     write_dataset(output_dir, splits)
-    time, temperature, ca = trajectory
-    with (output_dir / "dynamic_trajectory.csv").open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.writer(stream)
-        writer.writerow(["boundary_time_min", "outlet_ca_mol_per_l", "temperature_for_next_interval_k"])
-        for i, (t, concentration) in enumerate(zip(time, ca)):
-            writer.writerow([float(t), float(concentration), float(temperature[i]) if i < len(temperature) else ""])
-    make_figures(output_dir, weights, decision, trajectory)
-    print(json.dumps({"test_metrics": errors["test"], "decision": decision}, indent=2))
+    make_prediction_figures(output_dir, weights, splits)
+    if extensions:
+        decision = compare_decisions(weights)
+        trajectory = simulate_dynamic()
+        metrics["workflow"] = "prediction with optional later-topic extensions"
+        metrics["decision"] = decision
+        metrics["dynamic_indexing"] = "N piecewise-constant input intervals and N+1 output boundary times"
+        time, temperature, ca = trajectory
+        with (output_dir / "dynamic_trajectory.csv").open("w", newline="", encoding="utf-8") as stream:
+            writer = csv.writer(stream)
+            writer.writerow(["boundary_time_min", "outlet_ca_mol_per_l", "temperature_for_next_interval_k"])
+            for i, (t, concentration) in enumerate(zip(time, ca)):
+                writer.writerow([float(t), float(concentration), float(temperature[i]) if i < len(temperature) else ""])
+        make_figures(output_dir, weights, decision, trajectory)
+    (output_dir / "results.json").write_text(json.dumps(metrics, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    print(json.dumps({"test_metrics": errors["test"], "workflow": metrics["workflow"]}, indent=2))
     return metrics
 
 
@@ -260,5 +298,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", default="week01-results")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--extensions", action="store_true", help="Run optional later-topic operating-selection and dynamic examples.")
     args = parser.parse_args()
-    run_lab(args.output_dir, args.seed)
+    run_lab(args.output_dir, args.seed, args.extensions)

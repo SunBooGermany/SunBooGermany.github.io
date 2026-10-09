@@ -1,0 +1,34 @@
+{
+  "scaled_output_model": {
+    "rmse_mol_L": [
+      0.005275124114926506,
+      0.0029403857147795205,
+      0.004423193366032517
+    ],
+    "balance_rmse_mol_L": 0.0037809930059328435,
+    "minimum_predicted_concentration_mol_L": 0.00023598701015659085
+  },
+  "unscaled_output_model": {
+    "rmse_mol_L": [
+      0.006633520820218193,
+      0.00391677353636534,
+      0.004162037124132119
+    ],
+    "balance_rmse_mol_L": 0.00506280499988848,
+    "minimum_predicted_concentration_mol_L": -0.002178128808736801
+  },
+  "decision": {
+    "selected_temperature_K": 360.0,
+    "selected_tau_min": 1.7000000000000002,
+    "predicted_C_B_mol_L": 0.45111112083714944,
+    "reference_C_B_mol_L": 0.4552848249755342,
+    "reference_temperature_K": 360.0,
+    "reference_tau_min": 1.8,
+    "reference_grid_C_B_mol_L": 0.4553822703378521,
+    "reference_yield_B": 0.37940402081294516,
+    "candidate_count": 11011
+  },
+  "best_epoch": 1351,
+  "trained_epochs": 1400,
+  "seed": 42
+}

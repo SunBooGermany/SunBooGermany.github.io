@@ -1,18 +1,18 @@
 ---
 layout: default
-title: "AI for Chemical Engineers"
-description: "Original courses designed by Sunwoo Kim for chemical engineers using AI in process modeling, optimization, and decision-making."
+title: "Chemical Engineering Courses"
+description: "Original courses designed by Sunwoo Kim on process modeling, prediction, optimization, and operating decisions."
 permalink: /courses/
 ---
 <section class="log-hero course-hero">
   <p class="eyebrow"><span data-lang-panel="en">Original courses by Sunwoo Kim</span><span data-lang-panel="ko" hidden>Sunwoo Kim이 직접 설계한 과목</span></p>
-  <h1><span data-lang-panel="en">AI for Chemical Engineers</span><span data-lang-panel="ko" hidden>화학공학자를 위한 AI 강의</span></h1>
-  <p><span data-lang-panel="en">Courses I design for chemical engineers learning to use AI in process modeling, optimization, and decision-making. Each course connects papers and mathematical ideas with derivations, process examples, and runnable code.</span><span data-lang-panel="ko" hidden>AI 시대의 공정 모델링, 최적화, 의사결정을 공부하는 화학공학자를 위해 직접 구성한 과목입니다. 여러 논문과 강의자료를 연결해 수식 유도, 공정 예제, 실행 가능한 코드로 정리합니다.</span></p>
+  <h1><span data-lang-panel="en">Chemical Engineering Courses</span><span data-lang-panel="ko" hidden>화학공학 강의</span></h1>
+  <p><span data-lang-panel="en">Courses I design for chemical engineers studying process modeling, prediction, optimization, and operating decisions. Each course connects papers and mathematical ideas with derivations, process examples, and runnable code.</span><span data-lang-panel="ko" hidden>공정 모델링, 예측, 최적화와 운전 의사결정을 공부하는 화학공학자를 위해 직접 구성한 과목입니다. 여러 논문과 강의자료를 연결해 수식 유도, 공정 예제, 실행 가능한 코드로 정리합니다.</span></p>
 </section>
 <section class="course-catalog" aria-label="Courses">
   {% for course in site.data.courses %}
   <article class="course-card">
-    <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · Week 1 available</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · 1주차 공개</span></div>
+    <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · Weeks 1–2 available</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · 1–2주차 공개</span></div>
     <h2><a href="{{ course.url | relative_url }}"><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></a></h2>
     <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
     <div class="course-actions">

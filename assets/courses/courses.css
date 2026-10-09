@@ -52,7 +52,9 @@
   .course-note .post-content h3 { font-size: 12pt; break-after: avoid; }
   .course-note .post-content p, .course-note .post-content li { orphans: 3; widows: 3; }
   .course-note .post-content figure, .course-note .post-content math[display="block"], .course-note .post-content pre { break-inside: avoid; }
+  .course-note .post-content table, .course-note:not(.course-syllabus) .post-content ol { break-inside: avoid; }
   .course-note .post-content figure img { max-height: 80mm; display: block; margin: auto; }
+  .course-note .post-content figure.tall-figure img { max-height: 150mm; }
   .course-note .post-content th, .course-note .post-content td { padding: 7px; font-size: 9pt; }
   .course-note .post-content .table-scroll { overflow: visible; }
   .course-note .post-content a { color: #17201c; }

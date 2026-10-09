@@ -9,6 +9,76 @@ For normal post publishing, do not modify `index.html`, `styles.css`, `script.js
 `_config.yml`, layouts, data files, or unrelated posts unless the user explicitly
 requests it.
 
+## Lecture Notes: Persistent Format Preference
+
+The course title is "Surrogate Modeling for Process Prediction and Optimization"
+("공정 예측과 최적화를 위한 서로게이트 모델링"). Use the course data for titles
+and footers; do not label this course "AI for Chemical Engineers". The course
+catalog is "Chemical Engineering Courses" ("화학공학 강의"). The user approved
+the revised sequence on 2026-10-09:
+
+1. Process prediction and surrogate modeling basics: define the prediction task,
+   fit a steady-state regression baseline, and evaluate independent predictions.
+   Week 1 is not a complete operating optimization workflow.
+2. Multicomponent steady-state MLPs: scaling, forward/backpropagation, training,
+   component errors, and concentration consistency.
+3. Dynamic state-transition prediction and rollout with future inputs. RNN/LSTM
+   and encoder–decoder architectures are optional extensions.
+4. Physical consistency: residual losses and hard linear-equality projection.
+5. Optimization problem definition and exact frozen-ReLU MILP formulation.
+6. Practical formulations: bounds, scaling, OMLT, solver status/gaps/timing.
+7. Design model structure for optimization: ICNN/PICNN and conditional LP usage.
+8. Select operating conditions, revalidate with the reference process, compare
+   economic performance, and identify useful additional data.
+
+Week 1 uses engineering prediction questions as motivation. Operating optimization
+is a brief course-roadmap preview. Existing later-topic calculations may remain
+as clearly optional extensions, outside the early weeks' required deliverables.
+
+Week 2 explicitly shows that unconstrained multicomponent outputs can violate
+concentration or mole-fraction sums, even with small prediction errors. Briefly
+preview post-training correction and projection inside training. Week 4 develops
+KKT-hPINN, its linear-equality guarantee and matrix assumptions, and backpropagation
+through the fixed projection layer in detail.
+
+For every lecture note, including Week 1 and all subsequent weeks, use a white
+academic slide format inspired by Stephen Boyd's Convex Optimization lecture
+slides. The user established this project preference on 2026-10-09.
+
+- Use white 4:3 landscape pages, dark readable text, clear titles, native MathML,
+  and generous whitespace. Place relevant text, equations, tables, and figures
+  together; use side-by-side text and figure placement where appropriate.
+- Write complete pages, each with one main topic. Separate pages in Markdown
+  with `<!-- lecture-page -->`. Start each page with an `##` heading; give
+  continuation pages a descriptive title. Never shrink text to fit a dense page.
+- Start each week's initial slides with motivation, before formal learning
+  objectives: a concrete chemical process engineer's problem, its importance,
+  what makes it difficult, and the approach taught that week. Make the situation
+  engaging and relatable, with an answerable engineering question. Use relevant
+  original illustrations or comics when helpful. Do not put boilerplate such as
+  "illustrative scenario" or "설명을 위한 개념 그림" below motivation artwork.
+  Explain the teaching model's assumptions on the relevant technical pages;
+  preserve technical accuracy and uncertainty.
+- Provide reading materials directly, not only a list of external links. Create
+  a self-contained bilingual `week-NN-reading.md` companion with explanations,
+  worked derivations, exercises with short answer checks, and verified primary
+  sources. Use the same page format and provide English/Korean PDFs. Link it
+  from the weekly note and its download actions. Cite third-party readings and
+  link to their official originals without copying or republishing long passages.
+- Preserve technical content, notation, units, results, references, and the
+  complete English/Korean versions separated by `<!-- ko -->`.
+- Use the shared `course-note` layout and `assets/courses/lecture-notes.css`;
+  keep the syllabus in its document format. On mobile, preserve page boundaries
+  while allowing the page height to expand for readable text.
+- Keep web page divisions and downloadable PDF pages identical, with page
+  numbers and course/week labels. Regenerate both language PDFs after changing
+  a note. `node scripts/render_lecture_notes.cjs` builds, checks, and exports the
+  weekly notes; it requires local Jekyll and Playwright.
+- Inspect rendered pages in both languages for clipped or overlapping content,
+  split equations/figures, and unintended blank pages before finishing.
+- Refer to Boyd's slides for layout only; retain original course content and
+  figures. Do not copy the slides' text, figures, or branding.
+
 ## Research Blog Posts
 
 Research Blog posts live in `_posts/` and use `layout: post`.

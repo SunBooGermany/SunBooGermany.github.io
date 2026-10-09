@@ -74,7 +74,7 @@ layout: null
       <a data-i18n="navPaperResources" href="{{ '/paper-resources/' | relative_url }}">Paper Notes &amp; Code</a>
       <a data-i18n="navLog" href="{{ '/research-log/' | relative_url }}">Research Blog</a>
       <a data-i18n="navJudgment" href="{{ '/better-judgment/' | relative_url }}">Better Judgment</a>
-      <a data-i18n="navCourses" href="{{ '/courses/' | relative_url }}">AI Courses</a>
+      <a data-i18n="navCourses" href="{{ '/courses/' | relative_url }}">Courses</a>
       <a data-i18n="navContact" href="#contact">Contact</a>
     </nav>
     <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch language">한국어</button>
@@ -133,10 +133,10 @@ layout: null
         <article class="gateway-card">
           <div>
             <p class="gateway-kicker">04</p>
-            <h2 data-i18n="gatewayCoursesTitle">AI for Chemical Engineers</h2>
-            <p data-i18n="gatewayCoursesText">Original courses I design for chemical engineers using AI in process modeling, optimization, and decision-making.</p>
+            <h2 data-i18n="gatewayCoursesTitle">Chemical Engineering Courses</h2>
+            <p data-i18n="gatewayCoursesText">Original courses on process modeling, prediction, optimization, and operating decisions.</p>
           </div>
-          <a class="button secondary" href="{{ '/courses/' | relative_url }}" data-i18n="gatewayCoursesButton">Explore AI Courses</a>
+          <a class="button secondary" href="{{ '/courses/' | relative_url }}" data-i18n="gatewayCoursesButton">Explore Courses</a>
         </article>
       </div>
     </section>
@@ -247,14 +247,14 @@ layout: null
       <div class="section-header row">
         <div>
           <p class="eyebrow"><span data-lang-panel="en">Original courses by Sunwoo Kim</span><span data-lang-panel="ko" hidden>Sunwoo Kim이 직접 설계한 과목</span></p>
-          <h2 id="courses-preview-title"><span data-lang-panel="en">AI for Chemical Engineers</span><span data-lang-panel="ko" hidden>화학공학자를 위한 AI 강의</span></h2>
+          <h2 id="courses-preview-title"><span data-lang-panel="en">Chemical Engineering Courses</span><span data-lang-panel="ko" hidden>화학공학 강의</span></h2>
           <p><span data-lang-panel="en">Courses and learning resources connecting modern AI with chemical process modeling, optimization, and decisions.</span><span data-lang-panel="ko" hidden>AI 시대의 공정 모델링, 최적화, 의사결정을 공부하는 화학공학자를 위한 강의와 학습자료입니다.</span></p>
         </div>
-        <a class="button secondary" href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All AI courses</span><span data-lang-panel="ko" hidden>전체 AI 강의</span></a>
+        <a class="button secondary" href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All courses</span><span data-lang-panel="ko" hidden>전체 강의</span></a>
       </div>
       {% assign first_course = site.data.courses | first %}
       <article class="course-card">
-        <div class="note-meta"><span data-lang-panel="en">Graduate entry · 8 weeks · Syllabus and Week 1 available</span><span data-lang-panel="ko" hidden>대학원 입문 · 8주 · Syllabus와 1주차 공개</span></div>
+        <div class="note-meta"><span data-lang-panel="en">Graduate entry · 8 weeks · Syllabus and Weeks 1–2 available</span><span data-lang-panel="ko" hidden>대학원 입문 · 8주 · Syllabus와 1–2주차 공개</span></div>
         <h3><a href="{{ first_course.url | relative_url }}"><span data-lang-panel="en">{{ first_course.title }}</span><span data-lang-panel="ko" hidden>{{ first_course.title_ko }}</span></a></h3>
         <p><span data-lang-panel="en">{{ first_course.description }}</span><span data-lang-panel="ko" hidden>{{ first_course.description_ko }}</span></p>
         <div class="course-actions">
