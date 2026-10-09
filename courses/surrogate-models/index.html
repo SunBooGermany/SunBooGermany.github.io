@@ -10,10 +10,11 @@ permalink: /courses/surrogate-models/
   <h1><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></h1>
   <p><span data-lang-panel="en">{{ course.subtitle }}. Build and validate process predictors first, then study physical consistency, optimization formulations, and model structure before selecting operating conditions.</span><span data-lang-panel="ko" hidden>{{ course.subtitle_ko }}. 공정 예측 모델을 먼저 학습·검증하고, 물리적 일관성·최적화 정식화·모델 구조를 배운 뒤 운전 조건을 선택합니다.</span></p>
   <div class="note-meta"><span data-lang-panel="en">Designed by Sunwoo Kim · Graduate entry · 8-week self-paced course</span><span data-lang-panel="ko" hidden>Sunwoo Kim 설계 · 화학공학 대학원 입문 · 8주 자율 학습 과정</span></div>
-  <div class="course-actions">
+  <div class="course-actions course-actions-stacked">
     <a class="button primary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Syllabus and reading list</span><span data-lang-panel="ko" hidden>Syllabus와 읽기자료</span></a>
-    <a class="button secondary" href="{{ course.weeks.first.url | relative_url }}"><span data-lang-panel="en">Week 1: notes and lab</span><span data-lang-panel="ko" hidden>1주차: 강의 노트와 실습</span></a>
-    <a class="button secondary" href="{{ '/courses/surrogate-models/week-02/' | relative_url }}"><span data-lang-panel="en">Week 2: multicomponent MLPs</span><span data-lang-panel="ko" hidden>2주차: 다성분 MLP</span></a>
+    {% for week in course.weeks %}{% if week.url %}
+    <a class="button secondary" href="{{ week.url | relative_url }}"><span data-lang-panel="en">Week {{ week.number }}: {{ week.title }}</span><span data-lang-panel="ko" hidden>{{ week.number }}주차: {{ week.title_ko }}</span></a>
+    {% endif %}{% endfor %}
   </div>
 </section>
 <section class="course-summary">
