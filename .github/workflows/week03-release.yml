@@ -1,0 +1,96 @@
+name: Publish reviewed Week 3
+
+on:
+  schedule:
+    # 2026-10-10 16:00 Asia/Seoul; later slots recover a delayed or failed run.
+    - cron: '0 7 10 10 *'
+    - cron: '17,37,57 7-23 10 10 *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Validate the bundle and Pages permissions without publishing Week 3'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pages: write
+  actions: write
+
+concurrency:
+  group: week03-scheduled-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Download the approved bundle from the private draft release
+        env:
+          APPROVED_ASSET_ID: '624656617'
+          APPROVED_BUNDLE_SHA256: efdf63c382ee80a1f3e9434eac4e77b3169d48203ed4f06785bd9e0eb83bf64e
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/releases/assets/${APPROVED_ASSET_ID}" -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/week03-approved.zip"
+          python3 scripts/publish_scheduled_week03.py --unpack "$RUNNER_TEMP/week03-approved.zip" --bundle-sha256 "$APPROVED_BUNDLE_SHA256"
+      - name: Validate the reviewed bundle
+        run: python3 scripts/publish_scheduled_week03.py --check
+      - name: Publish only after the release time
+        id: publish
+        if: github.event_name == 'schedule' || inputs.dry_run == false
+        run: python3 scripts/publish_scheduled_week03.py --publish
+      - name: Commit the released course materials
+        if: steps.publish.outputs.status == 'published'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- index.html _data/courses.yml courses/index.html courses/surrogate-models assets/courses/surrogate-models _scheduled/week-03/published.json
+          git commit -m 'Publish reviewed Week 3 lecture and reading materials'
+          git push origin HEAD:main
+      - name: Request a Pages build
+        if: inputs.dry_run == true || steps.publish.outputs.status == 'published' || steps.publish.outputs.status == 'already_published'
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" --jq .status
+      - name: Confirm the Pages build
+        if: inputs.dry_run == true || steps.publish.outputs.status == 'published' || steps.publish.outputs.status == 'already_published'
+        run: |
+          expected=$(git rev-parse HEAD)
+          for attempt in $(seq 1 40); do
+            build=$(gh api "repos/${GITHUB_REPOSITORY}/pages/builds/latest")
+            status=$(jq -r .status <<< "$build")
+            commit=$(jq -r .commit <<< "$build")
+            if [ "$status" = built ]; then
+              git fetch origin main --quiet
+              if git merge-base --is-ancestor "$expected" "$commit"; then
+                echo "Pages build completed for $commit"
+                exit 0
+              fi
+            fi
+            if [ "$status" = errored ] && [ "$commit" = "$expected" ]; then
+              jq -r .error.message <<< "$build"
+              exit 1
+            fi
+            sleep 15
+          done
+          echo 'Pages build did not complete within ten minutes.'
+          exit 1
+      - name: Verify the public Week 3 materials
+        if: steps.publish.outputs.status == 'published' || steps.publish.outputs.status == 'already_published'
+        run: |
+          for attempt in $(seq 1 8); do
+            if python3 scripts/publish_scheduled_week03.py --verify-live; then exit 0; fi
+            sleep 15
+          done
+          exit 1
+      - name: Disable the completed one-time schedule
+        if: steps.publish.outputs.status == 'published' || steps.publish.outputs.status == 'already_published'
+        run: gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/week03-release.yml/disable"
+      - name: Record the result
+        run: |
+          echo 'Week 3 release: 2026-10-10 16:00 Asia/Seoul.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The release time is checked on the GitHub runner before any course files are published.' >> "$GITHUB_STEP_SUMMARY"
