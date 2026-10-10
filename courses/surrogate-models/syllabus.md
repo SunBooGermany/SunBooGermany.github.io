@@ -49,7 +49,7 @@ By the end of the course, learners should be able to:
 
 Weeks 1–3 establish prediction. Week 4 examines physical consistency. Weeks 5–6 formulate and solve problems with trained models; Week 7 designs model structure for optimization. Week 8 integrates the full workflow. Operating decisions are introduced briefly as the course destination in Week 1.
 
-The syllabus and [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[Week 2]({{ '/courses/surrogate-models/week-02/' | relative_url }}) core materials are available. Weeks 3–8 remain planned. The existing dynamic material in the Week 2 appendix is an optional Week 3 preview; later operating-point examples are also optional.
+The syllabus and [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[Week 3]({{ '/courses/surrogate-models/week-03/' | relative_url }}) materials are available. Weeks 4–8 remain planned.
 
 ## Reading assignments
 
@@ -58,7 +58,7 @@ The syllabus and [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading }} |
 {% endfor %}
 
-Start with the supplied [Week 1 reading companion]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}) and [Week 2 reading companion]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), each available as English/Korean PDFs. External readings use selected sections. RNN/LSTM, encoder–decoder, DeepONet, advanced formulation proofs, and longer-horizon examples are optional extensions.
+Start with the supplied [Week 1]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}), [Week 2]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), and [Week 3 reading companions]({{ '/courses/surrogate-models/week-03-reading/' | relative_url }}), each available as English/Korean PDFs. External readings use selected sections. RNN/LSTM, encoder–decoder, DeepONet, advanced formulation proofs, and longer-horizon examples are optional extensions.
 
 ## Core sources
 
@@ -132,7 +132,7 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지를 알고 있�
 
 1–3주차는 예측 모델을 구축한다. 4주차는 물리적 일관성, 5–6주차는 학습된 모델의 정식화와 풀이, 7주차는 최적화 활용을 위한 모델 구조 설계를 다룬다. 8주차에서 전체 과정을 연결한다. 1주차의 운전 의사결정은 과목의 도착점을 짧게 보여주는 예고다.
 
-현재 syllabus와 [1주차]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[2주차]({{ '/courses/surrogate-models/week-02/' | relative_url }}) 필수 자료를 제공한다. 3–8주차는 강의 계획이다. 기존 2주차 부록의 동적 자료는 선택적인 3주차 미리보기이며, 후반부 운전점 선택 예제도 선택 내용이다.
+현재 syllabus와 [1주차]({{ '/courses/surrogate-models/week-01/' | relative_url }})–[3주차]({{ '/courses/surrogate-models/week-03/' | relative_url }}) 자료를 제공한다. 4–8주차는 강의 계획이다.
 
 ## 주차별 읽기 안내
 
@@ -141,7 +141,7 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지를 알고 있�
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading_ko }} |
 {% endfor %}
 
-직접 제공하는 [1주차 읽기자료]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }})와 [2주차 읽기자료]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }})부터 읽는다. 각 자료는 국문·영문 PDF를 제공한다. 외부 원문은 지정된 절을 읽는다. RNN/LSTM·encoder–decoder·DeepONet, 고급 formulation 증명과 긴 horizon 예제는 선택 확장이다.
+직접 제공하는 [1주차]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}), [2주차]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), [3주차 읽기자료]({{ '/courses/surrogate-models/week-03-reading/' | relative_url }})부터 읽는다. 각 자료는 국문·영문 PDF를 제공한다. 외부 원문은 지정된 절을 읽는다. RNN/LSTM·encoder–decoder·DeepONet, 고급 formulation 증명과 긴 horizon 예제는 선택 확장이다.
 
 ## 핵심 참고자료
 

@@ -1,0 +1,47 @@
+{
+  "one_step": {
+    "rmse_mol_L": [
+      0.0011698733687232174,
+      0.0012881459751205937,
+      0.0011631600085516736
+    ],
+    "balance_rmse_mol_L": 5.1329873751630126e-05,
+    "minimum_predicted_concentration_mol_L": -0.001152203213085274
+  },
+  "rollout": {
+    "rmse_mol_L": [
+      0.009465025357851294,
+      0.009629144427021242,
+      0.010425194376398996
+    ],
+    "balance_rmse_mol_L": 0.002013982987355719,
+    "minimum_predicted_concentration_mol_L": -0.00516641000457166
+  },
+  "trajectory_counts": {
+    "train": 60,
+    "validation": 15,
+    "test": 20
+  },
+  "transition_counts": {
+    "train": 9000,
+    "validation": 2250,
+    "test": 3000
+  },
+  "best_epoch": 758,
+  "trained_epochs": 800,
+  "dt_min": 0.2,
+  "horizon_min": 30.0,
+  "seed": 42,
+  "temperature_plans": [
+    {
+      "name": "constant_330_K",
+      "reference_final_C_B": 0.4000913547884453,
+      "predicted_final_C_B": 0.39981929790620313
+    },
+    {
+      "name": "step_330_to_345_K",
+      "reference_final_C_B": 0.42002067367676815,
+      "predicted_final_C_B": 0.41152554446409517
+    }
+  ]
+}

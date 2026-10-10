@@ -39,8 +39,9 @@
       topics_ko: "상태전이 MLP, 초기 상태, 미래 운전 입력, one-step 예측과 전체 궤적 rollout. RNN/LSTM·encoder–decoder는 선택 확장."
       deliverable: "A comparison of one-step and trajectory errors under prescribed future inputs."
       deliverable_ko: "정해진 미래 입력에 대한 one-step·전체 궤적 오차 비교."
-      reading: "Course state-transition derivation and the supplied dynamic preview; Sutskever et al., Sections 1–2 (optional)."
-      reading_ko: "강의의 상태전이 유도와 제공된 동적 미리보기; Sutskever et al. 1–2절(선택)."
+      reading: "Week 3 reading companion: state-transition derivations, worked calculations, and evaluation code; Sutskever et al., Sections 1–2 (optional)."
+      reading_ko: "3주차 직접 제공 읽기자료: 상태전이 유도·계산 예·평가 코드; Sutskever et al. 1–2절(선택)."
+      url: /courses/surrogate-models/week-03/
     - number: 4
       title: "Learning with Physical Constraints"
       title_ko: "물리 제약을 반영한 학습"
