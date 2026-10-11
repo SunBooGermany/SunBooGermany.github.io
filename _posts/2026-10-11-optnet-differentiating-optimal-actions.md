@@ -42,8 +42,6 @@ The motivating question is concrete: “If an action chosen by optimization perf
 
 The first asks how a predicted value changes while holding the action fixed. The second asks how the optimizer's chosen action changes when the parameters change. OptNet provides a way to compute the latter and train a model containing the optimization operation.
 
-ICNN and OptNet address different aspects of this construction. ICNN imposes convexity in selected inputs through network structure. OptNet differentiates through a QP solution. They can inform the same modeling workflow, but an arbitrary ICNN objective is not automatically a QP that the original OptNet layer can accept.
-
 ## 1. Forward pass: choose an action under a hard ramp limit
 
 The following is an educational example for equipment operation, not an experiment from the paper. Let a be normalized equipment output, with a previous output of 0.5 and a hard ramp limit of 0.1:
@@ -173,7 +171,6 @@ The calculation rests on the zero KKT residual and its local regularity. Feasibi
 ## References
 
 - Amos, B., and Kolter, J. Z. (2017). *OptNet: Differentiable Optimization as a Layer in Neural Networks*. In *Proceedings of the 34th International Conference on Machine Learning*, PMLR 70, 136–145. [Official metadata](https://proceedings.mlr.press/v70/amos17a.html), [ICML paper PDF](https://proceedings.mlr.press/v70/amos17a/amos17a.pdf), [arXiv:1703.00443](https://arxiv.org/abs/1703.00443).
-- Amos, B., Xu, L., and Kolter, J. Z. (2017). *Input Convex Neural Networks*. ICML, PMLR 70, 146–155. [Official paper page](https://proceedings.mlr.press/v70/amos17b.html).
 - *Implicit Layers Tutorial*, Chapter 5, “Differentiable optimization.” KKT residuals and implicit differentiation. [Tutorial chapter](https://implicit-layers-tutorial.org/differentiable_optimization/).
 
 <!-- ko -->
@@ -185,8 +182,6 @@ Amos와 Kolter의 ICML 2017 논문 *OptNet: Differentiable Optimization as a Lay
 <math display="block" aria-label="Value derivative at a fixed action versus optimal action derivative"><mtable columnalign="left"><mtr><mtd><mfrac><mrow><mo>∂</mo><msub><mover><mi>V</mi><mo>^</mo></mover><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>,</mo><mi>a</mi><mo>)</mo></mrow><mrow><mo>∂</mo><mi>θ</mi></mrow></mfrac></mtd></mtr><mtr><mtd><mfrac><mrow><mo>∂</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mrow><mo>∂</mo><mi>θ</mi></mrow></mfrac></mtd></mtr></mtable></math>
 
 첫 번째는 action을 고정했을 때 예측값이 어떻게 달라지는지를 묻는다. 두 번째는 파라미터를 바꾸면 최적화가 선택하는 action이 어떻게 움직이는지를 묻는다. OptNet은 두 번째 미분을 계산하여 최적화 연산을 포함한 전체 모델을 학습할 수 있게 한다.
-
-ICNN과 OptNet은 각각 함수의 구조와 최적화 연산을 통한 학습에 초점을 둔다. ICNN은 신경망 구조로 특정 입력에 대한 convexity를 부여한다. OptNet은 QP의 해를 거쳐 미분한다. 같은 모델링 과정에서 두 관점이 유용할 수 있지만, 임의의 ICNN 목적함수가 원래 OptNet layer에 넣을 수 있는 QP로 자동 변환되는 것은 아니다.
 
 ## 1. Forward pass: hard ramp를 지키는 action 선택
 
@@ -317,5 +312,4 @@ OptNet solver는 primal–dual interior-point 방법을 사용하며, forward so
 ## 참고문헌
 
 - Amos, B., and Kolter, J. Z. (2017). *OptNet: Differentiable Optimization as a Layer in Neural Networks*. In *Proceedings of the 34th International Conference on Machine Learning*, PMLR 70, 136–145. [공식 서지정보](https://proceedings.mlr.press/v70/amos17a.html), [ICML 논문 PDF](https://proceedings.mlr.press/v70/amos17a/amos17a.pdf), [arXiv:1703.00443](https://arxiv.org/abs/1703.00443).
-- Amos, B., Xu, L., and Kolter, J. Z. (2017). *Input Convex Neural Networks*. ICML, PMLR 70, 146–155. [공식 논문 페이지](https://proceedings.mlr.press/v70/amos17b.html).
 - *Implicit Layers Tutorial*, Chapter 5, “Differentiable optimization.” KKT residual과 implicit differentiation. [튜토리얼 장](https://implicit-layers-tutorial.org/differentiable_optimization/).
