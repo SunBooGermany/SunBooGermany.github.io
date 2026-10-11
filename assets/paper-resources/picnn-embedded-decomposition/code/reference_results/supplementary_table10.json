@@ -1,0 +1,46 @@
+[
+  {
+    "stages": 6,
+    "uncertainty": 0.1,
+    "SDDP8": 12.614957146007855,
+    "SDDP27": 12.609279073224554,
+    "RH2": 12.624649454046503,
+    "Proposed": 12.639178066253741,
+    "successors": 4,
+    "proposed_source": "Prior five-run 4-successor experiment; lowest observed test mean",
+    "approximate": false
+  },
+  {
+    "stages": 6,
+    "uncertainty": 0.3,
+    "SDDP8": 12.439257978869744,
+    "SDDP27": 12.315702350195158,
+    "RH2": 12.33490970596099,
+    "Proposed": 12.367821142981443,
+    "successors": 16,
+    "proposed_source": "Lowest available test mean versus original paper; prior 16-successor experiment, seed 4",
+    "approximate": false
+  },
+  {
+    "stages": 24,
+    "uncertainty": 0.1,
+    "SDDP8": 17.239455031540782,
+    "SDDP27": 13.841887855329276,
+    "RH2": 14.392861773747955,
+    "Proposed": 13.88,
+    "successors": 1,
+    "proposed_source": "Original paper stage-count figure, approximate digitization rounded to two decimals",
+    "approximate": true
+  },
+  {
+    "stages": 24,
+    "uncertainty": 0.3,
+    "SDDP8": 85.05471443184423,
+    "SDDP27": 14.061571880811734,
+    "RH2": 13.913760758517824,
+    "Proposed": 13.647347736449273,
+    "successors": 4,
+    "proposed_source": "New three-run 4-successor experiment; lowest observed test mean; original paper 24-stage/30% reference unavailable",
+    "approximate": false
+  }
+]

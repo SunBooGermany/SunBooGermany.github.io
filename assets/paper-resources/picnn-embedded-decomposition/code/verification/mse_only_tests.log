@@ -1,0 +1,22 @@
+test_cached_paths_match_all_original_evaluation_paths (test_core.ModelTests.test_cached_paths_match_all_original_evaluation_paths) ... ok
+test_highs_rhs_dual_sign (test_core.ModelTests.test_highs_rhs_dual_sign) ... ok
+test_perfect_information_lower_than_implementable_policy (test_core.ModelTests.test_perfect_information_lower_than_implementable_policy) ... ok
+test_picnn_forward_equals_fixed_action_epigraph (test_core.ModelTests.test_picnn_forward_equals_fixed_action_epigraph) ... ok
+test_replay_fit_uses_mean_squared_error (test_core.ModelTests.test_replay_fit_uses_mean_squared_error) ... ok
+SDDP seed=17 iter=1 graph LB=6.3842075 cuts=8 elapsed=0.1s
+SDDP seed=17 iter=10 graph LB=6.3842075 cuts=8 elapsed=1.3s
+SDDP seed=17 iter=20 graph LB=6.3842075 cuts=8 elapsed=2.5s
+SDDP seed=17 iter=1 graph LB=6.3649669 cuts=27 elapsed=0.3s
+SDDP seed=17 iter=10 graph LB=6.3649669 cuts=27 elapsed=3.5s
+SDDP seed=17 iter=20 graph LB=6.3649669 cuts=27 elapsed=6.9s
+test_sddp_matches_exact_two_stage_tree_and_valid_cuts (test_core.ModelTests.test_sddp_matches_exact_two_stage_tree_and_valid_cuts) ... ok
+PICNN epoch 1/6, successors=4, elapsed=0.5s
+PICNN epoch 1/6, successors=16, elapsed=1.3s
+test_training_checkpoint_reload_and_terminal_successor_targets (test_core.ModelTests.test_training_checkpoint_reload_and_terminal_successor_targets) ... ok
+test_training_rejects_other_losses_before_creating_output (test_core.ModelTests.test_training_rejects_other_losses_before_creating_output) ... ok
+test_vintage_capacity_and_fixed_action_accounting (test_core.ModelTests.test_vintage_capacity_and_fixed_action_accounting) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 30.575s
+
+OK

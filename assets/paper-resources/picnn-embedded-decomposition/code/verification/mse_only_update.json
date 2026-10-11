@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-11",
+  "passed": true,
+  "unit_tests_passed": 9,
+  "main_training_loss": "mse",
+  "huber_training_removed": true,
+  "cli_huber_rejected": true,
+  "default_training_and_checkpoint_reload_tested": true,
+  "numerical_mse_verified": 11.0,
+  "python": "3.12.14",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "torch": "2.14.1+cpu",
+  "scope": "Nine numerical and integration tests, including six-epoch MSE training with 4/16 successors. Archived policies and historical Huber metadata were preserved; full retraining was not performed."
+}

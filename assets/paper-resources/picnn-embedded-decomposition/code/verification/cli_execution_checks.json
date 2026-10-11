@@ -1,0 +1,173 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "command": "benchmark",
+      "stages": 6,
+      "uncertainty": 0.3,
+      "nodes": [
+        8,
+        27
+      ],
+      "training_seeds": [
+        17
+      ],
+      "iterations": 3,
+      "test_paths": 3,
+      "result": {
+        "SDDP8": {
+          "per_training_seed": [
+            {
+              "training_seed": 17,
+              "paths": 3,
+              "mean_NPC": 9.780517786480328,
+              "std_NPC": 1.4163116988953737,
+              "max_NPC": 11.15240805340903
+            }
+          ],
+          "mean_NPC": 9.780517786480328
+        },
+        "SDDP27": {
+          "per_training_seed": [
+            {
+              "training_seed": 17,
+              "paths": 3,
+              "mean_NPC": 9.666374430575202,
+              "std_NPC": 1.253048143017639,
+              "max_NPC": 10.863733888566058
+            }
+          ],
+          "mean_NPC": 9.666374430575202
+        },
+        "rh": {
+          "paths": 3,
+          "mean_NPC": 9.668044583962224,
+          "std_NPC": 1.240962681466854,
+          "max_NPC": 10.864535088042388
+        }
+      },
+      "scope": "Short execution check, not a replacement for paper experiments"
+    },
+    {
+      "command": "benchmark",
+      "stages": 24,
+      "uncertainty": 0.3,
+      "nodes": [
+        8,
+        27
+      ],
+      "training_seeds": [
+        17
+      ],
+      "iterations": 1,
+      "test_paths": 3,
+      "result": {
+        "SDDP8": {
+          "per_training_seed": [
+            {
+              "training_seed": 17,
+              "paths": 3,
+              "mean_NPC": 10.906985680711854,
+              "std_NPC": 0.819532292037592,
+              "max_NPC": 11.821367646443356
+            }
+          ],
+          "mean_NPC": 10.906985680711854
+        },
+        "SDDP27": {
+          "per_training_seed": [
+            {
+              "training_seed": 17,
+              "paths": 3,
+              "mean_NPC": 14.01719641642166,
+              "std_NPC": 2.2175063041405103,
+              "max_NPC": 16.424288820048492
+            }
+          ],
+          "mean_NPC": 14.01719641642166
+        },
+        "rh": {
+          "paths": 3,
+          "mean_NPC": 10.172232787047648,
+          "std_NPC": 0.8619196009528426,
+          "max_NPC": 11.116955040973945
+        }
+      },
+      "scope": "Short execution check, not a replacement for paper experiments"
+    },
+    {
+      "command": "train_then_evaluate",
+      "stages": 6,
+      "epochs": 6,
+      "successors": 1,
+      "hidden": 256,
+      "u_hidden": 64,
+      "loss": "mse",
+      "test_paths": 3,
+      "result": {
+        "proposed": {
+          "paths": 3,
+          "mean_NPC": 11.759782125260683,
+          "std_NPC": 0.7244019250200819,
+          "max_NPC": 12.477231302917797
+        },
+        "myopic": {
+          "paths": 3,
+          "mean_NPC": 11.749149619992878,
+          "std_NPC": 0.7240278201878282,
+          "max_NPC": 12.47616224816743
+        },
+        "omniscient": {
+          "paths": 3,
+          "mean_NPC": 11.580884459784572,
+          "std_NPC": 0.6739169122497194,
+          "max_NPC": 12.239407338787423
+        },
+        "rh": {
+          "paths": 3,
+          "mean_NPC": 11.600009268086533,
+          "std_NPC": 0.6962981107813523,
+          "max_NPC": 12.285098788622106
+        }
+      },
+      "scope": "Short execution check, not a replacement for paper experiments"
+    },
+    {
+      "command": "train_then_evaluate",
+      "stages": 24,
+      "epochs": 6,
+      "successors": 4,
+      "hidden": 256,
+      "u_hidden": 64,
+      "loss": "mse",
+      "test_paths": 3,
+      "result": {
+        "proposed": {
+          "paths": 3,
+          "mean_NPC": 10.534945019121901,
+          "std_NPC": 0.7541876082412475,
+          "max_NPC": 11.403271995058102
+        },
+        "myopic": {
+          "paths": 3,
+          "mean_NPC": 10.462133673338185,
+          "std_NPC": 0.7670847273158661,
+          "max_NPC": 11.335544677798111
+        },
+        "omniscient": {
+          "paths": 3,
+          "mean_NPC": 9.755891006431911,
+          "std_NPC": 0.6916056739599737,
+          "max_NPC": 10.490485908971248
+        },
+        "rh": {
+          "paths": 3,
+          "mean_NPC": 10.172232787047648,
+          "std_NPC": 0.8619196009528426,
+          "max_NPC": 11.116955040973945
+        }
+      },
+      "scope": "Short execution check, not a replacement for paper experiments"
+    }
+  ]
+}

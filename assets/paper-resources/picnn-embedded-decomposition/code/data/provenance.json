@@ -1,0 +1,20 @@
+{
+  "hours": 144,
+  "representative_day_offsets": [
+    30,
+    90,
+    150,
+    210,
+    270,
+    330
+  ],
+  "solar_source": "CA_candidate.xlsx, solar_CF column",
+  "demand_source": "CA_electricity_ratio.xlsx, Ratio column divided by initial demand scale 0.2",
+  "source_excel_sha256": {
+    "CA_candidate.xlsx": "179cea874f5394ffb5ff92b2d481b3ea05828e527cc28ad00fa64c71832849af",
+    "CA_electricity_ratio.xlsx": "c415d3d086bde15bd0841dd11fa70a930ea85ea63f9063ca445cf745af0442aa"
+  },
+  "source_0510_sha256": "a127db2a084d7b82756cac22ce840e484dfbf7e29bac820faa700a7958e70154",
+  "cached_csv_sha256": "a0d55fd18290d86bf17e6b6afd1effea25f39eb2b90fc8000d7b57cb70bd48a6",
+  "hourly_sampling_weight": 60.833333333333336
+}

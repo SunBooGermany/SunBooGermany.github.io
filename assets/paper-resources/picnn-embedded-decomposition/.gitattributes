@@ -1,0 +1,4 @@
+# Keep the published bundle and its file checksums byte-for-byte consistent.
+code/** -text
+*.npz binary
+picnn-revision-code.zip binary

@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "python": "3.13.5",
+  "numpy": "2.3.1",
+  "scipy": "1.16.0",
+  "torch": "2.7.1+cpu",
+  "solver": "SciPy HiGHS dual simplex",
+  "seconds": 224.74833830003627,
+  "results": [
+    {
+      "policy": "T24_std30_PICNN4_seed1",
+      "paths": 400,
+      "mean_NPC": 13.647347736449273,
+      "original_mean_NPC": 13.647347736449273,
+      "max_path_difference": 1.7763568394002505e-14,
+      "mean_difference": 0.0
+    },
+    {
+      "policy": "T6_std10_PICNN4_seed0",
+      "paths": 400,
+      "mean_NPC": 12.639178066253741,
+      "original_mean_NPC": 12.639178066253741,
+      "max_path_difference": 1.5987211554602254e-14,
+      "mean_difference": 0.0
+    },
+    {
+      "policy": "T6_std10_PICNN4_seed4",
+      "paths": 400,
+      "mean_NPC": 12.639430496209439,
+      "original_mean_NPC": 12.639430496209439,
+      "max_path_difference": 1.5987211554602254e-14,
+      "mean_difference": 0.0
+    },
+    {
+      "policy": "T6_std30_PICNN16_seed4",
+      "paths": 400,
+      "mean_NPC": 12.367821142981443,
+      "original_mean_NPC": 12.367821142981443,
+      "max_path_difference": 1.9539925233402755e-14,
+      "mean_difference": 0.0
+    },
+    {
+      "policy": "T24_std10_SDDP27_seed17",
+      "paths": 3,
+      "max_path_difference": 3.552713678800501e-15
+    },
+    {
+      "policy": "T24_std10_SDDP8_seed17",
+      "paths": 3,
+      "max_path_difference": 2.4868995751603507e-14
+    },
+    {
+      "policy": "T24_std30_SDDP27_seed17",
+      "paths": 3,
+      "max_path_difference": 5.329070518200751e-15
+    },
+    {
+      "policy": "T24_std30_SDDP8_seed17",
+      "paths": 3,
+      "max_path_difference": 1.1198153515579179e-10
+    },
+    {
+      "policy": "T6_std10_SDDP27_seed17",
+      "paths": 3,
+      "max_path_difference": 7.105427357601002e-15
+    },
+    {
+      "policy": "T6_std10_SDDP8_seed17",
+      "paths": 3,
+      "max_path_difference": 3.552713678800501e-15
+    },
+    {
+      "policy": "T6_std30_SDDP27_seed17",
+      "paths": 3,
+      "max_path_difference": 7.709388682997087e-13
+    },
+    {
+      "policy": "T6_std30_SDDP8_seed17",
+      "paths": 3,
+      "max_path_difference": 3.552713678800501e-15
+    }
+  ],
+  "scope": "Fixed archived policies replayed with HiGHS; this is not a new 10,000-epoch training experiment"
+}

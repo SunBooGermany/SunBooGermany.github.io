@@ -1,0 +1,21 @@
+{
+  "stages": 6,
+  "uncertainty": 0.3,
+  "hidden": 256,
+  "u_hidden": 64,
+  "alpha": 0.0,
+  "epoch_completed": 7500,
+  "settings": {
+    "successors": 16,
+    "loss": "huber",
+    "validation_start": 400,
+    "validation_rounds": [
+      50,
+      50,
+      300
+    ]
+  },
+  "training_seed": 4,
+  "source_checkpoint_sha256": "441b6d4a565c6f49da81cf9e77f2576fb8d79ba6de1189a76cf0eebe80035b19",
+  "original_solver": "Historical policy trained with the original solver; exported to safe NumPy arrays"
+}

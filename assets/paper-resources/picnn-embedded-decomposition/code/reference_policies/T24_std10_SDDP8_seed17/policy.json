@@ -1,0 +1,8 @@
+{
+  "stages": 24,
+  "uncertainty": 0.1,
+  "nodes": 8,
+  "training_seed": 17,
+  "iterations": 100,
+  "source_policy_sha256": "298241a059801bcb11e1ceeb4174db4f49b36c174e6c607633fb7d3d3e04227f"
+}

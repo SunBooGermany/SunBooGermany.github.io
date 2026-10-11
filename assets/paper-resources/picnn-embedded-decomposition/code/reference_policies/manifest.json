@@ -1,0 +1,26 @@
+[
+  {
+    "policy": "T6_std10_PICNN4_seed0",
+    "checkpoint_sha256": "fbaecf6c771e1786797a94a8c697d08a66f67958635e4735b9ad8c9807a30434",
+    "successors": 4,
+    "loss": "huber"
+  },
+  {
+    "policy": "T6_std30_PICNN16_seed4",
+    "checkpoint_sha256": "441b6d4a565c6f49da81cf9e77f2576fb8d79ba6de1189a76cf0eebe80035b19",
+    "successors": 16,
+    "loss": "huber"
+  },
+  {
+    "policy": "T24_std30_PICNN4_seed1",
+    "checkpoint_sha256": "de4fe227467e970ce7f442a09f5345edb0ed305a016549796cf9603e7b73df64",
+    "successors": 4,
+    "loss": "mse"
+  },
+  {
+    "policy": "T6_std10_PICNN4_seed4",
+    "checkpoint_sha256": "d1f8e4c0da59b8167541150ba7d0837db8bdfb81b65812527ef6415a4639cb4f",
+    "successors": 4,
+    "loss": "huber"
+  }
+]

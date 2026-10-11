@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "unit_tests_passed": 7,
+  "picnn_fixed_policy_paths": 1600,
+  "sddp_fixed_policy_replays": 24,
+  "source_evaluation_paths_verified": 1600,
+  "cli_checks_completed": true,
+  "parsed_python_files": [
+    "capacity_planning/config.py",
+    "capacity_planning/lp.py",
+    "capacity_planning/model.py",
+    "capacity_planning/nodes.py",
+    "capacity_planning/picnn.py",
+    "capacity_planning/policies.py",
+    "capacity_planning/sddp.py",
+    "capacity_planning/training.py",
+    "capacity_planning/__init__.py",
+    "capacity_planning/__main__.py",
+    "scripts/check_release.py",
+    "scripts/reproduce_table10.py",
+    "tests/test_core.py"
+  ],
+  "largest_repository_file_bytes": 6191118,
+  "revision_documents_unchanged": {
+    "CoverLetter.docx": "11753c0de43c7c0b978c505d0a676ce6a7abcd2358e72b7064e24e17866d8692",
+    "response to reviewer.docx": "46befae5679d3290ca6703173df262ce0f0f8949796ab0341751ef0f4920ad2b",
+    "Reviewer Comment.docx": "df0ccf1c9f3fe6231310426f303f0f34f1f5e86bba29798c782704ab0eef17f0",
+    "revised manuscript_marked.docx": "703db8cf8dcf312ecb13166b6aaa86cb81be0e632cbfdff00ecd0553fd70f81e",
+    "revised SI.docx": "aa9f37a7ebe61a13b2e529509bca32f115a743e1c160b54080e897efdd2cf916"
+  },
+  "exclusions": [
+    "outputs",
+    "__pycache__",
+    ".venv",
+    ".git",
+    "obsolete analysis scripts",
+    "commercial solver dependencies"
+  ],
+  "training_scope": "Short MSE/Huber learning checks and default-size 6/24-stage CLI checks; full 10,000-epoch retraining not performed"
+}
