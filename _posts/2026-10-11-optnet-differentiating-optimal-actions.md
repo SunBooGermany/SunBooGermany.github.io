@@ -54,7 +54,7 @@ A neural network takes observations x and predicts one number, <math><msub><mi>�
 
 Here <math><mi>η</mi></math> is an incentive to increase output. A larger incentive favors higher output, but the modeled hard ramp constraint must still hold. Completing the square explains what the optimizer does:
 
-<math display="block" aria-label="Complete the square to interpret the QP as projection"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><mi>η</mi><mi>a</mi><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mo>(</mo><mi>a</mi><mo>−</mo><mi>η</mi><mo>)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>η</mi><mn>2</mn></msup></math>
+<math display="block" aria-label="Complete the square to interpret the QP as projection"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><mi>η</mi><mi>a</mi><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>(</mo><mi>a</mi><mo>−</mo><mi>η</mi><mo>)</mo></mrow><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>η</mi><mn>2</mn></msup></math>
 
 The final term is independent of a. Therefore the optimizer selects the feasible action closest to <math><mi>η</mi></math>:
 
@@ -70,7 +70,7 @@ The layer output is the optimal decision, **not the minimum objective value**. I
 
 For one input, suppose a reference action of 0.55 is given. This is a hypothetical training label to demonstrate differentiation. It does not assume that optimal-action labels are available in the real operating problem.
 
-<math display="block" aria-label="Illustrative supervised action loss"><mi>ℓ</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mo>(</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>−</mo><mn>.55</mn><mo>)</mo><mn>2</mn></msup></math>
+<math display="block" aria-label="Illustrative supervised action loss"><mi>ℓ</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>(</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>−</mo><mn>.55</mn><mo>)</mo></mrow><mn>2</mn></msup></math>
 
 The chain rule is
 
@@ -108,7 +108,7 @@ Here <math><mi>η</mi></math> collects the parameters determining the objective 
 
 Using equality multipliers ν and nonnegative inequality multipliers λ, and suppressing the parameter arguments, the KKT conditions are
 
-<math display="block" aria-label="QP KKT equations and inequalities"><mtable columnalign="left"><mtr><mtd><mi>H</mi><msup><mi>a</mi><mo>*</mo></msup><mo>+</mo><mi>c</mi><mo>+</mo><msup><mrow><mi>A</mi></mrow><mo>⊤</mo></msup><msup><mi>ν</mi><mo>*</mo></msup><mo>+</mo><msup><mrow><mi>G</mi></mrow><mo>⊤</mo></msup><msup><mi>λ</mi><mo>*</mo></msup><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>A</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>b</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><msub><msup><mi>λ</mi><mo>*</mo></msup><mi>i</mi></msub><msub><mo>(</mo><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>)</mo><mi>i</mi></msub><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>≤</mo><mn>0</mn><mo>,</mo><msup><mi>λ</mi><mo>*</mo></msup><mo>≥</mo><mn>0</mn></mtd></mtr></mtable></math>
+<math display="block" aria-label="QP KKT equations and inequalities"><mtable columnalign="left"><mtr><mtd><mi>H</mi><msup><mi>a</mi><mo>*</mo></msup><mo>+</mo><mi>c</mi><mo>+</mo><msup><mrow><mi>A</mi></mrow><mo>⊤</mo></msup><msup><mi>ν</mi><mo>*</mo></msup><mo>+</mo><msup><mrow><mi>G</mi></mrow><mo>⊤</mo></msup><msup><mi>λ</mi><mo>*</mo></msup><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>A</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>b</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><msub><msup><mi>λ</mi><mo>*</mo></msup><mi>i</mi></msub><msub><mrow><mo>(</mo><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>)</mo></mrow><mi>i</mi></msub><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>≤</mo><mn>0</mn><mo>,</mo><msup><mi>λ</mi><mo>*</mo></msup><mo>≥</mo><mn>0</mn></mtd></mtr></mtable></math>
 
 Collect the primal and dual solution variables:
 
@@ -193,15 +193,15 @@ Amos와 Kolter의 ICML 2017 논문 *OptNet: Differentiable Optimization as a Lay
 
 <math display="block" aria-label="A unique optimal solution with a kink"><mtable columnalign="left"><mtr><mtd><msup><mi>a</mi><mo>*</mo></msup><mo>(</mo><mi>η</mi><mo>)</mo><mo>=</mo><munder><mo>arg min</mo><mrow><mn>.4</mn><mo>≤</mo><mi>a</mi><mo>≤</mo><mn>.6</mn></mrow></munder><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><mi>η</mi><mi>a</mi><mo>)</mo></mtd></mtr><mtr><mtd><msup><mi>a</mi><mo>*</mo></msup><mo>(</mo><mi>η</mi><mo>)</mo><mo>=</mo><mo>min</mo><mo>{</mo><mn>.6</mn><mo>,</mo><mo>max</mo><mo>{</mo><mn>.4</mn><mo>,</mo><mi>η</mi><mo>}</mo><mo>}</mo></mtd></mtr></mtable></math>
 
-<math><mi>η</mi></math>는 출력을 증가시키려는 유인의 크기이다. 커질수록 높은 출력을 선호하지만, 모델에 넣은 hard ramp는 지켜야 한다. 목적함수를 완전제곱으로 바꾸면 동작이 분명해진다.
+<span><math><mi>η</mi></math></span>는 출력을 증가시키려는 유인의 크기이다. 커질수록 높은 출력을 선호하지만, 모델에 넣은 hard ramp는 지켜야 한다. 목적함수를 완전제곱으로 바꾸면 동작이 분명해진다.
 
-<math display="block" aria-label="Complete the square to interpret the QP as projection"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><mi>η</mi><mi>a</mi><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mo>(</mo><mi>a</mi><mo>−</mo><mi>η</mi><mo>)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>η</mi><mn>2</mn></msup></math>
+<math display="block" aria-label="Complete the square to interpret the QP as projection"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>a</mi><mn>2</mn></msup><mo>−</mo><mi>η</mi><mi>a</mi><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>(</mo><mi>a</mi><mo>−</mo><mi>η</mi><mo>)</mo></mrow><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mi>η</mi><mn>2</mn></msup></math>
 
 마지막 항은 a와 무관하다. 따라서 <math><mi>η</mi></math>에 가장 가까운 feasible action을 선택하는 문제이다.
 
 <math display="block" aria-label="Piecewise optimal action"><msup><mi>a</mi><mo>*</mo></msup><mo>(</mo><mi>η</mi><mo>)</mo><mo>=</mo><mo>{</mo><mtable columnalign="left left"><mtr><mtd><mn>.4</mn></mtd><mtd><mi>η</mi><mo>&lt;</mo><mn>.4</mn></mtd></mtr><mtr><mtd><mi>η</mi></mtd><mtd><mn>.4</mn><mo>≤</mo><mi>η</mi><mo>≤</mo><mn>.6</mn></mtd></mtr><mtr><mtd><mn>.6</mn></mtd><mtd><mi>η</mi><mo>&gt;</mo><mn>.6</mn></mtd></mtr></mtable></math>
 
-<math><mi>η</mi></math> = 0.45이면 action은 0.45이다. <math><mi>η</mi></math> = 0.8을 출력해도 action은 0.6이다. 신경망이 더 높은 출력을 선호하더라도 QP는 feasible 상한을 반환한다.
+<span><math><mi>η</mi></math></span> = 0.45이면 action은 0.45이다. <math><mi>η</mi></math> = 0.8을 출력해도 action은 0.6이다. 신경망이 더 높은 출력을 선호하더라도 QP는 feasible 상한을 반환한다.
 
 <math display="block" aria-label="Forward pass returns an optimal action"><mi>x</mi><mo>→</mo><msub><mi>η</mi><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>→</mo><mtext>QP solve</mtext><mo>→</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo></math>
 
@@ -211,7 +211,7 @@ Layer의 출력은 **목적함수의 최솟값이 아니라 최적 의사결정*
 
 어떤 입력에서 목표 action 0.55가 주어졌다고 하자. 미분을 보여주기 위한 가상의 학습 label이며, 실제 운영 문제에서 optimal-action label을 안다고 가정하는 것은 아니다.
 
-<math display="block" aria-label="Illustrative supervised action loss"><mi>ℓ</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mo>(</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>−</mo><mn>.55</mn><mo>)</mo><mn>2</mn></msup></math>
+<math display="block" aria-label="Illustrative supervised action loss"><mi>ℓ</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>(</mo><msub><msup><mi>a</mi><mo>*</mo></msup><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>−</mo><mn>.55</mn><mo>)</mo></mrow><mn>2</mn></msup></math>
 
 Chain rule은 다음과 같다.
 
@@ -245,11 +245,11 @@ Gradient descent는 <math><mi>η</mi></math>를 증가시킨다. Action도 증�
 
 <math display="block" aria-label="Parameterized positive definite quadratic program"><mtable columnalign="left"><mtr><mtd><msup><mi>a</mi><mo>*</mo></msup><mo>(</mo><mi>η</mi><mo>)</mo><mo>=</mo><munder><mo>arg min</mo><mi>a</mi></munder><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mi>a</mi></mrow><mo>⊤</mo></msup><mi>H</mi><mo>(</mo><mi>η</mi><mo>)</mo><mi>a</mi><mo>+</mo><msup><mrow><mi>c</mi><mo>(</mo><mi>η</mi><mo>)</mo></mrow><mo>⊤</mo></msup><mi>a</mi><mo>)</mo></mtd></mtr><mtr><mtd><mi>A</mi><mo>(</mo><mi>η</mi><mo>)</mo><mi>a</mi><mo>=</mo><mi>b</mi><mo>(</mo><mi>η</mi><mo>)</mo></mtd></mtr><mtr><mtd><mi>G</mi><mo>(</mo><mi>η</mi><mo>)</mo><mi>a</mi><mo>≤</mo><mi>h</mi><mo>(</mo><mi>η</mi><mo>)</mo></mtd></mtr></mtable></math>
 
-<math><mi>η</mi></math>는 목적함수와 제약을 결정하는 파라미터들을 모은 것이다. Feasible set은 비어 있지 않고 대칭 Hessian이 <math><mi>H</mi><mo>≻</mo><mn>0</mn></math>라고 가정한다. 이런 각 파라미터 값에서는 primal 최적해가 존재하고 유일하다. Affine 제약이므로 KKT 승수도 존재하지만, 중복 제약 때문에 승수는 유일하지 않을 수 있다.
+<span><math><mi>η</mi></math></span>는 목적함수와 제약을 결정하는 파라미터들을 모은 것이다. Feasible set은 비어 있지 않고 대칭 Hessian이 <math><mi>H</mi><mo>≻</mo><mn>0</mn></math>라고 가정한다. 이런 각 파라미터 값에서는 primal 최적해가 존재하고 유일하다. Affine 제약이므로 KKT 승수도 존재하지만, 중복 제약 때문에 승수는 유일하지 않을 수 있다.
 
 등식 승수를 ν, 비음수 부등식 승수를 λ라고 하고 파라미터 인수를 생략하면 KKT 조건은 다음과 같다.
 
-<math display="block" aria-label="QP KKT equations and inequalities"><mtable columnalign="left"><mtr><mtd><mi>H</mi><msup><mi>a</mi><mo>*</mo></msup><mo>+</mo><mi>c</mi><mo>+</mo><msup><mrow><mi>A</mi></mrow><mo>⊤</mo></msup><msup><mi>ν</mi><mo>*</mo></msup><mo>+</mo><msup><mrow><mi>G</mi></mrow><mo>⊤</mo></msup><msup><mi>λ</mi><mo>*</mo></msup><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>A</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>b</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><msub><msup><mi>λ</mi><mo>*</mo></msup><mi>i</mi></msub><msub><mo>(</mo><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>)</mo><mi>i</mi></msub><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>≤</mo><mn>0</mn><mo>,</mo><msup><mi>λ</mi><mo>*</mo></msup><mo>≥</mo><mn>0</mn></mtd></mtr></mtable></math>
+<math display="block" aria-label="QP KKT equations and inequalities"><mtable columnalign="left"><mtr><mtd><mi>H</mi><msup><mi>a</mi><mo>*</mo></msup><mo>+</mo><mi>c</mi><mo>+</mo><msup><mrow><mi>A</mi></mrow><mo>⊤</mo></msup><msup><mi>ν</mi><mo>*</mo></msup><mo>+</mo><msup><mrow><mi>G</mi></mrow><mo>⊤</mo></msup><msup><mi>λ</mi><mo>*</mo></msup><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>A</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>b</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><msub><msup><mi>λ</mi><mo>*</mo></msup><mi>i</mi></msub><msub><mrow><mo>(</mo><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>)</mo></mrow><mi>i</mi></msub><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>G</mi><msup><mi>a</mi><mo>*</mo></msup><mo>−</mo><mi>h</mi><mo>≤</mo><mn>0</mn><mo>,</mo><msup><mi>λ</mi><mo>*</mo></msup><mo>≥</mo><mn>0</mn></mtd></mtr></mtable></math>
 
 Primal·dual 해를 하나로 모으자.
 
