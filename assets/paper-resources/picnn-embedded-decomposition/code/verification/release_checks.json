@@ -36,5 +36,5 @@
     "obsolete analysis scripts",
     "commercial solver dependencies"
   ],
-  "training_scope": "Short MSE/Huber learning checks and default-size 6/24-stage CLI checks; full 10,000-epoch retraining not performed"
+  "training_scope": "Short MSE/Huber training checks and CLI checks at the default network size for 6/24 stages; no full 10,000-epoch retraining"
 }

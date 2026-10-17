@@ -7,7 +7,7 @@
     "RH2": 12.624649454046503,
     "Proposed": 12.639178066253741,
     "successors": 4,
-    "proposed_source": "Prior five-run 4-successor experiment; lowest observed test mean",
+    "proposed_source": "Lowest test mean among five 4-successor runs",
     "approximate": false
   },
   {
@@ -18,7 +18,7 @@
     "RH2": 12.33490970596099,
     "Proposed": 12.367821142981443,
     "successors": 16,
-    "proposed_source": "Lowest available test mean versus original paper; prior 16-successor experiment, seed 4",
+    "proposed_source": "16-successor experiment, seed 4; lowest available test mean in the comparison with the original paper",
     "approximate": false
   },
   {
@@ -29,7 +29,7 @@
     "RH2": 14.392861773747955,
     "Proposed": 13.88,
     "successors": 1,
-    "proposed_source": "Original paper stage-count figure, approximate digitization rounded to two decimals",
+    "proposed_source": "Approximate value digitized from the paper's stage-count figure, rounded to two decimals",
     "approximate": true
   },
   {
@@ -40,7 +40,7 @@
     "RH2": 13.913760758517824,
     "Proposed": 13.647347736449273,
     "successors": 4,
-    "proposed_source": "New three-run 4-successor experiment; lowest observed test mean; original paper 24-stage/30% reference unavailable",
+    "proposed_source": "Lowest test mean among three 4-successor runs; the paper's 24-stage/30% reference is unavailable",
     "approximate": false
   }
 ]

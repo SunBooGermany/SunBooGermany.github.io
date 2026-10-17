@@ -1,4 +1,4 @@
-"""Single-hidden-layer PICNN used in the paper."""
+"""PICNN with one convex hidden layer and a conditioning network."""
 from pathlib import Path
 import json
 import numpy as np
@@ -46,7 +46,7 @@ class PICNN(nn.Module):
 
 
 def condition(problem, state, exog, weights, alpha=0.0):
-    """Condition fixed observations, leaving an affine map in investment actions."""
+    """Form affine preactivations in investment actions for fixed state and exogenous inputs."""
     c_dim, _ = input_dimensions(problem)
     z = state_action_input(problem,state,exog,[0.,0.,0.])
     c, u = z[:c_dim], z[-2:]
@@ -55,7 +55,7 @@ def condition(problem, state, exog, weights, alpha=0.0):
     wc = (w['U2_Wc_W'] @ hu + w['U2_Wc_b']).reshape(-1,c_dim)
     wy = (w['U2_Wy_W'] @ hu + w['U2_Wy_b']).reshape(-1,3)
     offset = w['U2_g_W'] @ hu + w['U2_g_b'] + wc @ c
-    # Match the source export: softplus is evaluated in PyTorch float32.
+    # Evaluate softplus in float32 to match the archived checkpoints.
     w_out = torch.nn.functional.softplus(torch.as_tensor(weights['raw_w_out'])).numpy()
     return dict(offset=offset.tolist(), Wy=wy.tolist(), w_out=w_out.tolist(), alpha=alpha, bank=[])
 

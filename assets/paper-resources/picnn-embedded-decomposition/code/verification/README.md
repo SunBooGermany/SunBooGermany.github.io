@@ -1,18 +1,22 @@
-# Verification
+# Verification records
 
-## MSE training checks (2026-10-11)
+## MSE training (2026-10-11)
 
-`mse_only_update.json` and `mse_only_tests.log` record nine passing tests of the
-current code. They include numeric MSE verification, default MSE training with
-4/16 successors, checkpoint reload, and rejection of unsupported loss settings.
+[`mse_only_update.json`](mse_only_update.json) and [`mse_only_tests.log`](mse_only_tests.log)
+record nine passing tests covering MSE values, six-epoch training with 4/16 successor
+samples, checkpoint reload, and rejection of unsupported loss settings.
 
-## Numerical and integration checks
+## Model and policy checks
 
-- Seven numerical/integration tests passed.
-- All 1,600 cached source evaluation paths match the source generator.
-- Four fixed PICNN policies were each replayed on all 400 original test paths with HiGHS.
-- Eight SDDP reference cut banks were replayed on three representative paths each.
-- Default 256/64-unit PICNN training, checkpoint selection, reload, and four-policy evaluation ran for both six and 24 stages.
-- New eight- and 27-node SDDP training/evaluation ran in short six- and 24-stage checks.
+[`release_checks.json`](release_checks.json), [`solver_migration.json`](solver_migration.json),
+and [`cli_execution_checks.json`](cli_execution_checks.json) record the earlier checks:
 
-See the JSON records for configurations and measured differences. Full 10,000-epoch retraining was not performed.
+- Seven numerical and integration tests passed.
+- All 1,600 cached evaluation paths matched the source generator.
+- Four fixed PICNN policies were each replayed on 400 test paths with HiGHS.
+- Eight SDDP cut banks were each replayed on three representative paths.
+- Six- and 24-stage PICNN training used the default 256/64-unit network, followed
+  by checkpoint selection, reload, and four-policy evaluation.
+- Short six- and 24-stage runs covered eight- and 27-node SDDP training and evaluation.
+
+Full 10,000-epoch retraining was outside the scope of these checks.

@@ -1,4 +1,4 @@
-"""Replay archived policies with HiGHS and check migration against path costs."""
+"""Compare HiGHS policy replays with archived path costs."""
 from pathlib import Path
 import argparse, csv, json, platform, sys, time
 import numpy as np
@@ -20,7 +20,7 @@ def costs(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--full-picnn',action='store_true',help='Evaluate all 400 paths for each included PICNN policy')
+    parser.add_argument('--full-picnn',action='store_true',help='Replay each included PICNN policy on all 400 test paths')
     parser.add_argument('--out',type=Path,default=ROOT/'verification/solver_migration.json')
     args = parser.parse_args()
     started = time.perf_counter(); results=[]
@@ -60,7 +60,7 @@ def main():
     report = dict(passed=True,python=platform.python_version(),numpy=np.__version__,
         scipy=scipy.__version__,torch=torch.__version__,solver='SciPy HiGHS dual simplex',
         seconds=time.perf_counter()-started,results=results,
-        scope='Fixed archived policies replayed with HiGHS; this is not a new 10,000-epoch training experiment')
+        scope='Fixed-policy replay with HiGHS, without full retraining.')
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(report,indent=2),encoding='utf-8')
     print('PASSED: solver migration',flush=True)

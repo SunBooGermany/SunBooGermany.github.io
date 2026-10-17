@@ -1,4 +1,4 @@
-"""Finite Markov SDDP with node-specific cuts and RHS dual gradients."""
+"""Markov SDDP with per-node cuts and right-hand-side dual gradients."""
 import math, random, time, json
 from pathlib import Path
 import numpy as np
@@ -35,7 +35,7 @@ class SDDP:
                     r=self.solve(t,j,y); beta=r['gradient']
                     alpha=r['objective']-dot(beta,y)-1e-9*(1+abs(r['objective']))
                     cut=(alpha,beta)
-                    # Remove only numerically identical cuts; no cut selection heuristic.
+                    # Discard numerically identical cuts.
                     key=(round(alpha,9),tuple(round(v,9) for v in beta))
                     if not any((round(a,9),tuple(round(v,9) for v in b))==key for a,b in self.cuts[t][j]):
                         self.cuts[t][j].append(cut)
@@ -55,7 +55,7 @@ class SDDP:
 
 
 def load_reference_policy(folder, problem):
-    """Load a numeric reference cut bank for solver-migration verification."""
+    """Load an archived SDDP cut bank for fixed-policy replay."""
     from .nodes import MarkovGrid
     folder = Path(folder)
     metadata = json.loads((folder/'policy.json').read_text(encoding='utf-8'))

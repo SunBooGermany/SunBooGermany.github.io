@@ -1,4 +1,4 @@
-"""Policy evaluation on shared continuous Markov paths."""
+"""Evaluate policies on the same continuous Markov paths."""
 import csv, math
 from pathlib import Path
 import numpy as np

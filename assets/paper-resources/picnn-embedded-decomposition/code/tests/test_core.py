@@ -1,4 +1,4 @@
-"""Numerical checks for the paper model, dual cuts, and PICNN LP embedding."""
+"""Test capacity-planning equations, SDDP dual cuts, and PICNN LP formulations."""
 from copy import deepcopy
 from pathlib import Path
 import json, tempfile, unittest

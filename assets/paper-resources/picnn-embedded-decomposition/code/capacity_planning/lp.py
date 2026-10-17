@@ -1,4 +1,4 @@
-"""Sparse continuous LPs solved with SciPy's bundled open-source HiGHS."""
+"""Sparse linear programs solved with SciPy's HiGHS dual simplex method."""
 import math
 import numpy as np
 from scipy.optimize import linprog

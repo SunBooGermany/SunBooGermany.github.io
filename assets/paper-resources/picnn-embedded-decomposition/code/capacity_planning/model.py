@@ -1,4 +1,4 @@
-"""Physical model, vintage transitions, uncertainty paths, and exact LP embedding."""
+"""LP formulations for capacity planning, vintage transitions, and uncertainty."""
 import math, json, random
 from pathlib import Path
 from .lp import LP, dot, add_coeff
@@ -37,7 +37,7 @@ class Problem:
         return b,ba
 
     def add_stage(self,lp,t,exog,y_const,y_coeff,weight=1.0,label='s',need_deriv=False):
-        """Same capacity, storage, dispatch, and cost equations as _build_operational_block."""
+        """Add capacity, storage, dispatch, and cost equations for one operating stage."""
         c=self.c; H=self.H; d,inv,tax=exog
         action=[lp.var(label+'_a'+str(i),weight*ic*scale) for i,(ic,scale) in enumerate(
             [(c['IC_B'][t],inv),(c['IC_P'][t],inv),(c['IC_NGCCS'][t],1.0)])]

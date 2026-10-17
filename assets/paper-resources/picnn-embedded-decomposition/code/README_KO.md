@@ -1,13 +1,15 @@
-# PICNN 논문 공개용 코드
+# 다단계 설비계획을 위한 PICNN 코드
 
-논문과 SI에서 사용한 PICNN, myopic, omniscient, 2-period RH, 고정 8·27노드
-Markov-chain SDDP를 실행하는 코드입니다. SciPy에 포함된 오픈소스 HiGHS
-solver를 사용합니다. 6일치(144시간) solar·수요 데이터는
+논문과 보충자료(SI)의 PICNN을 학습하고 myopic, omniscient,
+2-period rolling horizon(RH), 8·27노드 Markov-chain SDDP와 비교합니다. 최적화에는 SciPy의
+HiGHS dual simplex solver를 사용하며, 6일치(144시간) 태양광·수요 데이터는
 `data/renewables_demand_6days.csv`에 포함되어 있습니다.
 
-## 설치 및 간단한 실행
+[English](README.md)
 
-Python 3.10 이상을 사용하고 이 폴더에서 실행하십시오.
+## 설치와 평가
+
+Python 3.10 이상에서 이 폴더를 기준으로 실행합니다.
 
 ```bash
 python -m venv .venv
@@ -19,7 +21,9 @@ python -m capacity_planning evaluate --stages 6 --uncertainty 0.1 --test-count 1
 python scripts/reproduce_table10.py
 ```
 
-결과는 각 경로의 NPC와 평균·표준편차·최대값을 담은 CSV/JSON으로 저장합니다.
+평가 결과는 경로별 순현재비용(NPC)과 평균·표준편차·최대값을 담은 CSV/JSON으로
+저장합니다. 비용 단위는 논문과 같습니다. `reproduce_table10.py`는 저장된 경로별
+결과로 SI Table 10을 재구성합니다.
 
 ## PICNN 학습
 
@@ -32,50 +36,83 @@ python -m capacity_planning train --stages 6 --uncertainty 0.1 --successors 4 --
 python -m capacity_planning evaluate --stages 6 --uncertainty 0.1 --methods proposed --policy outputs/training/selected_policy --out outputs/evaluation
 ```
 
-stage는 6·12·18·24개, successor는 1·4·16개를 지원합니다. PICNN 학습은
-MSE 손실을 사용합니다. 구조는 은닉층
-256개 노드, conditioning network 64개 노드입니다. replay, target network,
-feasible exploration, continuation 비중 증가, 마지막 단계까지 적용하는
-multi-successor 평균을 사용합니다. validation은 seed 400-799, 기본 test는
-seed 0-399입니다. 추가 test는 예를 들어 `--test-start 10000 --test-count 2000`으로
-실행할 수 있습니다.
+`--stages`는 6·12·18·24단계, `--successors`는 후속 표본 1·4·16개를 지원합니다.
+짧은 실행 예시는 동작 확인용이며, 논문의 학습은 10,000 epoch 동안 epoch마다
+한 경로를 사용합니다. 손실함수는 MSE입니다.
 
-## Benchmark 실행
+PICNN은 256개 노드의 볼록 은닉층, 64개 노드의 conditioning network,
+비음수 출력 가중치를 사용합니다. 학습에는 replay, 실행 가능한 의사결정 탐색,
+후속 비용 가중치의 점진적 증가, target network 갱신을 적용하며, 마지막 단계의
+학습 목표도 후속 표본들의 평균으로 계산합니다.
+
+기본 검증은 seed 400-799를 50/50/300경로로 나누어 정책을 선택하고,
+기본 평가는 seed 0-399를 사용합니다. 선택한 정책을 추가 경로에서 평가하려면
+`--test-start 10000 --test-count 2000`을 지정합니다.
+
+## SDDP와 비교 정책
 
 ```bash
 python -m capacity_planning benchmark --stages 6 --uncertainty 0.1 --nodes 8 27 --seeds 17 23 29 --iterations 100 --out outputs/benchmarks
 python -m capacity_planning benchmark --stages 24 --uncertainty 0.3 --nodes 8 27 --seeds 17 23 29 --iterations 100 --out outputs/benchmarks_24
 ```
 
-SDDP의 8노드는 각 배율의 평균 ±1 표준편차를 누적한 값들의 조합이고,
-27노드는 단계별 주변분포 중앙값을 추가한 조합입니다. 현재 관측 상태에 따른
-조건부 전이확률을 사용합니다. SI 네 가지 경우의 노드와 조건부 표본 기반
-전이확률은 cache로 제공합니다. RH는 현재와 다음 단계의 조건부 평균을 사용하여
-두 단계를 함께 최적화하고, 현재 의사결정만 실행한 뒤 다시 최적화합니다.
+SDDP의 8노드 격자는 각 배율의 평균 ±1 표준편차로 만든 누적 경로를 조합하며,
+27노드 격자는 단계별 주변분포 중앙값을 추가합니다. 노드별 cut과 현재 관측에
+조건부인 전이확률로 Markov 의존성을 반영합니다. 현재 의사결정에는 실현된
+후속 관측을 사용하지 않습니다.
 
-모든 stage 수에서 총 계획기간은 30년입니다. 144시간 운영자료는 8760/144의
-가중치로 연간 환산합니다. 당기 투자 설비는 당기 운영에 사용할 수 있습니다.
+전이확률 추정에는 2,048개, 중앙값 추정에는 65,536개의 독립 표본을 사용합니다.
+SI의 네 가지 경우는 격자와 조건부 표본을 함께 제공하며, 그 밖의 지원 조건은
+독립적으로 생성합니다. SDDP는 지정한 반복 횟수만큼 학습하고 각 학습 seed의
+결과를 저장합니다.
 
-## 포함된 정책과 재현 범위
+RH는 다음 단계의 조건부 평균을 사용해 현재와 다음 단계를 함께 최적화하고,
+현재 의사결정만 실행한 뒤 다음 관측에서 다시 풉니다. 두 단계 이후의 후속
+비용은 0으로 둡니다. Myopic은 현재 단계만 최적화합니다. Omniscient는 전체
+실현 경로를 미리 알고 푸는 비교 기준이므로 실제 운영 정책으로 사용할 수 없습니다.
 
-저장된 정책은 `.npz` 형식으로 제공합니다. SI의 6-stage/10% Proposed는
-seed 0이며, 추가 경로 분석에 사용한 validation 선택 정책 seed 4도 별도로
-포함했습니다. SI Proposed 값의 successor 수는 행 순서대로 4·16·1·4입니다.
-SDDP는 세 training seed의 평균입니다. 24-stage/10% Proposed는 원고 그림에서
-얻은 근삿값입니다. 해당 checkpoint는 포함되지 않았으며, 이 값은 코드를
-재실행한 결과가 아닙니다.
+## 모델 조건
 
-저장된 6-stage 추가 실험 정책 일부는 Huber 손실로 학습되었으며,
-24-stage/30% 정책은 MSE를 사용했습니다.
+총 계획기간은 단계 수와 관계없이 30년입니다. 5년 기준 불확실성 모멘트를
+단계 간격에 맞게 변환한 뒤 배율의 상·하한을 적용하고, 144시간 운영자료는
+8760/144의 가중치로 연간 환산합니다. 당기 투자 설비는 당기 운영에 사용할 수
+있으며, 설비 수명 구간은 다음 단계로 넘어갈 때 이동합니다. NGCC 투자비에는
+재생에너지 투자비의 불확실성 배율을 적용하지 않습니다.
 
-저장된 결과는 당시 사용한 solver와 학습 설정에서 얻은 값입니다. HiGHS는
-퇴화 LP에서 다른 의사결정이나 쌍대해를 선택할 수 있으며, 재학습한 정책도
-저장된 정책과 달라질 수 있습니다. solver 변경 검증은 저장된 정책을 고정한
-상태에서 수행했습니다. 검증 결과와 범위는 `verification/`에 기록했습니다.
+## 저장된 정책과 결과
+
+`reference_results/`에는 SI 네 가지 경우의 SDDP·PICNN 비용과 표의 출처가,
+`reference_policies/`에는 PICNN의 NumPy 체크포인트와 설정별 SDDP cut이 있습니다.
+6단계·10% SI 정책은 seed 0, 추가 경로 분석의 검증 선택 정책은 seed 4입니다.
+24단계·30% 정책도 포함되어 있습니다.
+
+SI의 Proposed 열은 이용 가능한 실행 중 테스트 평균 비용이 가장 낮은 결과를
+사용하며, 후속 표본 수는 행 순서대로 4·16·1·4입니다. SDDP 열은 학습 seed
+17·23·29의 평균입니다. 24단계·10% Proposed 값은 원고 그림에서 읽은 근삿값으로,
+대응하는 체크포인트는 포함되지 않았으며 코드를 다시 실행해 얻은 값이 아닙니다.
+저장된 6단계 추가 실험 정책은 Huber 손실, 24단계·30% 정책은 MSE로 학습되었습니다.
+
+저장된 비용은 당시 solver와 학습 설정에서 얻은 결과입니다. HiGHS는 퇴화 LP에서
+다른 의사결정이나 쌍대해를 선택할 수 있고, 재학습한 정책도 저장된 정책과 달라질
+수 있습니다. 고정 정책 재평가와 짧은 학습의 검증 범위는 [검증 기록](verification/README.md)에
+정리되어 있습니다. 전체 10,000 epoch 재학습은 이 검증에 포함되지 않았습니다.
 
 ```bash
 python -m unittest discover -s tests -v
 python scripts/check_release.py --full-picnn
 ```
 
-상세 설명은 영문 `README.md`를 참조하십시오.
+## 파일 구성
+
+| 경로 | 내용 |
+|---|---|
+| `capacity_planning/config.py`, `data/` | 모델 파라미터, 6일 데이터, SDDP 격자 |
+| `capacity_planning/lp.py`, `model.py` | HiGHS LP와 설비계획 모델 |
+| `capacity_planning/picnn.py`, `training.py` | PICNN 학습과 체크포인트 선택 |
+| `capacity_planning/nodes.py`, `sddp.py` | Markov 격자와 SDDP |
+| `capacity_planning/policies.py` | 동일 경로에서의 정책 평가 |
+| `scripts/reproduce_table10.py` | SI Table 10 재구성 |
+| `scripts/check_release.py`, `tests/` | 고정 정책 재평가와 수치 검증 |
+| `verification/` | 검증 설정과 결과 |
+
+Solver 문서: [SciPy HiGHS](https://docs.scipy.org/doc/scipy/reference/optimize.linprog-highs.html).

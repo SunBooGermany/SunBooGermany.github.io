@@ -11,5 +11,5 @@
   "numpy": "2.5.4",
   "scipy": "1.18.1",
   "torch": "2.14.1+cpu",
-  "scope": "Nine numerical and integration tests, including six-epoch MSE training with 4/16 successors. Archived policies and historical Huber metadata were preserved; full retraining was not performed."
+  "scope": "Nine numerical and integration tests, including six-epoch MSE training with 4/16 successors and checkpoint reload; no full retraining."
 }

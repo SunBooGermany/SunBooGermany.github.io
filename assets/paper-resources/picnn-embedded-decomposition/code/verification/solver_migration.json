@@ -80,5 +80,5 @@
       "max_path_difference": 3.552713678800501e-15
     }
   ],
-  "scope": "Fixed archived policies replayed with HiGHS; this is not a new 10,000-epoch training experiment"
+  "scope": "Fixed-policy replay with HiGHS, without full retraining."
 }

@@ -1,4 +1,4 @@
-"""Paper parameters and bundled 144-hour renewable/demand profiles."""
+"""Model parameters and six-day (144-hour) solar and demand data."""
 from pathlib import Path
 import csv, json, math
 DATA = Path(__file__).resolve().parent.parent / 'data'

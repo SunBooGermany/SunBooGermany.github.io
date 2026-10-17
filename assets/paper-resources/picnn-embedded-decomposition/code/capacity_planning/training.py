@@ -1,4 +1,4 @@
-"""Replay regression, conditional multi-successor backups, and target networks."""
+"""Train PICNN continuation values with replay and multi-successor targets."""
 from collections import deque
 from copy import deepcopy
 from pathlib import Path
@@ -41,7 +41,7 @@ def explore(problem,t,state,observed,greedy,std,rng):
 
 
 def fit(net, samples, settings):
-    """Use a fresh Adam optimizer for each replay fit, as in the source."""
+    """Fit replay samples with a newly initialized Adam optimizer."""
     if len(samples)<5:
         return None
     z = torch.tensor(np.stack([item[0] for item in samples]),dtype=torch.float32)
@@ -111,7 +111,7 @@ def train(problem, output, seed=0, **overrides):
                     child = sample_next(problem,parent,child_rngs)
                     child_payload = condition(problem,base_state,child,frozen[t+2],settings['alpha']) if t<problem.T-1 else None
                     values.append(problem.stage(t,base_state,child,picnn=child_payload,q_alpha=q_weight)['objective'])
-                # Terminal-stage targets are averaged over successors too.
+                # Average terminal-stage targets over the sampled successors.
                 replay[t+1].append((previous_z,float(np.mean(values))))
             action = greedy['action']
             if action_rng.random()<epsilon and std>0:
@@ -148,7 +148,7 @@ def train(problem, output, seed=0, **overrides):
 
 
 def select_checkpoint(problem, checkpoints, settings, output):
-    """50/50/300 disjoint validation paths and the original progressive pruning."""
+    """Select a checkpoint in three disjoint validation rounds (default: 50/50/300 paths)."""
     counts = settings['validation_rounds']
     if len(counts)!=3 or any(n<1 for n in counts) or settings['validation_start']<400:
         raise ValueError('Use three positive validation rounds on seeds starting at >=400')

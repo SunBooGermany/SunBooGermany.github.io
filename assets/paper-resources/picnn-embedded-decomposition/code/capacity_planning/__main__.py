@@ -1,4 +1,4 @@
-"""Portable command-line entry point. Run python -m capacity_planning --help."""
+"""Train and evaluate PICNN capacity-planning policies and compare them with SDDP and rolling horizon."""
 import argparse, json
 from pathlib import Path
 from .config import make_config
@@ -17,7 +17,7 @@ def main():
     for command in ['train','evaluate','benchmark']:
         p = sub.add_parser(command)
         p.add_argument('--stages',type=int,choices=[6,12,18,24],default=6)
-        p.add_argument('--uncertainty',type=float,default=.1,help='5-year Gaussian multiplier SD')
+        p.add_argument('--uncertainty',type=float,default=.1,help='Standard deviation of the five-year Gaussian multipliers')
         p.add_argument('--out',type=Path,required=True)
         if command in ['evaluate','benchmark']:
             p.add_argument('--test-start',type=int,default=0)
@@ -26,7 +26,7 @@ def main():
             p.add_argument('--seed',type=int,default=0)
             p.add_argument('--epochs',type=int,default=10000)
             p.add_argument('--successors',type=int,choices=[1,4,16],default=4)
-            p.add_argument('--loss',choices=['mse'],default='mse',help='PICNN regression uses MSE only')
+            p.add_argument('--loss',choices=['mse'],default='mse',help='Regression loss')
             p.add_argument('--validation-rounds',type=int,nargs=3,default=[50,50,300])
         elif command == 'evaluate':
             p.add_argument('--methods',nargs='+',choices=['myopic','omniscient','rh','proposed'],default=['myopic','omniscient','rh'])

@@ -1,1 +1,1 @@
-"""PICNN multistage capacity-planning study."""
+"""PICNN continuation models for multistage capacity planning."""

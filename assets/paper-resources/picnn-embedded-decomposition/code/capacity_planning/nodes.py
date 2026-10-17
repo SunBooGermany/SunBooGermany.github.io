@@ -1,4 +1,4 @@
-"""Fixed cumulative 8/27-node grids and observation-conditioned transitions."""
+"""Fixed 8/27-node Markov grids with observation-conditioned transitions."""
 from pathlib import Path
 import hashlib, itertools, json, math, random
 import numpy as np
@@ -65,7 +65,7 @@ class MarkovGrid:
 
     def observed_row(self,problem,t,observed,path_seed):
         if str(path_seed) in self.observed_counts:
-            # Cached rows were generated from the current observation, never its realized successor.
+            # Transition rows condition on the current observation.
             return [count/self.transition_samples for count in self.observed_counts[str(path_seed)][t]]
         domain = 'cumulative_sigma8_observed_v1' if self.nodes==8 else 'fixed27_observed_v1'
         return self.sample_row(problem,t,observed,domain,[830026,round(100*self.uncertainty),path_seed,t])

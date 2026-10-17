@@ -46,7 +46,7 @@
           "max_NPC": 10.864535088042388
         }
       },
-      "scope": "Short execution check, not a replacement for paper experiments"
+      "scope": "Short execution check."
     },
     {
       "command": "benchmark",
@@ -93,7 +93,7 @@
           "max_NPC": 11.116955040973945
         }
       },
-      "scope": "Short execution check, not a replacement for paper experiments"
+      "scope": "Short execution check."
     },
     {
       "command": "train_then_evaluate",
@@ -130,7 +130,7 @@
           "max_NPC": 12.285098788622106
         }
       },
-      "scope": "Short execution check, not a replacement for paper experiments"
+      "scope": "Short execution check."
     },
     {
       "command": "train_then_evaluate",
@@ -167,7 +167,7 @@
           "max_NPC": 11.116955040973945
         }
       },
-      "scope": "Short execution check, not a replacement for paper experiments"
+      "scope": "Short execution check."
     }
   ]
 }

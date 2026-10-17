@@ -1,4 +1,4 @@
-"""Rebuild the SI table from original per-path CSVs; no test-based retuning."""
+"""Rebuild SI Table 10 from archived per-path costs."""
 from pathlib import Path
 import csv, json, sys
 import numpy as np
