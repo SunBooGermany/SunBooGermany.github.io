@@ -7,6 +7,15 @@ simplex solver. The six-day (144-hour) solar and demand profiles are in
 
 [한국어](README_KO.md)
 
+## License
+
+Copyright (c) 2026 Sunwoo Kim. Use, copying, modification, and sharing are permitted
+solely for noncommercial research. Commercial use, including internal business
+R&D, paid consulting, and commercial product or service development, requires
+prior written permission from Sunwoo Kim. Redistributions must retain the copyright
+notice and the same terms. Third-party libraries and data retain their own terms.
+See the [full license](LICENSE.md).
+
 ## Install and evaluate
 
 Use Python 3.10 or newer and run these commands from this directory.
