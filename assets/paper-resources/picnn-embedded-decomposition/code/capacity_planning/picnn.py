@@ -1,4 +1,4 @@
-"""Single-hidden-layer PICNN used in the paper; no ensembles or skip banks."""
+"""Single-hidden-layer PICNN used in the paper."""
 from pathlib import Path
 import json
 import numpy as np

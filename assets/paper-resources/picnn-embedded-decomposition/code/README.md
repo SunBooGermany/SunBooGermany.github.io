@@ -1,10 +1,8 @@
 # PICNN continuation learning for multistage capacity planning
 
-Portable code for the paper and its revision benchmarks. All optimization uses
-the open-source **HiGHS** dual simplex solver bundled with SciPy. The repository
-contains the actual **144-hour / six-day solar and demand profiles**, so no Excel
-workbook, local data path, commercial solver, or separate solver installation is
-required.
+Code for the paper and its revision benchmarks. Optimization uses the open-source
+HiGHS dual simplex solver included in SciPy. The six-day (144-hour) solar and demand
+profiles are included in `data/renewables_demand_6days.csv`.
 
 ## Install and run
 
@@ -45,10 +43,10 @@ python -m capacity_planning evaluate --stages 6 --uncertainty 0.1 --test-start 1
 ```
 
 `--stages` supports 6, 12, 18, and 24; `--successors` supports 1, 4, and 16.
-New PICNN training uses MSE regression exclusively; Huber training has been removed.
+PICNN training uses MSE regression.
 The network has one 256-unit convex hidden layer,
-a 64-unit conditioning network, nonnegative output weights, and no affine skip
-bank. Training retains replay, feasible action exploration, continuation-weight
+a 64-unit conditioning network, and nonnegative output weights.
+Training uses replay, feasible action exploration, continuation-weight
 annealing, target-network updates, and terminal-stage successor averaging.
 Checkpoint selection uses disjoint validation seeds 400–799 in progressive
 50/50/300-path rounds. Default test paths use seeds 0–399.
@@ -76,39 +74,35 @@ reoptimizes after the next observation. Continuation beyond this two-stage windo
 is zero. Myopic uses only the current stage. Omniscient solves the entire realized
 path with perfect information and is not an implementable policy.
 
-The annual planning horizon is 30 years for every stage count. Stage interval,
-discount, investment costs, and vintage bucket counts match the confirmed 0510
-source. Five-year uncertainty moments are converted to the stage interval before
+The planning horizon is 30 years for every stage count.
+Five-year uncertainty moments are converted to the stage interval before
 clipping. The 144-hour operating window is annualized with the original 8760/144
 weight. New capacity is available in the current stage; vintage shifts occur at
 the stage transition. The NGCC investment cost is not multiplied by the uncertain
-renewable investment-cost scale, matching the source.
+renewable investment-cost scale.
 
 ## Included reference results
 
 `reference_results/` contains all declared SDDP runs used for the four-case SI
 table, the relevant PICNN run costs, and the table's provenance. `reference_policies/`
-contains safe numeric NumPy checkpoints for the reported six-stage PICNN policies,
-the new 24-stage/30% policy, and the six-stage validation-selected policy used for
+contains NumPy checkpoints for the reported six-stage PICNN policies,
+the 24-stage/30% policy, and the six-stage validation-selected policy used for
 additional-path analysis. The latter is seed 4; the SI six-stage/10% table policy
 is seed 0. One archived SDDP cut bank per configuration is supplied for solver
-migration checks. Individual files stay below GitHub's 100 MB file limit.
+migration checks.
 
 The SI Proposed column uses the lowest observed cost among the available runs,
 with successor counts 4, 16, 1, and 4 in row order; SDDP columns average seeds
 17, 23, and 29. The 24-stage/10% Proposed value is an approximate reference from
-the manuscript figure: its original checkpoint is unavailable here, and it is
-not presented as a locally reproduced run. The archived six-stage additional
-policies were originally trained with Huber regression; their checkpoints and
-results retain that historical provenance. The new 24-stage/30% policy used MSE.
-All fresh training with the released main code uses MSE.
+the manuscript figure. Its checkpoint is not included, and the value is not a
+reproduced run. The archived six-stage additional policies were trained with
+Huber regression; the 24-stage/30% policy used MSE.
 
 Archived results preserve their original solver and training history. HiGHS can
-choose different actions or dual solutions in degenerate LPs. Fresh training also
-seeds PyTorch explicitly and omits the removed monitoring operations; it is not
-expected to reproduce an archived best run bit for bit. The supplied migration
-check compares the fixed archived policies, independently of retraining. The
-release verification does not constitute rerunning every 10,000-epoch experiment.
+choose different actions or dual solutions in degenerate LPs. Retraining can also
+produce different policies from the archived runs. The supplied migration check
+compares fixed archived policies. Verification results and scope are recorded in
+`verification/`.
 
 ## Files
 
@@ -121,12 +115,6 @@ release verification does not constitute rerunning every 10,000-epoch experiment
 | `capacity_planning/policies.py` | Shared-path policy evaluation |
 | `scripts/reproduce_table10.py` | Rebuild the supplementary comparison table |
 | `scripts/check_release.py`, `tests/` | Numerical verification |
-| `verification/` | Results of checks actually performed for this release |
-
-No ensemble, network diagnostics, Excel import/export, solver RPC server, or
-machine-specific path is needed by the released code. Revision documents are in
-the separate `revision_documents/` folder of the full delivery archive; upload
-only this `github_code/` directory when publishing the repository. A software
-license has not been assigned by this packaging operation.
+| `verification/` | Verification results |
 
 Solver interface: [SciPy HiGHS documentation](https://docs.scipy.org/doc/scipy/reference/optimize.linprog-highs.html).
