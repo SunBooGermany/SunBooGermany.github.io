@@ -1,3 +1,9 @@
+---
+layout: default
+title: "Research-Only Noncommercial License"
+permalink: /assets/paper-resources/picnn-embedded-decomposition/code/LICENSE/
+---
+
 # Research-Only Noncommercial License
 
 Version 1.0, 2026-10-17
