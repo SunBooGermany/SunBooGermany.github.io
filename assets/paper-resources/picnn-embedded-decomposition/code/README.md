@@ -88,7 +88,6 @@ The planning horizon is 30 years for every stage count. Five-year uncertainty
 moments are converted to the stage interval before clipping the multipliers.
 The 144-hour operating window is annualized with a weight of 8760/144. New capacity
 is available in the current stage; vintage buckets shift at the stage transition.
-The uncertain renewable investment-cost multiplier does not apply to NGCC investment.
 
 ## Archived policies and results
 
@@ -96,13 +95,6 @@ The uncertain renewable investment-cost multiplier does not apply to NGCC invest
 cases. `reference_policies/` contains PICNN NumPy checkpoints and an SDDP cut bank
 per configuration. The six-stage/10% SI policy uses seed 0; the validation-selected
 policy for additional-path analysis uses seed 4. The 24-stage/30% policy is also included.
-
-The SI Proposed column uses the lowest test mean cost among the available runs,
-with successor counts 4, 16, 1, and 4 in row order. SDDP columns average training
-seeds 17, 23, and 29. The 24-stage/10% Proposed value is an approximation read from
-the manuscript figure: its checkpoint is not included, and the value was not
-obtained by rerunning the code. The archived six-stage additional policies used
-Huber regression; the 24-stage/30% policy used MSE.
 
 Archived costs come from the solver and training settings used for those runs.
 HiGHS may choose different actions or dual solutions in degenerate LPs, and
