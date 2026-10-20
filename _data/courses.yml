@@ -49,8 +49,9 @@
       topics_ko: "Residual loss, 자동미분, hard 선형 등식 projection, KKT 유도, rank 가정과 남은 제약 위반."
       deliverable: "An MLP/soft-physics/hard-equality comparison separating accuracy from physical consistency."
       deliverable_ko: "정확도와 물리적 일관성을 구분한 MLP·soft physics·hard 등식 모델 비교."
-      reading: "Raissi et al., residual-loss formulation; Chen et al., Section 3 and selected process cases."
-      reading_ko: "Raissi et al.의 residual-loss formulation; Chen et al. 3절과 선정 공정 사례."
+      reading: "Week 4 reading companion; Raissi et al., residual-loss formulation; Chen et al., Section 3 and selected process cases."
+      reading_ko: "4주차 직접 제공 읽기자료; Raissi et al.의 residual-loss formulation; Chen et al. 3절과 선정 공정 사례."
+      url: /courses/surrogate-models/week-04/
     - number: 5
       title: "From a Predictor to an Optimization Formulation"
       title_ko: "예측 모델을 최적화 문제에 넣기"
