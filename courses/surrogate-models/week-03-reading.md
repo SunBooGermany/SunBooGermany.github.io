@@ -6,7 +6,7 @@ description: "Balance derivations, interval solutions, evaluation code, error pr
 description_ko: "수지 유도, 구간 해, 평가 코드, 오차 전달식과 계산 연습을 제공합니다."
 material_label: "Week 3 Reading"
 material_label_ko: "3주차 읽기자료"
-updated: "2026-10-09"
+updated: "2026-10-20"
 permalink: /courses/surrogate-models/week-03-reading/
 pdf_en: /assets/courses/surrogate-models/week-03-reading-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-03-reading-ko.pdf
@@ -16,13 +16,13 @@ lecture_note: /courses/surrogate-models/week-03/
 
 ## Predict a trajectory from one starting point
 
-The core task is to approximate F_Δt: current concentration and a held interval input → next concentration. Given c₀ and T₀,…,T₁₄₉, recursively compute 150 future states.
+Approximate F_Δt, which maps current concentration and a held interval input to next concentration. Given c₀ and T₀,…,T₁₄₉, recursively compute 150 future states.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>c</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 Fix Δt = 0.2 min, τ and C_Af within each trajectory. T changes between intervals. The ideal mixed state contains all three species; thermal dynamics are omitted.
 
-Work through the balances, interval solution, data construction, and two evaluation loops before the optional sequence models.
+Required work covers the balances, interval solution, data construction, and both evaluation loops. Sequence models are optional.
 
 <!-- lecture-page -->
 
@@ -56,7 +56,7 @@ At 330 K, τ = 5 min and feed = 1.2 mol/L, a = 1/τ + k₁ = 0.4 and b = 1/τ + 
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>1</mn></mrow></msub><mo>=</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>+</mo><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>a</mi><mi>Δt</mi></mrow></msup></mrow></mtd></mtr><mtr><mtd><mrow><msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mn>1</mn></mrow></msub><mo>=</mo><msup><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>+</mo><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>b</mi><mi>Δt</mi></mrow></msup><mo>+</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><mfrac><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>a</mi><mi>Δt</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>b</mi><mi>Δt</mi></mrow></msup></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-C_C,1 = S₁ − C_A,1 − C_B,1. This gives **[1.153870, 0.045672, 0.000458] mol/L**.
+C_C,1 = S₁ − C_A,1 − C_B,1. This gives [1.153870, 0.045672, 0.000458] mol/L.
 
 Forward Euler gives [1.152, 0.048, 0]. It differs because the rates change during the interval. When a = b, the fraction’s limit is Δt exp(−aΔt).
 
@@ -122,54 +122,54 @@ A multi-step loss begins at a reference state, then feeds predicted states forwa
 
 Gradients pass through every unrolled transition. This can expose the model to its own states during training, but increases memory and may make training harder. Construct windows inside train trajectories only; choose H with validation trajectories.
 
-The stored core experiment uses one-step training. A multi-step comparison is an extension to run, not an extra reported result.
+The supplied results use one-step training. Compare multi-step training performance in the extension exercise.
 
 <!-- lecture-page -->
 
 ## Exercises with short answer checks
 
-1. **Why 151 states?** A 30 min horizon has 150 intervals of 0.2 min, plus its initial state.
-2. **How many parameters?** 224 + 1056 + 99 = 1379.
-3. **What if S₀ ≠ feed?** The reference sum evolves as feed + (S₀−feed)exp(−t/τ); a constant-sum check would be wrong.
-4. **Error at h = 10 in the scalar example?** 0.001(1−0.9¹⁰)/0.1 ≈ 0.006513.
-5. **Can we run the model at Δt = 1 min by changing a variable?** Its learned output still represents 0.2 min. Apply five steps or train a map for the new interval.
-6. **What if a reference state is injected halfway through rollout?** That is a forecast reset; report the reset times and evaluate the resulting protocol separately.
+1. Why 151 states? A 30 min horizon has 150 intervals of 0.2 min, plus its initial state.
+2. How many parameters? 224 + 1056 + 99 = 1379.
+3. What if S₀ ≠ feed? The reference sum evolves as feed + (S₀−feed)exp(−t/τ); a constant-sum check would be wrong.
+4. Error at h = 10 in the scalar example? 0.001(1−0.9¹⁰)/0.1 ≈ 0.006513.
+5. Can we run the model at Δt = 1 min by changing a variable? Its learned output still represents 0.2 min. Apply five steps or train a map for the new interval.
+6. What if a reference state is injected halfway through rollout? That is a forecast reset; report the reset times and evaluate the resulting protocol separately.
 
 <!-- lecture-page -->
 
 ## Optional sequence models and original sources
 
-With incomplete observations, an RNN/LSTM hidden state can summarize available history. An encoder–decoder can convert observed history into a future sequence conditioned on the prescribed controls. Keep future measurements out of the encoder.
+With incomplete observations, an RNN/LSTM hidden state can summarize available history. An encoder-decoder can convert observed history into a future sequence conditioned on the prescribed controls. Keep future measurements out of the encoder.
 
-- Sutskever, Vinyals & Le (2014), [Sections 1–2](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding and decoding. Their model is for translation.
+- Sutskever, Vinyals & Le (2014), [Sections 1-2](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding and decoding. Their model is for translation.
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html) and [LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): recurrent updates, inputs, hidden states, and outputs.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): an alternative implementation of exp(MΔt).
 
-The CSTR derivations and worked exercises here are original course materials.
+
 
 <!-- ko -->
 
 ## 한 시작점에서 궤적 예측하기
 
-핵심 과제는 F_Δt를 근사하는 것이다. 현재 농도와 구간 동안 일정한 입력에서 다음 농도를 예측한다. c₀와 T₀,…,T₁₄₉가 주어지면 미래 상태 150개를 반복 계산한다.
+현재 농도와 구간 동안 일정한 입력에서 다음 농도를 예측하는 F_Δt를 근사합니다. c₀와 T₀,…,T₁₄₉가 주어지면 미래 상태 150개를 반복 계산합니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>c</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-Δt = 0.2 min, 궤적 내 τ·C_Af는 고정한다. T는 구간 사이에서 바뀐다. 이상적 혼합 상태는 세 성분 농도를 모두 포함하며 열적 동특성은 생략한다.
+Δt = 0.2 min이며 궤적 안에서는 τ·C_Af를 고정하고 구간 사이에서 T를 바꿉니다. 이상적인 혼합 상태에 세 성분 농도를 모두 포함하며 열적 동특성은 생략합니다.
 
-수지·구간 해·데이터 구성·두 평가 반복문을 먼저 계산하고, sequence 모델은 선택 내용으로 읽는다.
+필수 범위는 수지·구간 해·데이터 구성과 두 평가 반복문의 계산입니다. Sequence 모델은 선택 내용으로 다룹니다.
 
 <!-- lecture-page -->
 
 ## 농도 수지 유도
 
-부피 V와 유량 Q가 일정하면 τ = V/Q다. 각 성분의 보유량 수지를 V로 나눈다. A가 C_Af로 들어오고 B로 반응하며, B는 C로 반응한다.
+부피 V와 유량 Q가 일정하면 τ = V/Q입니다. A가 농도 C_Af로 유입되어 B로 반응하고 B는 C로 반응하므로, 각 성분의 보유량 수지를 V로 나누어 농도 수지를 구합니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>Af</mi></mrow></msub><mo>−</mo><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-세 식을 더하면 반응 항이 상쇄되어 dS/dt = (C_Af − S)/τ다. 유입 농도가 고정이면 S(t) = C_Af + [S(0) − C_Af] exp(−t/τ)다.
+세 식을 더하면 반응 항이 상쇄되어 dS/dt = (C_Af − S)/τ를 얻습니다. 유입 농도가 고정이면 S(t) = C_Af + [S(0) − C_Af] exp(−t/τ)입니다.
 
-S(0) = C_Af이면 합이 일정하다. 초기 합이 다르면 유입 농도로 점차 다가간다.
+S(0) = C_Af이면 합이 일정하게 유지되며, 초기 합이 다르면 유입 농도에 점차 접근합니다.
 
 <!-- lecture-page -->
 
@@ -177,29 +177,29 @@ S(0) = C_Af이면 합이 일정하다. 초기 합이 다르면 유입 농도로 
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><mi>c</mi></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mi>M</mi><mi>c</mi><mo>+</mo><mi>b</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>M</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><mo>−</mo><mn>1</mn><mo>/</mo><mi>τ</mi><mo>−</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><mn>0</mn></mrow></mtd><mtd><mrow><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><mo>−</mo><mn>1</mn><mo>/</mo><mi>τ</mi><mo>−</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub></mrow></mtd><mtd><mrow><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn></mrow></mtd><mtd><mrow><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub></mrow></mtd><mtd><mrow><mo>−</mo><mn>1</mn><mo>/</mo><mi>τ</mi></mrow></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mtext>  </mtext><mi>b</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><msub><mi>C</mi><mrow><mi>Af</mi></mrow></msub><mo>/</mo><mi>τ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn></mrow></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-Mc∗ + b = 0인 c∗를 이용해 z = c − c∗로 두면 dz/dt = Mz다. 구간 입력이 고정이면 z(t+Δt) = exp(MΔt)z(t)다.
+Mc∗ + b = 0인 c∗를 사용해 z = c − c∗로 놓으면 dz/dt = Mz입니다. 구간 입력이 고정이면 z(t+Δt) = exp(MΔt)z(t)를 얻습니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><mi>c</mi><mo>,</mo><mi>u</mi><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>=</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>+</mo><msup><mi>e</mi><mrow><mi>M</mi><mi>Δt</mi></mrow></msup><mrow><mo>(</mo><mi>c</mi><mo>−</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-경계에서 T가 바뀌어도 같은 식을 쓸 수 있다. 경계 상태는 유지하고 다음 구간의 M과 c∗를 새로 계산한다.
+구간 경계에서 T가 바뀌어도 경계 상태를 유지한 채 다음 구간의 M과 c∗를 새로 계산하면 같은 식을 사용할 수 있습니다.
 
 <!-- lecture-page -->
 
 ## 첫 전이 손 계산
 
-330 K, τ = 5 min, feed = 1.2 mol/L이면 a = 1/τ + k₁ = 0.4, b = 1/τ + k₂ = 0.3 min⁻¹다. 정상 조성은 c∗ = [0.6, 0.4, 0.2] mol/L다. Δt = 0.2 min, c₀ = [1.2, 0, 0]이면:
+330 K, τ = 5 min, feed = 1.2 mol/L에서 a = 1/τ + k₁ = 0.4, b = 1/τ + k₂ = 0.3 min⁻¹입니다. 정상 조성은 c∗ = [0.6, 0.4, 0.2] mol/L이며, Δt = 0.2 min, c₀ = [1.2, 0, 0]에서 첫 전이를 계산합니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>1</mn></mrow></msub><mo>=</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>+</mo><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>a</mi><mi>Δt</mi></mrow></msup></mrow></mtd></mtr><mtr><mtd><mrow><msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mn>1</mn></mrow></msub><mo>=</mo><msup><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>+</mo><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>b</mi><mi>Δt</mi></mrow></msup><mo>+</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mrow><mo>(</mo><msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mn>0</mn></mrow></msub><mo>−</mo><msup><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow><mfrac><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>a</mi><mi>Δt</mi></mrow></msup><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>b</mi><mi>Δt</mi></mrow></msup></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-C_C,1 = S₁ − C_A,1 − C_B,1이므로 **[1.153870, 0.045672, 0.000458] mol/L**다.
+C_C,1 = S₁ − C_A,1 − C_B,1이므로 결과는 [1.153870, 0.045672, 0.000458] mol/L입니다.
 
-Forward Euler는 [1.152, 0.048, 0]이다. 구간 안에서 반응속도가 바뀌므로 값이 다르다. a = b이면 분수의 극한은 Δt exp(−aΔt)다.
+Forward Euler의 결과는 [1.152, 0.048, 0]입니다. 구간 안에서도 반응속도가 바뀌므로 해석해와 차이가 납니다. a = b일 때 분수의 극한은 Δt exp(−aΔt)입니다.
 
 <!-- lecture-page -->
 
 ## 궤적을 학습 쌍으로 바꾸기
 
-한 궤적의 states shape는 (151, 3), controls shape는 (150, 3)이다. 궤적별로 분할한 뒤 행을 쌓는다.
+한 궤적의 states 배열 크기는 (151, 3), controls는 (150, 3)입니다. 궤적별로 분할한 후 행을 쌓습니다.
 
 ```python
 inputs = np.column_stack((states[:-1], controls))
@@ -211,7 +211,7 @@ d_mean = train_increments.mean(axis=0)
 d_scale = np.maximum(train_increments.std(axis=0), 1e-8)
 ```
 
-첫 입력 행은 c₀와 첫 구간 입력이다. 마지막은 c₁₄₉와 마지막 입력이고 label은 c₁₅₀다. Scaling에 test 통계량은 들어가지 않는다.
+첫 입력 행은 c₀와 첫 구간 입력, 마지막 입력 행은 c₁₄₉와 마지막 구간 입력입니다. 마지막 label은 c₁₅₀이며, scaling에는 test 통계량을 사용하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -229,7 +229,7 @@ err_one = one_step - states[1:]
 err_roll = recursive[1:] - states[1:]
 ```
 
-Δc를 복원한 뒤 c에 더한다. 전체 성분별 RMSE는 초기 상태를 뺀 모든 test 시각을 모아 계산한다. RMSE_j,h는 horizon 축을 유지해 계산한다. 두 반복문은 같은 미래 입력을 쓴다.
+복원한 Δc를 c에 더합니다. 전체 성분별 RMSE는 초기 상태를 제외한 모든 test 시각을 모아 계산하고, RMSE_j,h는 예측 거리 축을 유지해 계산합니다. 두 반복문에는 같은 미래 입력을 제공합니다.
 
 <!-- lecture-page -->
 
@@ -237,47 +237,45 @@ err_roll = recursive[1:] - states[1:]
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-학습 mapping이 c_k와 ĉ_k 사이에서 L_k-Lipschitz이면:
+학습한 관계식이 c_k와 ĉ_k 사이에서 L_k-Lipschitz 조건을 만족하면 아래 부등식을 얻습니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mo>‖</mo><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>‖</mo><mo>≤</mo><msub><mi>L</mi><mrow><mi>k</mi></mrow></msub><mo>‖</mo><msub><mi>e</mi><mrow><mi>k</mi></mrow></msub><mo>‖</mo><mo>+</mo><mo>‖</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>‖</mo></mrow></mtd></mtr></mtable></math>
 
-L과 한 단계 오차 상한 ε이 일정하면 반복 대입으로:
+L과 한 단계 오차 상한 ε이 일정할 때 반복 대입합니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mo>‖</mo><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>‖</mo><mo>≤</mo><msup><mi>L</mi><mrow><mi>h</mi></mrow></msup><mo>‖</mo><msub><mi>e</mi><mrow><mn>0</mn></mrow></msub><mo>‖</mo><mo>+</mo><mi>ε</mi><munderover><mo>∑</mo><mrow><mi>r</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>h</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>L</mi><mrow><mi>r</mi></mrow></msup></mrow></mtd></mtr></mtable></math>
 
-e₀ = 0일 때 L < 1이면 상한은 ε/(1−L) 이하이고, L = 1이면 hε다. 실제로 거치는 상태에서 유효한 민감도와 오차 상한이 필요하다. Test RMSE 자체가 그 상한은 아니다.
+e₀ = 0에서 L < 1이면 상한은 ε/(1−L) 이하이고 L = 1이면 hε입니다. 이 민감도와 오차 상한은 실제로 거치는 상태에서 유효해야 하며, test RMSE 자체를 상한으로 사용할 수는 없습니다.
 
 <!-- lecture-page -->
 
 ## 선택: 여러 전이를 거쳐 학습하기
 
-Multi-step loss는 기준 상태에서 시작해 예측 상태를 H단계 반복 입력하고 궤적 오차를 벌점으로 준다. 성분 scaling을 일관되게 적용한다.
+Multi-step loss는 기준 상태에서 시작해 예측 상태를 H단계 반복 입력하며 궤적 오차를 벌점으로 줍니다. 성분별 scaling은 일관되게 적용합니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>L</mi><mrow><mi>H</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>N</mi><mi>H</mi></mrow></mfrac><msub><mo>∑</mo><mrow><mi>n</mi></mrow></msub><msub><mo>∑</mo><mrow><mi>h</mi></mrow></msub><msup><mo>‖</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>n</mi><mo>,</mo><mi>h</mi></mrow></msub><mo>−</mo><msub><mi>c</mi><mrow><mi>n</mi><mo>,</mo><mi>h</mi></mrow></msub><mo>‖</mo><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
-Gradient는 펼친 각 전이를 거쳐 전달된다. 학습 중 모델 자신의 상태를 경험하게 할 수 있지만 메모리가 늘고 학습이 어려워질 수 있다. Train 궤적 안에서만 window를 만들고 H는 validation 궤적으로 선택한다.
+Gradient는 펼친 각 전이를 거쳐 전달됩니다. 모델이 학습 중 자신의 예측 상태를 경험하게 할 수 있지만 메모리 사용이 늘고 학습이 어려워질 수 있습니다. Train 궤적 안에서만 window를 만들고 H는 validation 궤적으로 선택합니다.
 
-저장된 핵심 실험은 one-step 학습이다. Multi-step 비교는 직접 실행할 확장 과제이며, 이미 얻은 실험 결과로 제시하지 않는다.
+제공된 실험 결과는 one-step 학습 결과입니다. Multi-step 학습의 성능은 확장 과제에서 직접 비교합니다.
 
 <!-- lecture-page -->
 
 ## 연습문제와 짧은 답 확인
 
-1. **왜 상태가 151개인가?** 30분에는 0.2분 구간 150개와 초기 상태가 있다.
-2. **파라미터 수는?** 224 + 1056 + 99 = 1379다.
-3. **S₀가 feed와 다르면?** 기준 합은 feed + (S₀−feed)exp(−t/τ)로 변한다. 일정한 합을 검사하면 잘못된 진단이다.
-4. **한 변수 예의 h = 10 오차는?** 0.001(1−0.9¹⁰)/0.1 ≈ 0.006513이다.
-5. **변수만 바꾸어 Δt = 1분으로 실행할 수 있나?** 학습된 출력은 여전히 0.2분 변화량이다. 다섯 번 적용하거나 새 간격의 mapping을 학습한다.
-6. **Rollout 중간에 기준 상태를 넣으면?** 예측을 다시 시작한 것이다. Reset 시각을 적고 그 평가 방식을 따로 보고한다.
+1. 상태가 151개인 이유: 30분에는 0.2분 구간 150개와 초기 상태가 있습니다.
+2. 파라미터 수: 224 + 1056 + 99 = 1379입니다.
+3. S₀가 feed와 다른 경우: 기준 합은 feed + (S₀−feed)exp(−t/τ)로 변하므로 일정한 합을 검사하면 잘못된 진단이 됩니다.
+4. 한 변수 예제의 h = 10 오차: 0.001(1−0.9¹⁰)/0.1 ≈ 0.006513입니다.
+5. Δt = 1분으로 바꿔 실행하는 경우: 학습한 출력은 여전히 0.2분 변화량입니다. 다섯 번 적용하거나 새 간격의 관계식을 학습해야 합니다.
+6. Rollout 중간에 기준 상태를 넣는 경우: 예측을 다시 시작한 것이므로 reset 시각을 적고 해당 평가 방식을 따로 보고합니다.
 
 <!-- lecture-page -->
 
 ## 선택 sequence 모델과 원문
 
-관측이 불완전하면 RNN/LSTM hidden state로 가용한 과거 정보를 요약할 수 있다. Encoder–decoder는 관측 이력에서 미래 sequence를 만들되 주어진 미래 입력을 조건으로 사용한다. 미래 측정값을 encoder에 넣지 않는다.
+관측이 불완전하면 RNN/LSTM의 은닉 상태로 가용한 과거 정보를 요약할 수 있습니다. Encoder-decoder는 관측 이력과 주어진 미래 입력으로 미래 상태열을 예측하며, encoder에는 미래 측정값을 넣지 않습니다.
 
-- Sutskever·Vinyals·Le (2014), [1–2절](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding·decoding. 원 모델의 응용은 번역이다.
-- PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html)·[LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): 반복 갱신, 입력, hidden state와 출력.
-- SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): exp(MΔt)의 다른 구현 방법.
-
-CSTR 유도와 계산 연습은 이 과목을 위해 직접 작성했다.
+- Sutskever·Vinyals·Le (2014), [1-2절](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence의 encoding·decoding을 다룹니다. 원 모델의 응용은 번역입니다.
+- PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html)·[LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): 반복 갱신, 입력, 은닉 상태와 출력을 확인합니다.
+- SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): exp(MΔt)의 다른 구현 방법을 확인합니다.
