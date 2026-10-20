@@ -53,7 +53,7 @@ Use the declared bounds for input scaling. For output standardization, compute t
 
 A raw squared error is weighted by the inverse squared training standard deviation. With standard deviations approximately 0.283 for A and 0.110 for B, the same raw squared error receives about 6.62 times the weight for B compared with A.
 
-This weighting does not guarantee better predictions, so compare component test RMSE and the concentration-sum residual. Check the averaging convention in the [official MSE definition](https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html).
+Compare component test RMSE and the concentration-sum residual with and without output scaling. Check the averaging convention in the [official MSE definition](https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html).
 
 <!-- lecture-page -->
 
@@ -144,7 +144,7 @@ ReLU는 은닉층의 활성화 전 값마다 max(0, 값)을 적용합니다. 선
 
 원래 단위의 제곱 오차에는 train 표준편차 제곱의 역수가 가중치로 붙습니다. A의 표준편차가 약 0.283, B가 0.110이면 같은 제곱 오차에 B는 A보다 약 6.62배의 가중치를 받습니다.
 
-이 가중치가 더 좋은 예측을 보장하지는 않으므로 성분별 test RMSE와 농도 합 residual을 비교합니다. 평균 방식은 [PyTorch 공식 MSE 정의](https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html)에서 확인합니다.
+성분별 test RMSE와 농도 합 residual로 출력 scaling 전후를 비교합니다. 평균 방식은 [PyTorch 공식 MSE 정의](https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html)에서 확인합니다.
 
 <!-- lecture-page -->
 

@@ -200,7 +200,7 @@ The bias gradients are δ₁ and δ₂. Update every weight and bias with parame
 
 <div markdown="1">
 
-Use Adam with learning rate 0.001, batches of 64, and up to 1400 epochs. After each epoch, evaluate validation loss and retain the weights at its minimum. One batch follows these operations:
+Use Adam with learning rate 0.001, batches of 64, and up to 1400 epochs. After each epoch, evaluate validation loss and retain the weights at its minimum.
 
 ```python
 prediction = model(inputs)
@@ -237,13 +237,11 @@ In this comparison, output scaling reduces A and B RMSE; C RMSE is slightly high
 
 ## Check the concentration sum
 
-Also calculate the concentration-sum residual:
-
 <math display="block" aria-label="Concentration-sum residual"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>B</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>C</mi></msub><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
 Its test RMSE is {{ result.steady_balance }} mol/L. Component prediction errors and the residual describe different aspects of the model.
 
-The three linear outputs are free predictions. Balance-consistent training labels do not force their sum to match the feed concentration.
+Balance-consistent training labels do not force the sum of the three linear outputs to match the feed concentration.
 
 For feed 1.2 mol/L, predictions [0.62, 0.41, 0.20] mol/L sum to 1.23 mol/L, giving r = 0.03 mol/L. A model predicting mole fractions can likewise return a sum different from one.
 
@@ -264,7 +262,7 @@ We can correct a prediction after training, or include a constraint-respecting t
 
 KKT-hPINN computes the loss on projected outputs and backpropagates through the projection layer. Projection coefficients stay fixed while the MLP weights learn with the transformation in place.
 
-Week 4 derives the projection and KKT conditions, checks rank assumptions, and follows the gradient. The guarantee concerns the specified linear equalities, up to numerical arithmetic; nonnegativity needs an additional constraint.
+The projection layer satisfies the specified linear equalities up to numerical arithmetic; nonnegativity needs an additional constraint.
 
 Source: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764).
 
@@ -486,7 +484,7 @@ Bias gradient는 각각 δ₁, δ₂입니다. 모든 가중치와 bias를 param
 
 <div markdown="1">
 
-Adam을 학습률 0.001, batch 64, 최대 1400 epoch로 실행합니다. 매 epoch 뒤 validation loss를 계산해 가장 작은 값의 가중치를 저장합니다. 한 batch의 학습 순서는 아래 코드와 같습니다.
+Adam을 학습률 0.001, batch 64, 최대 1400 epoch로 실행합니다. 매 epoch 뒤 validation loss를 계산해 가장 작은 값의 가중치를 저장합니다.
 
 ```python
 prediction = model(inputs)
@@ -523,13 +521,11 @@ optimizer.step()
 
 ## 농도 합 확인
 
-농도 합 residual을 계산합니다.
-
 <math display="block" aria-label="Concentration-sum residual"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>B</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>C</mi></msub><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
 Test residual RMSE는 {{ result.steady_balance }} mol/L입니다. 성분별 오차로 예측 정확도를, 농도 합 residual로 해당 수지의 일관성을 평가합니다.
 
-세 선형 출력에는 합을 묶는 제약이 없습니다. 수지를 만족하는 기준값으로 학습해도 예측 농도 합이 유입 농도와 같도록 강제되지는 않습니다.
+수지를 만족하는 기준값으로 학습해도 세 선형 출력의 합이 유입 농도와 같도록 강제되지는 않습니다.
 
 유입 1.2 mol/L에서 예측이 [0.62, 0.41, 0.20] mol/L이면 합은 1.23 mol/L이고 r = 0.03 mol/L입니다. 몰분율을 예측할 때도 합이 1을 벗어날 수 있습니다.
 
@@ -550,7 +546,7 @@ Test residual RMSE는 {{ result.steady_balance }} mol/L입니다. 성분별 오�
 
 KKT-hPINN은 투영한 출력으로 loss를 계산하고 투영층을 거쳐 역전파합니다. 투영 계수는 고정하지만 MLP 가중치는 이 변환을 반영해 학습합니다.
 
-4주차에서 투영식과 KKT 조건을 유도하고 rank 가정과 gradient를 확인합니다. 보장은 지정한 선형 등식을 수치 연산 오차 범위에서 만족한다는 것이며, 비음수성에는 별도 제약이 필요합니다.
+투영층은 지정한 선형 등식을 수치 연산 오차 범위에서 만족시키며, 비음수성에는 별도 제약이 필요합니다.
 
 출처: Chen et al. (2024), [DOI: 10.1016/j.compchemeng.2024.108764](https://doi.org/10.1016/j.compchemeng.2024.108764).
 

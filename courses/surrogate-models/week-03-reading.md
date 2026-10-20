@@ -22,8 +22,6 @@ Approximate F_Δt, which maps current concentration and a held interval input to
 
 Fix Δt = 0.2 min, τ and C_Af within each trajectory. T changes between intervals. The ideal mixed state contains all three species; thermal dynamics are omitted.
 
-Required work covers the balances, interval solution, data construction, and both evaluation loops. Sequence models are optional.
-
 <!-- lecture-page -->
 
 ## Derive the concentration balances
@@ -122,7 +120,7 @@ A multi-step loss begins at a reference state, then feeds predicted states forwa
 
 Gradients pass through every unrolled transition. This can expose the model to its own states during training, but increases memory and may make training harder. Construct windows inside train trajectories only; choose H with validation trajectories.
 
-The supplied results use one-step training. Compare multi-step training performance in the extension exercise.
+The supplied results use one-step training.
 
 <!-- lecture-page -->
 
@@ -141,7 +139,7 @@ The supplied results use one-step training. Compare multi-step training performa
 
 With incomplete observations, an RNN/LSTM hidden state can summarize available history. An encoder-decoder can convert observed history into a future sequence conditioned on the prescribed controls. Keep future measurements out of the encoder.
 
-- Sutskever, Vinyals & Le (2014), [Sections 1-2](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding and decoding. Their model is for translation.
+- Sutskever, Vinyals & Le (2014), [Sections 1-2](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding and decoding.
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html) and [LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): recurrent updates, inputs, hidden states, and outputs.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): an alternative implementation of exp(MΔt).
 
@@ -156,8 +154,6 @@ With incomplete observations, an RNN/LSTM hidden state can summarize available h
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>c</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 Δt = 0.2 min이며 궤적 안에서는 τ·C_Af를 고정하고 구간 사이에서 T를 바꿉니다. 이상적인 혼합 상태에 세 성분 농도를 모두 포함하며 열적 동특성은 생략합니다.
-
-필수 범위는 수지·구간 해·데이터 구성과 두 평가 반복문의 계산입니다. Sequence 모델은 선택 내용으로 다룹니다.
 
 <!-- lecture-page -->
 
@@ -257,7 +253,7 @@ Multi-step loss는 기준 상태에서 시작해 예측 상태를 H단계 반복
 
 Gradient는 펼친 각 전이를 거쳐 전달됩니다. 모델이 학습 중 자신의 예측 상태를 경험하게 할 수 있지만 메모리 사용이 늘고 학습이 어려워질 수 있습니다. Train 궤적 안에서만 window를 만들고 H는 validation 궤적으로 선택합니다.
 
-제공된 실험 결과는 one-step 학습 결과입니다. Multi-step 학습의 성능은 확장 과제에서 직접 비교합니다.
+제공된 실험 결과는 one-step 학습 결과입니다.
 
 <!-- lecture-page -->
 
@@ -276,6 +272,6 @@ Gradient는 펼친 각 전이를 거쳐 전달됩니다. 모델이 학습 중 �
 
 관측이 불완전하면 RNN/LSTM의 은닉 상태로 가용한 과거 정보를 요약할 수 있습니다. Encoder-decoder는 관측 이력과 주어진 미래 입력으로 미래 상태열을 예측하며, encoder에는 미래 측정값을 넣지 않습니다.
 
-- Sutskever·Vinyals·Le (2014), [1-2절](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence의 encoding·decoding을 다룹니다. 원 모델의 응용은 번역입니다.
+- Sutskever·Vinyals·Le (2014), [1-2절](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence의 encoding·decoding을 다룹니다.
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html)·[LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): 반복 갱신, 입력, 은닉 상태와 출력을 확인합니다.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): exp(MΔt)의 다른 구현 방법을 확인합니다.

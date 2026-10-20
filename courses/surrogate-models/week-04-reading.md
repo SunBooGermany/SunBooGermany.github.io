@@ -114,7 +114,7 @@ The sum residual has units mol/L; species-balance residuals have units mol/(L·m
 
 For example, choose reference concentration <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> and time <math><msub><mrow><mi>t</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>; divide the sum residual by <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> and species residuals by <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>/<math><msub><mrow><mi>t</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>. Still specify loss averaging and λ after nondimensionalization.
 
-The lab penalizes only the sum. Adding known kinetics as residuals is possible, but this example already has an analytic solution, so explain the educational purpose of learning a surrogate.
+The lab penalizes the sum residual; known kinetics can also define species-balance residuals.
 
 <!-- lecture-page -->
 
@@ -178,7 +178,7 @@ Create checked raw and rhs tensors with requires_grad=True. The lab’s --check-
 
 Component-j RMSE is the square root of mean squared prediction error over test rows. Pooled RMSE averages over rows and components. Sum MAE and maximum use the absolute sum residual.
 
-Count equality violations when the absolute sum residual exceeds 10⁻⁶ mol/L and negative entries when a predicted concentration is below −10⁻⁸ mol/L. Also report the minimum concentration to expose the values behind the tolerance.
+Count equality violations when the absolute sum residual exceeds 10⁻⁶ mol/L and negative entries when a predicted concentration is below −10⁻⁸ mol/L. Also report the minimum predicted concentration.
 
 Species-balance RMS averages r_j² over all three species and test rows, then takes the square root; units are mol/(L·min). Do not select settings using test. Assess variation across seeds in a separate repeated experiment.
 
@@ -208,7 +208,7 @@ Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [Official book](http
 
 PyTorch: [torch.linalg.solve](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html) solves a linear system without explicitly forming an inverse. [gradcheck](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html) compares automatic differentiation with finite differences; default tolerances assume double precision.
 
-[Return to the lecture]({{ page.lecture_note | relative_url }}). After running the lab, distinguish mathematical guarantees from observed numerical results.
+[Return to the lecture]({{ page.lecture_note | relative_url }}).
 
 <!-- ko -->
 
@@ -312,7 +312,7 @@ d = [1.2, 2.5]이면 첫 식의 두 배와 두 번째 식이 모순됩니다. �
 
 예를 들어 기준 농도 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>와 기준 시간 <math><msub><mrow><mi>t</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>를 정해 합 residual은 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>로, 성분수지는 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>/<math><msub><mrow><mi>t</mi></mrow><mrow><mo>∗</mo></mrow></msub></math>로 나눕니다. 무차원화 후에도 loss 평균 방식과 λ는 명시해야 합니다.
 
-실습은 합 penalty만 사용합니다. 알려진 속도식을 residual로 사용하는 확장은 가능하지만, 정확한 analytic 해가 있는 이 예제에서는 surrogate가 어떤 교육 목적을 갖는지도 함께 설명해야 합니다.
+실습은 합 penalty를 사용하며, 알려진 속도식을 성분수지 residual로 추가할 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -376,7 +376,7 @@ assert torch.autograd.gradcheck(
 
 성분 j의 RMSE는 test 행에서 (예측 − 기준)²의 평균에 제곱근을 취합니다. 전체 RMSE는 행과 성분을 모두 평균합니다. 합 MAE와 최대값은 합 residual의 절댓값에서 계산합니다.
 
-합 residual의 절댓값이 10⁻⁶ mol/L보다 크면 위반으로, 예측 농도가 −10⁻⁸ mol/L보다 작으면 음수 항목으로 셉니다. 최소 농도도 함께 보고해 tolerance 뒤의 값을 숨기지 않습니다.
+합 residual의 절댓값이 10⁻⁶ mol/L보다 크면 위반으로, 예측 농도가 −10⁻⁸ mol/L보다 작으면 음수 항목으로 셉니다. 최소 예측 농도도 함께 보고합니다.
 
 성분수지 RMS는 세 성분과 test 행 전체의 r_j²를 평균한 제곱근입니다. 단위는 mol/(L·min)입니다. Test는 설정 선택에 사용하지 않고, 여러 seed의 분포는 별도 반복 실험으로 확인합니다.
 
@@ -406,4 +406,4 @@ Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [공식 교재](http
 
 PyTorch: [torch.linalg.solve](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html)는 역행렬을 명시적으로 만들지 않고 선형계를 풉니다. [gradcheck](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html)는 자동미분과 유한차분을 대조하며 기본 tolerance는 double precision을 전제로 합니다.
 
-[강의노트로 돌아가기]({{ page.lecture_note | relative_url }}). 실습을 실행한 뒤 수학적 보장과 관찰한 수치 결과를 나누어 해석합니다.
+[강의노트로 돌아가기]({{ page.lecture_note | relative_url }}).

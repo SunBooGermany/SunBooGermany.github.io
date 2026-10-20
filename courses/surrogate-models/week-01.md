@@ -28,8 +28,6 @@ An engineer wants to predict outlet concentration and conversion at new temperat
 
 Experiments or detailed process calculations take time at each condition. Could existing data help predict the response?
 
-What would you need to know before trusting that prediction?
-
 </div>
 
 <div markdown="1">
@@ -48,8 +46,6 @@ A model can reproduce its training data and still make large errors at new input
 
 This week we define a prediction task and evaluate it on independent data. A small CSTR with a computable reference response lets us check each label.
 
-If training error is small, what evidence is still missing?
-
 <!-- lecture-page -->
 
 ## Build a predictor, then check it
@@ -61,7 +57,7 @@ If training error is small, what evidence is still missing?
 
 Course roadmap: Week 2 learns multicomponent MLPs; Week 3 adds time response; Week 4 examines physical consistency. Weeks 5-7 address optimization formulations and model structure. Week 8 selects and revalidates operating conditions.
 
-Submit a predictor with an independent evaluation. Later weeks examine what else is needed before using it to select operating conditions.
+Submit a predictor with an independent evaluation.
 
 <!-- lecture-page -->
 
@@ -75,7 +71,7 @@ Submit a predictor with an independent evaluation. Later weeks examine what else
 | Fixed context | Ideal mixing, constant volume/density, first-order A → B, declared rate parameters |
 | Reference | Steady-state solution of the specified CSTR balance |
 
-Feed concentration varies in this prediction task. Fixing it for a later operating comparison is a separate choice.
+Feed concentration varies in this prediction task.
 
 <!-- lecture-page -->
 
@@ -158,7 +154,7 @@ Fit both outputs by least squares:
 
 <math display="block" aria-label="Least-squares training of the two-output baseline"><munder><mi>min</mi><mi mathvariant="bold">B</mi></munder><msubsup><mrow><mo>‖</mo><mi mathvariant="bold">Φ</mi><mi mathvariant="bold">B</mi><mo>−</mo><mi mathvariant="bold">Y</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup><mo>,</mo><mspace width="1em"/><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mi>φ</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mi mathvariant="bold">B</mi></math>
 
-At prediction time, keep the fitted regression coefficients fixed and evaluate a new input. Week 2 introduces neural networks.
+At prediction time, keep the fitted regression coefficients fixed and evaluate a new input.
 
 <!-- lecture-page -->
 
@@ -232,8 +228,6 @@ Answer checks: C_A = 0.4 mol/L and X = 2/3 in Question 2; ten features; residual
 
 Work through the data definition, CSTR derivation, input scaling, regression, and independent evaluation in the [Week 1 companion]({{ page.reading_note | relative_url }}) or [English PDF]({{ page.reading_pdf_en | relative_url }}), then check your answers.
 
-Week 2 asks whether one neural network can predict A, B, and C together, and how to evaluate each component. Time response belongs to Week 3.
-
 Using a predictor to select operating conditions requires objectives, operating constraints, and reference-model revalidation. Weeks 5-8 develop that process.
 
 <!-- ko -->
@@ -247,8 +241,6 @@ Using a predictor to select operating conditions requires objectives, operating 
 공정 엔지니어가 새로운 온도와 체류시간에서 출구 농도와 전환율을 예측하려고 합니다.
 
 조건마다 실험하거나 상세 공정 모델을 계산해야 한다면 시간이 걸립니다. 이미 확보한 데이터로 각 조건의 응답을 예측할 수 있을까요?
-
-그 예측을 믿으려면 무엇을 확인해야 할까요?
 
 </div>
 
@@ -268,8 +260,6 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 이번 주에는 예측 문제를 정의하고 독립 데이터로 평가하는 과정을 다뤄봅니다. 기준 응답을 직접 계산할 수 있는 작은 CSTR를 사용해 각 기준값을 확인합니다.
 
-Train 오차가 작다는 사실 외에 어떤 근거가 더 필요할까요?
-
 <!-- lecture-page -->
 
 ## 예측 모델을 만들고 독립적으로 확인하기
@@ -281,7 +271,7 @@ Train 오차가 작다는 사실 외에 어떤 근거가 더 필요할까요?
 
 2주차는 다성분 MLP, 3주차는 시간 응답, 4주차는 물리적 일관성을 다룹니다. 5-7주차에서 최적화 정식화와 모델 구조를 배운 뒤, 8주차에는 운전 조건을 선택하고 기준 모델로 재검증합니다.
 
-이번 주에는 독립 평가를 마친 예측 모델을 제출합니다. 이 모델로 운전 조건까지 선택하려면 무엇이 더 필요한지는 이후 주차에서 다룹니다.
+이번 주에는 독립 평가를 마친 예측 모델을 제출합니다.
 
 <!-- lecture-page -->
 
@@ -295,7 +285,7 @@ Train 오차가 작다는 사실 외에 어떤 근거가 더 필요할까요?
 | 고정 context | 이상적 혼합, 일정 부피·밀도, 1차 반응 A → B, 명시한 속도식 파라미터 |
 | 기준값 | 정의한 CSTR 수지의 정상상태 해 |
 
-유입 농도는 이 예측 문제에서 달라지는 입력입니다. 이후 운전 조건을 비교할 때 한 값으로 고정할지는 별도로 정합니다.
+유입 농도는 이 예측 문제에서 달라지는 입력입니다.
 
 <!-- lecture-page -->
 
@@ -378,7 +368,7 @@ Train으로 계수를 학습하고 validation으로 모델을 선택하며, test
 
 <math display="block" aria-label="Least-squares training of the two-output baseline"><munder><mi>min</mi><mi mathvariant="bold">B</mi></munder><msubsup><mrow><mo>‖</mo><mi mathvariant="bold">Φ</mi><mi mathvariant="bold">B</mi><mo>−</mo><mi mathvariant="bold">Y</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup><mo>,</mo><mspace width="1em"/><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mi>φ</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mi mathvariant="bold">B</mi></math>
 
-예측할 때는 학습한 회귀 계수를 고정하고 새 입력의 출력을 계산합니다. 신경망은 2주차에서 다룹니다.
+예측할 때는 학습한 회귀 계수를 고정하고 새 입력의 출력을 계산합니다.
 
 <!-- lecture-page -->
 
@@ -451,7 +441,5 @@ python week01_lab.py --output-dir week01-results --seed 42
 ## 읽기자료와 다음 예측 문제
 
 [1주차 읽기자료]({{ page.reading_note | relative_url }}) 또는 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 데이터 정의, CSTR 유도, 입력 크기 조정, 회귀와 독립 평가를 계산하고 답을 확인합니다.
-
-2주차에는 한 신경망으로 A·B·C를 함께 예측하고 각 성분을 평가합니다. 시간 응답은 3주차에서 다룹니다.
 
 예측 모델을 운전 조건 선택에 사용하려면 목적함수와 운전 제약을 정의하고 기준 공정 모델로 재검증해야 합니다. 이 과정은 5-8주차에서 다룹니다.
