@@ -136,7 +136,7 @@ Use 6 → 32 → 32 → 3, ReLU hidden layers, and a linear output. The paramete
 
 Compute input and increment means/standard deviations from train rows. Apply those same statistics to validation, test, and rollout states.
 
-The MLP predicts standardized increments. Restore each increment to mol/L before adding it to the current state. An increment model can represent a zero change, but its architecture alone does not guarantee accuracy or physical consistency.
+The MLP predicts standardized increments. Restore each increment to mol/L before adding it to the current state.
 
 <!-- lecture-page -->
 
@@ -172,13 +172,9 @@ One-step evaluation receives a new reference state at every time, so it uses mor
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-en.svg" alt="One-step uses reference states; rollout feeds predictions back" /></figure>
 
-Both diagrams use the same frozen transition model.
-
 <!-- lecture-page -->
 
 ## A rollout is a short, explicit loop
-
-Given an initial state and 150 future input intervals:
 
 ```python
 pred = np.empty((len(controls) + 1, 3))
@@ -217,7 +213,7 @@ One-step bias is 0.001; at 10 recursive steps the error is about 0.00651. A cont
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="Error recurrence for sensitivities 0.9, 1 and 1.02" /></figure>
 
-These are scalar examples, not fitted CSTR results. Actual rollout errors can increase, level off, or change sign.
+Actual rollout errors can increase, level off, or change sign.
 
 <!-- lecture-page -->
 
@@ -281,7 +277,7 @@ With S₀ = C_Af and fixed feed, the reference sum stays equal to feed. The lear
 | Constant 330 K | 0.400091 | 0.399819 |
 | 330 → 345 K at 10 min | 0.420021 | 0.411526 |
 
-Both calculations give more B at 30 min under the step plan. The MLP underestimates that endpoint by about 0.00850 mol/L. The full trajectory reveals the transient that a final steady-state value cannot describe.
+Both calculations give more B at 30 min under the step plan. The MLP underestimates that endpoint by about 0.00850 mol/L.
 
 A time-dependent product specification would require checking the relevant interval, not just this final sample.
 
@@ -302,7 +298,7 @@ Submit state/input definitions, split/scaling details, one-step and rollout RMSE
 
 <!-- lecture-page -->
 
-## Exercises and direct reading
+## Exercises and reading
 
 1. Derive dS/dt and state the condition for S to remain equal to feed.
 2. Compute the first 0.2 min transition and compare it with forward Euler.
@@ -333,7 +329,7 @@ Decoder: predict the future concentration sequence using that representation and
 
 Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence idea.
 
-Use the [original paper](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html) for reference and work through the additional derivations in the companion.
+[Original paper](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html).
 
 <!-- ko -->
 
@@ -455,7 +451,7 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 입력과 변화량의 평균·표준편차는 train 행으로 계산하며, 같은 통계량을 validation·test·rollout 상태에 적용합니다.
 
-MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더합니다. 변화량 모델은 변화가 0인 응답도 표현할 수 있지만 정확도나 물리적 일관성을 구조만으로 보장하지는 않습니다.
+MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더합니다.
 
 <!-- lecture-page -->
 
@@ -491,13 +487,9 @@ One-step은 매 시각 기준 상태를 다시 받으므로, 초기 상태에서
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-ko.svg" alt="One-step은 기준 상태를, rollout은 앞선 예측 상태를 입력으로 쓴다" /></figure>
 
-두 그림은 같은 고정된 상태전이 모델을 사용합니다.
-
 <!-- lecture-page -->
 
 ## Rollout은 짧고 명확한 반복문이다
-
-초기 상태와 미래 입력 구간 150개가 주어졌을 때 아래 반복문으로 예측합니다.
 
 ```python
 pred = np.empty((len(controls) + 1, 3))
@@ -536,7 +528,7 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651입니다. 
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="민감도 0.9, 1, 1.02에서의 오차 전달" /></figure>
 
-그림은 한 변수 예제의 계산 결과입니다. 실제 rollout 오차는 증가하거나 완만해지거나 부호가 바뀔 수 있습니다.
+실제 rollout 오차는 증가하거나 완만해지거나 부호가 바뀔 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -600,7 +592,7 @@ S₀ = C_Af이고 유입 농도가 고정이면 기준 농도 합은 유입 농�
 | 일정 330 K | 0.400091 | 0.399819 |
 | 10분에 330 → 345 K | 0.420021 | 0.411526 |
 
-두 계산 모두 온도 변경 계획의 30분 B 농도가 더 높습니다. MLP는 그 최종 농도를 약 0.00850 mol/L 낮게 예측합니다. 전체 궤적에서는 정상상태 최종값만으로 알 수 없는 과도 구간을 확인합니다.
+두 계산 모두 온도 변경 계획의 30분 B 농도가 더 높습니다. MLP는 그 최종 농도를 약 0.00850 mol/L 낮게 예측합니다.
 
 시간에 따라 적용되는 제품 규격을 확인할 때는 마지막 표본과 함께 해당 구간 전체를 살펴야 합니다.
 
@@ -621,7 +613,7 @@ python week03_lab.py --train --output-dir week03-retrained
 
 <!-- lecture-page -->
 
-## 연습문제와 직접 제공 읽기자료
+## 연습문제와 읽기자료
 
 1. dS/dt를 유도하고 S가 유입 농도와 같게 유지되는 조건을 적습니다.
 2. 첫 0.2분 전이를 계산해 forward Euler와 비교합니다.
@@ -652,4 +644,4 @@ Decoder는 그 표현과 주어진 미래 입력 계획으로 미래 농도열�
 
 Sutskever·Vinyals·Le (2014)의 1-2절에서 sequence-to-sequence 아이디어를 읽습니다.
 
-[논문 원문](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html)을 참고하고, 추가 유도는 읽기자료에서 계산합니다.
+[논문 원문](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html).

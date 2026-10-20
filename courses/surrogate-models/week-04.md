@@ -41,7 +41,7 @@ This week we penalize residuals in the loss and project outputs onto specified l
 3. Compare hand gradients with automatic differentiation through a fixed layer.
 4. Report component errors, equality violations, negative concentrations, and unenforced balances separately.
 
-The lab uses the Week 2 steady-state CSTR. We return to dynamic constraints near the end.
+The lab uses the Week 2 steady-state CSTR.
 
 <!-- lecture-page -->
 
@@ -102,7 +102,7 @@ Minimize the scalar objective ½(z − a)² + ½λ(z − b)², where data favor 
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>=</mo><mfrac><mrow><mi>a</mi><mo>+</mo><mi>λ</mi><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>−</mo><mi>b</mi><mo>=</mo><mfrac><mrow><mi>a</mi><mo>−</mo><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-If a ≠ b, a residual remains for finite λ. Very large penalties also require attention to loss magnitudes and numerical conditioning. This is a counterexample to automatic exact equality enforcement by a penalty.
+If a ≠ b, a residual remains for finite λ. Very large penalties also require attention to loss magnitudes and numerical conditioning.
 
 <!-- lecture-page -->
 
@@ -320,7 +320,7 @@ In this run, the soft penalty reduced sum violations but increased RMSE. Hard an
 
 All quantities are in mol/L. Pooled RMSE can hide differences between components.
 
-The minimum covers every component and test row. The hard model also returns a negative value, so nonnegativity cannot be claimed. Record the evaluation tolerance and the actual minimum together.
+The minimum covers every component and test row. Record the evaluation tolerance and the actual minimum together.
 
 <!-- lecture-page -->
 
@@ -328,8 +328,6 @@ The minimum covers every component and test row. The hard model also returns a n
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="Pooled RMSE and maximum concentration-sum violation by model" /></figure>
 The hard model has species-balance residual RMS 0.002225 mol/(L·min). Satisfying the sum does not make every reaction/outlet relation exact.
-
-Report accuracy, sum violations, nonnegativity, and species balances separately.
 
 <!-- lecture-page -->
 
@@ -366,7 +364,7 @@ When τ varies as an input, the right side is nonlinear in inputs. A fixed-B pro
 3. Compare λ = 0.1, 1, 10 using validation; evaluate only the selected setting on test.
 4. Submit A/B/C RMSE, sum MAE/max, minimum concentration, and species-balance residuals for each model.
 
-The companion supplies derivations and short answer checks. Next week, freeze a trained ReLU predictor and define an optimization problem.
+Next week, freeze a trained ReLU predictor and define an optimization problem.
 
 <!-- lecture-page -->
 
@@ -411,7 +409,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 3. 고정 투영층의 역전파를 손계산과 자동미분으로 대조합니다.
 4. 성분별 오차·등식 위반·음수 농도·미반영 수지를 따로 보고합니다.
 
-실습은 2주차의 정상상태 CSTR를 사용하며, 동적 응답에서 달라지는 제약식은 마지막에 연결합니다.
+실습은 2주차의 정상상태 CSTR를 사용합니다.
 
 <!-- lecture-page -->
 
@@ -472,7 +470,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>=</mo><mfrac><mrow><mi>a</mi><mo>+</mo><mi>λ</mi><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>−</mo><mi>b</mi><mo>=</mo><mfrac><mrow><mi>a</mi><mo>−</mo><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 잡으면 손실항의 크기 차이와 수치 조건도 확인해야 합니다. 이 계산은 penalty가 항상 정확한 등식을 주지는 않는다는 반례입니다.
+a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 잡으면 손실항의 크기 차이와 수치 조건도 확인해야 합니다.
 
 <!-- lecture-page -->
 
@@ -690,7 +688,7 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 
 단위는 모두 mol/L입니다. 전체 RMSE만 보면 성분별 차이를 놓칠 수 있습니다.
 
-최소 농도는 세 성분과 test 행 전체에서 구합니다. Hard 모델도 음수 값을 출력했으므로 비음수성을 주장할 수 없습니다. 평가 tolerance와 실제 최소값을 함께 기록합니다.
+최소 농도는 세 성분과 test 행 전체에서 구합니다. 평가 tolerance와 실제 최소값을 함께 기록합니다.
 
 <!-- lecture-page -->
 
@@ -698,8 +696,6 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="모델별 pooled RMSE와 최대 농도 합 위반 비교" /></figure>
 Hard 모델의 성분수지 residual RMS는 0.002225 mol/(L·min)입니다. 합 등식을 만족해도 각 성분의 반응·유출 관계가 모두 정확하지는 않습니다.
-
-정확도·합 위반·비음수성·성분수지를 각각 보고합니다.
 
 <!-- lecture-page -->
 
@@ -736,7 +732,7 @@ python week04_lab.py --output-dir week04-results
 3. λ = 0.1, 1, 10을 validation으로 비교하고, 선택한 설정만 test에서 평가합니다.
 4. 각 모델의 A/B/C RMSE·합 MAE/최대값·최소 농도·성분수지 residual을 제출합니다.
 
-읽기자료에는 유도와 짧은 답 확인이 있습니다. 다음 주에는 학습을 끝낸 ReLU predictor를 고정하고 최적화 문제를 정의합니다.
+다음 주에는 학습을 끝낸 ReLU predictor를 고정하고 최적화 문제를 정의합니다.
 
 <!-- lecture-page -->
 
