@@ -380,13 +380,11 @@ Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neura
 
 <!-- lecture-page -->
 
-## Mathematics, implementation sources, and scope
+## Mathematics and implementation sources
 
 Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. Section 5.5.3 on KKT conditions and Section 10.1 on equality-constrained minimization. [Official book](https://web.stanford.edu/~boyd/cvxbook/).
 
-Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html), [numerical gradient checks](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html). Raissi et al.’s [2017 Part I manuscript](https://arxiv.org/abs/1711.10561) is a separate version from the 2019 journal paper.
-
-The lab is an original analytic CSTR example, not a reproduction of Chen et al.’s Aspen cases. The sum-equality guarantee does not cover extrapolation accuracy, nonlinear thermodynamics, stability, or operating safety.
+Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html), [numerical gradient checks](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html). Raissi et al., [2017 Part I manuscript](https://arxiv.org/abs/1711.10561).
 
 <!-- ko -->
 
@@ -752,10 +750,8 @@ Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neura
 
 <!-- lecture-page -->
 
-## 수학·구현 원문과 학습 범위
+## 수학·구현 원문
 
 Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. 5.5.3절의 KKT 조건, 10.1절의 등식 제약 최소화. [공식 교재](https://web.stanford.edu/~boyd/cvxbook/).
 
-PyTorch 공식 문서: [선형계 풀이](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html), [수치 gradient 확인](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html). Raissi et al.의 [2017 Part I 공개 원고](https://arxiv.org/abs/1711.10561)는 2019 학술지 논문과 별도 버전입니다.
-
-실습은 직접 구성한 analytic CSTR 예제입니다. Chen et al.의 Aspen 공정 사례 재현 결과가 아닙니다. 외삽 정확도·비선형 열역학·안정성·운전 안전성은 지정한 합 등식의 보장 범위 밖입니다.
+PyTorch 공식 문서: [선형계 풀이](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html), [수치 gradient 확인](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html). Raissi et al., [2017 Part I 공개 원고](https://arxiv.org/abs/1711.10561).

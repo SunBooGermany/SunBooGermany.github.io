@@ -196,9 +196,9 @@ Species-balance RMS averages r_j² over all three species and test rows, then ta
 
 ## 16. Primary-source reading guide
 
-Chen, H., Constante Flores, G. E., & Li, C. (2024). *Physics-informed neural networks with hard linear equality constraints*. C&CE 189, 108764. [DOI](https://doi.org/10.1016/j.compchemeng.2024.108764) · [Manuscript](https://arxiv.org/abs/2402.07251) · [Author repository](https://github.com/li-group/KKThPINN). Compare Section 3’s fixed projection and assumptions; read one Section 4 process case. Distinguish the paper’s process model from this lecture’s analytic CSTR.
+Chen, H., Constante Flores, G. E., & Li, C. (2024). *Physics-informed neural networks with hard linear equality constraints*. C&CE 189, 108764. [DOI](https://doi.org/10.1016/j.compchemeng.2024.108764) · [Manuscript](https://arxiv.org/abs/2402.07251) · [Author repository](https://github.com/li-group/KKThPINN). Compare Section 3’s fixed projection and assumptions; read one Section 4 process case.
 
-Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. JCP 378, 686-707. [DOI](https://doi.org/10.1016/j.jcp.2018.10.045) · [2017 Part I](https://arxiv.org/abs/1711.10561). Read Part I’s continuous-time residual and coordinate differentiation. The public Part I is not the identical final journal version.
+Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. JCP 378, 686-707. [DOI](https://doi.org/10.1016/j.jcp.2018.10.045) · [2017 Part I](https://arxiv.org/abs/1711.10561). Read Part I’s continuous-time residual and coordinate differentiation.
 
 <!-- lecture-page -->
 
@@ -394,9 +394,9 @@ assert torch.autograd.gradcheck(
 
 ## 16. 원문 읽기와 출처
 
-Chen, H., Constante Flores, G. E., & Li, C. (2024). *Physics-informed neural networks with hard linear equality constraints*. C&CE 189, 108764. [DOI](https://doi.org/10.1016/j.compchemeng.2024.108764) · [공개 원고](https://arxiv.org/abs/2402.07251) · [저자 저장소](https://github.com/li-group/KKThPINN). 3절의 고정 투영층과 가정을 대조하고 4절의 공정 사례 중 하나를 읽습니다. 강의의 analytic CSTR와 논문의 공정 모델을 구분합니다.
+Chen, H., Constante Flores, G. E., & Li, C. (2024). *Physics-informed neural networks with hard linear equality constraints*. C&CE 189, 108764. [DOI](https://doi.org/10.1016/j.compchemeng.2024.108764) · [공개 원고](https://arxiv.org/abs/2402.07251) · [저자 저장소](https://github.com/li-group/KKThPINN). 3절의 고정 투영층과 가정을 대조하고 4절의 공정 사례 중 하나를 읽습니다.
 
-Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. JCP 378, 686-707. [DOI](https://doi.org/10.1016/j.jcp.2018.10.045) · [2017 Part I](https://arxiv.org/abs/1711.10561). 공개 Part I의 연속시간 residual과 좌표 자동미분을 읽습니다. 학술지 최종본과 동일한 버전은 아닙니다.
+Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*. JCP 378, 686-707. [DOI](https://doi.org/10.1016/j.jcp.2018.10.045) · [2017 Part I](https://arxiv.org/abs/1711.10561). 공개 Part I의 연속시간 residual과 좌표 자동미분을 읽습니다.
 
 <!-- lecture-page -->
 
