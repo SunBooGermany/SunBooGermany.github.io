@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Why Stationary Distributions Matter in Markov-Chain Optimization"
-title_ko: "Markov chain 최적화에서 정상분포가 중요한 이유"
+title: "Sampling Bias and Convergence Conditions in Markov-Chain Optimization"
+title_ko: "Markov chain 최적화의 표본 편향과 수렴 조건"
 date: 2026-10-23
 category: stochastic-nonlinear-optimization
 category_label: "Mathematical Optimization"
@@ -34,7 +34,7 @@ has_korean_note: false
 
 When a Markov chain selects scenarios for optimization, its stationary distribution determines the average direction being computed. To give high-cost scenarios more weight, one can design the chain to visit them more often. Having the desired stationary distribution does not, by itself, guarantee that a short run produces that average. If the design changes at every iteration, the accumulated effect of sampling bias also needs analysis.
 
-## 1. Scenario visit frequencies become gradient weights
+## 1. Scenario visit frequencies and the average subgradient
 
 Suppose a design <math><mi>x</mi></math> determines an investment cost f(x) and scenario operating costs <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math>(x). There are m scenarios. To emphasize expensive scenarios, use the mellowmax objective at a fixed temperature w > 0:
 
@@ -69,7 +69,7 @@ so the two gradients cancel. More iterations estimate this different average mor
 
 At a fixed x, if the chain's long-run visit frequencies are about 88.1% for scenario 1 and 11.9% for scenario 2, the simple average of visited gradients approaches −7.62. Visit frequency implements the weighting. For a Metropolis chain, iterations that reject a proposed move and remain in the same scenario must also be counted.
 
-## 2. Stationarity, convergence conditions, and mixing speed
+## 2. Stationary distributions and mixing rates
 
 Write <math><msub><mrow><mi>P</mi></mrow><mrow><mi>x</mi></mrow></msub></math> for the transition matrix at the current design. The stationarity condition is
 
@@ -93,7 +93,7 @@ On a finite state space, irreducibility supports convergence of time averages al
 
 These statements hold with x fixed. Updating the design also moves the target distribution <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>.
 
-## 3. Updating the design before the chain has mixed
+## 3. Design updates and tracking a changing distribution
 
 A direct approach fixes x, runs the chain long enough to estimate the average subgradient, and then updates the design. Repeating this process after every design change can be expensive. An alternative alternates one scenario transition with one design update:
 
@@ -117,7 +117,7 @@ Smaller stepsizes limit design movement. At fixed w, a common Lipschitz bound on
 
 After a single transition, <math><msub><mrow><mi>I</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math> is generally not an exact draw from <math><msub><mrow><mi>p</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub></math>. Thus <math><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math> cannot be treated as a conditionally unbiased SGD estimator. Convergence analysis must control how this discrepancy affects the whole sequence of updates.
 
-## 4. Isolating sampling error in the distance-to-optimum inequality
+## 4. Distance bounds with sampling error
 
 Assume a minimizer exists at the fixed w and choose a comparison point:
 
@@ -161,7 +161,7 @@ Substituting the definition of the sampling error gives
 
 A large negative <math><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math> means the visited scenario reports a smaller cost difference than the target-weighted average. This weakens the lower bound supporting distance reduction.
 
-## 5. The quantity to control is the stepsize-weighted cumulative error
+## 5. Bounding cumulative sampling error
 
 Insert the inner-product lower bound and the bound B on <math><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math> into the distance inequality:
 
@@ -209,7 +209,7 @@ This result concerns the expected objective error of the averaged design. It doe
 
 Markov chain으로 시나리오를 골라 최적화할 때 정상분포는 어떤 평균 방향을 계산하는지 결정합니다. 비용이 큰 시나리오에 더 큰 가중치를 주고 싶다면, 그 비율만큼 자주 방문하도록 chain을 설계할 수 있습니다. 다만 원하는 분포가 정상분포라는 사실만으로는 짧은 탐색에서 그 평균을 얻는다고 보장할 수 없습니다. 설계까지 매번 바뀐다면 표본 편향이 최적화에 누적되는 효과도 살펴야 합니다.
 
-## 1. 시나리오를 방문하는 비율이 기울기의 가중치가 됩니다
+## 1. 시나리오 방문 비율과 평균 기울기
 
 설계변수 <math><mi>x</mi></math>를 정하면 투자비 f(x)와 시나리오별 운영비용 <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math>(x)가 결정된다고 합시다. 시나리오는 m개이며, 비용이 큰 시나리오를 강조하기 위해 고정된 온도 w > 0에서 mellowmax 목적함수를 사용합니다.
 
@@ -244,7 +244,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 고정된 x에서 chain의 장기 방문 비율이 시나리오 1에 약 88.1%, 시나리오 2에 약 11.9%라면, 방문한 기울기의 단순 평균은 −7.62에 가까워집니다. 가중치를 매번 곱하는 계산을 방문 빈도로 구현하는 셈입니다. Metropolis 방식에서는 이동이 거절되어 같은 시나리오에 머문 반복도 평균에 포함해야 합니다.
 
-## 2. 정상분포, 수렴 조건, 혼합 속도는 서로 다른 역할을 합니다
+## 2. 정상분포와 혼합 속도
 
 현재 설계에서의 전이행렬을 <math><msub><mrow><mi>P</mi></mrow><mrow><mi>x</mi></mrow></msub></math>라고 쓰면 정상분포 조건은
 
@@ -268,7 +268,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 이 설명은 x를 고정했을 때의 이야기입니다. 설계를 업데이트하면 목표 분포 <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>도 움직입니다.
 
-## 3. Chain이 충분히 섞이기 전에 설계를 바꾸면
+## 3. 설계 업데이트와 목표 분포 추적
 
 직접적인 방법은 현재 x를 고정하고 chain을 충분히 돌린 뒤, 기울기의 평균으로 설계를 업데이트하는 것입니다. 설계가 바뀔 때마다 이 과정을 반복하면 계산량이 큽니다. 대신 한 번의 시나리오 전이와 한 번의 설계 업데이트를 번갈아 수행하는 방식을 생각할 수 있습니다.
 
@@ -292,7 +292,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 한 번 전이해 얻은 <math><msub><mrow><mi>I</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math>는 일반적으로 <math><msub><mrow><mi>p</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub></math>에서 정확히 뽑은 표본이 아닙니다. 따라서 <math><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math>를 조건부 불편향 SGD 추정량으로 취급할 수 없습니다. 수렴 분석에서는 이 오차가 반복 전체에 미치는 영향을 제어해야 합니다.
 
-## 4. 최적해까지의 거리에서 표본 오차를 분리합니다
+## 4. 표본 오차를 포함한 거리 부등식
 
 고정된 w에 대해 최소해가 존재한다고 가정하고 비교점을 잡습니다.
 
@@ -336,7 +336,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 를 얻습니다. <math><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math>가 크게 음수이면 이번 시나리오는 목표 가중평균에 비해 현재 설계의 비용 차이를 작게 보여준 것입니다. 이 경우 거리 감소를 뒷받침하는 하한이 약해집니다.
 
-## 5. 제어해야 하는 것은 보폭으로 가중한 누적 오차입니다
+## 5. 누적 표본 오차의 상계
 
 <math><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></math>의 크기가 B 이하라는 가정과 앞의 내적 하한을 거리 변화식에 넣으면,
 
