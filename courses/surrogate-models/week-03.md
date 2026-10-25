@@ -18,7 +18,7 @@ notebook: /assets/courses/surrogate-models/week-03/week03_lab.ipynb
 lab_script: /assets/courses/surrogate-models/week-03/week03_lab.py
 ---
 
-## The temperature changed. Is the product ready?
+## Transient product concentrations after a temperature change
 
 A process engineer changes reactor temperature at 10 min. If the outlet flows directly into a product tank, how will B concentration change over the next 20 min?
 
@@ -26,7 +26,7 @@ A process engineer changes reactor temperature at 10 min. If the outlet flows di
 
 <!-- lecture-page -->
 
-## The journey to a new steady state matters
+## Transient response toward a new steady state
 
 During a grade change or startup, material produced before the target composition is reached can require separation or reprocessing. The endpoint alone does not describe that transient.
 
@@ -36,7 +36,7 @@ At the same temperature, different current tank compositions can lead to differe
 
 <!-- lecture-page -->
 
-## What we will build
+## State-transition model training and rollout evaluation
 
 1. Define the current state, prescribed future inputs, fixed context, and sampling interval.
 2. Train a state-transition MLP on concentration increments.
@@ -46,7 +46,7 @@ Submit the same model’s component errors in both evaluations, error versus hor
 
 <!-- lecture-page -->
 
-## A steady-state map becomes a transition map
+## Steady-state and state-transition maps
 
 Week 2: [T, τ, C_Af] → the composition after equilibration.
 
@@ -91,7 +91,7 @@ The learned map predicts a 0.2 min transition. Increasing the number of applicat
 
 <!-- lecture-page -->
 
-## An exact interval response for this teaching model
+## Interval response of the reference model
 
 With constant interval inputs, the balances are affine in the state. Write dc/dt = Mc + b. The steady state c∗ satisfies Mc∗ + b = 0.
 
@@ -103,7 +103,7 @@ At c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L: c₁ ≈ [1.1538
 
 <!-- lecture-page -->
 
-## Build trajectories before building transition rows
+## Trajectory generation and transition-pair construction
 
 Use 300-360 K, τ = 1-10 min, and feed = 0.8-1.5 mol/L. Random temperature plans contain six 5 min blocks. Each trajectory has its own initial composition, with nonnegative components summing to feed.
 
@@ -115,7 +115,7 @@ Use 300-360 K, τ = 1-10 min, and feed = 0.8-1.5 mol/L. Random temperature plans
 
 <!-- lecture-page -->
 
-## What does one training row contain?
+## States, inputs, and targets in the training data
 
 | Fields | Construction |
 | --- | --- |
@@ -156,7 +156,7 @@ Adam: learning rate 0.001, batch size 512, up to 800 epochs. Retain the weights 
 
 <!-- lecture-page -->
 
-## Two ways to evaluate the same model
+## One-step and rollout evaluation
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mtext>one-step:  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mtext>rollout:  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mn>0</mn></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mn>0</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
@@ -168,13 +168,13 @@ One-step evaluation receives a new reference state at every time, so it uses mor
 
 <!-- lecture-page -->
 
-## Where the next state comes from
+## Reference-state and predicted-state inputs
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-en.svg" alt="One-step uses reference states; rollout feeds predictions back" /></figure>
 
 <!-- lecture-page -->
 
-## A rollout is a short, explicit loop
+## Iterative computation of multistep rollout
 
 ```python
 pred = np.empty((len(controls) + 1, 3))
@@ -189,7 +189,7 @@ No reference state enters this loop after initialization. Evaluate all 150 predi
 
 <!-- lecture-page -->
 
-## How local error propagates
+## Propagation of one-step prediction error
 
 Let e_k = ĉ_k − c_k. Add and subtract the prediction at the reference state:
 
@@ -199,7 +199,7 @@ The first difference transports the existing state error through the learned map
 
 <!-- lecture-page -->
 
-## Small one-step error can accumulate
+## Accumulation of one-step bias: a worked example
 
 For a scalar illustration, let the reference be F(c) = 0.9c and the learned map be f(c) = 0.9c + 0.001. Start with e₀ = 0.
 
@@ -209,7 +209,7 @@ One-step bias is 0.001; at 10 recursive steps the error is about 0.00651. A cont
 
 <!-- lecture-page -->
 
-## The state sensitivity matters too
+## State sensitivity and error propagation
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="Error recurrence for sensitivities 0.9, 1 and 1.02" /></figure>
 
@@ -270,7 +270,7 @@ With S₀ = C_Af and fixed feed, the reference sum stays equal to feed. The lear
 
 <!-- lecture-page -->
 
-## Return to the engineer’s question
+## Final B concentrations under two temperature plans
 
 | B at 30 min, mol/L | Reference | MLP rollout |
 | --- | --- | --- |
@@ -309,7 +309,7 @@ Work through the derivations, examples, code, and answer checks in the [reading 
 
 <!-- lecture-page -->
 
-## Optional: when a hidden state helps
+## Optional: hidden states in RNNs and LSTMs
 
 The core example supplies all three concentration states and prescribed temperature. If measurements omit relevant states, a history of observations and inputs can help reconstruct them.
 
@@ -333,7 +333,7 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 <!-- ko -->
 
-## 온도를 바꿨다. 제품도 바로 바뀔까?
+## 온도 변경에 따른 제품 농도의 과도응답
 
 공정 엔지니어가 10분에 반응기 온도를 바꿉니다. 출구 유체가 곧바로 제품 탱크에 들어간다면 앞으로 20분 동안 B 농도는 어떻게 변할까요?
 
@@ -341,7 +341,7 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 <!-- lecture-page -->
 
-## 새 정상상태로 가는 과정이 중요하다
+## 새 정상상태까지의 과도응답
 
 제품 전환이나 기동 중 목표 조성에 도달하기 전에 나온 유체는 따로 모으거나 다시 처리해야 할 수 있습니다. 최종 농도만으로는 이 과도 구간을 설명할 수 없습니다.
 
@@ -351,7 +351,7 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 <!-- lecture-page -->
 
-## 이번 주에 만들 것
+## 상태전이 모델의 학습과 rollout 평가
 
 1. 현재 상태, 주어진 미래 입력, 고정 조건(context)과 표본 간격을 정의합니다.
 2. 농도 변화량을 학습하는 상태전이 MLP를 만듭니다.
@@ -361,7 +361,7 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 <!-- lecture-page -->
 
-## 정상상태 mapping에서 상태전이 mapping으로
+## 정상상태 mapping과 상태전이 mapping
 
 2주차: [T, τ, C_Af] → 정상상태에 도달한 뒤의 조성.
 
@@ -406,7 +406,7 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]�
 
 <!-- lecture-page -->
 
-## 이 교육 모델의 구간 응답 계산
+## 기준 모델의 구간 응답
 
 구간 입력이 일정하면 수지는 상태에 대해 affine합니다. dc/dt = Mc + b로 나타낼 때 정상상태 c∗는 Mc∗ + b = 0을 만족합니다.
 
@@ -418,7 +418,7 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 <!-- lecture-page -->
 
-## 궤적을 만든 뒤 상태전이 행을 만든다
+## 궤적 생성과 상태전이 데이터 구성
 
 300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L를 사용합니다. 무작위 온도 계획은 5분 구간 6개로 구성하며, 각 궤적의 초기 조성은 비음수이고 합은 유입 농도입니다.
 
@@ -430,7 +430,7 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 <!-- lecture-page -->
 
-## 학습 데이터 한 행에는 무엇이 들어갈까?
+## 학습 데이터의 상태·입력·목표값
 
 | 항목 | 구성 |
 | --- | --- |
@@ -471,7 +471,7 @@ Adam을 학습률 0.001, batch size 512, 최대 800 epoch로 실행합니다. Va
 
 <!-- lecture-page -->
 
-## 같은 모델을 평가하는 두 방법
+## One-step 평가와 rollout 평가
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mtext>one-step:  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mtext>rollout:  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mn>0</mn></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mn>0</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
@@ -483,13 +483,13 @@ One-step은 매 시각 기준 상태를 다시 받으므로, 초기 상태에서
 
 <!-- lecture-page -->
 
-## 다음 입력 상태가 어디서 오는가
+## 기준 상태 입력과 예측 상태 입력
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-ko.svg" alt="One-step은 기준 상태를, rollout은 앞선 예측 상태를 입력으로 쓴다" /></figure>
 
 <!-- lecture-page -->
 
-## Rollout은 짧고 명확한 반복문이다
+## 다단계 rollout의 반복 계산
 
 ```python
 pred = np.empty((len(controls) + 1, 3))
@@ -504,7 +504,7 @@ for k, control in enumerate(controls):
 
 <!-- lecture-page -->
 
-## 한 단계의 오차는 어떻게 이어질까?
+## 한 단계 오차의 전달식
 
 e_k = ĉ_k − c_k로 정의하고, 기준 상태에서 계산한 예측값을 더했다 빼봅니다.
 
@@ -514,7 +514,7 @@ e_k = ĉ_k − c_k로 정의하고, 기준 상태에서 계산한 예측값을 �
 
 <!-- lecture-page -->
 
-## 작은 one-step 오차도 쌓일 수 있다
+## One-step 편향의 누적 예제
 
 한 변수 예제에서 기준 관계식을 F(c) = 0.9c, 학습 모델을 f(c) = 0.9c + 0.001로 두고 e₀ = 0에서 시작합니다.
 
@@ -524,7 +524,7 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651입니다. 
 
 <!-- lecture-page -->
 
-## 상태에 대한 민감도도 중요하다
+## 상태 민감도와 오차 전파
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="민감도 0.9, 1, 1.02에서의 오차 전달" /></figure>
 
@@ -585,7 +585,7 @@ S₀ = C_Af이고 유입 농도가 고정이면 기준 농도 합은 유입 농�
 
 <!-- lecture-page -->
 
-## 처음의 엔지니어 질문으로 돌아가기
+## 온도 계획별 최종 B 농도 비교
 
 | 30분 B 농도, mol/L | 기준 모델 | MLP rollout |
 | --- | --- | --- |
@@ -624,7 +624,7 @@ python week03_lab.py --train --output-dir week03-retrained
 
 <!-- lecture-page -->
 
-## 선택 확장: hidden state가 도움이 될 때
+## 선택 확장: RNN·LSTM의 은닉 상태
 
 필수 예제는 세 농도 상태와 주어진 온도를 모두 입력으로 받습니다. 필요한 상태가 측정에서 빠져 있다면 과거 관측과 입력으로 그 상태를 추정하는 방법이 도움이 될 수 있습니다.
 

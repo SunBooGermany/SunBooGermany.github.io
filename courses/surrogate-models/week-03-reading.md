@@ -14,7 +14,7 @@ course_id: surrogate-models
 lecture_note: /courses/surrogate-models/week-03/
 ---
 
-## Predict a trajectory from one starting point
+## Trajectory prediction from initial states and future inputs
 
 Approximate F_Δt, which maps current concentration and a held interval input to next concentration. Given c₀ and T₀,…,T₁₄₉, recursively compute 150 future states.
 
@@ -60,7 +60,7 @@ Forward Euler gives [1.152, 0.048, 0]. It differs because the rates change durin
 
 <!-- lecture-page -->
 
-## Turn a trajectory into learning pairs
+## Transition-pair construction from trajectories
 
 One trajectory has states of shape (151, 3) and controls of shape (150, 3). Split by trajectory, then stack its rows:
 
@@ -112,7 +112,7 @@ L < 1 limits this bound to ε/(1−L) when e₀ = 0; L = 1 gives hε. The sensit
 
 <!-- lecture-page -->
 
-## Optional: train through several transitions
+## Optional: multistep state-transition training
 
 A multi-step loss begins at a reference state, then feeds predicted states forward for H steps and penalizes their trajectory error. Use component scaling consistently.
 
@@ -147,7 +147,7 @@ With incomplete observations, an RNN/LSTM hidden state can summarize available h
 
 <!-- ko -->
 
-## 한 시작점에서 궤적 예측하기
+## 초기 상태와 미래 입력에 따른 궤적 예측
 
 현재 농도와 구간 동안 일정한 입력에서 다음 농도를 예측하는 F_Δt를 근사합니다. c₀와 T₀,…,T₁₄₉가 주어지면 미래 상태 150개를 반복 계산합니다.
 
@@ -193,7 +193,7 @@ Forward Euler의 결과는 [1.152, 0.048, 0]입니다. 구간 안에서도 반�
 
 <!-- lecture-page -->
 
-## 궤적을 학습 쌍으로 바꾸기
+## 궤적에서 상태전이 학습 쌍 구성
 
 한 궤적의 states 배열 크기는 (151, 3), controls는 (150, 3)입니다. 궤적별로 분할한 후 행을 쌓습니다.
 
@@ -245,7 +245,7 @@ e₀ = 0에서 L < 1이면 상한은 ε/(1−L) 이하이고 L = 1이면 hε입�
 
 <!-- lecture-page -->
 
-## 선택: 여러 전이를 거쳐 학습하기
+## 선택: 다단계 상태전이 학습
 
 Multi-step loss는 기준 상태에서 시작해 예측 상태를 H단계 반복 입력하며 궤적 오차를 벌점으로 줍니다. 성분별 scaling은 일관되게 적용합니다.
 

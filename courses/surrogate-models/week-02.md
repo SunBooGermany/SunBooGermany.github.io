@@ -18,7 +18,7 @@ reading_pdf_ko: /assets/courses/surrogate-models/week-02-reading-ko.pdf
 course_id: "surrogate-models"
 ---
 
-## More conversion does not tell the whole composition
+## Conversion and product composition in consecutive reactions
 
 {% assign result = site.data.week02_results %}
 
@@ -44,7 +44,7 @@ Can one model predict A, B, and C consistently?
 
 <!-- lecture-page -->
 
-## Three outputs, different errors
+## Componentwise prediction errors
 
 All three concentrations have the same units, but their variation differs. An unscaled loss can emphasize one component.
 
@@ -105,7 +105,7 @@ At 330 K, τ = 5 min, and feed = 1.2 mol/L, the concentrations are [0.6, 0.4, 0.
 
 <!-- lecture-page -->
 
-## Why the B response is nonmonotone
+## Nonmonotone response of intermediate B
 
 At a fixed temperature, the B yield and its maximizing residence time follow from the expression for C_B:
 
@@ -249,7 +249,7 @@ For feed 1.2 mol/L, predictions [0.62, 0.41, 0.20] mol/L sum to 1.23 mol/L, givi
 
 <!-- lecture-page -->
 
-## Week 4 preview: put the constraint into the model
+## Week 4 preview: concentration-sum constraints in the model
 
 We can correct a prediction after training, or include a constraint-respecting transformation in the training calculation.
 
@@ -302,7 +302,7 @@ KKT-hPINN reference: Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physic
 
 <!-- ko -->
 
-## A가 줄어들면 B는 얼마나 만들어질까?
+## 연속반응의 전환율과 생성물 조성
 
 {% assign result = site.data.week02_results %}
 
@@ -328,7 +328,7 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 
 <!-- lecture-page -->
 
-## 출력은 세 개, 오차의 크기도 다르다
+## 성분별 예측 오차
 
 세 농도의 단위는 같아도 변화 폭은 다르므로, 크기를 조정하지 않은 손실함수는 한 성분의 오차를 더 크게 반영할 수 있습니다.
 
@@ -389,7 +389,7 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 <!-- lecture-page -->
 
-## B 응답이 단조롭지 않은 이유
+## 중간 생성물 B의 비단조 응답
 
 온도가 고정되면 C_B 식에서 B의 수율과 그 수율을 최대화하는 체류시간을 구할 수 있습니다.
 
@@ -533,7 +533,7 @@ Test residual RMSE는 {{ result.steady_balance }} mol/L입니다. 성분별 오�
 
 <!-- lecture-page -->
 
-## 4주차 예고: 제약을 모델 안에 넣으면?
+## 4주차 예고: 농도 합 제약의 모델 반영
 
 학습 후 출력을 보정하거나, 제약을 만족하는 변환을 학습 과정에 포함할 수 있습니다.
 

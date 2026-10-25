@@ -18,7 +18,7 @@ reading_pdf_ko: /assets/courses/surrogate-models/week-01-reading-ko.pdf
 course_id: "surrogate-models"
 ---
 
-## The morning meeting needs a prediction
+## Outlet concentration prediction at specified operating conditions
 
 <div class="lecture-columns" markdown="1">
 
@@ -40,7 +40,7 @@ Experiments or detailed process calculations take time at each condition. Could 
 
 <!-- lecture-page -->
 
-## A good fit must also work at new conditions
+## Prediction performance at new operating conditions
 
 A model can reproduce its training data and still make large errors at new inputs. Units, operating range, and fixed assumptions also determine what its output means.
 
@@ -48,7 +48,7 @@ This week we define a prediction task and evaluate it on independent data. A sma
 
 <!-- lecture-page -->
 
-## Build a predictor, then check it
+## Predictor fitting and independent evaluation
 
 1. Define inputs, outputs, context, units, and the domain.
 2. Generate steady-state reference data and keep train, validation, and test separate.
@@ -75,7 +75,7 @@ Feed concentration varies in this prediction task.
 
 <!-- lecture-page -->
 
-## 2. A reference process we can check
+## 2. Reference CSTR model
 
 Use an ideal, perfectly mixed, constant-volume, isothermal CSTR with a first-order reaction A → B, constant density, and no B in the feed. Reactor temperature T is an operating input.
 
@@ -187,7 +187,7 @@ Judge whether these errors are small enough for a particular use by inspecting p
 
 <!-- lecture-page -->
 
-## Where does the predictor miss?
+## Prediction error across operating conditions
 
 The diagonal represents prediction equal to reference. Compare concentration and conversion separately, then relate the larger errors to the input conditions.
 
@@ -232,7 +232,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 <!-- ko -->
 
-## 아침 회의: 이 조건에서 농도는 얼마일까?
+## 운전 조건에 따른 출구 농도 예측
 
 <div class="lecture-columns" markdown="1">
 
@@ -254,7 +254,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 <!-- lecture-page -->
 
-## 학습한 점 밖에서도 잘 맞을까?
+## 새 운전 조건에서의 예측 성능
 
 학습 데이터를 잘 따라가는 모델도 새로운 입력에서는 큰 오차를 낼 수 있습니다. 단위나 운전 범위, 고정한 가정이 달라지면 출력의 의미부터 달라집니다.
 
@@ -262,7 +262,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 <!-- lecture-page -->
 
-## 예측 모델을 만들고 독립적으로 확인하기
+## 예측 모델의 학습과 독립 평가
 
 1. 입력·출력·고정 조건(context)·단위·영역을 정의합니다.
 2. 정상상태 기준 데이터를 만들고 train·validation·test의 역할을 구분합니다.
@@ -289,7 +289,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 <!-- lecture-page -->
 
-## 2. 직접 확인할 수 있는 기준 공정
+## 2. 기준 CSTR 모델
 
 1차 반응 A → B가 일어나는 이상적인 완전혼합·일정 부피·등온 CSTR를 사용합니다. 밀도는 일정하고 유입물에는 B가 없으며, 반응기 온도 T를 조작변수로 둡니다.
 
@@ -401,7 +401,7 @@ Train으로 계수를 학습하고 validation으로 모델을 선택하며, test
 
 <!-- lecture-page -->
 
-## 어떤 조건에서 예측이 빗나갈까?
+## 운전 조건별 예측 오차
 
 대각선에서는 예측과 기준값이 같습니다. 농도와 전환율을 따로 비교한 뒤, 큰 오차가 나타난 점의 입력 조건을 살펴봅니다.
 
