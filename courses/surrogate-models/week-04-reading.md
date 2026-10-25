@@ -108,7 +108,7 @@ When discarding small singular values, recheck residuals of removed equations in
 
 <!-- lecture-page -->
 
-## 9. Combining residuals with different units
+## 9. Nondimensionalization of residuals with different units
 
 The sum residual has units mol/L; species-balance residuals have units mol/(L·min). Adding their squares without scales makes the meaning of λ depend on the unit convention.
 
@@ -130,7 +130,7 @@ Check sensor bias, omitted species, and stoichiometric errors first. Projection 
 
 <!-- lecture-page -->
 
-## 11. Requiring nonnegativity and the sum together
+## 11. Joint nonnegativity and concentration-sum constraints
 
 Clamping negative values after equality projection changes the sum. Requiring both the sum and nonnegativity gives:
 
@@ -306,7 +306,7 @@ d = [1.2, 2.5]이면 첫 식의 두 배와 두 번째 식이 모순됩니다. �
 
 <!-- lecture-page -->
 
-## 9. 단위가 다른 residual을 loss에 넣기
+## 9. 단위가 다른 residual의 무차원화
 
 농도 합 residual의 단위는 mol/L이고 성분수지 residual의 단위는 mol/(L·min)입니다. 두 제곱값을 scale 없이 더하면 λ의 의미가 단위 선택에 따라 달라집니다.
 
@@ -328,7 +328,7 @@ d = [1.2, 2.5]이면 첫 식의 두 배와 두 번째 식이 모순됩니다. �
 
 <!-- lecture-page -->
 
-## 11. 비음수성과 합을 함께 요구하기
+## 11. 비음수성과 농도 합의 동시 제약
 
 등식 투영 후 음수를 clamp하면 합이 달라집니다. 합과 비음수성을 함께 요구하는 문제는:
 

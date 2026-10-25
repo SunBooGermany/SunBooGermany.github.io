@@ -59,8 +59,9 @@
       topics_ko: "조작변수와 고정 context, 목적함수·제약, 고정된 ReLU graph, binary variable, Big-M, 유효한 bounds와 scaling."
       deliverable: "A hand-built MILP representation checked against the frozen network forward pass."
       deliverable_ko: "고정 신경망의 forward 출력과 대조한 직접 작성한 MILP 표현."
-      reading: "Boyd & Vandenberghe, optimization problems (selected); Anderson et al., ReLU formulations."
-      reading_ko: "Boyd & Vandenberghe의 최적화 문제 관련 지정 내용; Anderson et al.의 ReLU formulation."
+      reading: "Week 5 reading companion; Boyd & Vandenberghe, optimization problems (selected); Anderson et al., ReLU formulations."
+      reading_ko: "5주차 직접 제공 읽기자료; Boyd & Vandenberghe의 최적화 문제 관련 지정 내용; Anderson et al.의 ReLU formulation."
+      url: /courses/surrogate-models/week-05/
     - number: 6
       title: "Building Formulations We Can Solve"
       title_ko: "실제로 풀 수 있는 정식화 만들기"

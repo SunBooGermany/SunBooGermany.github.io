@@ -18,7 +18,7 @@ notebook: "/assets/courses/surrogate-models/week-04/week04_lab.ipynb"
 lab_script: "/assets/courses/surrogate-models/week-04/week04_lab.py"
 ---
 
-## The predicted outlet contains too much material
+## Mismatch between predicted total and feed concentration
 
 An MLP predicts [0.70, 0.45, 0.25] mol/L for A, B, and C with a 1.20 mol/L feed. The total is 1.40. Can an engineer pass this outlet to the next process unit?
 
@@ -26,7 +26,7 @@ An MLP predicts [0.70, 0.45, 0.25] mol/L for A, B, and C with a 1.20 mol/L feed.
 
 <!-- lecture-page -->
 
-## A balance error passes to the next unit
+## Propagation of balance errors between process units
 
 The next separator calculates its load from incoming component amounts. A total-concentration error in the reactor surrogate enters that calculation directly, so prediction error and balance violation need separate checks.
 
@@ -34,7 +34,7 @@ This week we penalize residuals in the loss and project outputs onto specified l
 
 <!-- lecture-page -->
 
-## What we will calculate
+## Comparisons for learning with physical constraints
 
 1. Compare an MLP, a soft sum penalty, and a hard sum projection on the same data.
 2. Derive the nearest-point projection from KKT conditions and check rank assumptions.
@@ -55,7 +55,7 @@ At 330 K, k₁ = 0.2 min⁻¹ and k₂ = 0.1 min⁻¹. With τ = 5 min and C_Af 
 
 <!-- lecture-page -->
 
-## Where the concentration-sum equality comes from
+## Steady-state balances and the concentration-sum equality
 
 Let r_A, r_B, and r_C denote the right sides of the steady-state species balances. Adding them cancels the reaction terms.
 
@@ -65,7 +65,7 @@ At steady state each residual is zero, giving S = C_A + C_B + C_C = C_Af. This c
 
 <!-- lecture-page -->
 
-## Component error and sum error are different
+## Componentwise prediction error and concentration-sum error
 
 | Prediction [mol/L] | Component error [mol/L] | Sum residual [mol/L] |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ The reference is [0.60, 0.40, 0.20] mol/L. The second prediction has the right s
 
 <!-- lecture-page -->
 
-## Define the residual before choosing a loss
+## Definition of physical residuals
 
 The sum residual is r_sum = C_A + C_B + C_C − C_Af, in mol/L. Known kinetics also allow species-level steady-state residuals.
 
@@ -86,7 +86,7 @@ These three residuals have units mol/(L·min). The lab trains with the sum resid
 
 <!-- lecture-page -->
 
-## Soft penalty: fit data and penalize violations
+## Data-error and constraint-violation terms in a soft penalty
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>soft</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mo>‖</mo><mfrac><mrow><msub><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow><mrow><mi>i</mi></mrow></msub><mo>−</mo><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mo>+</mo><mi>λ</mi><mfrac><mrow><mn>1</mn></mrow><mrow><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mrow><mo>(</mo><mfrac><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>sum</mi><mo>,</mo><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>)</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
@@ -106,7 +106,7 @@ If a ≠ b, a residual remains for finite λ. Very large penalties also require 
 
 <!-- lecture-page -->
 
-## What automatic differentiation differentiates
+## Differentiation targets in automatic differentiation
 
 Our MLP maps [T, τ, C_Af] to steady concentrations. Training differentiates the loss with respect to parameters θ. The sum residual and steady-state species balances need no time derivative.
 
@@ -116,7 +116,7 @@ If t̃ = (t − μ_t)/s_t, then ∂y/∂t = (1/s_t)∂y/∂t̃.
 
 <!-- lecture-page -->
 
-## Hard equality: each input defines an output set
+## Hard linear equalities and feasible output sets
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>A</mi><mi>x</mi><mo>+</mo><mi>B</mi><mi>y</mi><mo>=</mo><mi>b</mi><mo>,</mo></mrow></mtd></mtr><mtr><mtd><mrow><mi>B</mi><mi>y</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>b</mi><mo>−</mo><mi>A</mi><mi>x</mi></mrow></mtd></mtr></mtable></math>
 
@@ -126,7 +126,7 @@ For the CSTR, x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], and b = 0. Thu
 
 <!-- lecture-page -->
 
-## The nearest output satisfying the equality
+## Nearest-point projection onto a linear equality set
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><msub><mrow><mi>argmin</mi></mrow><mrow><mi>z</mi></mrow></msub><mtext>  </mtext><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>‖</mo><mi>z</mi><mo>−</mo><mover><mi>y</mi><mo>^</mo></mover><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mtext>   subject to   </mtext><mi>B</mi><mi>z</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
@@ -170,7 +170,7 @@ The specified equalities hold during training and inference, subject in implemen
 
 <!-- lecture-page -->
 
-## Check rank and consistency separately
+## Constraint-matrix rank and equality-system consistency
 
 | Case | Consequence |
 | --- | --- |
@@ -204,7 +204,7 @@ Both can satisfy the same equality, but their training gradients differ and gene
 
 <!-- lecture-page -->
 
-## A fixed layer still transmits gradients
+## Backpropagation through a fixed projection layer
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>∂</mi><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow><mrow><mi>∂</mi><mover><mi>y</mi><mo>^</mo></mover></mrow></mfrac><mo>=</mo><mi>P</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>∇</mi></mrow><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow></msub><mi>L</mi><mo>=</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>T</mi></mrow></msup><msub><mrow><mi>∇</mi></mrow><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></msub><mi>L</mi></mrow></mtd></mtr></mtable></math>
 
@@ -224,7 +224,7 @@ The lab also checks an analytic Jacobian and double-precision gradcheck for two 
 
 <!-- lecture-page -->
 
-## Output standardization also changes B
+## Constraint-matrix transformation under output standardization
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>y</mi><mo>=</mo><mi>μ</mi><mo>+</mo><mi>D</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>B</mi><mi>D</mi><mi>z</mi><mo>=</mo><mi>d</mi><mo>−</mo><mi>B</mi><mi>μ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><mi>diag</mi><mrow><mo>(</mo><msub><mrow><mi>s</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mrow><mi>s</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
@@ -234,7 +234,7 @@ Nearest points in standardized and physical coordinates differ when component sc
 
 <!-- lecture-page -->
 
-## Lab choice: restore physical units, then project
+## Physical-unit restoration and projection order
 
 The MLP returns standardized outputs z. Restore mol/L with μ + Dz, then project in physical coordinates. Divide data errors by the common scale <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L.
 
@@ -262,7 +262,7 @@ Projection adds no trainable parameters. The companion and lab script include th
 
 <!-- lecture-page -->
 
-## A correct sum can still contain negative concentrations
+## Concentration-sum constraints and nonnegativity
 
 Raw [0.02, 0.90, 0.50] mol/L sums to 1.42. Projection to 1.20 gives [−0.053333, 0.826667, 0.426667] mol/L.
 
@@ -272,7 +272,7 @@ To require both nonnegativity and the sum, use a method including those inequali
 
 <!-- lecture-page -->
 
-## Accuracy statements require a metric and assumptions
+## Conditions for error reduction by projection
 
 If reference <math><msup><mrow><mi>y</mi></mrow><mrow><mo>∗</mo></mrow></msup></math> lies in the same affine set, orthogonality gives:
 
@@ -324,7 +324,7 @@ The minimum covers every component and test row. Record the evaluation tolerance
 
 <!-- lecture-page -->
 
-## Inspect balances that were not enforced
+## Evaluation of species balances omitted from training
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="Pooled RMSE and maximum concentration-sum violation by model" /></figure>
 The hard model has species-balance residual RMS 0.002225 mol/(L·min). Satisfying the sum does not make every reaction/outlet relation exact.
@@ -345,7 +345,7 @@ Outputs retain the split dataset, test predictions, weights, training statistics
 
 <!-- lecture-page -->
 
-## Connect the equality to the Week 3 dynamic model
+## Total-concentration equality in the dynamic model
 
 With constant feed and τ within an interval, the exact total-concentration transition is:
 
@@ -386,7 +386,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- ko -->
 
-## 예측 농도의 합이 유입보다 크다
+## 예측 농도 합과 유입 농도의 불일치
 
 유입 농도가 1.20 mol/L인 반응기에서 MLP가 A·B·C를 [0.70, 0.45, 0.25] mol/L로 예측했습니다. 합은 1.40입니다. 이 출력을 다음 공정의 입력으로 보내도 될까요?
 
@@ -394,7 +394,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## 연결된 공정에서는 작은 위반도 전달된다
+## 연결 공정에서의 물질수지 오차 전파
 
 다음 분리기는 각 성분의 유입량으로 부하를 계산합니다. 반응기 surrogate의 합 오차가 그 계산에 그대로 들어가므로, 예측 오차와 물질수지 위반을 따로 확인해야 합니다.
 
@@ -402,7 +402,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## 이번 주에 계산할 것
+## 물리 제약 학습의 비교 항목
 
 1. 같은 데이터로 MLP·soft sum penalty·hard sum projection을 비교합니다.
 2. 최소 거리 투영을 KKT 조건으로 유도하고 rank 가정을 확인합니다.
@@ -423,7 +423,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## 농도 합 등식은 어디서 나오는가
+## 정상상태 수지와 농도 합 등식
 
 각 정상상태 성분수지의 우변을 r_A, r_B, r_C라고 놓고 더하면 반응항이 상쇄됩니다.
 
@@ -433,7 +433,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## 성분 오차와 합 오차를 구분하기
+## 성분별 예측 오차와 농도 합 오차
 
 | 예측 [mol/L] | 성분 오차 [mol/L] | 합 residual [mol/L] |
 | --- | --- | --- |
@@ -444,7 +444,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## Residual을 먼저 정의하기
+## 물리 residual의 정의
 
 농도 합 residual은 r_sum = C_A + C_B + C_C − C_Af이며 단위는 mol/L입니다. 알려진 속도식을 사용하면 성분별 정상상태 residual도 계산할 수 있습니다.
 
@@ -454,7 +454,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <!-- lecture-page -->
 
-## Soft penalty: 데이터와 등식 위반을 함께 줄이기
+## Soft penalty의 데이터 오차항과 제약 위반항
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>soft</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mo>‖</mo><mfrac><mrow><msub><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow><mrow><mi>i</mi></mrow></msub><mo>−</mo><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mo>+</mo><mi>λ</mi><mfrac><mrow><mn>1</mn></mrow><mrow><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mrow><mo>(</mo><mfrac><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>sum</mi><mo>,</mo><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>)</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
@@ -474,7 +474,7 @@ a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 
 
 <!-- lecture-page -->
 
-## 자동미분에서 무엇을 미분하는가
+## 자동미분의 계산 대상
 
 현재 실습의 MLP는 [T, τ, C_Af]에서 정상 농도로 가는 mapping입니다. Loss를 파라미터 θ로 미분하며, 합 residual과 정상상태 성분수지에는 시간 미분이 필요하지 않습니다.
 
@@ -484,7 +484,7 @@ a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 
 
 <!-- lecture-page -->
 
-## Hard 등식: 입력이 정해지면 가능한 출력 집합이 정해진다
+## Hard 선형 등식과 가능한 출력 집합
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>A</mi><mi>x</mi><mo>+</mo><mi>B</mi><mi>y</mi><mo>=</mo><mi>b</mi><mo>,</mo></mrow></mtd></mtr><mtr><mtd><mrow><mi>B</mi><mi>y</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>b</mi><mo>−</mo><mi>A</mi><mi>x</mi></mrow></mtd></mtr></mtable></math>
 
@@ -494,7 +494,7 @@ CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다
 
 <!-- lecture-page -->
 
-## 가장 가까운 등식 만족 출력
+## 선형 등식 집합으로의 최소 거리 투영
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><msub><mrow><mi>argmin</mi></mrow><mrow><mi>z</mi></mrow></msub><mtext>  </mtext><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>‖</mo><mi>z</mi><mo>−</mo><mover><mi>y</mi><mo>^</mo></mover><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mtext>   subject to   </mtext><mi>B</mi><mi>z</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
@@ -538,7 +538,7 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <!-- lecture-page -->
 
-## Rank와 일관성은 별도로 확인한다
+## 제약 행렬의 rank와 등식계의 일관성
 
 | 경우 | 판단 |
 | --- | --- |
@@ -572,7 +572,7 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <!-- lecture-page -->
 
-## 고정된 층도 gradient를 전달한다
+## 고정 투영층의 역전파
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>∂</mi><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow><mrow><mi>∂</mi><mover><mi>y</mi><mo>^</mo></mover></mrow></mfrac><mo>=</mo><mi>P</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>∇</mi></mrow><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow></msub><mi>L</mi><mo>=</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>T</mi></mrow></msup><msub><mrow><mi>∇</mi></mrow><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></msub><mi>L</mi></mrow></mtd></mtr></mtable></math>
 
@@ -592,7 +592,7 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 학습하지 않
 
 <!-- lecture-page -->
 
-## 출력 표준화를 하면 B도 변한다
+## 출력 표준화에 따른 제약 행렬 변환
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>y</mi><mo>=</mo><mi>μ</mi><mo>+</mo><mi>D</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>B</mi><mi>D</mi><mi>z</mi><mo>=</mo><mi>d</mi><mo>−</mo><mi>B</mi><mi>μ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><mi>diag</mi><mrow><mo>(</mo><msub><mrow><mi>s</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mrow><mi>s</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
@@ -602,7 +602,7 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 학습하지 않
 
 <!-- lecture-page -->
 
-## 실습의 선택: 물리 단위로 복원한 뒤 투영
+## 물리 단위 복원과 투영 순서
 
 MLP는 표준화 출력 z를 만들고, μ + Dz로 mol/L를 복원한 뒤 물리 공간에서 투영합니다. 데이터 loss는 모든 성분에 공통인 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L로 나눕니다.
 
@@ -630,7 +630,7 @@ optimizer.step()
 
 <!-- lecture-page -->
 
-## 합을 맞춰도 음수 농도는 남을 수 있다
+## 농도 합 제약과 비음수성
 
 Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [−0.053333, 0.826667, 0.426667] mol/L가 됩니다.
 
@@ -640,7 +640,7 @@ Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [�
 
 <!-- lecture-page -->
 
-## 투영과 정확도의 관계에는 조건이 있다
+## 투영의 오차 감소 조건
 
 기준 <math><msup><mrow><mi>y</mi></mrow><mrow><mo>∗</mo></mrow></msup></math>가 같은 affine 집합에 있으면 Euclidean 투영의 직교성으로:
 
@@ -692,7 +692,7 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 
 <!-- lecture-page -->
 
-## 전체 수지를 만족하는지는 별도로 검사하기
+## 학습에 포함하지 않은 성분수지의 평가
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="모델별 pooled RMSE와 최대 농도 합 위반 비교" /></figure>
 Hard 모델의 성분수지 residual RMS는 0.002225 mol/(L·min)입니다. 합 등식을 만족해도 각 성분의 반응·유출 관계가 모두 정확하지는 않습니다.
@@ -713,7 +713,7 @@ python week04_lab.py --output-dir week04-results
 
 <!-- lecture-page -->
 
-## 3주차 동적 모델에 연결하기
+## 동적 모델의 총 농도 등식
 
 구간 안에서 유입 농도와 τ가 일정하면 총 농도의 정확한 전이는:
 

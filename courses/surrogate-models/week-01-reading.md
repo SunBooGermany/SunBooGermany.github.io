@@ -14,7 +14,7 @@ lecture_note: /courses/surrogate-models/week-01/
 course_id: "surrogate-models"
 ---
 
-## 1. Define the map before collecting data
+## 1. Definition of the prediction map
 
 A surrogate predicts outputs from specified inputs over a declared domain. A label is a reference output paired with one input row.
 
@@ -79,7 +79,7 @@ The feature row contains 1 constant + 3 inputs + 3 squares + 3 pairwise products
 
 <!-- lecture-page -->
 
-## 5. Read accuracy and consistency separately
+## 5. Prediction accuracy and output consistency
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
 
@@ -103,7 +103,7 @@ Check your calculations in the [Week 1 lab]({{ page.lecture_note | relative_url 
 
 <!-- ko -->
 
-## 1. 데이터를 만들기 전에 mapping 정의하기
+## 1. 예측 mapping의 정의
 
 Surrogate는 명시한 영역에서 입력에 대응하는 출력을 예측하는 모델이며, label은 입력 한 행에 짝지은 기준 출력입니다.
 
@@ -168,7 +168,7 @@ Surrogate는 명시한 영역에서 입력에 대응하는 출력을 예측하�
 
 <!-- lecture-page -->
 
-## 5. 정확도와 일관성을 따로 읽기
+## 5. 예측 정확도와 출력 일관성 평가
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
 

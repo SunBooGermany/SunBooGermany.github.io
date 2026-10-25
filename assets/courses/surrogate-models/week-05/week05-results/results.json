@@ -1,0 +1,47 @@
+{
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "checks": {
+    "fixed_input_checks": 41,
+    "max_forward_error": 1.2500000035053915e-08,
+    "invalid_bound_counterexample": true,
+    "epigraph_counterexample": true,
+    "fractional_binary_counterexample": true
+  },
+  "continuous_variables": 8,
+  "binary_variables": 3,
+  "tau_min": 5.3538461538461615,
+  "volume_L": 5.3538461538461615,
+  "prediction_mol_L": [
+    0.5846153846153841,
+    0.4000000000000001,
+    0.21538461538461576
+  ],
+  "reference_mol_L": [
+    0.5794947994056459,
+    0.4041366536937173,
+    0.21636854690063664
+  ],
+  "hidden": [
+    0.4192307692307702,
+    0.16923076923077018,
+    0.0,
+    0.0
+  ],
+  "binary": [
+    1.0,
+    -0.0,
+    0.0
+  ],
+  "independent_tau_min": 5.353846153846156,
+  "solver_status": 0,
+  "mip_gap": 2.648238407362752e-16,
+  "volume_dual_bound_L": 5.3538461538461615,
+  "elapsed_seconds": 0.007664600037969649,
+  "relaxation_volume_L": 5.353846153846156,
+  "loose_bounds_volume_L": 5.3538461538461615,
+  "objective_constant_L": 2.0
+}

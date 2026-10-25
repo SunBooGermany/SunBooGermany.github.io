@@ -14,7 +14,7 @@ lecture_note: /courses/surrogate-models/week-02/
 course_id: "surrogate-models"
 ---
 
-## 1. One reactor, three steady-state outputs
+## 1. Three-component steady-state CSTR outputs
 
 For consecutive first-order reactions A → B → C, setting each derivative to zero lets us solve in the order A, B, then C:
 
@@ -43,7 +43,7 @@ ReLU applies max(0, value) to each hidden pre-activation. A linear output can re
 
 <!-- lecture-page -->
 
-## 3. Scaling changes what the loss emphasizes
+## 3. Output scaling and componentwise loss weights
 
 Use the declared bounds for input scaling. For output standardization, compute the mean and standard deviation from training data only; restore physical units before reporting concentration errors.
 
@@ -57,7 +57,7 @@ Compare component test RMSE and the concentration-sum residual with and without 
 
 <!-- lecture-page -->
 
-## 4. One backward pass, one parameter update
+## 4. Worked backpropagation and parameter update
 
 Use a 3 → 2 → 3 network with `W1 = [[1, 0, 0], [0, 0, 1]]`, `W2 = [[1, 0], [0, 1], [1, 1]]`, and zero biases. Input [1, 0, −1] gives hidden pre-activation [1, −1], ReLU output [1, 0], and prediction [1, 0, 1]. Against target [0, 1, 0], the error is [1, −1, 1].
 
@@ -105,7 +105,7 @@ Check the same metrics in the [Week 2 core lab]({{ page.lecture_note | relative_
 
 <!-- ko -->
 
-## 1. 하나의 반응기, 세 정상상태 출력
+## 1. CSTR의 세 성분 정상상태 출력
 
 1차 연속반응 A → B → C의 시간 미분을 각각 0으로 놓고 A, B, C 순서로 정상 농도를 구합니다.
 
@@ -134,7 +134,7 @@ ReLU는 은닉층의 활성화 전 값마다 max(0, 값)을 적용합니다. 선
 
 <!-- lecture-page -->
 
-## 3. Scaling은 loss의 강조점을 바꾼다
+## 3. 출력 scaling과 성분별 loss 가중치
 
 입력 scaling에는 명시한 bounds를 사용합니다. 출력 표준화의 평균과 표준편차는 train 데이터에서만 계산하며, 농도 오차를 보고할 때는 물리 단위로 복원합니다.
 
@@ -148,7 +148,7 @@ ReLU는 은닉층의 활성화 전 값마다 max(0, 값)을 적용합니다. 선
 
 <!-- lecture-page -->
 
-## 4. Backward 한 번, 파라미터 갱신 한 번
+## 4. 역전파와 파라미터 갱신 예제
 
 3 → 2 → 3 신경망의 초기값은 `W1 = [[1, 0, 0], [0, 0, 1]]`, `W2 = [[1, 0], [0, 1], [1, 1]]`이며 bias는 모두 0입니다. 입력 [1, 0, −1]의 은닉층 활성화 전 값은 [1, −1], ReLU 출력은 [1, 0], 예측은 [1, 0, 1]입니다. 기준값 [0, 1, 0]에 대한 오차는 [1, −1, 1]입니다.
 
