@@ -22,6 +22,7 @@
 .course-status { font-size: 13px; font-weight: 750; color: var(--green); }
 .course-status.planned { color: var(--muted); }
 .course-note .post-header { margin-bottom: 42px; }
+.course-syllabus, .course-syllabus * { color: #000 !important; }
 .course-note .post-content table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 24px 0; }
 .course-note .post-content th, .course-note .post-content td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
 .course-note .post-content th { background: var(--green-soft); }

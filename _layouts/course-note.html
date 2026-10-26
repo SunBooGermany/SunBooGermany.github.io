@@ -22,8 +22,8 @@ layout: default
       <span data-lang-panel="ko" hidden>{{ page.description_ko | escape }}</span>
     </p>
     <div class="post-meta">
-      <span data-lang-panel="en">Course design and notes: Sunwoo Kim · Graduate entry · Updated {{ page.updated }}</span>
-      <span data-lang-panel="ko" hidden>과목 설계·강의 노트: Sunwoo Kim · 대학원 입문 · 수정 {{ page.updated }}</span>
+      <span data-lang-panel="en">Course design and notes: Sunwoo Kim · Graduate entry{% if page.updated %} · Updated {{ page.updated }}{% endif %}</span>
+      <span data-lang-panel="ko" hidden>과목 설계·강의 노트: Sunwoo Kim · 대학원 입문{% if page.updated %} · 수정 {{ page.updated }}{% endif %}</span>
     </div>
     <nav class="course-actions" aria-label="Course materials">
       <a class="button secondary" href="{{ '/courses/surrogate-models/' | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
