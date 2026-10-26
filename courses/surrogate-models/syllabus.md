@@ -57,8 +57,6 @@ The syllabus and lecture materials for [Week 1]({{ '/courses/surrogate-models/we
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading }} |
 {% endfor %}
 
-Reading companions for [Week 1]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}), [Week 2]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), [Week 3]({{ '/courses/surrogate-models/week-03-reading/' | relative_url }}), [Week 4]({{ '/courses/surrogate-models/week-04-reading/' | relative_url }}), and [Week 5]({{ '/courses/surrogate-models/week-05-reading/' | relative_url }}) are also available as English/Korean PDFs. Read the assigned sections of external sources. RNN/LSTM, encoder–decoder, DeepONet, advanced formulation proofs, and longer-horizon examples are optional extensions.
-
 ## Core sources
 
 - Convex optimization background: S. Boyd and L. Vandenberghe, *Convex Optimization* (2004). Read selected parts of Chapters 2–4 for convex sets, convex functions, epigraphs, and optimization problems; return to Chapter 5 for duality and KKT. [Official book and downloads](https://web.stanford.edu/~boyd/cvxbook/) · [EE364a slides](https://web.stanford.edu/class/ee364a/lectures.html).
@@ -116,8 +114,6 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지 지식을 전�
 | --- | --- |
 {% for week in course.weeks %}| {{ week.number }} | {{ week.reading_ko }} |
 {% endfor %}
-
-[1주차]({{ '/courses/surrogate-models/week-01-reading/' | relative_url }}), [2주차]({{ '/courses/surrogate-models/week-02-reading/' | relative_url }}), [3주차]({{ '/courses/surrogate-models/week-03-reading/' | relative_url }}), [4주차]({{ '/courses/surrogate-models/week-04-reading/' | relative_url }}), [5주차 읽기자료]({{ '/courses/surrogate-models/week-05-reading/' | relative_url }})를 국문·영문 PDF로도 제공합니다. 외부 원문은 지정된 절을 읽습니다. RNN/LSTM·encoder–decoder·DeepONet, 고급 formulation 증명과 긴 horizon 예제는 선택 확장입니다.
 
 ## 핵심 참고자료
 
