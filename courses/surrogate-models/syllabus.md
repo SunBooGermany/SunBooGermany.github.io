@@ -72,14 +72,6 @@ Reading companions for [Week 1]({{ '/courses/surrogate-models/week-01-reading/' 
 
 Optional extensions: [DeepONet, Nature Machine Intelligence (2021)](https://www.nature.com/articles/s42256-021-00302-5), for input-function to output-function mappings; [KKT-Hardnet public manuscript (2025), published in C&CE (2026)](https://arxiv.org/abs/2507.08124), for nonlinear equality and inequality projection.
 
-## Exercises and final project
-
-For Week 1, submit a prediction specification, fitted baseline, and held-out evaluation. For Week 2, submit a steady-state MLP, a hand-checked gradient update, and component-error and consistency diagnostics. Subsequent weeks connect the verified elements step by step.
-
-Document the domain, data split, model structure, frozen weights, scaling, formulation assumptions, solver termination, and reference process. Evaluate prediction error on independent data, and assess physical consistency, formulation agreement, and decision quality separately. Compare economic performance with the reference model. If a grid or local solver provides the benchmark, identify it explicitly and distinguish its result from a certified global process optimum.
-
-Assessment covers mathematical correctness, reproducibility, evidence for decision quality, and accurate reporting of remaining error and feasibility. Failed operating points and incomplete solves are also reportable results.
-
 <!-- ko -->
 
 ## 과목의 목적
@@ -139,11 +131,3 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지 지식을 전�
 - Sequence learning 기초: I. Sutskever, O. Vinyals, Q. V. Le, *Sequence to Sequence Learning with Neural Networks*, NeurIPS (2014). 원 논문은 번역을 다루며, 이 강의의 공정 궤적 실습은 별도로 만든 교육 예제입니다. [논문](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html).
 
 선택 확장: 입력 함수를 출력 함수로 매핑하는 [DeepONet, Nature Machine Intelligence (2021)](https://www.nature.com/articles/s42256-021-00302-5); 비선형 등식·부등식 projection을 다루는 [KKT-Hardnet 공개 원고(2025), C&CE 출판(2026)](https://arxiv.org/abs/2507.08124).
-
-## 연습문제와 종합 프로젝트
-
-1주차에는 예측 문제 정의, 학습한 baseline, 독립 test 평가를 제출합니다. 2주차에는 정상상태 MLP, 손 계산으로 확인한 gradient 갱신, 성분별 오차와 일관성 진단을 제출합니다. 이후 주차에서는 검증한 요소를 하나씩 연결합니다.
-
-최종 프로젝트에는 영역, 데이터 분할, 모델 구조, 고정 가중치, scaling, 정식화 가정, solver 종료 상태와 기준 공정을 명시합니다. 독립 데이터의 예측 오차, 물리적 일관성, 정식화의 일치성, 선택한 운전 조건의 품질은 구분해 평가합니다. 경제성은 기준 모델과 비교하며, grid나 local solver 결과를 비교 기준으로 사용했다면 이를 명시하고 인증된 공정 전역 최적해와 구분합니다.
-
-수리적 정확성, 재현성, 의사결정 품질의 근거와 남은 오차·feasibility에 대한 보고를 평가합니다. 실패한 운전점이나 완료하지 못한 풀이도 보고 대상입니다.

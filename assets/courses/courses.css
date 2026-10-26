@@ -26,6 +26,7 @@
 .course-note .post-content table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 24px 0; }
 .course-note .post-content th, .course-note .post-content td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
 .course-note .post-content th { background: var(--green-soft); }
+.course-syllabus .post-content th, .course-syllabus .post-content td { background: transparent; border-color: #ccc; }
 .course-note .post-content figure { margin: 28px 0; }
 .course-note .post-content figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
 .course-note .post-content pre { padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: #f0f4f2; overflow-x: auto; font-size: 14px; }
