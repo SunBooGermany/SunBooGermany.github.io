@@ -46,10 +46,6 @@ By the end of the course, learners should be able to:
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title }}.** {{ week.topics }} | {{ week.deliverable }} |
 {% endfor %}
 
-Weeks 1–3 develop prediction models, and Week 4 examines physical consistency. Weeks 5–6 formulate and solve optimization problems with trained models; Week 7 addresses model structure for optimization. Week 8 connects these steps to operating decisions and revalidation. The operating-decision example in Week 1 briefly previews the later work.
-
-The syllabus and lecture materials for [Week 1]({{ '/courses/surrogate-models/week-01/' | relative_url }}), [Week 2]({{ '/courses/surrogate-models/week-02/' | relative_url }}), [Week 3]({{ '/courses/surrogate-models/week-03/' | relative_url }}), [Week 4]({{ '/courses/surrogate-models/week-04/' | relative_url }}), and [Week 5]({{ '/courses/surrogate-models/week-05/' | relative_url }}) are available. Weeks 6–8 remain planned.
-
 ## Reading assignments
 
 | Week | Reading guidance |
@@ -103,10 +99,6 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지 지식을 전�
 | --- | --- | --- |
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title_ko }}.** {{ week.topics_ko }} | {{ week.deliverable_ko }} |
 {% endfor %}
-
-1–3주차에는 예측 모델을 구축하고 4주차에는 물리적 일관성을 확인합니다. 5–6주차에서 학습된 모델을 최적화 문제로 정식화하고 풀이하며, 7주차에서는 최적화에 맞는 모델 구조를 설계합니다. 8주차에는 이 과정을 연결해 운전 조건을 선택하고 재검증합니다. 1주차의 운전 의사결정 예시는 후반부 학습을 미리 보여주는 짧은 예고입니다.
-
-현재 강의계획서와 [1주차]({{ '/courses/surrogate-models/week-01/' | relative_url }}), [2주차]({{ '/courses/surrogate-models/week-02/' | relative_url }}), [3주차]({{ '/courses/surrogate-models/week-03/' | relative_url }}), [4주차]({{ '/courses/surrogate-models/week-04/' | relative_url }}), [5주차]({{ '/courses/surrogate-models/week-05/' | relative_url }}) 강의자료를 제공합니다. 6–8주차는 계획 단계입니다.
 
 ## 주차별 읽기 안내
 
