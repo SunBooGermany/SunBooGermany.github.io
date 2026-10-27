@@ -11,8 +11,8 @@ requests it.
 
 ## Lecture Notes: Persistent Format Preference
 
-The course title is "Surrogate Modeling for Process Prediction and Optimization"
-("공정 예측과 최적화를 위한 서로게이트 모델링"). Use the course data for titles
+The course title is "Surrogate Modeling for Process Prediction and Optimal Decision-Making"
+("공정 예측과 최적 의사결정을 위한 서로게이트 모델링"). Use the course data for titles
 and footers; do not label this course "AI for Chemical Engineers". The course
 catalog is "Chemical Engineering Courses" ("화학공학 강의"). The user approved
 the revised sequence on 2026-10-09:
