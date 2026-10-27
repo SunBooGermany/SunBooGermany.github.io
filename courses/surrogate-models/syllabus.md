@@ -1,7 +1,7 @@
 ---
 layout: course-note
-title: "Syllabus: Surrogate Modeling for Process Prediction and Optimization"
-title_ko: "강의계획서: 공정 예측과 최적화를 위한 서로게이트 모델링"
+title: "Syllabus: Surrogate Modeling for Process Prediction and Optimal Decision-Making"
+title_ko: "강의계획서: 공정 예측과 최적 의사결정을 위한 서로게이트 모델링"
 description: "Build validated process predictors, learn optimization formulations and model structures, then select and revalidate operating conditions."
 description_ko: "공정 예측 모델을 학습·검증하고, 최적화 정식화와 모델 구조를 배운 뒤 운전 조건을 선택하고 재검증하는 8주 과정입니다."
 material_label: "Syllabus"
