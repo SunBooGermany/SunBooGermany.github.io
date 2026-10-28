@@ -40,7 +40,7 @@ Suppose a design <math><mi>x</mi></math> determines an investment cost f(x) and 
 
 <math display="block" aria-label="The mellowmax objective at a fixed temperature"><mtable columnalign="left"><mtr><mtd><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>+</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>w</mi><mi>log</mi><mrow><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>m</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>exp</mi><mrow><mo>(</mo><mfrac><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow><mrow><mi>w</mi></mrow></mfrac><mo>)</mo></mrow><mo>)</mo></mrow></mtd></mtr></mtable></math>
 
-Here w is the temperature that divides cost; some references instead use an inverse-temperature convention. Assume the feasible design set <math><mi>X</mi></math> is nonempty, closed, and convex, and that f and each <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math> are finite convex functions on a neighborhood of <math><mi>X</mi></math>, with the subgradients used below well defined. Mellowmax approximates the maximum scenario cost. The optimization problem considered here keeps w fixed.
+Here w is the temperature that divides cost. Assume the feasible design set <math><mi>X</mi></math> is nonempty, closed, and convex, and that f and each <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math> are finite convex functions on a neighborhood of <math><mi>X</mi></math>, with the subgradients used below well defined. Mellowmax approximates the maximum scenario cost.
 
 Let <math><msub><mrow><mi>g</mi></mrow><mrow><mi>f</mi></mrow></msub></math>(x) and <math><msub><mrow><mi>g</mi></mrow><mrow><mi>i</mi></mrow></msub></math>(x) be subgradients of investment and operating cost. Then
 
@@ -59,13 +59,13 @@ With w = 10, the desired weights and average direction are
 
 <math display="block" aria-label="Softmax weights for the two-scenario example"><mtable columnalign="left"><mtr><mtd><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow><mo>=</mo><mfrac><mrow><mi>exp</mi><mrow><mo>(</mo><mn>3</mn><mo>)</mo></mrow></mrow><mrow><mrow><mi>exp</mi><mrow><mo>(</mo><mn>3</mn><mo>)</mo></mrow><mo>+</mo><mi>exp</mi><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow></mrow></mrow></mfrac><mo>≈</mo><mn>0.881</mn><mo>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mn>2</mn><mo>)</mo></mrow><mo>≈</mo><mn>0.119</mn></mtd></mtr><mtr><mtd><msub><mrow><mi>g</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>≈</mo><mn>0.881</mn><mrow><mo>(</mo><mo>−</mo><mn>10</mn><mo>)</mo></mrow><mo>+</mo><mn>0.119</mn><mrow><mo>(</mo><mn>10</mn><mo>)</mo></mrow><mo>≈</mo><mo>−</mo><mn>7.62</mn></mtd></mtr></mtable></math>
 
-An update in the negative-gradient direction increases x, locally reducing the cost of scenario 1, which currently has the higher cost. An actual step must also account for its size and the design constraints.
+An update in the negative-gradient direction increases x, locally reducing the cost of scenario 1, which currently has the higher cost.
 
 Uniform sampling without reweighting gives
 
 <math display="block" aria-label="Uniform sampling without reweighting cancels the two slopes"><mn>0.5</mn><mrow><mo>(</mo><mo>−</mo><mn>10</mn><mo>)</mo></mrow><mo>+</mo><mn>0.5</mn><mrow><mo>(</mo><mn>10</mn><mo>)</mo></mrow><mo>=</mo><mn>0</mn></math>
 
-so the two gradients cancel. More iterations estimate this different average more accurately; they do not recover the desired weighted sum. This comparison concerns unweighted sample averages. Uniform sampling with suitable importance weights is a separate possibility.
+so the two gradients cancel. More iterations estimate this different average more accurately; they do not recover the desired weighted sum.
 
 At a fixed x, if the chain's long-run visit frequencies are about 88.1% for scenario 1 and 11.9% for scenario 2, the simple average of visited gradients approaches −7.62. Visit frequency implements the weighting. For a Metropolis chain, iterations that reject a proposed move and remain in the same scenario must also be counted.
 
@@ -91,7 +91,7 @@ the chain stays in its initial scenario forever. Every distribution is stationar
 
 On a finite state space, irreducibility supports convergence of time averages along a sample path. Convergence of the state distribution at each time also requires aperiodicity. See Levin and Peres, [*Markov Chains and Mixing Times*, Theorem 4.9 and Appendix C](https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf), for this distinction.
 
-These statements hold with x fixed. Updating the design also moves the target distribution <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>.
+Updating the design also moves the target distribution <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>.
 
 ## 3. Design updates and tracking a changing distribution
 
@@ -101,7 +101,7 @@ A direct approach fixes x, runs the chain long enough to estimate the average su
 
 The first line makes one transition from the current scenario. The second updates the design using the visited scenario's subgradient. The projection returns the result to <math><mi>X</mi></math> in Euclidean distance. The next iteration continues from the scenario just visited.
 
-The scenario location is carried forward. Its old operating cost is not automatically valid: after the design changes, acceptance probabilities must use costs evaluated at the current design. One transition also need not mean one operating-problem solve. Evaluating both proposed and current scenario costs may be necessary.
+The scenario location is carried forward. Its old operating cost is not automatically valid: after the design changes, acceptance probabilities must use costs evaluated at the current design. One transition may require solving the operating problems for both the proposed and current scenarios.
 
 Suppose the previous search was already close to its target distribution:
 
@@ -123,7 +123,7 @@ Assume a minimizer exists at the fixed w and choose a comparison point:
 
 <math display="block" aria-label="A comparison optimizer for the fixed-temperature objective"><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>∈</mo><mi>arg</mi><munder><mo>min</mo><mrow><mi>x</mi><mo>∈</mo><mi>X</mi></mrow></munder><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>,</mo><msubsup><mi>F</mi><mi>w</mi><mo>⋆</mo></msubsup><mo>:=</mo><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></math>
 
-The algorithm does not know <math><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></math> in advance; it is used in the proof. Euclidean projection gives the one-step inequality
+Euclidean projection gives the one-step inequality
 
 <math display="block" aria-label="The one-step squared-distance inequality"><mtable columnalign="left"><mtr><mtd><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>x</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup><mo>≤</mo><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mtd></mtr><mtr><mtd><mo>=</mo><msup><mrow><mrow><mo>‖</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></mrow><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup><mo>−</mo><mn>2</mn><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msup><mrow><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mo>⊤</mo></mrow></msup><mrow><mo>(</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></mrow><mo>)</mo></mrow><mo>+</mo><msup><mrow><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mn>2</mn></mrow></msup><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mtd></mtr></mtable></math>
 
@@ -143,7 +143,7 @@ If <math><msub><mrow><mi>I</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn>
 
 <math display="block" aria-label="One Markov transition need not give zero conditional mean error"><mi>𝔼</mi><mrow><mo>[</mo><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>|</mo><msub><mrow><mi>ℱ</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>]</mo></mrow><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mo>(</mo><msub><mrow><mi>P</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub><mrow><mo>(</mo><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>,</mo><mi>i</mi></mrow><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>p</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub><mrow><mo>(</mo><mi>i</mi><mo>)</mo></mrow><mo>)</mo></mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow><mo>≠</mo><mn>0</mn></math>
 
-The final ≠ 0 means the expression need not vanish; it can be zero for particular histories. This error is a scalar defined from cost differences, rather than a difference between gradient vectors.
+This conditional mean depends on the history and can be zero. The sampling error is a scalar defined from cost differences.
 
 Convexity of the investment and scenario costs gives
 
@@ -153,7 +153,7 @@ Viewed as a convex function of the cost vector, mellowmax has gradient <math><ms
 
 <math display="block" aria-label="Convexity of mellowmax as a function of the cost vector"><munder><mo>∑</mo><mi>i</mi></munder><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mi>i</mi><mo>)</mo></mrow><mrow><mo>[</mo><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></mrow><mo>]</mo></mrow><mo>≥</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></math>
 
-The direction matters: the weighted cost difference upper-bounds the difference in mellowmax values, allowing it to be combined with the preceding scenario-wise lower bound. For log-sum-exp convexity and the supporting-hyperplane inequality, see Boyd and Vandenberghe, [*Convex Optimization*, Chapter 3](https://web.stanford.edu/~boyd/cvxbook/).
+The weighted cost difference upper-bounds the difference in mellowmax values, allowing it to be combined with the preceding scenario-wise lower bound. For log-sum-exp convexity and the supporting-hyperplane inequality, see Boyd and Vandenberghe, [*Convex Optimization*, Chapter 3](https://web.stanford.edu/~boyd/cvxbook/).
 
 Substituting the definition of the sampling error gives
 
@@ -181,9 +181,9 @@ For example, suppose one can prove that finite nonnegative constants <math><msub
 
 <math display="block" aria-label="An additional cumulative-error bound, assumed for the rate derivation"><mi>𝔼</mi><mrow><mo>[</mo><mo>−</mo><mn>2</mn><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>]</mo></mrow><mo>≤</mo><msub><mrow><mi>C</mi></mrow><mrow><mn>0</mn></mrow></msub><mo>+</mo><msub><mrow><mi>C</mi></mrow><mrow><mn>1</mn></mrow></msub><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mn>2</mn></mrow></msup></math>
 
-This does not follow from the existence of a stationary distribution alone. It requires a separate argument using conditions on mixing of the design-dependent transitions, regularity with respect to design changes, and the stepsizes. The constants may depend on the fixed w, the problem, and the chain.
+Proving this bound requires conditions on mixing of the design-dependent transitions, regularity with respect to design changes, and the stepsizes. The constants may depend on the fixed w, the problem, and the chain.
 
-A Poisson-equation decomposition is one way to obtain such a bound. It expresses the centered cost differences through an equation involving the transition operator and uses that representation to analyze their accumulated contribution. Bounds and regularity for the equation's solution have not been proved here. The rate below is therefore conditional on establishing the stated cumulative-error bound.
+A Poisson-equation decomposition is one way to obtain such a bound. It expresses the centered cost differences through an equation involving the transition operator, then uses bounds and regularity of its solution to control the cumulative error.
 
 ## 6. Expected objective error of the averaged design
 
@@ -203,7 +203,7 @@ where ≍ denotes the same order of growth in N. Holding w and the associated co
 
 <math display="block" aria-label="A conditional rate for the fixed-temperature averaged objective"><mi>𝔼</mi><mrow><mo>[</mo><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msub><mrow><mover><mi>x</mi><mo>¯</mo></mover></mrow><mrow><mi>N</mi></mrow></msub><mo>)</mo></mrow><mo>]</mo></mrow><mo>−</mo><msubsup><mi>F</mi><mi>w</mi><mo>⋆</mo></msubsup><mo>=</mo><mi>O</mi><mrow><mo>(</mo><mfrac><mrow><mrow><mi>log</mi><mi>N</mi></mrow></mrow><mrow><msqrt><mi>N</mi></msqrt></mrow></mfrac><mo>)</mo></mrow><mo>→</mo><mn>0</mn></math>
 
-This result concerns the expected objective error of the averaged design. It does not establish cost reduction at every iteration, unbiasedness of individual samples, or convergence of the last design itself. It also concerns the mellowmax problem at a fixed temperature. Approximation error relative to the original maximum-cost problem, and changes in mixing as w decreases, require separate analysis.
+This rate applies to the expected objective error of the averaged design at a fixed temperature. It does not establish cost reduction at each iteration or convergence of the last design itself. Approximation error relative to the original maximum-cost problem, and changes in mixing as w decreases, require separate analysis.
 
 <!-- ko -->
 
@@ -215,7 +215,7 @@ Markov chain으로 시나리오를 골라 최적화할 때 정상분포는 어�
 
 <math display="block" aria-label="The mellowmax objective at a fixed temperature"><mtable columnalign="left"><mtr><mtd><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>+</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>w</mi><mi>log</mi><mrow><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>m</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mi>exp</mi><mrow><mo>(</mo><mfrac><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow><mrow><mi>w</mi></mrow></mfrac><mo>)</mo></mrow><mo>)</mo></mrow></mtd></mtr></mtable></math>
 
-여기서 w는 비용을 나누는 온도입니다. 문헌에 따라 역온도로 표기하기도 하므로 정의를 먼저 확인해야 합니다. 이 글에서는 설계 가능 영역 <math><mi>X</mi></math>가 비어 있지 않은 닫힌 볼록집합이고, f와 각 <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math>가 <math><mi>X</mi></math>를 포함하는 근방에서 유한한 볼록함수이며 필요한 부분기울기가 존재한다고 가정합니다. Mellowmax는 최대 시나리오 비용의 근사이며, w를 고정한 목적함수를 최적화하는 문제를 다룹니다.
+여기서 w는 비용을 나누는 온도입니다. 이 글에서는 설계 가능 영역 <math><mi>X</mi></math>가 비어 있지 않은 닫힌 볼록집합이고, f와 각 <math><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub></math>가 <math><mi>X</mi></math>를 포함하는 근방에서 유한한 볼록함수이며 필요한 부분기울기가 존재한다고 가정합니다. Mellowmax는 최대 시나리오 비용을 근사합니다.
 
 투자비와 운영비용의 부분기울기(subgradient)를 각각 <math><msub><mrow><mi>g</mi></mrow><mrow><mi>f</mi></mrow></msub></math>(x), <math><msub><mrow><mi>g</mi></mrow><mrow><mi>i</mi></mrow></msub></math>(x)라고 하면,
 
@@ -234,13 +234,13 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 <math display="block" aria-label="Softmax weights for the two-scenario example"><mtable columnalign="left"><mtr><mtd><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow><mo>=</mo><mfrac><mrow><mi>exp</mi><mrow><mo>(</mo><mn>3</mn><mo>)</mo></mrow></mrow><mrow><mrow><mi>exp</mi><mrow><mo>(</mo><mn>3</mn><mo>)</mo></mrow><mo>+</mo><mi>exp</mi><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow></mrow></mrow></mfrac><mo>≈</mo><mn>0.881</mn><mo>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mn>2</mn><mo>)</mo></mrow><mo>≈</mo><mn>0.119</mn></mtd></mtr><mtr><mtd><msub><mrow><mi>g</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>≈</mo><mn>0.881</mn><mrow><mo>(</mo><mo>−</mo><mn>10</mn><mo>)</mo></mrow><mo>+</mo><mn>0.119</mn><mrow><mo>(</mo><mn>10</mn><mo>)</mo></mrow><mo>≈</mo><mo>−</mo><mn>7.62</mn></mtd></mtr></mtable></math>
 
-입니다. 기울기의 반대 방향으로 업데이트하므로 x를 증가시키게 됩니다. 현재 비용이 큰 시나리오 1의 비용을 국소적으로 줄이는 방향입니다. 실제 이동에서는 보폭과 설계 제약도 고려해야 합니다.
+입니다. 기울기의 반대 방향으로 업데이트하므로 x를 증가시키게 됩니다. 현재 비용이 큰 시나리오 1의 비용을 국소적으로 줄이는 방향입니다.
 
 균등하게 뽑은 표본을 별도 가중치 없이 사용하면 평균 방향은
 
 <math display="block" aria-label="Uniform sampling without reweighting cancels the two slopes"><mn>0.5</mn><mrow><mo>(</mo><mo>−</mo><mn>10</mn><mo>)</mo></mrow><mo>+</mo><mn>0.5</mn><mrow><mo>(</mo><mn>10</mn><mo>)</mo></mrow><mo>=</mo><mn>0</mn></math>
 
-이 되어 두 기울기가 상쇄됩니다. 반복 횟수를 늘려도 원하는 가중합과 다른 평균을 더 정확하게 추정할 뿐입니다. 여기서 비교하는 것은 재가중하지 않은 표본 평균입니다. 균등 표본에 적절한 중요도 가중치를 곱하는 방법은 별도로 생각할 수 있습니다.
+이 되어 두 기울기가 상쇄됩니다. 반복 횟수를 늘려도 원하는 가중합과 다른 평균을 더 정확하게 추정할 뿐입니다.
 
 고정된 x에서 chain의 장기 방문 비율이 시나리오 1에 약 88.1%, 시나리오 2에 약 11.9%라면, 방문한 기울기의 단순 평균은 −7.62에 가까워집니다. 가중치를 매번 곱하는 계산을 방문 빈도로 구현하는 셈입니다. Metropolis 방식에서는 이동이 거절되어 같은 시나리오에 머문 반복도 평균에 포함해야 합니다.
 
@@ -266,7 +266,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 유한 상태공간에서 기약성은 하나의 경로를 따라 계산한 시간평균의 수렴을 뒷받침합니다. 각 시점의 상태 분포 자체가 정상분포로 수렴하려면 비주기성도 필요합니다. 두 수렴을 구분하는 설명은 Levin과 Peres의 [*Markov Chains and Mixing Times*, 정리 4.9와 부록 C](https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf)에서 확인할 수 있습니다.
 
-이 설명은 x를 고정했을 때의 이야기입니다. 설계를 업데이트하면 목표 분포 <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>도 움직입니다.
+설계를 업데이트하면 목표 분포 <math><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub></math>도 움직입니다.
 
 ## 3. 설계 업데이트와 목표 분포 추적
 
@@ -276,7 +276,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 첫 줄은 현재 시나리오에서 한 번 전이하는 과정이고, 둘째 줄은 방문한 시나리오의 부분기울기로 설계를 바꾸는 과정입니다. Π는 결과를 <math><mi>X</mi></math>에 Euclidean projection하는 연산입니다. 다음 반복에서는 방금 방문한 시나리오에서 탐색을 이어갑니다.
 
-이때 이어받는 것은 시나리오의 위치입니다. 설계가 바뀌면 같은 시나리오의 운영비용도 달라지므로, 수락확률은 현재 설계에서 평가한 비용으로 계산해야 합니다. 전이 한 번이 운영문제 풀이 한 번과 같다는 뜻도 아닙니다. 제안 시나리오와 현재 시나리오의 비용 평가 등이 필요할 수 있습니다.
+이때 이어받는 것은 시나리오의 위치입니다. 설계가 바뀌면 같은 시나리오의 운영비용도 달라지므로, 수락확률은 현재 설계에서 평가한 비용으로 계산해야 합니다. 전이 한 번에 제안 시나리오와 현재 시나리오의 운영문제를 모두 풀어야 할 수도 있습니다.
 
 이전 탐색이 첫 번째 목표 분포에 충분히 가까웠다고 합시다.
 
@@ -298,7 +298,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 <math display="block" aria-label="A comparison optimizer for the fixed-temperature objective"><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>∈</mo><mi>arg</mi><munder><mo>min</mo><mrow><mi>x</mi><mo>∈</mo><mi>X</mi></mrow></munder><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>,</mo><msubsup><mi>F</mi><mi>w</mi><mo>⋆</mo></msubsup><mo>:=</mo><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></math>
 
-<math><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></math>는 증명에 사용하는 값이며 알고리즘이 미리 알고 있는 설계는 아닙니다. Euclidean projection의 성질로 한 번의 업데이트 전후에
+Euclidean projection의 성질로 한 번의 업데이트 전후에
 
 <math display="block" aria-label="The one-step squared-distance inequality"><mtable columnalign="left"><mtr><mtd><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>x</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup><mo>≤</mo><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mtd></mtr><mtr><mtd><mo>=</mo><msup><mrow><mrow><mo>‖</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></mrow><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup><mo>−</mo><mn>2</mn><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msup><mrow><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mo>⊤</mo></mrow></msup><mrow><mo>(</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>−</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup></mrow><mo>)</mo></mrow><mo>+</mo><msup><mrow><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mn>2</mn></mrow></msup><msup><mrow><mrow><mo>‖</mo><msub><mrow><mi>Z</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>‖</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mtd></mtr></mtable></math>
 
@@ -318,7 +318,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 <math display="block" aria-label="One Markov transition need not give zero conditional mean error"><mi>𝔼</mi><mrow><mo>[</mo><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>|</mo><msub><mrow><mi>ℱ</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>]</mo></mrow><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mo>(</mo><msub><mrow><mi>P</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub><mrow><mo>(</mo><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>,</mo><mi>i</mi></mrow><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>p</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub></mrow></msub><mrow><mo>(</mo><mi>i</mi><mo>)</mo></mrow><mo>)</mo></mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow><mo>≠</mo><mn>0</mn></math>
 
-입니다. 마지막의 ≠ 0은 항상 0이 아니라는 뜻이며, 특정 이력에서는 0일 수도 있습니다. 이 오차는 기울기 벡터의 차이가 아니라 비용 차이로 정의한 스칼라입니다.
+입니다. 이 조건부 평균은 이력에 따라 달라지며 0일 수도 있습니다. 표본 오차는 비용 차이로 정의한 스칼라입니다.
 
 각 시나리오와 투자비의 볼록성은
 
@@ -328,7 +328,7 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 <math display="block" aria-label="Convexity of mellowmax as a function of the cost vector"><munder><mo>∑</mo><mi>i</mi></munder><msub><mrow><mi>p</mi></mrow><mrow><mi>x</mi></mrow></msub><mrow><mo>(</mo><mi>i</mi><mo>)</mo></mrow><mrow><mo>[</mo><mrow><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>Q</mi></mrow><mrow><mi>i</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></mrow><mo>]</mo></mrow><mo>≥</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>−</mo><msub><mrow><mi>M</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msup><mrow><mi>x</mi></mrow><mrow><mo>⋆</mo></mrow></msup><mo>)</mo></mrow></math>
 
-가 성립합니다. 이 방향에 유의해야 합니다. 가중 비용 차이가 mellowmax 값의 차이를 위에서 감싸므로, 앞의 시나리오별 하한과 결합할 수 있습니다. Log-sum-exp의 볼록성과 지지 초평면 부등식은 Boyd와 Vandenberghe의 [*Convex Optimization*, 3장](https://web.stanford.edu/~boyd/cvxbook/)을 참고할 수 있습니다.
+가 성립합니다. 가중 비용 차이가 mellowmax 값의 차이를 위에서 감싸므로, 앞의 시나리오별 하한과 결합할 수 있습니다. Log-sum-exp의 볼록성과 지지 초평면 부등식은 Boyd와 Vandenberghe의 [*Convex Optimization*, 3장](https://web.stanford.edu/~boyd/cvxbook/)을 참고할 수 있습니다.
 
 표본 오차의 정의를 대입하면
 
@@ -356,9 +356,9 @@ w = 10이면 원하는 가중치와 평균 방향은
 
 <math display="block" aria-label="An additional cumulative-error bound, assumed for the rate derivation"><mi>𝔼</mi><mrow><mo>[</mo><mo>−</mo><mn>2</mn><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><msub><mrow><mi>e</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub><mo>]</mo></mrow><mo>≤</mo><msub><mrow><mi>C</mi></mrow><mrow><mn>0</mn></mrow></msub><mo>+</mo><msub><mrow><mi>C</mi></mrow><mrow><mn>1</mn></mrow></msub><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><msub><mrow><mi>α</mi></mrow><mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mrow></msub></mrow><mrow><mn>2</mn></mrow></msup></math>
 
-를 증명할 수 있다고 가정하겠습니다. 이것은 정상분포의 존재만으로 따라오는 결과가 아닙니다. 설계에 따라 바뀌는 전이행렬의 혼합 성질, 설계 변화에 대한 정칙성, 보폭 조건 등을 사용해 별도로 증명해야 할 상계입니다. 상수는 고정된 w와 문제 및 chain의 특성에 의존할 수 있습니다.
+를 만족한다고 가정하겠습니다. 이 상계를 증명하려면 전이행렬의 혼합 성질, 설계 변화에 대한 정칙성, 보폭 조건이 필요합니다. 상수는 고정된 w와 문제 및 chain의 특성에 의존할 수 있습니다.
 
-Poisson 방정식을 이용한 오차 분해는 이 상계를 얻는 한 방법입니다. 중심화한 비용 차이를 전이 연산자에 대한 방정식으로 표현해 누적 오차를 다룹니다. 여기서는 그 방정식의 해에 필요한 상계와 정칙성을 증명하지 않았으므로, 아래 수렴률은 위 누적 오차 상계가 확보된다는 조건 아래에서 읽어야 합니다.
+Poisson 방정식을 이용한 오차 분해는 이 상계를 얻는 한 방법입니다. 중심화한 비용 차이를 전이 연산자의 방정식으로 표현하고, 그 해의 상계와 정칙성으로 누적 오차를 제어합니다.
 
 ## 6. 가중평균 설계의 기대 목적함수 오차
 
@@ -378,4 +378,4 @@ Poisson 방정식을 이용한 오차 분해는 이 상계를 얻는 한 방법�
 
 <math display="block" aria-label="A conditional rate for the fixed-temperature averaged objective"><mi>𝔼</mi><mrow><mo>[</mo><msub><mrow><mi>F</mi></mrow><mrow><mi>w</mi></mrow></msub><mrow><mo>(</mo><msub><mrow><mover><mi>x</mi><mo>¯</mo></mover></mrow><mrow><mi>N</mi></mrow></msub><mo>)</mo></mrow><mo>]</mo></mrow><mo>−</mo><msubsup><mi>F</mi><mi>w</mi><mo>⋆</mo></msubsup><mo>=</mo><mi>O</mi><mrow><mo>(</mo><mfrac><mrow><mrow><mi>log</mi><mi>N</mi></mrow></mrow><mrow><msqrt><mi>N</mi></msqrt></mrow></mfrac><mo>)</mo></mrow><mo>→</mo><mn>0</mn></math>
 
-가 됩니다. 이 결과는 가중평균 설계의 기대 목적함수 오차에 관한 것입니다. 매 반복의 비용 감소, 각 표본의 불편향성, 마지막 설계 자체의 수렴까지 보장하지는 않습니다. 또한 고정된 온도의 mellowmax 문제에 대한 결과이므로, 원래 최대비용 문제와의 근사 오차나 w를 줄일 때 달라지는 혼합 속도는 별도로 분석해야 합니다.
+가 됩니다. 이 수렴률은 고정된 온도에서 가중평균 설계의 기대 목적함수 오차에 적용됩니다. 개별 반복의 비용 감소나 마지막 설계 자체의 수렴을 보장하지는 않습니다. 원래 최대비용 문제와의 근사 오차나 w를 줄일 때 달라지는 혼합 속도는 별도로 분석해야 합니다.
