@@ -1,0 +1,4 @@
+interface:
+  display_name: "한영 글 다듬기"
+  short_description: "한국어·영어의 번역투와 반복을 줄이고 논문·보고서의 흐름을 다듬습니다"
+  default_prompt: "$humanize-ko-en 스킬로 이 글의 사실과 인용을 유지하면서 자연스럽고 간결하게 다듬어줘. 한영 번역본이 있으면 같은 수정 원칙을 적용하고 표·그림과 본문의 중복도 정리해줘."
