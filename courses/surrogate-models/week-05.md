@@ -154,7 +154,7 @@ The remaining upper inequality, 0 ≤ a − L, holds because a ≥ L. This branc
 
 The remaining upper inequality h ≤ U is equivalent to a ≤ U. Thus 0 ≤ a ≤ U and h = a.
 
-At a = 0, either z value is possible, but h is 0 in both cases. Binary uniqueness and output uniqueness are different.
+At a = 0, z can be either 0 or 1, and the output h is fixed at 0.
 
 <!-- lecture-page -->
 
@@ -447,7 +447,7 @@ z = 0은 비활성 분기, z = 1은 활성 분기를 선택합니다. L과 U는 
 
 나머지 상한 h ≤ U는 a ≤ U와 같습니다. 따라서 0 ≤ a ≤ U, h = a를 얻습니다.
 
-a = 0에서는 두 z 값이 모두 가능하지만 h는 어느 쪽에서도 0입니다. 이진변수의 유일성은 출력의 유일성과 다릅니다.
+a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 
 <!-- lecture-page -->
 

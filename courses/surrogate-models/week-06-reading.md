@@ -142,7 +142,7 @@ Pass weights and biases to each `DenseLayer`, then connect layers with `add_edge
 4. Check termination and solution availability before reading outputs.
 5. Compare output differences, constraint residuals, and integrality residuals.
 
-Retaining product specifications makes checks infeasible at inputs whose outputs miss those specifications. Distinguish this from a network-encoding error. The lab requires a maximum output difference below 1e-5 mol/L.
+Check the encoding using only the network constraints, with product specifications removed. Retaining the specifications makes the check infeasible at inputs whose outputs violate them. The lab requires a maximum output difference below 1e-5 mol/L.
 
 <!-- lecture-page -->
 
@@ -364,7 +364,7 @@ definition = NetworkDefinition(
 4. 가능해 존재와 종료 상태를 확인한 뒤 출력을 읽습니다.
 5. 출력 차이, 등식·부등식 잔차와 정수성 잔차를 비교합니다.
 
-제품 규격을 남기면 출력이 규격을 벗어나는 입력에서 검사 문제가 infeasible이 됩니다. 이는 신경망 표현 오류와 구분해야 합니다. 실습은 최대 출력 차이 1e-5 mol/L 미만을 요구합니다.
+정식화 검사는 제품 규격을 제외한 신경망 제약만으로 수행합니다. 제품 규격을 남기면 규격을 위반하는 입력에서 검사 문제가 infeasible이 됩니다. 실습은 최대 출력 차이 1e-5 mol/L 미만을 요구합니다.
 
 <!-- lecture-page -->
 

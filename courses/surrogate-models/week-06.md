@@ -173,7 +173,7 @@ Outputs in this lab already use mol/L. If outputs were standardized, include the
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mi>α</mi><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><mi>α</mi><mo>=</mo><mn>.02</mn><mtext> min/K</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mn>2</mn><mo>+</mo><mn>8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-The educational weight α trades residence time against increased temperature. The objective is a min-equivalent score rather than a calibrated process cost.
+This educational objective combines residence time and a temperature-increase term weighted by α, measured as a min-equivalent score.
 
 Dropping the constant 2 preserves the optimizer but changes the denominator of a relative gap. The lab reports objectives and bounds with the constant included.
 
@@ -518,7 +518,7 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mi>α</mi><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><mi>α</mi><mo>=</mo><mn>.02</mn><mtext> min/K</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mn>2</mn><mo>+</mo><mn>8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-α는 체류시간과 온도 증가를 함께 비교하기 위한 교육용 가중치입니다. 이 목적함수의 단위는 min 등가 점수이며 공정의 실제 비용식은 아닙니다.
+이 목적함수는 체류시간과 온도 증가를 α로 가중해 합한 교육용 점수이며, 단위는 min 등가입니다.
 
 상수 2를 빼도 최적 입력은 같지만 상대 gap의 분모는 바뀝니다. 실습은 상수를 포함한 목적값과 bound를 그대로 보고합니다.
 

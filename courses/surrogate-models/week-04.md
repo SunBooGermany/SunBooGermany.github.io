@@ -208,7 +208,7 @@ Both can satisfy the same equality, but their training gradients differ and gene
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>∂</mi><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow><mrow><mi>∂</mi><mover><mi>y</mi><mo>^</mo></mover></mrow></mfrac><mo>=</mo><mi>P</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>∇</mi></mrow><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow></msub><mi>L</mi><mo>=</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>T</mi></mrow></msup><msub><mrow><mi>∇</mi></mrow><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></msub><mi>L</mi></mrow></mtd></mtr></mtable></math>
 
-P is a symmetric orthogonal projector, so Pᵀ = P. Fixed coefficients do not remove the derivative path.
+P is a symmetric orthogonal projector, so Pᵀ = P. The projection matrix P is fixed and passes the output gradient to the raw prediction by multiplying it by Pᵀ.
 
 Detaching the output or wrapping projection in no_grad cuts the required path. The parameter gradient continues through the MLP Jacobian by the chain rule.
 
@@ -230,7 +230,7 @@ The lab also checks an analytic Jacobian and double-precision gradcheck for two 
 
 Compute μ and positive scales s_j from training data only. A projection in standardized coordinates z must use BD and right side d − Bμ.
 
-Nearest points in standardized and physical coordinates differ when component scales differ. State both the equality being enforced and the correction metric.
+Projection in standardized coordinates minimizes a distance in physical coordinates that weights each squared component correction by 1/s_j². Specify the correction metric and scales.
 
 <!-- lecture-page -->
 
@@ -327,7 +327,7 @@ The minimum covers every component and test row. Record the evaluation tolerance
 ## Evaluation of species balances omitted from training
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="Pooled RMSE and maximum concentration-sum violation by model" /></figure>
-The hard model has species-balance residual RMS 0.002225 mol/(L·min). Satisfying the sum does not make every reaction/outlet relation exact.
+The hard model satisfies the concentration-sum equality, while its component reaction/outlet relations retain a residual RMS of 0.002225 mol/(L·min).
 
 <!-- lecture-page -->
 
@@ -353,7 +353,7 @@ With constant feed and τ within an interval, the exact total-concentration tran
 
 If S_k differs from C_Af, do not immediately force the next total to C_Af. B = [1, 1, 1] still acts on the next state, but the right side is the transition above.
 
-When τ varies as an input, the right side is nonlinear in inputs. A fixed-B projection remains possible, but the fixed-A affine input layer derived earlier no longer represents it.
+When τ is an input, the equality right side d(x) depends nonlinearly on τ. Compute that right side, then apply the projection with fixed B.
 
 <!-- lecture-page -->
 
@@ -576,7 +576,7 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>∂</mi><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow><mrow><mi>∂</mi><mover><mi>y</mi><mo>^</mo></mover></mrow></mfrac><mo>=</mo><mi>P</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>∇</mi></mrow><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow></msub><mi>L</mi><mo>=</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>T</mi></mrow></msup><msub><mrow><mi>∇</mi></mrow><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></msub><mi>L</mi></mrow></mtd></mtr></mtable></math>
 
-P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 학습하지 않는 계수라는 사실과 미분 경로가 없다는 주장은 다릅니다.
+P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 투영 행렬 P는 고정되어 있으며, 출력에서 전달된 gradient에 Pᵀ를 곱해 raw 출력으로 전달합니다.
 
 출력을 detach하거나 투영 계산을 no_grad로 감싸면 필요한 경로가 끊깁니다. θ에 대한 gradient는 MLP Jacobian까지 chain rule로 이어집니다.
 
@@ -598,7 +598,7 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 학습하지 않
 
 μ와 양의 scale s_j는 train 데이터로만 계산합니다. 표준화 좌표 z에서 투영하려면 B 대신 BD, 우변 대신 d − Bμ를 사용해야 합니다.
 
-표준화 공간의 최소 거리와 물리 공간의 최소 거리는 s_j가 서로 다르면 다릅니다. 등식의 만족과 어떤 거리로 보정하는지를 각각 명시합니다.
+표준화 공간에서 투영하면 물리 공간에서 성분별 제곱 보정량에 1/s_j²의 가중치를 적용한 거리를 최소화합니다. 보정에 사용할 metric과 scale을 명시합니다.
 
 <!-- lecture-page -->
 
@@ -695,7 +695,7 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 ## 학습에 포함하지 않은 성분수지의 평가
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="모델별 pooled RMSE와 최대 농도 합 위반 비교" /></figure>
-Hard 모델의 성분수지 residual RMS는 0.002225 mol/(L·min)입니다. 합 등식을 만족해도 각 성분의 반응·유출 관계가 모두 정확하지는 않습니다.
+Hard 모델은 농도 합 등식을 만족하며, 성분별 반응·유출 관계에는 residual RMS 0.002225 mol/(L·min)가 남았습니다.
 
 <!-- lecture-page -->
 
@@ -721,7 +721,7 @@ python week04_lab.py --output-dir week04-results
 
 초기 합 S_k가 C_Af와 다르면 다음 합을 곧바로 C_Af로 강제하면 안 됩니다. 다음 상태의 B = [1, 1, 1]은 같지만 우변은 위 전이식입니다.
 
-τ를 입력으로 바꾸면 우변은 입력의 비선형 함수입니다. 고정 B의 투영은 가능하나 앞서 쓴 고정 A의 affine 입력층으로 표현되지는 않습니다.
+τ를 입력으로 두면 등식의 우변 d(x)는 τ에 비선형으로 의존합니다. 이 우변을 계산한 뒤 고정 B를 사용하는 투영을 적용합니다.
 
 <!-- lecture-page -->
 

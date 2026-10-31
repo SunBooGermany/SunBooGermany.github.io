@@ -62,7 +62,7 @@ n is the number of records. These bounds use fixed-width integers and Python arr
 | Slice/copy q entries | O(q) time/space | Creates new references |
 | Sort n entries | Worst O(n log n) | Python workspace O(n) |
 
-Big-O is an asymptotic upper bound. Expected cost, worst-case cost, and measured elapsed time are distinct.
+Big-O gives an upper bound calculated for the worst case as input size grows.
 
 <!-- lecture-page -->
 
@@ -224,7 +224,7 @@ Session 2 uses order to eliminate many candidates at once. Before memorizing poi
 
 `numbers=[1,4,6,9], target=7 → [1,3]`
 
-A dictionary can find a pair but does not meet this problem’s constant auxiliary-space requirement.
+This problem requires O(1) auxiliary space. Storing earlier values in a dictionary uses up to O(n) space, so we apply two pointers to the sorted input.
 
 <!-- lecture-page -->
 
@@ -297,7 +297,7 @@ Sort a copy, fix index as the first position, and set left=index+1 and right=n-1
 
 Move left for a negative three-value sum and right for a positive one. This uses the same sorted elimination as 167.
 
-Sorting values loses original positions. That is acceptable for 3Sum’s value output but must be reconsidered when original indices are required.
+3Sum returns value combinations, so we search the sorted array. Problems that return original indices require storing each value together with its original index.
 
 <!-- lecture-page -->
 
@@ -355,7 +355,7 @@ After storing a match, move both pointers and skip values equal to the ones just
 
 ## Two places to remove duplicate output
 
-First, skip a fixed value equal to the previous fixed value. Second, after a match skip repeated left and right values. This does not prohibit equal values at distinct positions.
+First, skip a fixed value equal to the previous fixed value. Second, after a match skip repeated left and right values. Equal values at distinct positions can be used together. Duplicate removal targets value combinations already returned.
 
 For `[0,0,0,0]`, several index choices produce the single value triplet `[0,0,0]`. In `[-2,0,1,1,2]`, `[-2,1,1]` is valid because the two 1s occupy different positions.
 
@@ -448,7 +448,7 @@ n은 기록 수입니다. 다음 비용은 고정 폭 정수와 Python의 배열
 | q개 슬라이스·복사 | O(q) 시간·공간 | 새 참조 목록 생성 |
 | n개 정렬 | 최악 O(n log n) | Python 정렬 작업 공간 O(n) |
 
-Big-O는 입력이 커질 때의 상한입니다. 평균 비용과 최악 비용, 실제 실행시간은 같은 개념이 아닙니다.
+Big-O는 입력이 커질 때의 worst-case 를 기준으로 계산된 상한입니다.
 
 <!-- lecture-page -->
 
@@ -610,7 +610,7 @@ n은 길이, d는 서로 다른 값의 수입니다. 평균 시간 O(n), 보조 
 
 `numbers=[1,4,6,9], target=7 → [1,3]`
 
-앞 문제의 사전 방식은 유효한 쌍을 찾을 수 있지만 이 문제의 상수 보조 공간 조건에는 맞지 않습니다.
+이 문제는 보조 공간 O(1)을 요구합니다. 이전 값을 사전에 저장하는 방식은 최대 O(n) 공간을 사용하므로, 정렬된 입력에 두 포인터를 적용합니다.
 
 <!-- lecture-page -->
 
@@ -683,7 +683,7 @@ left는 오른쪽으로만, right는 왼쪽으로만 움직입니다. 이동 횟
 
 현재 세 값의 합이 음수면 left를 늘리고, 양수면 right를 줄입니다. 167과 같은 정렬 기반 제거입니다.
 
-값을 정렬하므로 원래 인덱스는 보존하지 않습니다. 3Sum은 값 조합을 요구하므로 괜찮지만, 원래 위치를 요구하는 문제에 그대로 옮기면 안 됩니다.
+3Sum은 값 조합을 반환하므로 정렬한 배열에서 탐색합니다. 원래 인덱스를 반환하는 문제에서는 값과 원래 인덱스를 함께 저장해야 합니다.
 
 <!-- lecture-page -->
 
@@ -741,7 +741,7 @@ def three_sum(nums):
 
 ## 중복 제거의 두 위치
 
-첫째, 이미 고정한 값과 같은 값을 다시 고정하지 않습니다. 둘째, 답을 찾은 뒤 같은 left 값과 right 값이 반복되는 것을 건너뜁니다. 서로 다른 위치의 같은 값 자체를 금지하는 규칙은 아닙니다.
+첫째, 이미 고정한 값과 같은 값을 다시 고정하지 않습니다. 둘째, 답을 찾은 뒤 같은 left 값과 right 값이 반복되는 것을 건너뜁니다. 같은 값도 서로 다른 위치에 있으면 함께 사용할 수 있습니다. 중복 제거의 대상은 이미 반환한 값 조합입니다.
 
 `[0,0,0,0]`에서는 위치 조합이 여러 개여도 값 조합 `[0,0,0]` 하나만 반환합니다. `[-2,0,1,1,2]`의 `[−2,1,1]`은 서로 다른 두 1의 위치를 사용하므로 유효합니다.
 
