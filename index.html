@@ -26,7 +26,6 @@ layout: null
   <link rel="canonical" href="https://sunboogermany.github.io/" />
   <link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml" />
   <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}?v={{ site.time | date: '%s' }}" />
-  <link rel="stylesheet" href="{{ '/assets/courses/courses.css' | relative_url }}?v={{ site.time | date: '%s' }}" />
 
   <script type="application/ld+json">
   {
@@ -104,113 +103,14 @@ layout: null
           <p data-i18n="profileCardText">Postdoctoral researcher at KIER working across AI-enabled optimization, process systems engineering, and clean-energy planning.</p>
         </div>
       </aside>
-
-      <div class="gateway-grid" aria-label="Site sections">
-        <article class="gateway-card">
-          <div>
-            <p class="gateway-kicker">01</p>
-            <h2 data-i18n="gatewayProfileTitle">Profile & Credentials</h2>
-            <p data-i18n="gatewayProfileText">Academic background, research experience, projects, and selected talks.</p>
-          </div>
-          <a class="button secondary" href="#profile" data-i18n="gatewayProfileButton">View Profile</a>
-        </article>
-        <article class="gateway-card">
-          <div>
-            <p class="gateway-kicker">02</p>
-            <h2 data-i18n="gatewayResearchTitle">Research Blog</h2>
-            <p data-i18n="gatewayResearchText">Reviews of papers on AI, optimization, and decision-making tools, written for researchers and chemical engineers who want to understand modern computational methods.</p>
-          </div>
-          <a class="button secondary" href="{{ '/research-log/' | relative_url }}" data-i18n="gatewayResearchButton">Explore Research Blog</a>
-        </article>
-        <article class="gateway-card">
-          <div>
-            <p class="gateway-kicker">03</p>
-            <h2 data-i18n="gatewayJudgmentTitle">Better Judgment Notes</h2>
-            <p data-i18n="gatewayJudgmentText">Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.</p>
-          </div>
-          <a class="button secondary" href="{{ '/better-judgment/' | relative_url }}" data-i18n="gatewayJudgmentButton">Explore Better Judgment Notes</a>
-        </article>
-        <article class="gateway-card">
-          <div>
-            <p class="gateway-kicker">04</p>
-            <h2 data-i18n="gatewayCoursesTitle">Chemical Engineering Courses</h2>
-            <p data-i18n="gatewayCoursesText">Original courses on process modeling, prediction, optimization, and operating decisions.</p>
-          </div>
-          <a class="button secondary" href="{{ '/courses/' | relative_url }}" data-i18n="gatewayCoursesButton">Explore Courses</a>
-        </article>
-      </div>
     </section>
 
-    <section id="publication-record" class="section publication-preview" aria-labelledby="publication-preview-title">
-      <div class="section-header row">
-        <div>
-          <p class="eyebrow">
-            <span data-lang-panel="en">Publication Record</span>
-            <span data-lang-panel="ko" hidden>논문 실적</span>
-          </p>
-          <h2 id="publication-preview-title">
-            <span data-lang-panel="en">Publications by year</span>
-            <span data-lang-panel="ko" hidden>연도별 논문 실적</span>
-          </h2>
-          <p>
-            <span data-lang-panel="en">17 journal articles, 3 conference proceedings, and 2 manuscripts under review.</span>
-            <span data-lang-panel="ko" hidden>학술지 논문 17편, 학회 프로시딩 3편, 심사 중 원고 2편을 정리했습니다.</span>
-          </p>
-        </div>
-        <a class="button secondary" href="{{ '/publications/' | relative_url }}">
-          <span data-lang-panel="en">View publication record</span>
-          <span data-lang-panel="ko" hidden>논문 실적 보기</span>
-        </a>
+    <section id="experience" class="section">
+      <div id="profile" class="section-header">
+        <p class="eyebrow">Experience &amp; Education</p>
+        <h2 data-i18n="experienceTitle">Education and research experience</h2>
       </div>
-    </section>
-
-    <section id="paper-resources" class="section paper-resources-preview" aria-labelledby="paper-resources-preview-title">
-      <div class="section-header row">
-        <div>
-          <p class="eyebrow">
-            <span data-lang-panel="en">Paper Notes &amp; Code</span>
-            <span data-lang-panel="ko" hidden>논문 해설·코드</span>
-          </p>
-          <h2 id="paper-resources-preview-title">
-            <span data-lang-panel="en">Published paper explanations and code</span>
-            <span data-lang-panel="ko" hidden>출판 논문 해설과 코드</span>
-          </h2>
-          <p>
-            <span data-lang-panel="en">A dedicated space for paper explanations and code. Content is coming soon.</span>
-            <span data-lang-panel="ko" hidden>논문별 해설과 코드를 위한 별도 공간입니다. 내용은 준비 중입니다.</span>
-          </p>
-        </div>
-        <a class="button secondary" href="{{ '/paper-resources/' | relative_url }}">
-          <span data-lang-panel="en">Explore Paper Notes &amp; Code</span>
-          <span data-lang-panel="ko" hidden>논문 해설·코드 보기</span>
-        </a>
-      </div>
-    </section>
-
-    <section id="profile" class="section profile-overview">
-      <div class="section-header">
-        <p class="eyebrow">Profile</p>
-        <h2 data-i18n="profileTitle">Profile & Credentials</h2>
-        <p data-i18n="profileIntro">A compact map of academic background, research experience, projects, and selected talks. The full publication record is listed separately by year.</p>
-      </div>
-      <div class="profile-link-grid">
-        <a class="profile-link" href="{{ '/publications/' | relative_url }}">
-          <span data-i18n="profilePublications">Publication record</span>
-          <small data-i18n="profilePublicationsText">Journal articles and conference proceedings by year, plus manuscripts under review.</small>
-        </a>
-        <a class="profile-link" href="#experience">
-          <span data-i18n="profileExperience">Research experience</span>
-          <small data-i18n="profileExperienceText">KIER, KAIST, USC, Waterloo, and related research experience.</small>
-        </a>
-        <a class="profile-link" href="#projects">
-          <span data-i18n="profileProjects">Projects</span>
-          <small data-i18n="profileProjectsText">Clean-energy, hydrogen, DAC, and process systems work.</small>
-        </a>
-        <a class="profile-link" href="#projects">
-          <span data-i18n="profileTalks">Conferences</span>
-          <small data-i18n="profileTalksText">Selected talks and technical presentations.</small>
-        </a>
-      </div>
+      <ul id="timeline" class="timeline"></ul>
     </section>
 
     <section id="research" class="section">
@@ -241,71 +141,6 @@ layout: null
         <h3 data-i18n="featuredTitle">Featured research themes</h3>
         <ul id="featured-list"></ul>
       </div>
-    </section>
-
-    <section id="ai-courses" class="section courses-preview" aria-labelledby="courses-preview-title">
-      <div class="section-header row">
-        <div>
-          <p class="eyebrow"><span data-lang-panel="en">Original courses by Sunwoo Kim</span><span data-lang-panel="ko" hidden>Sunwoo Kim이 직접 설계한 과목</span></p>
-          <h2 id="courses-preview-title"><span data-lang-panel="en">Chemical Engineering Courses</span><span data-lang-panel="ko" hidden>화학공학 강의</span></h2>
-          <p><span data-lang-panel="en">Process modeling and optimization, plus practical algorithms and SQL for learners without a computer science background.</span><span data-lang-panel="ko" hidden>공정 모델링·최적화 강의와 컴퓨터공학 비전공자를 위한 실무 알고리즘·SQL 과정입니다.</span></p>
-        </div>
-        <a class="button secondary" href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All courses</span><span data-lang-panel="ko" hidden>전체 강의</span></a>
-      </div>
-      <div class="course-catalog">
-      {% for course in site.data.courses %}
-      <article class="course-card">
-        <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · {{ course.availability }}</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · {{ course.availability_ko }}</span></div>
-        <h3><a href="{{ course.url | relative_url }}"><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></a></h3>
-        <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
-        <div class="course-actions">
-          <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
-          <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Syllabus</span><span data-lang-panel="ko" hidden>강의계획서</span></a>
-        </div>
-      </article>
-      {% endfor %}
-      </div>
-    </section>
-
-    <section id="research-blog" class="section research-log-preview">
-      <div class="section-header">
-        <p class="eyebrow" data-i18n="researchBlogLabel">Research Blog</p>
-        <h2 data-i18n="researchBlogTitle">Daily paper reading as research training</h2>
-        <p data-i18n="researchBlogIntro">Paper reviews organized by application systems and algorithmic methods.</p>
-      </div>
-      <div class="statement-panel">
-        <blockquote data-i18n="researchBlogStatement1">I review papers on decision-making tools based on modern AI and mathematical optimization in a way that chemical engineers can understand.</blockquote>
-        <blockquote data-i18n="researchBlogStatement2">Just as elite athletes train every day, serious researchers read strong papers every day.</blockquote>
-      </div>
-      <div class="preview-footer">
-        <div class="category-pills" aria-label="Research Blog category groups">
-          <span>Application Reviews</span>
-          <span>Algorithmic Reviews</span>
-        </div>
-        <a class="button secondary" href="{{ '/research-log/' | relative_url }}" data-i18n="exploreResearchBlog">Explore Research Blog</a>
-      </div>
-    </section>
-
-    <section id="better-judgment" class="section life-insights-preview">
-      <div class="section-header">
-        <p class="eyebrow" data-i18n="judgmentLabel">Better Judgment Notes</p>
-        <h2 data-i18n="judgmentTitle">Better Judgment Notes</h2>
-        <p data-i18n="judgmentIntro">Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.</p>
-      </div>
-      <div class="insight-grid" aria-label="Better Judgment categories">
-        <div class="insight-card" data-i18n="judgmentCategory1">For Wiser Decision-Making</div>
-        <div class="insight-card" data-i18n="judgmentCategory2">Understanding Social Phenomena</div>
-        <div class="insight-card" data-i18n="judgmentCategory3">Understanding Global Affairs</div>
-      </div>
-      <a class="button secondary preview-button" href="{{ '/better-judgment/' | relative_url }}" data-i18n="exploreJudgment">Explore Better Judgment Notes</a>
-    </section>
-
-    <section id="experience" class="section">
-      <div class="section-header">
-        <p class="eyebrow">Experience</p>
-        <h2 data-i18n="experienceTitle">Experience</h2>
-      </div>
-      <div id="timeline" class="timeline"></div>
     </section>
 
     <section id="projects" class="section alt split">
