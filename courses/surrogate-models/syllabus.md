@@ -44,25 +44,12 @@ By the end of the course, learners should be able to:
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title }}.** {{ week.topics }} | {{ week.deliverable }} |
 {% endfor %}
 
-## Reading assignments
-
-| Week | Reading guidance |
-| --- | --- |
-{% for week in course.weeks %}| {{ week.number }} | {{ week.reading }} |
-{% endfor %}
-
 ## Core sources
 
-- Convex optimization background: S. Boyd and L. Vandenberghe, *Convex Optimization* (2004). Read selected parts of Chapters 2–4 for convex sets, convex functions, epigraphs, and optimization problems; return to Chapter 5 for duality and KKT. [Official book and downloads](https://web.stanford.edu/~boyd/cvxbook/) · [EE364a slides](https://web.stanford.edu/class/ee364a/lectures.html).
-- Neural-network implementation: PyTorch tutorials on [model construction](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), and [training](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
-- ICNN/PICNN: B. Amos, L. Xu, and J. Z. Kolter, *Input Convex Neural Networks*, ICML (2017). Section 3 gives architecture conditions; Supplement B gives LP inference for ReLU/linear units. [Paper](https://proceedings.mlr.press/v70/amos17b.html) · [PDF](https://proceedings.mlr.press/v70/amos17b/amos17b.pdf) · [Supplement](https://proceedings.mlr.press/v70/amos17b/amos17b-supp.pdf).
-- ReLU formulations: R. Anderson, J. Huchette, W. Ma, C. Tjandraatmadja, and J. P. Vielma, *Strong mixed-integer programming formulations for trained neural networks*, Mathematical Programming (2020). The public manuscript was first submitted in 2018 and revised in 2020. [Public manuscript](https://arxiv.org/abs/1811.01988).
-- Embedding software: F. Ceccon, J. Jalving, J. Haddad, A. Thebelt, C. Tsay, C. D. Laird, and R. Misener, *OMLT: Optimization & Machine Learning Toolkit*, JMLR 23(349), 1–8 (2022). [Paper and PDF](https://jmlr.org/papers/v23/22-0277.html) · [Code](https://github.com/cog-imperial/OMLT) · [Documentation](https://omlt.readthedocs.io/en/stable/).
-- PINN: M. Raissi, P. Perdikaris, and G. E. Karniadakis, *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*, Journal of Computational Physics 378, 686–707 (2019). [Published paper](https://doi.org/10.1016/j.jcp.2018.10.045). The related 2017 Part I manuscript is a freely available introduction; it is not the identical final journal version. [2017 Part I](https://arxiv.org/abs/1711.10561).
-- KKT-hPINN: H. Chen, G. E. Constante Flores, and C. Li, *Physics-informed neural networks with hard linear equality constraints*, Computers & Chemical Engineering 189, 108764 (2024). [Published paper](https://doi.org/10.1016/j.compchemeng.2024.108764) · [Public manuscript](https://arxiv.org/abs/2402.07251) · [Code and datasets](https://github.com/li-group/KKThPINN).
-- Sequence-learning background: I. Sutskever, O. Vinyals, and Q. V. Le, *Sequence to Sequence Learning with Neural Networks*, NeurIPS (2014). Its application is translation; our process-trajectory exercises are separate educational examples. [Paper](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html).
-
-Optional extensions: [DeepONet, Nature Machine Intelligence (2021)](https://www.nature.com/articles/s42256-021-00302-5), for input-function to output-function mappings; [KKT-Hardnet public manuscript (2025), published in C&CE (2026)](https://arxiv.org/abs/2507.08124), for nonlinear equality and inequality projection.
+- Stephen Boyd and Lieven Vandenberghe, [*Convex Optimization*](https://web.stanford.edu/~boyd/cvxbook/) (Cambridge University Press, 2004).
+- Stephen Boyd, [EE364a: Convex Optimization I — Lecture Slides](https://web.stanford.edu/class/ee364a/lectures.html), Stanford University.
+- [cog-imperial/OMLT](https://github.com/cog-imperial/OMLT): Optimization and Machine Learning Toolkit.
+- [li-group/KKThPINN](https://github.com/li-group/KKThPINN): KKT-hPINN code and datasets.
 
 <!-- ko -->
 
@@ -96,22 +83,9 @@ Python 기초, 미분, 행렬 연산, 선형대수, 물질수지 지식을 전�
 {% for week in course.weeks %}| {{ week.number }} | **{{ week.title_ko }}.** {{ week.topics_ko }} | {{ week.deliverable_ko }} |
 {% endfor %}
 
-## 주차별 읽기 안내
-
-| 주차 | 읽기 범위 |
-| --- | --- |
-{% for week in course.weeks %}| {{ week.number }} | {{ week.reading_ko }} |
-{% endfor %}
-
 ## 핵심 참고자료
 
-- Convex optimization 기초: S. Boyd와 L. Vandenberghe, *Convex Optimization* (2004). 2–4장의 convex set, convex function, epigraph, 최적화 문제 관련 내용을 읽고 duality와 KKT는 5장을 참고합니다. [공식 교재·다운로드](https://web.stanford.edu/~boyd/cvxbook/) · [EE364a 슬라이드](https://web.stanford.edu/class/ee364a/lectures.html).
-- 신경망 구현: PyTorch tutorial의 [모델 구성](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), [학습](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
-- ICNN/PICNN: B. Amos, L. Xu, J. Z. Kolter, *Input Convex Neural Networks*, ICML (2017). 3절은 구조 조건, Supplement B는 ReLU/linear unit의 LP inference를 설명합니다. [논문](https://proceedings.mlr.press/v70/amos17b.html) · [PDF](https://proceedings.mlr.press/v70/amos17b/amos17b.pdf) · [Supplement](https://proceedings.mlr.press/v70/amos17b/amos17b-supp.pdf).
-- ReLU formulation: R. Anderson, J. Huchette, W. Ma, C. Tjandraatmadja, J. P. Vielma, *Strong mixed-integer programming formulations for trained neural networks*, Mathematical Programming (2020). 공개 원고는 2018년 처음 제출되었고 2020년 수정되었습니다. [공개 원고](https://arxiv.org/abs/1811.01988).
-- Embedding 소프트웨어: F. Ceccon, J. Jalving, J. Haddad, A. Thebelt, C. Tsay, C. D. Laird, R. Misener, *OMLT: Optimization & Machine Learning Toolkit*, JMLR 23(349), 1–8 (2022). [논문·PDF](https://jmlr.org/papers/v23/22-0277.html) · [코드](https://github.com/cog-imperial/OMLT) · [문서](https://omlt.readthedocs.io/en/stable/).
-- PINN: M. Raissi, P. Perdikaris, G. E. Karniadakis, *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*, Journal of Computational Physics 378, 686–707 (2019). [정식 논문](https://doi.org/10.1016/j.jcp.2018.10.045). 관련 2017년 Part I 원고는 공개 입문 자료로 활용하며, 최종 학술지 논문과는 버전이 다릅니다. [2017 Part I](https://arxiv.org/abs/1711.10561).
-- KKT-hPINN: H. Chen, G. E. Constante Flores, C. Li, *Physics-informed neural networks with hard linear equality constraints*, Computers & Chemical Engineering 189, 108764 (2024). [정식 논문](https://doi.org/10.1016/j.compchemeng.2024.108764) · [공개 원고](https://arxiv.org/abs/2402.07251) · [코드·데이터](https://github.com/li-group/KKThPINN).
-- Sequence learning 기초: I. Sutskever, O. Vinyals, Q. V. Le, *Sequence to Sequence Learning with Neural Networks*, NeurIPS (2014). 원 논문은 번역을 다루며, 이 강의의 공정 궤적 실습은 별도로 만든 교육 예제입니다. [논문](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html).
-
-선택 확장: 입력 함수를 출력 함수로 매핑하는 [DeepONet, Nature Machine Intelligence (2021)](https://www.nature.com/articles/s42256-021-00302-5); 비선형 등식·부등식 projection을 다루는 [KKT-Hardnet 공개 원고(2025), C&CE 출판(2026)](https://arxiv.org/abs/2507.08124).
+- Stephen Boyd·Lieven Vandenberghe, [*Convex Optimization*](https://web.stanford.edu/~boyd/cvxbook/) (Cambridge University Press, 2004).
+- Stephen Boyd, [EE364a: Convex Optimization I — Lecture Slides](https://web.stanford.edu/class/ee364a/lectures.html), Stanford University.
+- [cog-imperial/OMLT](https://github.com/cog-imperial/OMLT): Optimization and Machine Learning Toolkit.
+- [li-group/KKThPINN](https://github.com/li-group/KKThPINN): KKT-hPINN 코드와 데이터.

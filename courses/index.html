@@ -1,23 +1,23 @@
 ---
 layout: default
 title: "Chemical Engineering Courses"
-description: "Original courses designed by Sunwoo Kim on process modeling, prediction, optimization, and operating decisions."
+description: "Courses by Sunwoo Kim on process modeling and optimization, with practical algorithms and SQL for non-CS learners."
 permalink: /courses/
 ---
 <section class="log-hero course-hero">
   <p class="eyebrow"><span data-lang-panel="en">Original courses by Sunwoo Kim</span><span data-lang-panel="ko" hidden>Sunwoo Kim이 직접 설계한 과목</span></p>
   <h1><span data-lang-panel="en">Chemical Engineering Courses</span><span data-lang-panel="ko" hidden>화학공학 강의</span></h1>
-  <p><span data-lang-panel="en">Courses I design for chemical engineers studying process modeling, prediction, optimization, and operating decisions. Each course connects papers and mathematical ideas with derivations, process examples, and runnable code.</span><span data-lang-panel="ko" hidden>공정 모델링, 예측, 최적화와 운전 의사결정을 공부하는 화학공학자를 위해 직접 구성한 과목입니다. 여러 논문과 강의자료를 연결해 수식 유도, 공정 예제, 실행 가능한 코드로 정리합니다.</span></p>
+  <p><span data-lang-panel="en">Courses on process modeling, prediction, optimization, and operating decisions, alongside practical data structures, algorithms, and SQL for learners without a computer science background. Each course lists its prerequisites, weekly plan, and available materials.</span><span data-lang-panel="ko" hidden>공정 모델링과 예측·최적화·운전 의사결정 강의와 함께, 컴퓨터공학 비전공자를 위한 실무 자료구조·알고리즘·SQL 과정을 제공합니다. 과목별로 선수 지식, 주차별 계획, 현재 제공하는 자료를 안내합니다.</span></p>
 </section>
 <section class="course-catalog" aria-label="Courses">
   {% for course in site.data.courses %}
   <article class="course-card">
-    <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · Weeks 1–6 available</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · 1–6주차 공개</span></div>
+    <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · {{ course.availability }}</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · {{ course.availability_ko }}</span></div>
     <h2><a href="{{ course.url | relative_url }}"><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></a></h2>
     <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
     <div class="course-actions">
-      <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Let's start learning!</span><span data-lang-panel="ko" hidden>학습을 시작해봅시다!</span></a>
-      <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">What is this course about? (Syllabus)</span><span data-lang-panel="ko" hidden>어떤 강의인지 살펴볼까요? (실라버스)</span></a>
+      <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
+      <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Syllabus</span><span data-lang-panel="ko" hidden>강의계획서</span></a>
     </div>
   </article>
   {% endfor %}

@@ -193,3 +193,15 @@ authorizes publication. Keep the Week 3 draft outside the deployable site, and d
 not mark Week 3 as available in the course catalog. Remove Week 3 preview notices
 and heading prefixes from the Week 2 lecture while preserving its technical
 examples.
+
+
+## Practical Course Publication (2026-10-31)
+
+The user approved publication of the practical algorithms and SQL course
+introductions and eight-week syllabi, plus algorithms Week 1 only. Keep algorithms
+Weeks 2–8 and all SQL weekly materials planned until separately authorized.
+The public algorithms code/material archives contain Week 1 only.
+Remove weekly reading-guidance sections from every syllabus. Core source lists
+contain verified GitHub repositories, named books, or named lectures/courses by
+recognized instructors. Keep original problem links and needed technical citations.
+Apply the existing bilingual and white 4:3 lecture-page rules to the new courses.

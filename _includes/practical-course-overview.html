@@ -1,0 +1,45 @@
+{% assign course = site.data.courses | where: 'id', page.course_id | first %}
+{% assign companion = site.data.courses | where: 'id', course.companion_id | first %}
+<section class="log-hero course-hero">
+  <p class="eyebrow"><span data-lang-panel="en">Practical computing for non-CS learners</span><span data-lang-panel="ko" hidden>비전공자를 위한 실무 컴퓨팅</span></p>
+  <h1><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></h1>
+  <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
+  <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }}</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }}</span></div>
+  <div class="course-actions">
+    <a class="button primary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Eight-week syllabus</span><span data-lang-panel="ko" hidden>8주 강의계획서</span></a>
+    <a class="button secondary" href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All courses</span><span data-lang-panel="ko" hidden>전체 강의</span></a>
+    {% if course.bundle_url %}<a class="button secondary" href="{{ course.bundle_url | relative_url }}" download><span data-lang-panel="en">Week 1 materials</span><span data-lang-panel="ko" hidden>1주차 자료 내려받기</span></a>{% endif %}
+  </div>
+</section>
+<section class="course-summary">
+  <h2><span data-lang-panel="en">Questions and practice</span><span data-lang-panel="ko" hidden>다루는 질문과 학습 방식</span></h2>
+  <p><span data-lang-panel="en">{{ course.question }}</span><span data-lang-panel="ko" hidden>{{ course.question_ko }}</span></p>
+  <p><span data-lang-panel="en">{{ course.learning_method }}</span><span data-lang-panel="ko" hidden>{{ course.learning_method_ko }}</span></p>
+  <h3><span data-lang-panel="en">Before you start</span><span data-lang-panel="ko" hidden>시작에 필요한 지식</span></h3>
+  <p><span data-lang-panel="en">{{ course.prerequisites }}</span><span data-lang-panel="ko" hidden>{{ course.prerequisites_ko }}</span></p>
+  <p><span data-lang-panel="en">This course and <a href="{{ companion.url | relative_url }}">{{ companion.title }}</a> can be taken independently. Choose SQL first for table-based analysis, or algorithms first for Python data processing.</span><span data-lang-panel="ko" hidden>이 과목과 <a href="{{ companion.url | relative_url }}">{{ companion.title_ko }}</a>은 독립적으로 수강할 수 있습니다. 표 데이터 분석이 급하다면 SQL부터, Python 데이터 처리가 필요하다면 알고리즘부터 시작합니다.</span></p>
+</section>
+<section class="course-weeks" aria-labelledby="weekly-plan">
+  <h2 id="weekly-plan"><span data-lang-panel="en">Eight-week plan</span><span data-lang-panel="ko" hidden>8주 학습 계획</span></h2>
+  {% if course.materials_ready %}
+  <p><span data-lang-panel="en">{{ course.release_summary }} Use the <a href="{{ '/courses/practical-algorithms/reference/' | relative_url }}">Week 1 reference sheets</a> and <a href="{{ '/courses/practical-algorithms/instructor/' | relative_url }}">instructor guide</a> alongside the exercises.</span><span data-lang-panel="ko" hidden>{{ course.release_summary_ko }} <a href="{{ '/courses/practical-algorithms/reference/' | relative_url }}">1주차 참고표</a>와 <a href="{{ '/courses/practical-algorithms/instructor/' | relative_url }}">교사용 진행안</a>을 실습과 함께 사용합니다.</span></p>
+  {% else %}
+  <p><span data-lang-panel="en">The syllabus is available. Weekly lectures, worked readings, and practice files are planned; their detailed scope will be finalized as the materials are prepared.</span><span data-lang-panel="ko" hidden>현재 강의계획서를 제공합니다. 주차별 강의노트·풀이 읽기자료·실습 파일은 준비 예정이며, 세부 범위는 자료를 작성하며 확정합니다.</span></p>
+  {% endif %}
+  <div class="course-week-list">
+  {% for week in course.weeks %}
+    <article class="course-week{% if week.url %} is-available{% endif %}">
+      <div class="course-week-number"><span data-lang-panel="en">Week {{ week.number }}</span><span data-lang-panel="ko" hidden>{{ week.number }}주차</span></div>
+      <div>
+        <h3>{% if week.url %}<a href="{{ week.url | relative_url }}">{% endif %}<span data-lang-panel="en">{{ week.title }}</span><span data-lang-panel="ko" hidden>{{ week.title_ko }}</span>{% if week.url %}</a>{% endif %}</h3>
+        <p><span data-lang-panel="en">{{ week.topics }}</span><span data-lang-panel="ko" hidden>{{ week.topics_ko }}</span></p>
+        <p><span data-lang-panel="en">Output: {{ week.deliverable }}</span><span data-lang-panel="ko" hidden>결과물: {{ week.deliverable_ko }}</span></p>
+        {% if week.problems %}
+        <ul>{% for problem in week.problems %}<li><a href="{{ problem.url }}">LeetCode {{ problem.title }}</a></li>{% endfor %}</ul>
+        {% endif %}
+        {% if week.url %}<div class="course-actions"><a class="course-status" href="{{ week.url | relative_url }}"><span data-lang-panel="en">Lecture</span><span data-lang-panel="ko" hidden>강의노트</span></a>{% if week.reading_url %}<a class="course-status" href="{{ week.reading_url | relative_url }}"><span data-lang-panel="en">Worked companion</span><span data-lang-panel="ko" hidden>풀이 읽기자료</span></a>{% endif %}{% if week.practice_url %}<a class="course-status" href="{{ week.practice_url | relative_url }}"><span data-lang-panel="en">Exercises</span><span data-lang-panel="ko" hidden>독립 실습</span></a>{% endif %}{% if week.pdf_en %}<a class="course-status" data-lang-panel="en" href="{{ week.pdf_en | relative_url }}">Lecture PDF</a>{% endif %}{% if week.pdf_ko %}<a class="course-status" data-lang-panel="ko" hidden href="{{ week.pdf_ko | relative_url }}">강의 PDF</a>{% endif %}</div>{% else %}<span class="course-status planned"><span data-lang-panel="en">Planned · course materials not yet available</span><span data-lang-panel="ko" hidden>강의 계획 · 주차별 자료 준비 예정</span></span>{% endif %}
+      </div>
+    </article>
+  {% endfor %}
+  </div>
+</section>
