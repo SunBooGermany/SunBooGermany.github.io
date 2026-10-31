@@ -10,10 +10,6 @@ layout: default
 {% endif %}
 <article class="research-post">
   <header class="post-header">
-    <p class="eyebrow">
-      <span data-lang-panel="en">{{ page.research_category_label | default: page.category_label }}</span>
-      <span data-lang-panel="ko" hidden>{{ page.research_category_label_ko | default: page.category_label_ko | default: page.research_category_label | default: page.category_label }}</span>
-    </p>
     <h1>
       <span data-lang-panel="en">{{ page.title | escape }}</span>
       <span data-lang-panel="ko" hidden>{{ page.title_ko | default: page.title | escape }}</span>

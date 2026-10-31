@@ -129,6 +129,12 @@ h1 {
   color: var(--muted);
   font-size: 14px;
 }
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
 .button {
   display: inline-flex;
   align-items: center;
@@ -1018,6 +1024,10 @@ h1 {
   color: var(--green);
   font-size: 13px;
   font-weight: 750;
+}
+
+@media screen {
+  .course-note > .post-header > .eyebrow { display: none; }
 }
 
 @media (max-width: 1120px) {
