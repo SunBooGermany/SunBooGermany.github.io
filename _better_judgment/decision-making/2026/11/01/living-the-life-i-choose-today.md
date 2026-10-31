@@ -87,8 +87,6 @@ I am trying to apply the same principle to myself. Before following someone else
 
 I think I can enjoy today while preparing for the future. If researching and learning now are part of the life I have chosen, I do not need to wait for some distant achievement before finding meaning in them. There will be difficult days, and times when I need to rest. I want to live in a way I can sustain and keep examining the choices I make.
 
-I can acknowledge who I am now and still look forward to developing further. Wanting to improve need not make me regard my present self as merely inadequate and unhappy. What I want to tell myself is this: “I'm doing well, and I will keep growing, so I look forward to the future. Let's live today with joy, too.”
-
 <!-- ko -->
 
 고등학교 때의 나는 스스로를 꽤 옥죄며 살았던 것 같다. 미래에 성공하려면 지금은 참아야 하고, 무엇인가를 얻으려면 그만큼 고통을 견뎌야 한다고 생각했다. 원하는 곳에 도달하고 나면 그때는 행복해질 수 있을 것 같았다.
@@ -154,5 +152,3 @@ I can acknowledge who I am now and still look forward to developing further. Wan
 나 자신에게도 같은 원칙을 적용하려 한다. 남들이 정해놓은 성공의 기준을 따르기 전에 내가 왜 그것을 원하는지 물어봐야 한다. 내가 선택했다고 믿는 정체성이 정말 지금도 원하는 삶인지 돌아보는 일도 계속하고 싶다.
 
 오늘의 즐거움을 느끼면서 미래를 준비할 수 있다고 생각한다. 지금 연구하고 배우는 시간이 내가 선택한 삶의 일부라면, 그 안에서 의미를 느끼기 위해 먼 훗날의 성취를 기다릴 필요는 없다. 그 과정에서 힘든 날도 있을 것이고 쉬어야 할 때도 있을 것이다. 내가 감당할 수 있는 방식으로 살아가며 그 선택을 계속 살펴보고 싶다.
-
-지금의 나를 인정하면서도 앞으로 더 발전하기를 기대한다. 더 나아지고 싶다는 마음 때문에 현재의 나를 부족하고 불행한 존재로만 규정하고 싶지는 않다. 나 자신에게는 이렇게 말해주고 싶다. “잘하고 있고 앞으로도 더 발전할 거니까 미래가 기대된다. 오늘도 기쁜 마음으로 살아가자.”
