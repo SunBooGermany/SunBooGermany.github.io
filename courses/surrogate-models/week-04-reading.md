@@ -88,7 +88,7 @@ Check: upstream [1, 0, 0] and B = [1, 1, 1] yield [2/3, −1/3, −1/3].
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>y</mi><mo>=</mo><mi>μ</mi><mo>+</mo><mi>D</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>B</mi><mi>D</mi><mi>z</mi><mo>=</mo><mi>d</mi><mo>−</mo><mi>B</mi><mi>μ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><mi>diag</mi><mrow><mo>(</mo><msub><mrow><mi>s</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mrow><mi>s</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-Euclidean projection in z minimizes ‖D⁻¹(y − ŷ)‖² in physical coordinates. Its metric differs from physical Euclidean projection.
+Euclidean projection in z minimizes ‖D⁻¹(y − ŷ)‖² in physical coordinates, weighting each squared component correction by 1/s_j².
 
 Example: raw [0.70, 0.45, 0.25], total 1.20, and s = [0.2, 0.5, 0.1] give restored standardized-projection output [0.673333, 0.283333, 0.243333]. Corrections are proportional to s_j².
 
@@ -286,7 +286,7 @@ J_f,θ는 raw 출력의 파라미터 Jacobian입니다. A·B·b가 고정이면:
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>y</mi><mo>=</mo><mi>μ</mi><mo>+</mo><mi>D</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>B</mi><mi>D</mi><mi>z</mi><mo>=</mo><mi>d</mi><mo>−</mo><mi>B</mi><mi>μ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><mi>diag</mi><mrow><mo>(</mo><msub><mrow><mi>s</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mrow><mi>s</mi></mrow><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-z 공간의 Euclidean 투영은 y 공간에서 ‖D⁻¹(y − ŷ)‖²를 최소화합니다. 물리 Euclidean 투영과는 metric이 다릅니다.
+z 공간의 Euclidean 투영은 y 공간에서 ‖D⁻¹(y − ŷ)‖²를 최소화합니다. 성분별 제곱 보정량에는 1/s_j²의 가중치가 적용됩니다.
 
 예: raw [0.70, 0.45, 0.25], 합 1.20, s = [0.2, 0.5, 0.1]이면 z 공간 투영을 복원한 결과는 [0.673333, 0.283333, 0.243333]입니다. 보정량은 s_j²에 비례합니다.
 
