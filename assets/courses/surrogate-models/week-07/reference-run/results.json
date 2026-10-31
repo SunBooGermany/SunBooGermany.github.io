@@ -1,0 +1,72 @@
+{
+  "hand": {
+    "u": 0.4,
+    "objective": 0.16000000000000003,
+    "forward": 0.16000000000000003,
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "solve_seconds": 0.0230833999812603,
+    "forward_error": 0.0,
+    "binaries": 0
+  },
+  "fitted": {
+    "u": 0.5,
+    "objective": 0.25843677248539254,
+    "forward": 0.25843677248539254,
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "solve_seconds": 0.0012730001471936703,
+    "forward_error": 0.0,
+    "binaries": 0
+  },
+  "heldout": {
+    "rmse": 0.0007600401192776663,
+    "max_abs": 0.0014242708138574312
+  },
+  "reference": {
+    "u": 0.55,
+    "objective": 0.2575,
+    "cost_at_selected": 0.26,
+    "decision_loss": 0.0025000000000000022
+  },
+  "minimum_weight": 0.19832417883272724,
+  "slopes": [
+    -1.0056186383794712,
+    -0.7986491741580066,
+    -0.6003249953252794,
+    -0.3999208464107431,
+    -0.20002328046742213,
+    2.328046743205192e-05,
+    0.1999208464107538,
+    0.40032499532528854,
+    0.5986491741580173,
+    0.8056186383794774
+  ],
+  "counterexamples": {
+    "lower_bound_lp_u": 0.0,
+    "lower_bound_true_u": 0.8,
+    "negative_reward_status": 3
+  },
+  "conditional": [
+    {
+      "context": 0.2,
+      "u": 0.2,
+      "objective": -0.004000000000000001
+    },
+    {
+      "context": 0.5,
+      "u": 0.5,
+      "objective": -0.025
+    },
+    {
+      "context": 0.8,
+      "u": 0.8,
+      "objective": -0.06400000000000002
+    }
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  }
+}

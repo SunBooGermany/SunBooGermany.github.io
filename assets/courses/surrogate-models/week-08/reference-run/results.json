@@ -1,0 +1,333 @@
+{
+  "domain": {
+    "T_K": [
+      310,
+      350
+    ],
+    "tau_min": [
+      2,
+      10
+    ],
+    "flow_L_per_min": 1.0,
+    "feed_mol_per_L": 1.2
+  },
+  "cost_assumptions": {
+    "volume_dollars_per_L_hour": 12.0,
+    "temperature_dollars_per_K_hour": 0.24
+  },
+  "frozen_model_sha256": "4462eee6a4a976b61ea35200882587fed9006aebe16f938c8b7a8fcd37975868",
+  "holdout": {
+    "n": 997,
+    "seed": 808,
+    "rmse": [
+      0.005354636302326827,
+      0.004393341613831055,
+      0.005265765199255497
+    ],
+    "max_abs": [
+      0.026948950876309552,
+      0.017656825305843837,
+      0.022049807020136147
+    ]
+  },
+  "margins": {
+    "calibration_n": 961,
+    "product": 0.02130093477436318,
+    "byproduct": 0.01304798025717252,
+    "uniform_guarantee": false
+  },
+  "local_update": {
+    "n": 9,
+    "scaled_bounds": [
+      [
+        0.7414824890912961,
+        0.8614824890912962
+      ],
+      [
+        0.005555035717625667,
+        0.12555503571762566
+      ]
+    ],
+    "coefficients": [
+      [
+        0.01009723375555915,
+        -0.016096260473766402,
+        0.0006280046052256777
+      ],
+      [
+        0.012799432901490493,
+        0.007435761671775724,
+        -0.012821586389523201
+      ],
+      [
+        -0.2185181907559604,
+        0.08234039441903544,
+        0.14395325916968632
+      ]
+    ],
+    "heuristic_margin": 0.002
+  },
+  "benchmark": {
+    "grid_points": 4001,
+    "method": "temperature scan, analytic lower tau root, bounded scalar refinement",
+    "global_certificate": false,
+    "scalar_success": true,
+    "seconds": 0.047229900024831295
+  },
+  "candidates": [
+    {
+      "name": "baseline",
+      "T": 330.0,
+      "tau": 6.0,
+      "cost": 76.8,
+      "prediction": [
+        0.5507135515466364,
+        0.4056007113655886,
+        0.24312573710288488
+      ],
+      "reference": [
+        0.5454545454545454,
+        0.40909090909090906,
+        0.24545454545454548
+      ],
+      "prediction_error": [
+        0.0052590060920909565,
+        -0.003490197725320443,
+        -0.002328808351660605
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.0,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 0.0
+      },
+      "reference_feasible": true,
+      "solver": null,
+      "savings_vs_baseline": 0.0,
+      "observed_gap_vs_reference": 35.40802650443703
+    },
+    {
+      "name": "unadjusted",
+      "T": 342.05929956365185,
+      "tau": 2.5244402857410053,
+      "cost": 37.987515324168506,
+      "prediction": [
+        0.6467389808542212,
+        0.38,
+        0.17122847462626256
+      ],
+      "reference": [
+        0.6507066002451737,
+        0.3711569512713922,
+        0.17813644848343407
+      ],
+      "prediction_error": [
+        -0.00396761939095247,
+        0.008843048728607805,
+        -0.006907973857171512
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.008843048728607805,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 0.0
+      },
+      "reference_feasible": false,
+      "solver": {
+        "termination": "optimal",
+        "has_incumbent": true,
+        "objective": 37.987515324168506,
+        "bound": 37.9875153241685,
+        "solve_seconds": 0.19663530006073415,
+        "binary_variables": 22,
+        "variables": 75,
+        "constraints": 100,
+        "absolute_gap": 7.105427357601002e-15,
+        "relative_gap": 1.870463834490478e-16,
+        "tau": 2.5244402857410053,
+        "temperature": 342.05929956365185,
+        "outputs": [
+          0.6467389808542205,
+          0.38,
+          0.17122847462626267
+        ],
+        "max_constraint_violation": 1.1102230246251565e-15,
+        "max_integrality_violation": 0.0,
+        "forward_error": 6.661338147750939e-16
+      },
+      "savings_vs_baseline": null,
+      "observed_gap_vs_reference": null
+    },
+    {
+      "name": "calibration_margin",
+      "T": 329.1148308772698,
+      "tau": 4.665286059236509,
+      "cost": 60.570992121382865,
+      "prediction": [
+        0.624660436596901,
+        0.4013009347743629,
+        0.17244836286163526
+      ],
+      "reference": [
+        0.6325182202138231,
+        0.3929348853896018,
+        0.17454689439657517
+      ],
+      "prediction_error": [
+        -0.007857783616922132,
+        0.008366049384761098,
+        -0.0020985315349399125
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.0,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 0.0
+      },
+      "reference_feasible": true,
+      "solver": {
+        "termination": "optimal",
+        "has_incumbent": true,
+        "objective": 60.57099212138286,
+        "bound": 60.57099212138286,
+        "solve_seconds": 0.5537956999614835,
+        "binary_variables": 22,
+        "variables": 75,
+        "constraints": 100,
+        "absolute_gap": 0.0,
+        "relative_gap": 0.0,
+        "tau": 4.665286059236509,
+        "temperature": 329.1148308772698,
+        "outputs": [
+          0.6246604365969004,
+          0.4013009347743632,
+          0.1724483628616358
+        ],
+        "max_constraint_violation": 1.4432899320127035e-15,
+        "max_integrality_violation": 0.0,
+        "forward_error": 5.551115123125783e-16
+      },
+      "savings_vs_baseline": 16.229007878617132,
+      "observed_gap_vs_reference": 19.1790186258199
+    },
+    {
+      "name": "local_correction",
+      "T": 339.81519295695034,
+      "tau": 2.8709339814006753,
+      "cost": 41.60685408647618,
+      "prediction": [
+        0.6389109170811933,
+        0.38199999999999984,
+        0.17813711417028538
+      ],
+      "reference": [
+        0.6400485277032596,
+        0.3768201355794518,
+        0.18313133671728846
+      ],
+      "prediction_error": [
+        -0.0011376106220662985,
+        0.005179864420548019,
+        -0.004994222547003074
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.003179864420548184,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 0.0
+      },
+      "reference_feasible": false,
+      "solver": {
+        "termination": "optimal",
+        "has_incumbent": true,
+        "objective": 41.60685408647619,
+        "bound": 41.60685408647619,
+        "solve_seconds": 0.018568600062280893,
+        "binary_variables": 22,
+        "variables": 75,
+        "constraints": 100,
+        "absolute_gap": 0.0,
+        "relative_gap": 0.0,
+        "tau": 2.8709339814006753,
+        "temperature": 339.81519295695034,
+        "outputs": [
+          0.6389109170811933,
+          0.38199999999999995,
+          0.17813711417028527
+        ],
+        "max_constraint_violation": 4.440892098500626e-16,
+        "max_integrality_violation": 0.0,
+        "forward_error": 1.1102230246251565e-16
+      },
+      "savings_vs_baseline": null,
+      "observed_gap_vs_reference": null
+    },
+    {
+      "name": "reference_repair",
+      "T": 339.81519295695034,
+      "tau": 3.085593068251201,
+      "cost": 44.18276312868249,
+      "prediction": [
+        0.6241392366753458,
+        0.38437084248552744,
+        0.18983578780235572
+      ],
+      "reference": [
+        0.618470381912826,
+        0.38200000000000006,
+        0.19952961808717404
+      ],
+      "prediction_error": [
+        0.0056688547625197705,
+        0.00237084248552738,
+        -0.009693830284818322
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.0,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 0.0
+      },
+      "reference_feasible": true,
+      "solver": null,
+      "savings_vs_baseline": 32.61723687131751,
+      "observed_gap_vs_reference": 2.790789633119523
+    },
+    {
+      "name": "reference_benchmark",
+      "T": 344.91161099086906,
+      "tau": 2.7510989048128662,
+      "cost": 41.391973495562965,
+      "prediction": [
+        0.592606736831592,
+        0.37786499688069597,
+        0.2283250651051147
+      ],
+      "reference": [
+        0.5901397476215188,
+        0.38,
+        0.22986025237848107
+      ],
+      "prediction_error": [
+        0.002466989210073267,
+        -0.0021350031193040353,
+        -0.0015351872733663785
+      ],
+      "reference_residuals": {
+        "product_shortfall": 0.0,
+        "byproduct_excess": 0.0,
+        "negativity": 0.0,
+        "balance_error": 2.220446049250313e-16
+      },
+      "reference_feasible": true,
+      "solver": null,
+      "savings_vs_baseline": 35.40802650443703,
+      "observed_gap_vs_reference": 0.0
+    }
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  }
+}

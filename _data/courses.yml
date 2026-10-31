@@ -11,8 +11,8 @@
   level_ko: "화학공학 대학원 입문"
   duration: "8 weeks"
   duration_ko: "8주"
-  availability: "Syllabus and Weeks 1–6 available"
-  availability_ko: "강의계획서와 1–6주차 공개"
+  availability: "Syllabus and all 8 weeks available"
+  availability_ko: "강의계획서와 전체 8주차 공개"
   weeks:
     - number: 1
       title: "Process Prediction and Surrogate Modeling Basics"
@@ -69,6 +69,7 @@
       topics_ko: "ICNN/PICNN, convexity 조건, ReLU/linear epigraph, 고정 context, 부등식 방향과 동치성 반례."
       deliverable: "An ICNN and valid LP on a known convex example, with explicit applicability conditions."
       deliverable_ko: "알려진 convex 예제의 ICNN·유효한 LP와 적용 조건 목록."
+      url: /courses/surrogate-models/week-07/
     - number: 8
       title: "Selecting and Revalidating Operating Conditions"
       title_ko: "운전 조건 선택과 공정 모델 재검증"
@@ -76,6 +77,7 @@
       topics_ko: "선택 지점의 오차, extrapolation, 물리적 feasibility, 경제성, 기준 공정 모델 재검증과 데이터 보완."
       deliverable: "A reproducible prediction-to-optimization report separating errors, violations, decision quality, and computation."
       deliverable_ko: "오차·제약 위반·의사결정 품질·계산 부담을 구분한 재현 가능한 예측–최적화 보고서."
+      url: /courses/surrogate-models/week-08/
 
 - id: "practical-algorithms"
   title: "Practical Data Structures and Algorithms"
