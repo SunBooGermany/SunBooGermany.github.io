@@ -63,14 +63,15 @@
       reading_ko: "5주차 직접 제공 읽기자료; Boyd & Vandenberghe의 최적화 문제 관련 지정 내용; Anderson et al.의 ReLU formulation."
       url: /courses/surrogate-models/week-05/
     - number: 6
-      title: "Building Formulations We Can Solve"
-      title_ko: "실제로 풀 수 있는 정식화 만들기"
-      topics: "Bound tightening, scaling, OMLT, relaxations, solver status, gaps, computation time, and optional short-horizon extensions."
-      topics_ko: "Bound tightening, scaling, OMLT, relaxation, solver 종료 상태, gap, 계산 시간과 선택 short-horizon 확장."
-      deliverable: "An operating optimization solve with documented bounds, termination, gaps, timing, and forward rechecks."
-      deliverable_ko: "Bounds·종료 상태·gap·계산 시간·forward 재확인을 기록한 운전 최적화 풀이."
-      reading: "OMLT paper and documentation; selected stronger-formulation material from Anderson et al."
-      reading_ko: "OMLT 논문·문서; Anderson et al.의 강한 formulation 중 지정 내용."
+      title: "Solve Time and Results in Neural-Network Optimization"
+      title_ko: "신경망 기반 최적화의 풀이 속도와 결과 해석"
+      topics: "Bound tightening, scaling, OMLT, LP relaxations, HiGHS termination, gaps, computation time, and reference-process checks."
+      topics_ko: "Bound tightening, scaling, OMLT, LP 완화, HiGHS 종료 상태, gap, 계산 시간과 기준 공정 검사."
+      deliverable: "A comparison of formulations for the same frozen network, reporting bounds, binary counts, termination, gaps, timing, and forward checks."
+      deliverable_ko: "같은 고정 신경망의 정식화를 비교하고 bounds·이진변수 수·종료 상태·gap·계산 시간·forward 검사 결과를 정리한 보고서."
+      reading: "Week 6 reading companion; OMLT paper and documentation; Anderson et al., stronger formulations (optional)."
+      reading_ko: "6주차 직접 제공 읽기자료; OMLT 논문·문서; Anderson et al.의 강한 정식화(선택)."
+      url: /courses/surrogate-models/week-06/
     - number: 7
       title: "Designing Model Structure for Optimization"
       title_ko: "최적화 활용을 위한 모델 구조 설계"

@@ -1,0 +1,4 @@
+numpy==2.5.4
+pyomo==6.10.1
+omlt==1.2.2
+highspy==1.15.1
