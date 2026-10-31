@@ -1,0 +1,15 @@
+---
+layout: default
+---
+{% assign parts = content | split: '<!-- ko -->' %}
+<article class="course-note">
+  <header class="post-header">
+    <h1><span data-lang-panel="en">{{ page.title | escape }}</span><span data-lang-panel="ko" hidden>{{ page.title_ko | escape }}</span></h1>
+    <nav class="course-actions" aria-label="Course resources">
+      <a class="button secondary" href="{{ '/courses/practical-algorithms/' | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
+      <a class="button secondary" href="{{ '/courses/practical-algorithms/reference/' | relative_url }}"><span data-lang-panel="en">Reference sheets</span><span data-lang-panel="ko" hidden>공통 참고표</span></a>
+    </nav>
+  </header>
+  <div class="post-content" data-lang-panel="en" lang="en">{{ parts | first | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="Scrollable table"><table>' | replace: '</table>', '</table></div>' }}</div>
+  <div class="post-content" data-lang-panel="ko" lang="ko" hidden>{{ parts | last | replace: '<table>', '<div class="table-scroll" tabindex="0" aria-label="가로로 스크롤할 수 있는 표"><table>' | replace: '</table>', '</table></div>' }}</div>
+</article>

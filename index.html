@@ -248,20 +248,23 @@ layout: null
         <div>
           <p class="eyebrow"><span data-lang-panel="en">Original courses by Sunwoo Kim</span><span data-lang-panel="ko" hidden>Sunwoo Kim이 직접 설계한 과목</span></p>
           <h2 id="courses-preview-title"><span data-lang-panel="en">Chemical Engineering Courses</span><span data-lang-panel="ko" hidden>화학공학 강의</span></h2>
-          <p><span data-lang-panel="en">Courses and learning resources connecting modern AI with chemical process modeling, optimization, and decisions.</span><span data-lang-panel="ko" hidden>AI 시대의 공정 모델링, 최적화, 의사결정을 공부하는 화학공학자를 위한 강의와 학습자료입니다.</span></p>
+          <p><span data-lang-panel="en">Process modeling and optimization, plus practical algorithms and SQL for learners without a computer science background.</span><span data-lang-panel="ko" hidden>공정 모델링·최적화 강의와 컴퓨터공학 비전공자를 위한 실무 알고리즘·SQL 과정입니다.</span></p>
         </div>
         <a class="button secondary" href="{{ '/courses/' | relative_url }}"><span data-lang-panel="en">All courses</span><span data-lang-panel="ko" hidden>전체 강의</span></a>
       </div>
-      {% assign first_course = site.data.courses | first %}
+      <div class="course-catalog">
+      {% for course in site.data.courses %}
       <article class="course-card">
-        <div class="note-meta"><span data-lang-panel="en">Graduate entry · 8 weeks · Syllabus and Weeks 1–5 available</span><span data-lang-panel="ko" hidden>대학원 입문 · 8주 · Syllabus와 1–5주차 공개</span></div>
-        <h3><a href="{{ first_course.url | relative_url }}"><span data-lang-panel="en">{{ first_course.title }}</span><span data-lang-panel="ko" hidden>{{ first_course.title_ko }}</span></a></h3>
-        <p><span data-lang-panel="en">{{ first_course.description }}</span><span data-lang-panel="ko" hidden>{{ first_course.description_ko }}</span></p>
+        <div class="note-meta"><span data-lang-panel="en">{{ course.level }} · {{ course.duration }} · {{ course.availability }}</span><span data-lang-panel="ko" hidden>{{ course.level_ko }} · {{ course.duration_ko }} · {{ course.availability_ko }}</span></div>
+        <h3><a href="{{ course.url | relative_url }}"><span data-lang-panel="en">{{ course.title }}</span><span data-lang-panel="ko" hidden>{{ course.title_ko }}</span></a></h3>
+        <p><span data-lang-panel="en">{{ course.description }}</span><span data-lang-panel="ko" hidden>{{ course.description_ko }}</span></p>
         <div class="course-actions">
-          <a class="button primary" href="{{ first_course.url | relative_url }}"><span data-lang-panel="en">Let's start learning!</span><span data-lang-panel="ko" hidden>학습을 시작해봅시다!</span></a>
-          <a class="button secondary" href="{{ first_course.syllabus_url | relative_url }}"><span data-lang-panel="en">What is this course about? (Syllabus)</span><span data-lang-panel="ko" hidden>어떤 강의인지 살펴볼까요? (실라버스)</span></a>
+          <a class="button primary" href="{{ course.url | relative_url }}"><span data-lang-panel="en">Course overview</span><span data-lang-panel="ko" hidden>과목 안내</span></a>
+          <a class="button secondary" href="{{ course.syllabus_url | relative_url }}"><span data-lang-panel="en">Syllabus</span><span data-lang-panel="ko" hidden>강의계획서</span></a>
         </div>
       </article>
+      {% endfor %}
+      </div>
     </section>
 
     <section id="research-blog" class="section research-log-preview">
