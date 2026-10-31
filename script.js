@@ -14,28 +14,6 @@ const content = {
     location: "Daejeon, Republic of Korea - research experience across Korea, Europe, and North America",
     contactButton: "Contact",
     profileCardText: "Postdoctoral researcher at KIER working across AI-enabled optimization, process systems engineering, and clean-energy planning.",
-    gatewayProfileTitle: "Profile & Credentials",
-    gatewayProfileText: "Academic background, research experience, projects, and selected talks.",
-    gatewayProfileButton: "View Profile",
-    gatewayResearchTitle: "Research Blog",
-    gatewayResearchText: "Reviews of papers on AI, optimization, and decision-making tools, written for researchers and chemical engineers who want to understand modern computational methods.",
-    gatewayResearchButton: "Explore Research Blog",
-    gatewayJudgmentTitle: "Better Judgment Notes",
-    gatewayJudgmentText: "Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.",
-    gatewayJudgmentButton: "Explore Better Judgment Notes",
-    gatewayCoursesTitle: "Chemical Engineering Courses",
-    gatewayCoursesText: "Original courses on process modeling, prediction, optimization, and operating decisions.",
-    gatewayCoursesButton: "Explore Courses",
-    profileTitle: "Profile & Credentials",
-    profileIntro: "A compact map of academic background, research experience, projects, and selected talks. The full publication record is listed separately by year.",
-    profilePublications: "Publication record",
-    profilePublicationsText: "Journal articles and conference proceedings by year, plus manuscripts under review.",
-    profileExperience: "Research experience",
-    profileExperienceText: "KIER, KAIST, USC, Waterloo, and related research experience.",
-    profileProjects: "Projects",
-    profileProjectsText: "Clean-energy, hydrogen, DAC, and process systems work.",
-    profileTalks: "Conferences",
-    profileTalksText: "Selected talks and technical presentations.",
     researchTitle: "Research agenda",
     researchIntro: "My work sits at the interface of process systems engineering, operations research, and machine learning. The common objective is to design decision-making methods that remain computationally tractable while respecting feasibility under uncertainty.",
     pillar1Title: "Clean-energy system planning",
@@ -45,22 +23,7 @@ const content = {
     pillar3Title: "Learning-augmented optimization",
     pillar3Text: "Integration of reinforcement learning, Bayesian optimization, attention models, and optimization-compatible neural surrogates for scalable planning and control under uncertainty.",
     featuredTitle: "Featured research themes",
-    researchBlogLabel: "Research Blog",
-    researchBlogTitle: "Daily paper reading as research training",
-    researchBlogIntro: "Paper reviews organized by application systems and algorithmic methods.",
-    researchBlogStatement1: "I review papers on decision-making tools based on modern AI and mathematical optimization in a way that chemical engineers can understand.",
-    researchBlogStatement2: "Just as elite athletes train every day, serious researchers read strong papers every day.",
-    exploreResearchBlog: "Explore Research Blog",
-    pubTitle: "Selected publications",
-    pubSubtitle: "A compact selection. Full records are linked through Google Scholar.",
-    judgmentLabel: "Better Judgment Notes",
-    judgmentTitle: "Better Judgment Notes",
-    judgmentIntro: "Reflections from books, interviews, and conversations on judgment, society, global affairs, and a better way to think.",
-    judgmentCategory1: "For Wiser Decision-Making",
-    judgmentCategory2: "Understanding Social Phenomena",
-    judgmentCategory3: "Understanding Global Affairs",
-    exploreJudgment: "Explore Better Judgment Notes",
-    experienceTitle: "Experience",
+    experienceTitle: "Education and research experience",
     projectTitle: "Selected projects and industrial exposure",
     conferenceTitle: "Selected talks and conferences",
     contactTitle: "For collaboration",
@@ -81,13 +44,13 @@ const content = {
       ["Renewable and Sustainable Energy Reviews", "2025", "Design and analysis of wind-based hydrogen production using rule-based operation", "https://doi.org/10.1016/j.rser.2025.115459"]
     ],
     timeline: [
-      ["Postdoctoral Researcher", "Korea Institute of Energy Research (KIER)", "Sep 1, 2026-present", "Postdoctoral research at KIER."],
-      ["Ph.D.", "KAIST - Chemical and Biomolecular Engineering", "2023-Aug 2026", "Research on clean-energy systems, stochastic optimization, reinforcement learning, and multi-timescale planning under uncertainty."],
-      ["Visiting Scholar", "University of Southern California - LENS2E", "2023-2024", "Research on direct air capture, green hydrogen, process optimization, supply chain design, and early-stage evaluation for long-term planning."],
-      ["M.Eng.", "KAIST - Chemical and Biomolecular Engineering", "2021-2023", "Spatial and temporal planning of renewable-based supply chain networks considering multiple uncertainties."],
-      ["Visiting Scholar", "University of Waterloo - Chemical Engineering", "2023", "International green hydrogen supply chain planning using Bayesian optimization, Hyperband, and mathematical programming."],
-      ["Exchange Student", "Technical University of Munich", "2019-2020", "Chemical engineering exchange program supported by the Mirae Asset Park Hyeon Joo Foundation scholarship."],
-      ["B.S.", "KAIST - Chemical and Biomolecular Engineering", "2016-2021", "KAIST Presidential Fellowship (KPF) recipient; received Dean's List honors three times; graduated summa cum laude, first in the department, and 4th overall at KAIST."]
+      ["Postdoctoral Researcher", "Korea Institute of Energy Research (KIER)", "2026.09 - Present", "Postdoctoral research at KIER."],
+      ["Ph.D.", "KAIST - Chemical and Biomolecular Engineering", "2023.03 - 2026.08", "Research on clean-energy systems, stochastic optimization, reinforcement learning, and multi-timescale planning under uncertainty."],
+      ["Visiting Scholar", "University of Southern California - LENS2E", "2023.09 - 2024.12", "Research on direct air capture, green hydrogen, process optimization, supply chain design, and early-stage evaluation for long-term planning."],
+      ["M.Eng.", "KAIST - Chemical and Biomolecular Engineering", "2021.09 - 2023.02", "Spatial and temporal planning of renewable-based supply chain networks considering multiple uncertainties."],
+      ["Visiting Scholar", "University of Waterloo - Chemical Engineering", "2023.01 - 2023.02", "International green hydrogen supply chain planning using Bayesian optimization, Hyperband, and mathematical programming."],
+      ["Exchange Student", "Technical University of Munich", "2019.08 - 2020.03", "Chemical engineering exchange program supported by the Mirae Asset Park Hyeon Joo Foundation scholarship."],
+      ["B.S.", "KAIST - Chemical and Biomolecular Engineering", "2016.03 - 2021.08", "KAIST Presidential Fellowship (KPF) recipient; received Dean's List honors three times; graduated summa cum laude, first in the department, and 4th overall at KAIST."]
     ],
     projects: [
       "Carbon-to-X R&D project: computational tools for long-term transition planning under multi-timescale uncertainty",
@@ -119,28 +82,6 @@ const content = {
     location: "대한민국 대전 - 한국, 유럽, 북미에서의 연구 경험",
     contactButton: "연락하기",
     profileCardText: "AI 기반 최적화, 공정시스템공학, 청정에너지 계획을 연결해 연구하는 한국에너지기술연구원(KIER) 박사후연구원입니다.",
-    gatewayProfileTitle: "프로필과 경력",
-    gatewayProfileText: "학문적 배경, 연구 경험, 프로젝트, 주요 발표를 정리한 공간입니다.",
-    gatewayProfileButton: "프로필 보기",
-    gatewayResearchTitle: "연구 블로그",
-    gatewayResearchText: "AI, 최적화, 의사결정 도구에 관한 논문을 연구자와 화학공학자가 이해할 수 있도록 비판적으로 읽고 정리합니다.",
-    gatewayResearchButton: "연구 블로그 보기",
-    gatewayJudgmentTitle: "더 나은 판단 노트",
-    gatewayJudgmentText: "책, 인터뷰, 대화에서 얻은 판단, 사회, 국제 정세, 더 나은 사고 방식에 관한 성찰입니다.",
-    gatewayJudgmentButton: "더 나은 판단 보기",
-    gatewayCoursesTitle: "화학공학 강의",
-    gatewayCoursesText: "공정 모델링, 예측, 최적화와 운전 의사결정을 공부하는 화학공학자를 위해 직접 구성한 과목과 학습자료입니다.",
-    gatewayCoursesButton: "강의 보기",
-    profileTitle: "프로필과 경력",
-    profileIntro: "학문적 배경, 연구 경험, 프로젝트, 주요 발표를 빠르게 볼 수 있는 안내입니다. 전체 논문 실적은 연도별로 별도 정리했습니다.",
-    profilePublications: "논문 실적",
-    profilePublicationsText: "연도별 학술지 논문, 학회 프로시딩, 심사 중 원고.",
-    profileExperience: "연구 경험",
-    profileExperienceText: "KIER, KAIST, USC, Waterloo에서의 연구 경험.",
-    profileProjects: "프로젝트",
-    profileProjectsText: "청정에너지, 수소, DAC, 공정 시스템 연구.",
-    profileTalks: "학회 발표",
-    profileTalksText: "주요 발표와 기술 발표.",
     researchTitle: "연구 방향",
     researchIntro: "저의 연구는 공정시스템공학, 운영연구, 머신러닝의 접점에 있습니다. 핵심 목표는 불확실성 하에서도 계산 가능성과 실행 가능성을 함께 고려하는 의사결정 방법을 설계하는 것입니다.",
     pillar1Title: "청정에너지 시스템 계획",
@@ -150,22 +91,7 @@ const content = {
     pillar3Title: "학습 보강 최적화",
     pillar3Text: "강화학습, 베이지안 최적화, attention 모델, 최적화 친화적 신경망 surrogate를 결합해 불확실성 하의 계획과 제어 문제를 확장 가능하게 다룹니다.",
     featuredTitle: "주요 연구 주제",
-    researchBlogLabel: "연구 블로그",
-    researchBlogTitle: "매일 읽는 논문을 통한 연구 훈련",
-    researchBlogIntro: "응용 시스템과 알고리즘 방법론으로 나누어 정리한 논문 리뷰입니다.",
-    researchBlogStatement1: "최신 AI와 수학적 최적화 기반 의사결정 도구에 관한 논문을 화학공학자도 이해할 수 있게 리뷰합니다.",
-    researchBlogStatement2: "엘리트 운동선수가 매일 훈련하듯, 진지한 연구자는 매일 좋은 논문을 읽습니다.",
-    exploreResearchBlog: "연구 블로그 보기",
-    pubTitle: "주요 논문",
-    pubSubtitle: "선정 논문입니다. 전체 목록은 Google Scholar에서 확인할 수 있습니다.",
-    judgmentLabel: "더 나은 판단 노트",
-    judgmentTitle: "더 나은 판단 노트",
-    judgmentIntro: "책, 인터뷰, 대화에서 얻은 판단, 사회, 국제 정세, 더 나은 사고 방식에 관한 성찰입니다.",
-    judgmentCategory1: "더 현명한 의사결정을 위하여",
-    judgmentCategory2: "사회 현상을 이해하기 위하여",
-    judgmentCategory3: "국제 정세의 흐름을 이해하기 위하여",
-    exploreJudgment: "더 나은 판단 보기",
-    experienceTitle: "경력과 연구 경험",
+    experienceTitle: "학력과 연구 경력",
     projectTitle: "주요 프로젝트와 산업 경험",
     conferenceTitle: "주요 발표와 학회",
     contactTitle: "협업 문의",
@@ -186,13 +112,13 @@ const content = {
       ["Renewable and Sustainable Energy Reviews", "2025", "Design and analysis of wind-based hydrogen production using rule-based operation", "https://doi.org/10.1016/j.rser.2025.115459"]
     ],
     timeline: [
-      ["박사후연구원", "한국에너지기술연구원(KIER)", "2026.09.01-현재", "KIER에서 박사후연구원으로 재직."],
-      ["공학박사", "KAIST - 생명화학공학과", "2023-2026.08", "청정에너지 시스템, 확률 최적화, 강화학습, 불확실성 하의 다시간척도 계획 연구."],
-      ["방문연구원", "University of Southern California - LENS2E", "2023-2024", "직접공기포집, 그린수소, 공정 최적화, 공급망 설계, 장기 계획을 위한 초기 단계 평가 연구."],
-      ["공학석사", "KAIST - 생명화학공학과", "2021-2023", "다중 불확실성을 고려한 재생에너지 기반 공급망의 시공간 계획 연구."],
-      ["방문연구원", "University of Waterloo - Chemical Engineering", "2023", "베이지안 최적화, Hyperband, 수리계획을 결합한 국제 그린수소 공급망 계획 연구."],
-      ["교환학생", "Technical University of Munich", "2019-2020", "미래에셋 박현주재단 장학 프로그램을 통한 화학공학 교환학생 과정."],
-      ["학사", "KAIST - 생명화학공학과", "2016-2021", "KPF(KAIST Presidential Fellowship, 카이스트 총장 장학생) 선정, Dean's List(딘스 리스트) 3회 수상. 최우수등급(summa cum laude)으로 졸업했으며, 생명화학공학과 수석 및 KAIST 전체 4등으로 졸업."]
+      ["박사후연구원", "한국에너지기술연구원(KIER)", "2026.09 - 현재", "KIER에서 박사후연구원으로 재직."],
+      ["공학박사", "KAIST - 생명화학공학과", "2023.03 - 2026.08", "청정에너지 시스템, 확률 최적화, 강화학습, 불확실성 하의 다시간척도 계획 연구."],
+      ["방문연구원", "University of Southern California - LENS2E", "2023.09 - 2024.12", "직접공기포집, 그린수소, 공정 최적화, 공급망 설계, 장기 계획을 위한 초기 단계 평가 연구."],
+      ["공학석사", "KAIST - 생명화학공학과", "2021.09 - 2023.02", "다중 불확실성을 고려한 재생에너지 기반 공급망의 시공간 계획 연구."],
+      ["방문연구원", "University of Waterloo - Chemical Engineering", "2023.01 - 2023.02", "베이지안 최적화, Hyperband, 수리계획을 결합한 국제 그린수소 공급망 계획 연구."],
+      ["교환학생", "Technical University of Munich", "2019.08 - 2020.03", "미래에셋 박현주재단 장학 프로그램을 통한 화학공학 교환학생 과정."],
+      ["학사", "KAIST - 생명화학공학과", "2016.03 - 2021.08", "KPF(KAIST Presidential Fellowship, 카이스트 총장 장학생) 선정, Dean's List(딘스 리스트) 3회 수상. 최우수등급(summa cum laude)으로 졸업했으며, 생명화학공학과 수석 및 KAIST 전체 4등으로 졸업."]
     ],
     projects: [
       "Carbon-to-X R&D project: 다시간척도 불확실성을 고려한 장기 에너지 전환 계획 계산 도구 개발",
@@ -258,19 +184,16 @@ function setTimeline(items) {
   if (!element) return;
   element.innerHTML = "";
   items.forEach(([role, org, period, text]) => {
-    const article = document.createElement("article");
-    article.className = "timeline-item";
-    article.innerHTML = `
-      <div class="top">
-        <div>
-          <h3>${role}</h3>
-          <div class="org">${org}</div>
-        </div>
-        <div class="period">${period}</div>
+    const li = document.createElement("li");
+    li.className = "timeline-item";
+    li.innerHTML = `
+      <div class="timeline-row">
+        <span class="period">${period}</span>
+        <span class="timeline-summary"><strong>${role}</strong>, <span class="org">${org}</span></span>
       </div>
       <p>${text}</p>
     `;
-    element.appendChild(article);
+    element.appendChild(li);
   });
 }
 
