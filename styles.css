@@ -129,13 +129,6 @@ h1 {
   color: var(--muted);
   font-size: 14px;
 }
-.hero-actions,
-.contact-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
-}
 .button {
   display: inline-flex;
   align-items: center;
@@ -174,21 +167,28 @@ h1 {
   border-radius: 6px;
   background: #e9eef0;
 }
-.profile-card-inner {
-  padding: 18px 6px 4px;
+.profile-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 12px;
+  scroll-margin-top: 112px;
 }
-.profile-label {
-  margin-bottom: 8px;
-  color: var(--green);
-  font-size: 12px;
-  font-weight: 850;
-  letter-spacing: 0;
-  text-transform: uppercase;
+.profile-links .button {
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 650;
 }
-.profile-card-inner p:last-child {
-  margin-bottom: 0;
-  color: var(--muted);
-  font-size: 14px;
+.research-directions {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: square;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.research-directions li + li {
+  margin-top: 12px;
 }
 
 .gateway-grid {
@@ -627,29 +627,6 @@ h1 {
   color: var(--muted);
   font-size: 14px;
 }
-.contact {
-  width: min(1180px, calc(100% - 40px));
-  margin-top: 76px;
-  margin-bottom: 76px;
-  padding: 42px;
-  border-radius: 8px;
-  background: var(--dark);
-  color: white;
-  display: grid;
-  grid-template-columns: 1fr .8fr;
-  gap: 40px;
-  align-items: end;
-}
-.contact h2 {
-  font-size: 44px;
-  line-height: 1.06;
-  letter-spacing: 0;
-}
-.contact p:not(.eyebrow) {
-  max-width: 760px;
-  color: #d6d8d4;
-  font-size: 17px;
-}
 .footer {
   display: flex;
   justify-content: space-between;
@@ -1062,7 +1039,6 @@ h1 {
   .hero,
   .cards.three,
   .split,
-  .contact,
   .home-note-list,
   .statement-panel,
   .insight-grid,
@@ -1088,7 +1064,6 @@ h1 {
   .publication-year-header p { text-align: left; }
   .publication { grid-template-columns: 1fr; }
   .publication .num { font-size: 22px; }
-  .contact { margin-top: 40px; margin-bottom: 40px; padding: 30px; }
   .footer { flex-direction: column; }
   .log-main { padding-top: 52px; }
   .log-home-link { padding-inline: 12px; }
@@ -1137,7 +1112,6 @@ h1 {
   }
   .hero-text,
   .location,
-  .profile-card-inner p:last-child,
   .gateway-card p:not(.gateway-kicker),
   .section-header p:not(.eyebrow),
   .card p,
@@ -1176,16 +1150,14 @@ h1 {
     -webkit-line-clamp: 3;
   }
   .insight-card,
-  .location,
-  .profile-card-inner p:last-child {
+  .location {
     --mobile-lines: 1;
     -webkit-line-clamp: 1;
   }
   .section-header {
     margin-bottom: 22px;
   }
-  .section-header h2,
-  .contact h2 {
+  .section-header h2 {
     font-size: 34px;
   }
   .log-hero h1,
@@ -1267,7 +1239,9 @@ h1 {
   .record-citation {
     font-size: 13px;
   }
-  #profile { scroll-margin-top: 176px; }
+  #profile,
+  .profile-links { scroll-margin-top: 176px; }
+  .research-directions { font-size: 16px; }
   .timeline-row {
     grid-template-columns: 1fr;
     gap: 2px;
@@ -1278,10 +1252,6 @@ h1 {
   }
   .timeline-item p {
     padding-left: 0;
-  }
-  .contact {
-    width: calc(100% - 32px);
-    padding: 24px 20px;
   }
   .log-main {
     width: calc(100% - 32px);

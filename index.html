@@ -89,19 +89,16 @@ layout: null
           I study optimization-compatible AI and mathematical programming for clean-energy systems, process systems, and decision making under uncertainty.
         </p>
         <p class="location" data-i18n="location">Daejeon, Republic of Korea - research experience across Korea, Europe, and North America</p>
-        <div class="hero-actions">
-          <a class="button primary" href="mailto:gloryark@kaist.ac.kr" data-i18n="contactButton">Contact</a>
-          <a class="button secondary" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
-          <a class="button secondary" href="https://www.linkedin.com/in/sunwoo-kim-25a474261/" target="_blank" rel="noreferrer">LinkedIn</a>
-        </div>
       </div>
 
       <aside class="profile-card" aria-label="Profile summary">
         <img src="{{ '/assets/images/sunwoo-profile-20260530.jpg' | relative_url }}" alt="Sunwoo Kim profile photo" />
-        <div class="profile-card-inner">
-          <p class="profile-label">Profile</p>
-          <p data-i18n="profileCardText">Postdoctoral researcher at KIER working across AI-enabled optimization, process systems engineering, and clean-energy planning.</p>
-        </div>
+        <nav id="contact" class="profile-links" aria-label="Profile links">
+          <a class="button secondary" href="mailto:gloryark@kaist.ac.kr" data-i18n="emailLabel">Email</a>
+          <a class="button secondary" href="https://github.com/SunBooGermany" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="button secondary" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
+          <a class="button secondary" href="https://www.linkedin.com/in/sunwoo-kim-25a474261/" target="_blank" rel="noreferrer">LinkedIn</a>
+        </nav>
       </aside>
     </section>
 
@@ -114,33 +111,16 @@ layout: null
     </section>
 
     <section id="research" class="section">
-      <div class="section-header">
+      <div class="section-header compact">
         <p class="eyebrow">Research</p>
         <h2 data-i18n="researchTitle">Research agenda</h2>
-        <p data-i18n="researchIntro">My work sits at the interface of process systems engineering, operations research, and machine learning. The common objective is to design decision-making methods that remain computationally tractable while respecting feasibility under uncertainty.</p>
       </div>
-      <div class="cards three">
-        <article class="card">
-          <span class="icon">01</span>
-          <h3 data-i18n="pillar1Title">Clean-energy system planning</h3>
-          <p data-i18n="pillar1Text">Long-horizon design and operation of green hydrogen, green ammonia, microgrid, offshore wind, and DAC-integrated systems under uncertain demand, renewable supply, cost, and policy conditions.</p>
-        </article>
-        <article class="card">
-          <span class="icon">02</span>
-          <h3 data-i18n="pillar2Title">Stochastic optimization and decomposition</h3>
-          <p data-i18n="pillar2Text">Multi-period and multi-timescale planning models that connect strategic capacity decisions with operational recourse, with emphasis on feasibility-critical decision making.</p>
-        </article>
-        <article class="card">
-          <span class="icon">03</span>
-          <h3 data-i18n="pillar3Title">Learning-augmented optimization</h3>
-          <p data-i18n="pillar3Text">Integration of reinforcement learning, Bayesian optimization, attention models, and optimization-compatible neural surrogates for scalable planning and control under uncertainty.</p>
-        </article>
-      </div>
-
-      <div class="feature-panel">
-        <h3 data-i18n="featuredTitle">Featured research themes</h3>
-        <ul id="featured-list"></ul>
-      </div>
+      <ul class="research-directions">
+        <li data-i18n="researchDirection1">Optimization for robust design and operations under uncertainty</li>
+        <li data-i18n="researchDirection2">Structure-aware integration of AI and mathematical optimization</li>
+        <li data-i18n="researchDirection3">Multi-timescale and multi-stage stochastic problem</li>
+        <li data-i18n="researchDirection4">Generalizable solutions for real-world decision problems</li>
+      </ul>
     </section>
 
     <section id="projects" class="section alt split">
@@ -159,24 +139,10 @@ layout: null
         <ul id="conference-list" class="text-list"></ul>
       </div>
     </section>
-
-    <section id="contact" class="section contact">
-      <div>
-        <p class="eyebrow">Contact</p>
-        <h2 data-i18n="contactTitle">For collaboration</h2>
-        <p data-i18n="contactText">I am interested in research collaborations and industry conversations on AI-enabled optimization, hydrogen and carbon-management systems, stochastic planning, and decision making under uncertainty.</p>
-      </div>
-      <div class="contact-actions">
-        <a class="button primary light" href="mailto:gloryark@kaist.ac.kr" data-i18n="emailSunwoo">Email Sunwoo</a>
-        <a class="button outline-light" href="https://scholar.google.com/citations?user=7DiGQu8AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
-        <a class="button outline-light" href="https://www.linkedin.com/in/sunwoo-kim-25a474261/" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a class="button outline-light" href="https://github.com/SunBooGermany" target="_blank" rel="noreferrer">GitHub</a>
-      </div>
-    </section>
   </main>
 
   <footer class="footer">
-    <p>&copy; <span id="year"></span> Sunwoo Kim. Built for academic and industrial collaboration.</p>
+    <p>&copy; <span id="year"></span> Sunwoo Kim.</p>
     <p>Korea Institute of Energy Research (KIER)</p>
   </footer>
 
