@@ -24,8 +24,6 @@ Sunwoo Kim designed this eight-week, self-paced course for chemical engineers en
 
 Basic Python, derivatives, matrix operations, linear algebra, and material balances are expected. LP/MILP, convexity, and KKT conditions are introduced when needed, so prior neural-network or mathematical-programming research experience is not required.
 
-The recommended weekly workload is 90 minutes of theory, 60–90 minutes of guided coding, and 2–3 hours of reading or exercises.
-
 ## Learning outcomes
 
 By the end of the course, learners should be able to:
@@ -79,8 +77,6 @@ Sunwoo Kim이 화학공학 대학원 입문자를 위해 설계한 8주 자율 �
 ## 수강 대상과 선수 지식
 
 Python 기초, 미분, 행렬 연산, 선형대수, 물질수지 지식을 전제로 합니다. LP/MILP, convexity, KKT 조건은 필요한 시점에 설명하므로 신경망이나 수리계획 연구 경험은 없어도 됩니다.
-
-주당 이론 90분, 안내된 실습 60–90분, 읽기·연습문제 2–3시간을 권장합니다.
 
 ## 학습 목표
 

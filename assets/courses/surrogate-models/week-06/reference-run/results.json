@@ -1,0 +1,506 @@
+{
+  "week05_manual": {
+    "termination": "optimal",
+    "has_incumbent": true,
+    "objective": 5.353846153846156,
+    "bound": 5.353846153846156,
+    "solve_seconds": 0.029348100069910288,
+    "binary_variables": 3,
+    "variables": 15,
+    "constraints": 22,
+    "absolute_gap": 0.0,
+    "relative_gap": 0.0,
+    "tau": 5.353846153846156,
+    "temperature": null,
+    "outputs": [
+      0.5846153846153844,
+      0.4,
+      0.21538461538461554
+    ],
+    "max_constraint_violation": 2.7755575615628914e-17,
+    "max_integrality_violation": 0.0
+  },
+  "week05_omlt": {
+    "termination": "optimal",
+    "has_incumbent": true,
+    "objective": 5.353846153846157,
+    "bound": 5.353846153846156,
+    "solve_seconds": 0.015313400188460946,
+    "binary_variables": 4,
+    "variables": 27,
+    "constraints": 39,
+    "absolute_gap": 8.881784197001252e-16,
+    "relative_gap": 1.658953944842187e-16,
+    "tau": 5.353846153846157,
+    "temperature": null,
+    "outputs": [
+      0.5846153846153844,
+      0.4,
+      0.21538461538461554
+    ],
+    "max_constraint_violation": 5.551115123125783e-17,
+    "max_integrality_violation": 0.0
+  },
+  "toy": {
+    "box_LP": {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 0.0,
+      "bound": 0.0,
+      "solve_seconds": 0.003921999828889966,
+      "binary_variables": 0,
+      "variables": 6,
+      "constraints": 8,
+      "absolute_gap": 0.0,
+      "relative_gap": null,
+      "tau": null,
+      "temperature": null,
+      "outputs": null,
+      "max_constraint_violation": 0.0,
+      "max_integrality_violation": 0.0
+    },
+    "box_MILP": {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 0.7,
+      "bound": 0.7,
+      "solve_seconds": 0.002987799933180213,
+      "binary_variables": 2,
+      "variables": 6,
+      "constraints": 8,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": null,
+      "temperature": null,
+      "outputs": null,
+      "max_constraint_violation": 1.1102230246251565e-16,
+      "max_integrality_violation": 0.0
+    },
+    "tight_LP": {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 0.4,
+      "bound": 0.4,
+      "solve_seconds": 0.0035049000289291143,
+      "binary_variables": 0,
+      "variables": 5,
+      "constraints": 6,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": null,
+      "temperature": null,
+      "outputs": null,
+      "max_constraint_violation": 0.0,
+      "max_integrality_violation": 0.0
+    },
+    "tight_MILP": {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 0.7,
+      "bound": 0.7,
+      "solve_seconds": 0.002733200090005994,
+      "binary_variables": 1,
+      "variables": 5,
+      "constraints": 6,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": null,
+      "temperature": null,
+      "outputs": null,
+      "max_constraint_violation": 1.1102230246251565e-16,
+      "max_integrality_violation": 0.0
+    }
+  },
+  "comparisons": [
+    {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 3.1656262770140167,
+      "bound": 3.1656262770140167,
+      "solve_seconds": 0.3107158998027444,
+      "binary_variables": 24,
+      "variables": 77,
+      "constraints": 104,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": 2.524440285740975,
+      "temperature": 342.0592995636521,
+      "outputs": [
+        0.6467389808542201,
+        0.38,
+        0.17122847462626342
+      ],
+      "max_constraint_violation": 2.3314683517128287e-15,
+      "max_integrality_violation": 2.886579864025407e-15,
+      "formulation": "loose",
+      "lp_objective": 2.0,
+      "build_seconds": 0.0016401999164372683,
+      "bound_seconds": 0.00014810007996857166,
+      "total_seconds": 0.31250419979915023,
+      "forward_error": 8.881784197001252e-16,
+      "reference_outputs": [
+        0.6507066002451748,
+        0.37115695127139153,
+        0.1781364484834335
+      ]
+    },
+    {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 3.1656262770140398,
+      "bound": 3.1656262770140398,
+      "solve_seconds": 0.15390620008111,
+      "binary_variables": 22,
+      "variables": 75,
+      "constraints": 100,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": 2.5244402857410027,
+      "temperature": 342.05929956365185,
+      "outputs": [
+        0.6467389808542207,
+        0.38,
+        0.17122847462626334
+      ],
+      "max_constraint_violation": 3.219646771412954e-15,
+      "max_integrality_violation": 0.0,
+      "formulation": "interval",
+      "lp_objective": 2.0,
+      "build_seconds": 0.0016189999878406525,
+      "bound_seconds": 7.759989239275455e-05,
+      "total_seconds": 0.1556027999613434,
+      "forward_error": 6.938893903907228e-16,
+      "reference_outputs": [
+        0.650706600245174,
+        0.37115695127139214,
+        0.17813644848343385
+      ]
+    },
+    {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 3.1656262770141583,
+      "bound": 3.1656262770141583,
+      "solve_seconds": 0.0955349002033472,
+      "binary_variables": 19,
+      "variables": 72,
+      "constraints": 94,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": 2.524440285741141,
+      "temperature": 342.0592995636509,
+      "outputs": [
+        0.646738980854221,
+        0.38,
+        0.17122847462626237
+      ],
+      "max_constraint_violation": 9.769962616701378e-15,
+      "max_integrality_violation": 0.0,
+      "formulation": "LP-OBBT",
+      "lp_objective": 2.5214932048437495,
+      "build_seconds": 0.0016038999892771244,
+      "bound_seconds": 0.11322839977219701,
+      "total_seconds": 0.21036719996482134,
+      "forward_error": 7.771561172376096e-16,
+      "reference_outputs": [
+        0.6507066002451696,
+        0.3711569512713945,
+        0.1781364484834359
+      ]
+    },
+    {
+      "termination": "optimal",
+      "has_incumbent": true,
+      "objective": 3.165626277014039,
+      "bound": 3.165626277014039,
+      "solve_seconds": 0.1009347999934107,
+      "binary_variables": 24,
+      "variables": 90,
+      "constraints": 141,
+      "absolute_gap": 0.0,
+      "relative_gap": 0.0,
+      "tau": 2.5244402857410018,
+      "temperature": 342.05929956365185,
+      "outputs": [
+        0.6467389808542218,
+        0.38,
+        0.17122847462626273
+      ],
+      "max_constraint_violation": 1.3322676295501878e-15,
+      "max_integrality_violation": 0.0,
+      "formulation": "OMLT",
+      "build_seconds": 0.0063246001955121756,
+      "total_seconds": 0.10725940018892288,
+      "forward_error": 4.440892098500626e-16
+    }
+  ],
+  "obbt": {
+    "seconds": 0.11315079987980425,
+    "lp_solves": 54,
+    "domain": "input box, no product constraints",
+    "outward_padding": "1e-7*(1+abs(bound))"
+  },
+  "fixed_input_checks": 32,
+  "max_forward_error": 7.771561172376096e-16,
+  "heldout_rmse_mol_L": [
+    0.005455621529945263,
+    0.004403219138319198,
+    0.0056420591698186995
+  ],
+  "infeasible_case": {
+    "termination": "infeasible",
+    "has_incumbent": false,
+    "objective": null,
+    "bound": null,
+    "solve_seconds": 0.018816000083461404,
+    "binary_variables": 22,
+    "variables": 75,
+    "constraints": 100,
+    "absolute_gap": null,
+    "relative_gap": null
+  },
+  "zero_time_limit_case": {
+    "termination": "maxTimeLimit",
+    "has_incumbent": false,
+    "objective": null,
+    "bound": null,
+    "solve_seconds": 0.010953499935567379,
+    "binary_variables": 22,
+    "variables": 75,
+    "constraints": 100,
+    "absolute_gap": null,
+    "relative_gap": null
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "pyomo": "6.10.1",
+    "omlt": "1.2.2",
+    "highspy": "1.15.1"
+  },
+  "python": "3.12.14",
+  "timing_note": "One run per formulation; includes solver interface overhead; not a speedup benchmark.",
+  "bounds": {
+    "loose": [
+      {
+        "lower": [
+          -30.832325444026363,
+          -21.100452946365913,
+          -9.047137107092619,
+          -9.046113883143244,
+          -12.114904702430014,
+          -14.828123144828409,
+          -14.426400522789054,
+          -9.102506641333822,
+          -9.017110715220552,
+          -9.261615176708009,
+          -16.173916493109612,
+          -31.113587829452936
+        ],
+        "upper": [
+          34.19609069012982,
+          23.732987475933083,
+          9.999821844765568,
+          9.375249388222713,
+          13.730894956930243,
+          16.460891667928227,
+          13.91982079680748,
+          9.626416491162297,
+          9.548555506180902,
+          9.664275946413115,
+          15.56942323022389,
+          28.097229046507643
+        ]
+      },
+      {
+        "lower": [
+          -39.294672359239215,
+          -59.30045838581691,
+          -56.52160282263157,
+          -20.337477473591925,
+          -39.12457262175019,
+          -33.30401847362641,
+          -35.49710425409819,
+          -49.039713839721045,
+          -41.7173901006402,
+          -42.225439116286516,
+          -44.53704614928182,
+          -39.519324331383274
+        ],
+        "upper": [
+          40.31736910962442,
+          56.90736748988486,
+          54.9424112828335,
+          21.018069724663786,
+          41.176532781141134,
+          34.664135326554195,
+          36.64594149717684,
+          49.13988419567632,
+          43.1681754475059,
+          43.933430962568224,
+          48.63378412972408,
+          38.46698060856652
+        ]
+      },
+      {
+        "lower": [
+          -80.43526043399788,
+          -66.02555849276425,
+          -52.466766763666
+        ],
+        "upper": [
+          80.42780729053675,
+          64.87982592441564,
+          55.484099582263106
+        ]
+      }
+    ],
+    "interval": [
+      {
+        "lower": [
+          -0.02939148574185513,
+          0.13643988524940132,
+          -0.024893393054529374,
+          -0.04611388314324444,
+          0.12784250463537056,
+          -0.007010865101580749,
+          -0.999243055611748,
+          -0.10250664133382079,
+          -0.017110715220551798,
+          -0.2616151767080084,
+          -1.1375976767937435,
+          -3.0663587829452936
+        ],
+        "upper": [
+          3.3931567318453126,
+          2.496094644317769,
+          0.9775781307274805,
+          0.37524938822271287,
+          1.4881477498648579,
+          1.6397793882014,
+          0.4926633296301749,
+          0.6264164911622969,
+          0.5485555061809022,
+          0.6642759464131143,
+          0.5331044139080199,
+          0.05
+        ]
+      },
+      {
+        "lower": [
+          -1.5837053476722291,
+          -4.254646128905543,
+          -3.722859298990222,
+          -0.7480077481023778,
+          -1.0872069045911417,
+          -1.108577199856648,
+          -1.324082582441596,
+          -2.5335884545328167,
+          -1.508437998886786,
+          -1.413342763144796,
+          -0.4034949644895507,
+          -2.578443044038634
+        ],
+        "upper": [
+          2.6064020980574356,
+          1.861555232973497,
+          2.1436677591921507,
+          1.4285999991742386,
+          3.1391670639820854,
+          2.468694052784436,
+          2.472919825520248,
+          2.6337588104880973,
+          2.959223345752483,
+          3.121334609426506,
+          4.500232944931812,
+          1.5260993212218819
+        ]
+      },
+      {
+        "lower": [
+          -4.236965196060424,
+          -4.017744821468508,
+          -1.3321458629627387
+        ],
+        "upper": [
+          4.229512052599293,
+          2.8720122531199075,
+          4.349478681559846
+        ]
+      }
+    ],
+    "LP-OBBT": [
+      {
+        "lower": [
+          -0.02939148574185513,
+          0.13643988524940132,
+          -0.024893393054529374,
+          -0.04611388314324444,
+          0.12784250463537056,
+          -0.007010865101580749,
+          -0.999243055611748,
+          -0.10250664133382079,
+          -0.017110715220551798,
+          -0.2616151767080084,
+          -1.1375976767937435,
+          -3.0663587829452936
+        ],
+        "upper": [
+          3.3931567318453126,
+          2.496094644317769,
+          0.9775781307274805,
+          0.37524938822271287,
+          1.4881477498648579,
+          1.6397793882014,
+          0.4926633296301749,
+          0.6264164911622969,
+          0.5485555061809022,
+          0.6642759464131143,
+          0.5331044139080199,
+          0.05
+        ]
+      },
+      {
+        "lower": [
+          -0.36926377639887287,
+          -2.0018102677797955,
+          -1.699560838180723,
+          -0.324587907354838,
+          0.10680617409893388,
+          -0.05013407820587478,
+          -0.37809094329332177,
+          -0.9017939253253344,
+          -0.11642494441879765,
+          -0.18309804362531384,
+          1.174558672644547,
+          -1.3591065374565978
+        ],
+        "upper": [
+          1.5446989872791934,
+          -0.43602753604447214,
+          0.38407414239706605,
+          0.9628684423297582,
+          1.8562367326526095,
+          1.1200559825426901,
+          1.4723147934510759,
+          0.9346908102558474,
+          1.4804351953297747,
+          1.7534307741295032,
+          2.7761075182965484,
+          0.30887067324713946
+        ]
+      },
+      {
+        "lower": [
+          -1.241730770851515,
+          -1.3100995721330602,
+          -0.3801173811025991
+        ],
+        "upper": [
+          1.9505178445439701,
+          0.9308346597973143,
+          2.1383861142099487
+        ]
+      }
+    ]
+  }
+}
