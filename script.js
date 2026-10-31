@@ -49,8 +49,8 @@ const content = {
       ["Visiting Scholar", "University of Southern California - LENS2E", "2023.09 - 2024.12", "Research on direct air capture, green hydrogen, process optimization, supply chain design, and early-stage evaluation for long-term planning."],
       ["M.Eng.", "KAIST - Chemical and Biomolecular Engineering", "2021.09 - 2023.02", "Spatial and temporal planning of renewable-based supply chain networks considering multiple uncertainties."],
       ["Visiting Scholar", "University of Waterloo - Chemical Engineering", "2023.01 - 2023.02", "International green hydrogen supply chain planning using Bayesian optimization, Hyperband, and mathematical programming."],
-      ["Exchange Student", "Technical University of Munich", "2019.08 - 2020.03", "Chemical engineering exchange program supported by the Mirae Asset Park Hyeon Joo Foundation scholarship."],
-      ["B.S.", "KAIST - Chemical and Biomolecular Engineering", "2016.03 - 2021.08", "KAIST Presidential Fellowship (KPF) recipient; received Dean's List honors three times; graduated summa cum laude, first in the department, and 4th overall at KAIST."]
+      ["B.S.", "KAIST - Chemical and Biomolecular Engineering", "2016.03 - 2021.08", "KAIST Presidential Fellowship (KPF) recipient; received Dean's List honors three times; graduated summa cum laude, first in the department, and 4th overall at KAIST."],
+      ["Exchange Student", "Technical University of Munich", "2019.08 - 2020.03", "Chemical engineering exchange program supported by the Mirae Asset Park Hyeon Joo Foundation scholarship."]
     ],
     projects: [
       "Carbon-to-X R&D project: computational tools for long-term transition planning under multi-timescale uncertainty",
@@ -117,8 +117,8 @@ const content = {
       ["방문연구원", "University of Southern California - LENS2E", "2023.09 - 2024.12", "직접공기포집, 그린수소, 공정 최적화, 공급망 설계, 장기 계획을 위한 초기 단계 평가 연구."],
       ["공학석사", "KAIST - 생명화학공학과", "2021.09 - 2023.02", "다중 불확실성을 고려한 재생에너지 기반 공급망의 시공간 계획 연구."],
       ["방문연구원", "University of Waterloo - Chemical Engineering", "2023.01 - 2023.02", "베이지안 최적화, Hyperband, 수리계획을 결합한 국제 그린수소 공급망 계획 연구."],
-      ["교환학생", "Technical University of Munich", "2019.08 - 2020.03", "미래에셋 박현주재단 장학 프로그램을 통한 화학공학 교환학생 과정."],
-      ["학사", "KAIST - 생명화학공학과", "2016.03 - 2021.08", "KPF(KAIST Presidential Fellowship, 카이스트 총장 장학생) 선정, Dean's List(딘스 리스트) 3회 수상. 최우수등급(summa cum laude)으로 졸업했으며, 생명화학공학과 수석 및 KAIST 전체 4등으로 졸업."]
+      ["학사", "KAIST - 생명화학공학과", "2016.03 - 2021.08", "KPF(KAIST Presidential Fellowship, 카이스트 총장 장학생) 선정, Dean's List(딘스 리스트) 3회 수상. 최우수등급(summa cum laude)으로 졸업했으며, 생명화학공학과 수석 및 KAIST 전체 4등으로 졸업."],
+      ["교환학생", "Technical University of Munich", "2019.08 - 2020.03", "미래에셋 박현주재단 장학 프로그램을 통한 화학공학 교환학생 과정."]
     ],
     projects: [
       "Carbon-to-X R&D project: 다시간척도 불확실성을 고려한 장기 에너지 전환 계획 계산 도구 개발",
