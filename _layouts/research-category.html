@@ -16,10 +16,6 @@ layout: default
   {% endif %}
 {% endfor %}
 <section class="category-header">
-  <p class="eyebrow">
-    <span data-lang-panel="en">{{ page.research_group_label | default: "Research Blog Category" }}</span>
-    <span data-lang-panel="ko" hidden>{% if page.research_group == "application_reviews" %}응용 시스템 리뷰{% elsif page.research_group == "algorithmic_reviews" %}알고리즘 리뷰{% else %}연구 블로그 카테고리{% endif %}</span>
-  </p>
   <h1>
     <span data-lang-panel="en">{{ page.category_label }}</span>
     <span data-lang-panel="ko" hidden>{{ category_label_ko | default: page.category_label }}</span>

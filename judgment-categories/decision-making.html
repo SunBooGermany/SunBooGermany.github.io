@@ -10,10 +10,6 @@ category_label_ko: "더 현명한 의사결정을 내리기 위하여"
 ---
 {% assign category_notes = site.better_judgment | where: "category", page.category_slug | sort: "date" | reverse %}
 <section class="category-header judgment-category-header">
-  <p class="eyebrow">
-    <span data-lang-panel="en">Better Judgment Category</span>
-    <span data-lang-panel="ko" hidden>더 나은 판단 카테고리</span>
-  </p>
   <h1>
     <span data-lang-panel="en">{{ page.category_label }}</span>
     <span data-lang-panel="ko" hidden>{{ page.category_label_ko }}</span>
