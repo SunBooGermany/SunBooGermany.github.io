@@ -12,30 +12,15 @@ const content = {
     title: "Postdoctoral Researcher, Korea Institute of Energy Research (KIER)",
     hero: "I study optimization-compatible AI and mathematical programming for clean-energy systems, process systems, and decision making under uncertainty.",
     location: "Daejeon, Republic of Korea - research experience across Korea, Europe, and North America",
-    contactButton: "Contact",
-    profileCardText: "Postdoctoral researcher at KIER working across AI-enabled optimization, process systems engineering, and clean-energy planning.",
     researchTitle: "Research agenda",
-    researchIntro: "My work sits at the interface of process systems engineering, operations research, and machine learning. The common objective is to design decision-making methods that remain computationally tractable while respecting feasibility under uncertainty.",
-    pillar1Title: "Clean-energy system planning",
-    pillar1Text: "Long-horizon design and operation of green hydrogen, green ammonia, microgrid, offshore wind, and DAC-integrated systems under uncertain demand, renewable supply, cost, and policy conditions.",
-    pillar2Title: "Stochastic optimization and decomposition",
-    pillar2Text: "Multi-period and multi-timescale planning models that connect strategic capacity decisions with operational recourse, with emphasis on feasibility-critical decision making.",
-    pillar3Title: "Learning-augmented optimization",
-    pillar3Text: "Integration of reinforcement learning, Bayesian optimization, attention models, and optimization-compatible neural surrogates for scalable planning and control under uncertainty.",
-    featuredTitle: "Featured research themes",
+    researchDirection1: "Optimization for robust design and operations under uncertainty",
+    researchDirection2: "Structure-aware integration of AI and mathematical optimization",
+    researchDirection3: "Multi-timescale and multi-stage stochastic problem",
+    researchDirection4: "Generalizable solutions for real-world decision problems",
+    emailLabel: "Email",
     experienceTitle: "Education and research experience",
     projectTitle: "Selected projects and industrial exposure",
     conferenceTitle: "Selected talks and conferences",
-    contactTitle: "For collaboration",
-    contactText: "I am interested in research collaborations and industry conversations on AI-enabled optimization, hydrogen and carbon-management systems, stochastic planning, and decision making under uncertainty.",
-    emailSunwoo: "Email Sunwoo",
-    featured: [
-      "Multi-period stochastic capacity planning for hybrid microgrids with green hydrogen production",
-      "International green hydrogen and green ammonia supply chain design under uncertainty",
-      "Sector coupling between solid direct air capture and green hydrogen production",
-      "Rule-based and optimization-based operation of wind-powered hydrogen production systems",
-      "Bayesian optimization and Hyperband-assisted design-space exploration for energy supply chains"
-    ],
     publications: [
       ["Renewable and Sustainable Energy Reviews", "2024", "Multi-period, multi-timescale stochastic optimization model for simultaneous capacity investment and energy management decisions for hybrid micro-grids with green hydrogen production under uncertainty", "https://doi.org/10.1016/j.rser.2023.114049"],
       ["Energy Conversion and Management", "2024", "Techno-economic analysis for design and management of international green hydrogen supply chain under uncertainty: An integrated temporal planning approach", "https://doi.org/10.1016/j.enconman.2023.118010"],
@@ -80,30 +65,15 @@ const content = {
     title: "한국에너지기술연구원(KIER) 박사후연구원",
     hero: "청정에너지 시스템, 공정 시스템, 불확실성 하의 의사결정을 위한 최적화 친화적 AI와 수리계획 방법론을 연구합니다.",
     location: "대한민국 대전 - 한국, 유럽, 북미에서의 연구 경험",
-    contactButton: "연락하기",
-    profileCardText: "AI 기반 최적화, 공정시스템공학, 청정에너지 계획을 연결해 연구하는 한국에너지기술연구원(KIER) 박사후연구원입니다.",
     researchTitle: "연구 방향",
-    researchIntro: "저의 연구는 공정시스템공학, 운영연구, 머신러닝의 접점에 있습니다. 핵심 목표는 불확실성 하에서도 계산 가능성과 실행 가능성을 함께 고려하는 의사결정 방법을 설계하는 것입니다.",
-    pillar1Title: "청정에너지 시스템 계획",
-    pillar1Text: "수요, 재생에너지 공급, 비용, 정책 불확실성을 고려한 그린수소, 그린암모니아, 마이크로그리드, 해상풍력, DAC 연계 시스템의 장기 설계와 운영.",
-    pillar2Title: "확률 최적화와 분해 기법",
-    pillar2Text: "전략적 설비 투자와 운영 recourse를 연결하는 다기간, 다시간척도 계획 모델. 특히 실행 가능성이 중요한 의사결정 구조에 초점.",
-    pillar3Title: "학습 보강 최적화",
-    pillar3Text: "강화학습, 베이지안 최적화, attention 모델, 최적화 친화적 신경망 surrogate를 결합해 불확실성 하의 계획과 제어 문제를 확장 가능하게 다룹니다.",
-    featuredTitle: "주요 연구 주제",
+    researchDirection1: "불확실성 하의 강건 설계와 운영을 위한 최적화",
+    researchDirection2: "문제 구조를 반영한 AI와 수학적 최적화의 통합",
+    researchDirection3: "다시간척도·다단계 확률 문제",
+    researchDirection4: "실제 의사결정 문제에 일반화할 수 있는 해법",
+    emailLabel: "이메일",
     experienceTitle: "학력과 연구 경력",
     projectTitle: "주요 프로젝트와 산업 경험",
     conferenceTitle: "주요 발표와 학회",
-    contactTitle: "협업 문의",
-    contactText: "AI 기반 최적화, 수소 및 탄소관리 시스템, 확률 계획, 불확실성 하의 의사결정에 관한 연구 협업과 산업 논의를 환영합니다.",
-    emailSunwoo: "이메일 보내기",
-    featured: [
-      "그린수소 생산을 포함한 하이브리드 마이크로그리드의 다기간 확률 용량 계획",
-      "불확실성 하의 국제 그린수소 및 그린암모니아 공급망 설계",
-      "고체 직접공기포집과 그린수소 생산의 섹터 커플링",
-      "풍력 기반 수소 생산 시스템의 규칙 기반 및 최적화 기반 운영",
-      "에너지 공급망 설계를 위한 베이지안 최적화와 Hyperband 기반 탐색"
-    ],
     publications: [
       ["Renewable and Sustainable Energy Reviews", "2024", "Multi-period, multi-timescale stochastic optimization model for simultaneous capacity investment and energy management decisions for hybrid micro-grids with green hydrogen production under uncertainty", "https://doi.org/10.1016/j.rser.2023.114049"],
       ["Energy Conversion and Management", "2024", "Techno-economic analysis for design and management of international green hydrogen supply chain under uncertainty: An integrated temporal planning approach", "https://doi.org/10.1016/j.enconman.2023.118010"],
@@ -207,7 +177,6 @@ function applyLanguage(lang) {
   document.querySelectorAll("[data-lang-panel]").forEach((node) => {
     node.hidden = node.getAttribute("data-lang-panel") !== lang;
   });
-  setList("featured-list", dict.featured);
   setList("project-list", dict.projects);
   setList("conference-list", dict.conferences);
   setPublications(dict.publications);
