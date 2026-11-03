@@ -1,0 +1,24 @@
+{
+  "jeju": {
+    "checked_scenario_trajectories": 738,
+    "max_residuals": {
+      "total_slack_kg": 9.809925347781245e-05,
+      "balance_kg": 1.4551915228366852e-11,
+      "production_equality_kg_h": 9.094947017729282e-13,
+      "supply_violation_mw": 8.526512829121202e-14,
+      "rated_power_violation_mw": 0.0,
+      "inventory_violation_kg": 7.275957614183426e-12
+    }
+  },
+  "texas": {
+    "checked_scenario_trajectories": 564,
+    "max_residuals": {
+      "total_slack_kg": 6.646205918059422e-05,
+      "balance_kg": 7.275957614183426e-12,
+      "production_equality_kg_h": 6.821210263296962e-13,
+      "supply_violation_mw": 4.263256414560601e-14,
+      "rated_power_violation_mw": 0.0,
+      "inventory_violation_kg": 5.684341886080802e-14
+    }
+  }
+}

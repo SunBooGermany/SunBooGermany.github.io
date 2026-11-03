@@ -1,0 +1,31 @@
+{
+  "model_size": {
+    "variables": 78844,
+    "constraints": 735840,
+    "nonzeros": 2111736,
+    "integer_variables": 1,
+    "operating_binary_variables": 0,
+    "general_integer_variables": 1,
+    "formulation": "hypograph"
+  },
+  "build_s": 0.12284970004111528,
+  "witness_max_matrix_violation": 4.5508841139962897e-10,
+  "cost_derived_capacity_bounds": [
+    [
+      0.0,
+      463.75533652320394
+    ],
+    [
+      0.0,
+      950.5795141475398
+    ],
+    [
+      0.0,
+      72.11861121246014
+    ],
+    [
+      0.0,
+      982658.1106267596
+    ]
+  ]
+}

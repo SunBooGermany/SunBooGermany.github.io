@@ -1,0 +1,365 @@
+{
+  "years": [
+    2022,
+    2023,
+    2024
+  ],
+  "sites": [
+    "jeju",
+    "texas"
+  ],
+  "scenario_pairing": "same-year wind and PV",
+  "independent_scenarios": true,
+  "probabilities": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "hourly_demand_kg_h": 1000.0,
+  "annual_demand_kg": 8760000.0,
+  "inventory_boundary": "Separate cyclic hydrogen inventory for each full year; each scenario cyclic level is optimized",
+  "calendar": "UTC hourly chronology; remove actual February 29 timestamps only",
+  "investment_variables": [
+    "pem_mw",
+    "pv_mw",
+    "n_wind",
+    "tank_kg"
+  ],
+  "battery_included": false,
+  "profiles": [
+    {
+      "site": "jeju",
+      "year": 2022,
+      "source": "data/era5/jeju_2022.npz",
+      "source_sha256": "46dcf99ef38cd5b8eb3e2d0f75a1b5e966fe3c8d2bfa487a1f32d05116e78bc9",
+      "raw_hours": 8760,
+      "removed_leap_hours": 0,
+      "retained_hours": 8760,
+      "wind_cf": 0.25445163684126,
+      "pv_cf": 0.15807856444834642,
+      "wind_rating_mw": 3.6,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.3430047584536592,
+          "pv_cf": 0.10126323883751324
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.15728716173145374,
+          "pv_cf": 0.2026576619258396
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.18318106488868768,
+          "pv_cf": 0.1931051632705349
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.33715760810085227,
+          "pv_cf": 0.13378906165059118
+        }
+      },
+      "processed_sha256": "3de58490aa0153da05312d2054b32f0ce2d5f28a826fddb7bc26a05fadb5b561"
+    },
+    {
+      "site": "jeju",
+      "year": 2023,
+      "source": "data/era5/jeju_2023.npz",
+      "source_sha256": "a1791c90f667266186179113631faa37ca78aeb004d2518c61f8e7537b4cd803",
+      "raw_hours": 8760,
+      "removed_leap_hours": 0,
+      "retained_hours": 8760,
+      "wind_cf": 0.22548747774741187,
+      "pv_cf": 0.15133743677890185,
+      "wind_rating_mw": 3.6,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.3045071876978261,
+          "pv_cf": 0.09910089374102804
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.23168354966280288,
+          "pv_cf": 0.18943494007675454
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.1508964191562087,
+          "pv_cf": 0.178253004279257
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.21648269619397734,
+          "pv_cf": 0.1372724517236658
+        }
+      },
+      "processed_sha256": "c3e70fafdd28c4a0e867067c9357cab8d64522c664027a2ca226e26a0cb3eacc"
+    },
+    {
+      "site": "jeju",
+      "year": 2024,
+      "source": "data/era5/jeju_2024.npz",
+      "source_sha256": "b22f62988755d07b28e907c229fe1146eb99e4bdbe8190109f5d59f244fab94e",
+      "raw_hours": 8784,
+      "removed_leap_hours": 24,
+      "retained_hours": 8760,
+      "wind_cf": 0.25596928010768505,
+      "pv_cf": 0.14607539958177482,
+      "wind_rating_mw": 3.6,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.37749408661710016,
+          "pv_cf": 0.08830544852679179
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.2147715699572195,
+          "pv_cf": 0.18766896584684362
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.1522551472705317,
+          "pv_cf": 0.18286156870521492
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.2822841918550871,
+          "pv_cf": 0.12396946484777097
+        }
+      },
+      "processed_sha256": "511cc84f3f68f92e96d95a5621cd63190a991745c4048944eef9554ae226d050"
+    },
+    {
+      "site": "texas",
+      "year": 2022,
+      "source": "data/era5/texas_2022.npz",
+      "source_sha256": "34f0e6d0d6deb7749d920b7baa9c800798a58316471e5668da4ed4ba9e80bdf1",
+      "raw_hours": 8760,
+      "removed_leap_hours": 0,
+      "retained_hours": 8760,
+      "wind_cf": 0.4014987046411852,
+      "pv_cf": 0.2021726429047135,
+      "wind_rating_mw": 4.2,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.43055026194865065,
+          "pv_cf": 0.14574875228461984
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.5068654309586622,
+          "pv_cf": 0.25121487709254403
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.3035525844230844,
+          "pv_cf": 0.24423663575298266
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.36526424399487195,
+          "pv_cf": 0.1658690964045735
+        }
+      },
+      "processed_sha256": "39171b7efc6db6c6314a2f3fbd646928e01055b8371aadc8c606036f178f649b"
+    },
+    {
+      "site": "texas",
+      "year": 2023,
+      "source": "data/era5/texas_2023.npz",
+      "source_sha256": "f45724ad84c30f57da8daa9eb92b67eb646f3951e88dc39753631c4bd6ef3837",
+      "raw_hours": 8760,
+      "removed_leap_hours": 0,
+      "retained_hours": 8760,
+      "wind_cf": 0.38503869764732024,
+      "pv_cf": 0.19949278498842246,
+      "wind_rating_mw": 4.2,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.46087720968021856,
+          "pv_cf": 0.13626690721516657
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.42999679752332187,
+          "pv_cf": 0.2355807110928297
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.2884980934520461,
+          "pv_cf": 0.2562241658734085
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.3621829208826192,
+          "pv_cf": 0.16818457352214605
+        }
+      },
+      "processed_sha256": "b79635528829d6f6aeed1c03659be8b3ad99a82f75bf43c5793df7df1dc2e2d8"
+    },
+    {
+      "site": "texas",
+      "year": 2024,
+      "source": "data/era5/texas_2024.npz",
+      "source_sha256": "e9dd99d1735af98c05500b049ed3c0044e7e8486c1bf6eb410de124d17f66778",
+      "raw_hours": 8784,
+      "removed_leap_hours": 24,
+      "retained_hours": 8760,
+      "wind_cf": 0.3993470794248258,
+      "pv_cf": 0.19915708650808644,
+      "wind_rating_mw": 4.2,
+      "seasonal_statistics": {
+        "DJF": {
+          "hours": 2160,
+          "wind_cf": 0.40659287783788783,
+          "pv_cf": 0.132615098187329
+        },
+        "MAM": {
+          "hours": 2208,
+          "wind_cf": 0.460544565281368,
+          "pv_cf": 0.239727541215995
+        },
+        "JJA": {
+          "hours": 2208,
+          "wind_cf": 0.3476769443812923,
+          "pv_cf": 0.2520501833762112
+        },
+        "SON": {
+          "hours": 2184,
+          "wind_cf": 0.3825488581943598,
+          "pv_cf": 0.170477220616582
+        }
+      },
+      "processed_sha256": "3144a5753bb3777ab0083ea88bab840faa2bbc4d01998043601de94ff3e74bbf"
+    }
+  ],
+  "economics": {
+    "jeju": {
+      "capital": [
+        788590.0,
+        751000.0,
+        224000.0,
+        9538189.200000001,
+        345.0
+      ],
+      "annualized_initial": [
+        67669.31577504468,
+        64443.698432719866,
+        19221.555857429095,
+        818476.9486005667,
+        29.60462844112963
+      ],
+      "annual_om": [
+        69790.21500000001,
+        15020.0,
+        28000.0,
+        228916.54080000002,
+        47.265
+      ],
+      "annualized_stack_replacement": [
+        25943.342938584236,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "annualized_replacement_admin": [
+        2594.3342938584237,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "annualized_salvage_credit": [
+        -3117.0039437611704,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fixed_labor_usd_per_year": 1374943.68,
+      "water_usd_per_kg": 0.01296,
+      "oxygen_credit_usd_per_kg": 0.44,
+      "crf": 0.0858105172206656,
+      "discount_rate": 0.07,
+      "project_life_years": 25.0,
+      "replacement_years": [
+        10,
+        20
+      ],
+      "replacement_annual_fraction_of_pem_capex": 0.03289839198897302,
+      "stack_fraction_of_pem_capex": 0.5,
+      "replacement_downtime_h": 0,
+      "terminal_stack_remaining_life_fraction": 0.5,
+      "salvage_fraction_of_initial_pem_capex": 0.25,
+      "salvage_model": "linear remaining calendar life of stack installed at year 20; BOP salvage zero",
+      "historical_operating_hour_life_enforced": false
+    },
+    "texas": {
+      "capital": [
+        788590.0,
+        751000.0,
+        224000.0,
+        11127887.4,
+        345.0
+      ],
+      "annualized_initial": [
+        67669.31577504468,
+        64443.698432719866,
+        19221.555857429095,
+        954889.7733673278,
+        29.60462844112963
+      ],
+      "annual_om": [
+        69790.21500000001,
+        15020.0,
+        28000.0,
+        267069.2976,
+        47.265
+      ],
+      "annualized_stack_replacement": [
+        25943.342938584236,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "annualized_replacement_admin": [
+        2594.3342938584237,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "annualized_salvage_credit": [
+        -3117.0039437611704,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fixed_labor_usd_per_year": 2268657.0719999997,
+      "water_usd_per_kg": 0.01296,
+      "oxygen_credit_usd_per_kg": 0.44,
+      "crf": 0.0858105172206656,
+      "discount_rate": 0.07,
+      "project_life_years": 25.0,
+      "replacement_years": [
+        10,
+        20
+      ],
+      "replacement_annual_fraction_of_pem_capex": 0.03289839198897302,
+      "stack_fraction_of_pem_capex": 0.5,
+      "replacement_downtime_h": 0,
+      "terminal_stack_remaining_life_fraction": 0.5,
+      "salvage_fraction_of_initial_pem_capex": 0.25,
+      "salvage_model": "linear remaining calendar life of stack installed at year 20; BOP salvage zero",
+      "historical_operating_hour_life_enforced": false
+    }
+  }
+}

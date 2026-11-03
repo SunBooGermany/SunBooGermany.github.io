@@ -1,0 +1,49 @@
+{
+  "model_size": {
+    "variables": 78844,
+    "constraints": 735840,
+    "nonzeros": 2111736,
+    "integer_variables": 1,
+    "operating_binary_variables": 0,
+    "general_integer_variables": 1,
+    "formulation": "hypograph"
+  },
+  "status": 1,
+  "message": "Time limit reached",
+  "solve_s": 600.8102448000573,
+  "total_wall_s": 601.1430530000944,
+  "witness_max_matrix_violation": 4.5508841139962897e-10,
+  "integer_variables": 1,
+  "operating_binary_variables": 0,
+  "solver_version": "1.15.1",
+  "max_violation": 4.5508841139962897e-10,
+  "optimal": false,
+  "cost_derived_capacity_bounds": [
+    [
+      0.0,
+      463.75533652320394
+    ],
+    [
+      0.0,
+      950.5795141475398
+    ],
+    [
+      0.0,
+      72.11861121246014
+    ],
+    [
+      0.0,
+      982658.1106267596
+    ]
+  ],
+  "x": [
+    124.34056576030879,
+    272.52182560376224,
+    23.0,
+    105419.8711642687
+  ],
+  "cost": 71735918.75347203,
+  "cost_difference_usd": 0.0,
+  "mip_gap": 1.0190507290352249,
+  "lower_bound_usd": -1366621.5502653145
+}

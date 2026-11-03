@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "Please cite the manuscript and the original ORACLE/G-ORACLE/data references used in your work."
+type: software
+title: "Near-optimal green hydrogen design regions: research code"
+version: 1.0.0
+date-released: 2026-11-03
+authors:
+  - family-names: Kim
+    given-names: Sunwoo
+  - family-names: Park
+    given-names: Joungho
+url: "https://sunboogermany.github.io/paper-resources/near-optimal-hydrogen/"
+repository-code: "https://github.com/SunBooGermany/SunBooGermany.github.io/tree/main/assets/paper-resources/near-optimal-hydrogen/code"
+license: "LicenseRef-Research-Only-Noncommercial"
+preferred-citation:
+  type: unpublished
+  title: "Exploring near-optimal green hydrogen design regions: Geometric error bounds and finite termination"
+  authors:
+    - family-names: Kim
+      given-names: Sunwoo
+    - family-names: Park
+      given-names: Joungho
+  year: 2026

@@ -1,0 +1,44 @@
+[
+  {
+    "scenario": "texas_2022_fresh",
+    "total_slack_kg": 5.19960121891927e-06,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 2.842170943040401e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8759999.999994805,
+    "curtailment_mwh": 146817.0002618299,
+    "inventory_min_kg": 0.0,
+    "inventory_max_kg": 83472.95475865656,
+    "mean_load": 0.5143712281205842
+  },
+  {
+    "scenario": "texas_2023_fresh",
+    "total_slack_kg": 0.0,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 2.842170943040401e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8760000.000000004,
+    "curtailment_mwh": 129954.9459540923,
+    "inventory_min_kg": 4061.494669440926,
+    "inventory_max_kg": 83472.95475865656,
+    "mean_load": 0.515045007166427
+  },
+  {
+    "scenario": "texas_2024_fresh",
+    "total_slack_kg": 1.8451373762218282e-10,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 2.842170943040401e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8760000.000000006,
+    "curtailment_mwh": 141972.53041964216,
+    "inventory_min_kg": 0.0,
+    "inventory_max_kg": 83472.95475865656,
+    "mean_load": 0.513370339603044
+  }
+]

@@ -1,0 +1,510 @@
+{
+  "complete": true,
+  "config": {
+    "site": "jeju",
+    "technology_year": 2030,
+    "cost_scenario": "baseline",
+    "demand_kg_h": 1000.0,
+    "battery_duration_h": 6.0,
+    "pv_degradation_per_year": 0.0,
+    "pem_degradation_per_operating_h": 0.0,
+    "stack_replacement_years": 10,
+    "pem_life_h": 80000.0,
+    "pem_efficiency_floor": 0.7,
+    "overload_ratio": 1.0,
+    "overload_max_hours": 0,
+    "epsilon_kg": 0.001,
+    "segments": 24,
+    "production_curve": "origin_concave",
+    "time_limit_s": 600.0,
+    "mip_rel_gap": 0.0,
+    "pem_cold_start_fraction": 0.0,
+    "pem_cold_off_hours": 24,
+    "secondary_dispatch_objective": false,
+    "slack_penalty_usd_per_kg": 1000.0,
+    "solver_threads": 1,
+    "fixed_pwl_grid": true
+  },
+  "site": "jeju",
+  "max_wind": 19,
+  "tank_max_t": 80.0,
+  "tank_inequality": "<=",
+  "tolerance": 0.01,
+  "budget_definition": "Each PV price uses its unrestricted integer optimum; installation constraints do not reset the budget.",
+  "cases": {
+    "A_baseline_wind_limit": {
+      "optimum": {
+        "tag": "support",
+        "x": [
+          135.7704327750628,
+          335.33992344707843,
+          19.0,
+          83829.87716920684
+        ],
+        "cost": 72740187.43434587,
+        "cap": null,
+        "objective": 75.10611415434589,
+        "dual_objective": 75.10611415434589,
+        "duality_gap": 0.0,
+        "separation_kg": 3.5070115700364113e-09,
+        "cost_cap_violation_usd": 0.0,
+        "lp_calls": 1,
+        "cuts": 757,
+        "seconds": 0.009565699991071597,
+        "fixed_wind": 19
+      },
+      "reference_cost": 71735918.75347203,
+      "conditional_optima": {
+        "19": {
+          "tag": "support",
+          "x": [
+            135.7704327750628,
+            335.33992344707843,
+            19.0,
+            83829.87716920684
+          ],
+          "cost": 72740187.43434587,
+          "cap": null,
+          "objective": 75.10611415434589,
+          "dual_objective": 75.10611415434589,
+          "duality_gap": 0.0,
+          "separation_kg": 3.5070115700364113e-09,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 1,
+          "cuts": 757,
+          "seconds": 0.009565699991071597,
+          "fixed_wind": 19
+        }
+      },
+      "section_keys": [
+        "n19_gap2"
+      ],
+      "witness": [
+        {
+          "scenario": "jeju_2022_fresh",
+          "total_slack_kg": 2.0804691303055733e-11,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 5.684341886080802e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8760000.0,
+          "curtailment_mwh": 184743.38335988816,
+          "inventory_min_kg": 0.0,
+          "inventory_max_kg": 83829.87716920684,
+          "mean_load": 0.35675857560738644
+        },
+        {
+          "scenario": "jeju_2023_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 5.684341886080802e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8760000.0,
+          "curtailment_mwh": 145659.98305430455,
+          "inventory_min_kg": 2.8251179173821583e-10,
+          "inventory_max_kg": 83829.87716920684,
+          "mean_load": 0.35834876145597155
+        },
+        {
+          "scenario": "jeju_2024_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 2.842170943040401e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8760000.0,
+          "curtailment_mwh": 150119.45962822658,
+          "inventory_min_kg": 21184.0303581049,
+          "inventory_max_kg": 83829.87716920684,
+          "mean_load": 0.35698401553737835
+        }
+      ],
+      "pure_saved_intersections": "baseline_saved_joint_intersections.json",
+      "admitted_turbines": {
+        "0.01": [],
+        "0.02": [
+          19
+        ]
+      }
+    },
+    "B_cheaper_PV_wind_limit": {
+      "optimum": {
+        "tag": "cheaper_PV_with_wind_limit",
+        "x": [
+          133.130078631694,
+          339.0524923802772,
+          19.0,
+          85895.17732420511
+        ],
+        "cost": 67375426.32485232,
+        "lower_bound_usd": 67375426.3248523,
+        "bound_gap_usd": 1.4901161193847656e-08,
+        "mip_gap": 0.0,
+        "separation_kg": 0.0,
+        "milp_calls": 7,
+        "seconds": 0.12923590000718832,
+        "integer_variables": 1,
+        "solver": "HiGHS MILP with exact cyclic-storage constraint generation",
+        "feasibility_tolerance": 1e-09,
+        "status": "optimal"
+      },
+      "reference_cost": 67249497.70282085,
+      "conditional_optima": {
+        "16": {
+          "tag": "support",
+          "x": [
+            138.91389893029162,
+            396.64344877089627,
+            16.0,
+            82580.28017258721
+          ],
+          "cost": 68581613.08764954,
+          "cap": null,
+          "objective": 70.94753980764953,
+          "dual_objective": 70.94753980764956,
+          "duality_gap": -2.842170943040401e-14,
+          "separation_kg": 8.541974239051342e-09,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 4,
+          "cuts": 858,
+          "seconds": 0.03593070001807064,
+          "fixed_wind": 16
+        },
+        "17": {
+          "tag": "support",
+          "x": [
+            136.49721112986907,
+            379.89233918699546,
+            17.0,
+            81376.3167945471
+          ],
+          "cost": 68077943.66112147,
+          "cap": null,
+          "objective": 70.44387038112146,
+          "dual_objective": 70.44387038112147,
+          "duality_gap": -1.4210854715202004e-14,
+          "separation_kg": 5.617039278149605e-09,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 12,
+          "cuts": 869,
+          "seconds": 0.10490990002290346,
+          "fixed_wind": 17
+        },
+        "18": {
+          "tag": "support",
+          "x": [
+            133.18650225466664,
+            366.4620821072635,
+            18.0,
+            79581.4137019081
+          ],
+          "cost": 67594340.3607483,
+          "cap": null,
+          "objective": 69.9602670807483,
+          "dual_objective": 69.96026708074831,
+          "duality_gap": -1.4210854715202004e-14,
+          "separation_kg": 0.0,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 9,
+          "cuts": 879,
+          "seconds": 0.07853289999184199,
+          "fixed_wind": 18
+        },
+        "19": {
+          "tag": "support",
+          "x": [
+            133.13007863169403,
+            339.0524923802772,
+            19.0,
+            85895.17732420501
+          ],
+          "cost": 67375426.32485232,
+          "cap": null,
+          "objective": 69.7413530448523,
+          "dual_objective": 69.74135304485232,
+          "duality_gap": -1.4210854715202004e-14,
+          "separation_kg": 0.0,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 1,
+          "cuts": 879,
+          "seconds": 0.008603199996287003,
+          "fixed_wind": 19
+        }
+      },
+      "section_keys": [
+        "n16_gap2",
+        "n17_gap2",
+        "n18_gap1",
+        "n18_gap2",
+        "n19_gap1",
+        "n19_gap2"
+      ],
+      "witness": [
+        {
+          "scenario": "jeju_2022_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 5.684341886080802e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999993,
+          "curtailment_mwh": 189169.87061945983,
+          "inventory_min_kg": 1.134594640461728e-10,
+          "inventory_max_kg": 85895.17732420511,
+          "mean_load": 0.3644358152059048
+        },
+        {
+          "scenario": "jeju_2023_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 4.263256414560601e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999994,
+          "curtailment_mwh": 149870.07458141795,
+          "inventory_min_kg": 1.061152943293564e-09,
+          "inventory_max_kg": 85895.17732420511,
+          "mean_load": 0.36605514771551423
+        },
+        {
+          "scenario": "jeju_2024_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 4.547473508864641e-13,
+          "supply_violation_mw": 4.263256414560601e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999994,
+          "curtailment_mwh": 154153.28078894972,
+          "inventory_min_kg": 21949.923937401316,
+          "inventory_max_kg": 85895.17732420511,
+          "mean_load": 0.36466766119863264
+        }
+      ],
+      "admitted_turbines": {
+        "0.01": [
+          18,
+          19
+        ],
+        "0.02": [
+          16,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    "C_cheaper_PV_wind_and_storage_limits": {
+      "optimum": {
+        "tag": "cheaper_PV_with_both_limits",
+        "x": [
+          135.07072481327924,
+          341.9923934945484,
+          19.0,
+          80000.0
+        ],
+        "cost": 67425251.41287136,
+        "lower_bound_usd": 67425251.41287135,
+        "bound_gap_usd": 1.4901161193847656e-08,
+        "mip_gap": 0.0,
+        "separation_kg": 0.0,
+        "milp_calls": 7,
+        "seconds": 0.15731760000926442,
+        "integer_variables": 1,
+        "solver": "HiGHS MILP with exact cyclic-storage constraint generation",
+        "feasibility_tolerance": 1e-09,
+        "status": "optimal"
+      },
+      "reference_cost": 67249497.70282085,
+      "conditional_optima": {
+        "16": {
+          "tag": "support",
+          "x": [
+            137.81415007991134,
+            403.35601491233933,
+            16.0,
+            80000.0
+          ],
+          "cost": 68630864.85759862,
+          "cap": null,
+          "objective": 70.99679157759861,
+          "dual_objective": 70.99679157759863,
+          "duality_gap": -1.4210854715202004e-14,
+          "separation_kg": 0.0,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 3,
+          "cuts": 1109,
+          "seconds": 0.026577400014502928,
+          "fixed_wind": 16
+        },
+        "17": {
+          "tag": "support",
+          "x": [
+            134.9552335638772,
+            385.7458051392887,
+            17.0,
+            80000.0
+          ],
+          "cost": 68093099.52247228,
+          "cap": null,
+          "objective": 70.45902624247228,
+          "dual_objective": 70.45902624247229,
+          "duality_gap": -1.4210854715202004e-14,
+          "separation_kg": 5.005858838558197e-09,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 6,
+          "cuts": 1114,
+          "seconds": 0.051179900008719414,
+          "fixed_wind": 17
+        },
+        "18": {
+          "tag": "support",
+          "x": [
+            133.18650225466664,
+            366.4620821072635,
+            18.0,
+            79581.4137019081
+          ],
+          "cost": 67594340.3607483,
+          "cap": null,
+          "objective": 69.9602670807483,
+          "dual_objective": 69.96026708074832,
+          "duality_gap": -2.842170943040401e-14,
+          "separation_kg": 0.0,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 1,
+          "cuts": 1114,
+          "seconds": 0.008539000002201647,
+          "fixed_wind": 18
+        },
+        "19": {
+          "tag": "support",
+          "x": [
+            135.0707248133133,
+            341.99239349445793,
+            19.0,
+            80000.0
+          ],
+          "cost": 67425251.41287115,
+          "cap": null,
+          "objective": 69.79117813287115,
+          "dual_objective": 69.79117813287115,
+          "duality_gap": 0.0,
+          "separation_kg": 0.0,
+          "cost_cap_violation_usd": 0.0,
+          "lp_calls": 1,
+          "cuts": 1114,
+          "seconds": 0.008446300023933873,
+          "fixed_wind": 19
+        }
+      },
+      "section_keys": [
+        "n17_gap2",
+        "n18_gap1",
+        "n18_gap2",
+        "n19_gap1",
+        "n19_gap2"
+      ],
+      "witness": [
+        {
+          "scenario": "jeju_2022_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 4.263256414560601e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999994,
+          "curtailment_mwh": 193770.72922762804,
+          "inventory_min_kg": 1.93813320947811e-09,
+          "inventory_max_kg": 80000.0,
+          "mean_load": 0.3587600537587664
+        },
+        {
+          "scenario": "jeju_2023_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 4.263256414560601e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999994,
+          "curtailment_mwh": 154305.82948450925,
+          "inventory_min_kg": 1657.759510546652,
+          "inventory_max_kg": 80000.0,
+          "mean_load": 0.36034906236956205
+        },
+        {
+          "scenario": "jeju_2024_fresh",
+          "total_slack_kg": 0.0,
+          "balance_kg": 7.275957614183426e-12,
+          "production_equality_kg_h": 9.094947017729282e-13,
+          "supply_violation_mw": 2.842170943040401e-14,
+          "rated_power_violation_mw": 0.0,
+          "inventory_violation_kg": 0.0,
+          "production_kg": 8759999.999999996,
+          "curtailment_mwh": 158448.05019076096,
+          "inventory_min_kg": 19326.4355754407,
+          "inventory_max_kg": 80000.0,
+          "mean_load": 0.35898605005394923
+        }
+      ],
+      "direct_query_cost_lower_usd": 67422723.79254438,
+      "direct_query_cost_upper_usd": 67442984.79201789,
+      "direct_query_optimality_gap_pct": 0.03005069853874165,
+      "direct_intersection_seconds": 0.5684751999506261,
+      "direct_intersections_file": "C_cheaper_PV_wind_and_storage_limits/direct_saved_intersections.json",
+      "admitted_turbines": {
+        "0.01": [
+          18,
+          19
+        ],
+        "0.02": [
+          17,
+          18,
+          19
+        ]
+      }
+    }
+  },
+  "source_sha256": {
+    "pem_planning\\restricted_design_choices.py": "8f6c3ed270dea0bbf813f8016da7725630e2ef02b5323bed9518e5c0ba55ed09",
+    "pem_planning\\fixed_wind_slices.py": "b7ca41f55e48df9f0bc3fde7ab7de677334560f7934ad254c29dab23463f28f8",
+    "pem_planning\\continuous_oracle.py": "edc70b642307e6934e0fa2cd51f2bf19967b3690fe37acc26def0c141480b4fe",
+    "pem_planning\\pwl_capacity_oracle.py": "b8cbd6480b3a7b056551eb8d1703b1f552bad2c20db22761c5e2a03dd881e988",
+    "pem_planning\\pwl_cost_sensitivity.py": "7e6afda2a4cada8bf998612d271e09000dd675f0b2acf36fc343881ccb325f10",
+    "pem_planning\\model.py": "547a543e8bf83ab2ff67eba03c2c5b4b4cb6e2ace049b869f3bfb892d137d295",
+    "pem_planning\\pwl_study_inputs.py": "25c6db5704ee18ec88cf70c962e21fa0ef7f2e875cf2423165d38bc5e9fc387b",
+    "pem_planning\\origin_pwl.py": "4e4cd04bf9f74d313aa07b67d768d2acc80b90d067361885271dcc813d8508a0",
+    "results\\pem_pwl_two_region_20260930\\jeju\\separation_cuts.json": "c90f86e5b893f67f476beac557b903afbc7d24b478ba527dd56ba2fa7dabf86c",
+    "results\\pem_pwl_two_region_20260930\\jeju\\summary.json": "e19ebb34a42b147f205848f25a01f95bf503974dfc62b13037dcbb78efa05cf0",
+    "results\\pem_pwl_two_region_20260930\\jeju\\gap_2pct\\region.json": "a3ce3dca975e75282bfecba3d6236121287d8420b91b5a677d0c4050e973c8d3",
+    "results\\pem_cost_sensitivity_20261012\\jeju\\PV_80pct\\summary.json": "ee6e1fb938aba0f7a4067cb7f7a16997bd9bf00fff4ca680070da77e4df306f0"
+  },
+  "exact_set": "Union over admitted integer turbine counts of the operationally feasible fixed-count sections intersected with the cost budget and installation limits.",
+  "representation": "Feasible inner hull and containing outer halfspaces for every nonempty integer section; floating-point geometric tolerance, not an exact finite vertex list.",
+  "total_seconds": 21.514604900003178,
+  "candidate_turbine_counts": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "preconstraint_continuous_wind_bounds": [
+    15.975016679177632,
+    25.585091517149017
+  ],
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "2.3.5",
+    "scipy": "1.18.1",
+    "highspy": "1.15.1",
+    "platform": "Windows-11-10.0.26200-SP0"
+  }
+}

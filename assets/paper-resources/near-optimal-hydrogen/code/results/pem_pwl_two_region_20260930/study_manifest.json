@@ -1,0 +1,156 @@
+{
+  "complete": true,
+  "main_method": "2SSP MILP with exact hourly PWL capacity separation; continuous LP ORACLE",
+  "years": [
+    2022,
+    2023,
+    2024
+  ],
+  "demand_kg_h": 1000,
+  "hourly_scenarios": 3,
+  "hours_per_scenario": 8760,
+  "cpu": "Intel Core Ultra 9 285K",
+  "code_sha256": {
+    "data\\py\\02_engine_adapter.py": "110bd02a03123d3a540175d7c98c6e6f484ddf30244430dbcf265d3e2c9ae199",
+    "data\\py\\park_engine\\electrolyzer.py": "d52637fdda98af33ec69999d89a119ceb2cb8339406640b93b935f2ec5f5f69e",
+    "data\\py\\park_engine\\params.py": "38890ea9654a0e40e559f1db71802b2ffbb4ecbbb97d329e0a4d1572c85bc1f2",
+    "data\\py\\turbines.py": "6aef07a9647ec1d0ce2d882055545fe067bd268058198dc6fb6a58ea45fd55e3",
+    "pem_planning/pwl_extensive_ipm.py": "d08e1e3c1491156155feeeb75831a44ed983d0cfbd03d42e85f79074a30f3723",
+    "pem_planning/pwl_extensive_reference.py": "484ad778cbfe5d96cc29c16888df3237db1f595ba87e84c76eb0b299c377d2c3",
+    "pem_planning/pwl_study_report.py": "9f69a350712472c209173c2cd89c310d7b1171ea11ba99498ec206d2b83b2a3d",
+    "pem_planning/test_pwl_capacity_oracle.py": "52939d8219953cb9822e97be29b372422d2dda5250dfd643b1de82c39e81a9d5",
+    "pem_planning\\continuous_oracle.py": "e044cc0a830f68dec206458c4272ed8c85082428c48a25ce46f8504049447254",
+    "pem_planning\\fixed_wind_slices.py": "e1eed96c35eecd0ba4500b11c76aeefb939f4be04776dc97165759ee68aebcd9",
+    "pem_planning\\model.py": "547a543e8bf83ab2ff67eba03c2c5b4b4cb6e2ace049b869f3bfb892d137d295",
+    "pem_planning\\origin_pwl.py": "4e4cd04bf9f74d313aa07b67d768d2acc80b90d067361885271dcc813d8508a0",
+    "pem_planning\\pwl_capacity_oracle.py": "b8cbd6480b3a7b056551eb8d1703b1f552bad2c20db22761c5e2a03dd881e988",
+    "pem_planning\\pwl_planning.py": "4592ade55521790b761059bb595c400818e9d343b68d2ba1d958b4e7ebc4c741",
+    "pem_planning\\pwl_study_inputs.py": "25c6db5704ee18ec88cf70c962e21fa0ef7f2e875cf2423165d38bc5e9fc387b",
+    "pem_planning\\pwl_two_region_study.py": "7a521d205ad1febae0d322fa31c0dfad2911201e561abaec23d7190277aec672"
+  },
+  "independent_fixed_wind_reference": {
+    "jeju": {
+      "status": "Optimal",
+      "optimal": true,
+      "method": "independent_full_hourly_fixed_wind_LP_IPM",
+      "fixed_wind": 23.0,
+      "model_size": {
+        "variables": 78844,
+        "constraints": 735840,
+        "nonzeros": 2111736,
+        "integer_variables": 0,
+        "operating_binary_variables": 0,
+        "general_integer_variables": 0,
+        "formulation": "hypograph"
+      },
+      "solve_s": 262.6152655000333,
+      "total_wall_s": 262.9935936999973,
+      "witness_max_matrix_violation": 4.5508841139962897e-10,
+      "reported_in_physical_units": true,
+      "x": [
+        124.3405657603095,
+        272.5218256037666,
+        23.0,
+        105419.87116426427
+      ],
+      "cost": 71735918.75347215,
+      "cost_difference_usd": 1.1920928955078125e-07,
+      "max_matrix_violation": 2.9103830456733704e-11
+    },
+    "texas": {
+      "status": "Time limit reached",
+      "optimal": false,
+      "method": "independent_full_hourly_fixed_wind_LP_IPM",
+      "fixed_wind": 20.0,
+      "model_size": {
+        "variables": 78844,
+        "constraints": 735840,
+        "nonzeros": 2114338,
+        "integer_variables": 0,
+        "operating_binary_variables": 0,
+        "general_integer_variables": 0,
+        "formulation": "hypograph"
+      },
+      "solve_s": 300.05658659990877,
+      "total_wall_s": 300.4750563998241,
+      "witness_max_matrix_violation": 6.64619723238502e-05,
+      "reported_in_physical_units": true
+    }
+  },
+  "direct_jeju_milp_reference": {
+    "model_size": {
+      "variables": 78844,
+      "constraints": 735840,
+      "nonzeros": 2111736,
+      "integer_variables": 1,
+      "operating_binary_variables": 0,
+      "general_integer_variables": 1,
+      "formulation": "hypograph"
+    },
+    "status": 1,
+    "message": "Time limit reached",
+    "solve_s": 600.8102448000573,
+    "total_wall_s": 601.1430530000944,
+    "witness_max_matrix_violation": 4.5508841139962897e-10,
+    "integer_variables": 1,
+    "operating_binary_variables": 0,
+    "solver_version": "1.15.1",
+    "max_violation": 4.5508841139962897e-10,
+    "optimal": false,
+    "cost_derived_capacity_bounds": [
+      [
+        0.0,
+        463.75533652320394
+      ],
+      [
+        0.0,
+        950.5795141475398
+      ],
+      [
+        0.0,
+        72.11861121246014
+      ],
+      [
+        0.0,
+        982658.1106267596
+      ]
+    ],
+    "x": [
+      124.34056576030879,
+      272.52182560376224,
+      23.0,
+      105419.8711642687
+    ],
+    "cost": 71735918.75347203,
+    "cost_difference_usd": 0.0,
+    "mip_gap": 1.0190507290352249,
+    "lower_bound_usd": -1366621.5502653145
+  },
+  "main_global_optimality": {
+    "jeju": {
+      "cost": 71735918.75347203,
+      "lower_bound_usd": 71735918.75347203,
+      "bound_gap_usd": 0.0,
+      "separation_kg": 1.8044374883174896e-09,
+      "status": "optimal"
+    },
+    "texas": {
+      "cost": 57887254.13785956,
+      "lower_bound_usd": 57887254.13785957,
+      "bound_gap_usd": -7.450580596923828e-09,
+      "separation_kg": 6.644449604209512e-05,
+      "status": "optimal"
+    }
+  },
+  "all_joint_regions_converged": true,
+  "all_eight_fixed_wind_sections_converged": true,
+  "tests_passed": 14,
+  "manuscript_sha256": "595c6a7b3e670f90c8aeebb27f416b3b07393c4ee07fd19aaf3ebd462ecd4431",
+  "figures_sha256": {
+    "jeju_fixed_wind_3d.png": "e90ec5d4a251203c0f9d8b2e9d8576d95dc8c1fc24ae936edbd013087ddebe6f",
+    "jeju_six_projections.png": "02f243885dc98878308bb3482810b05a827065c6bc29347507f00ba89362ec72",
+    "oracle_convergence.png": "da1b4950f22d6e8b36186377844e4459acd3717e62f3baa1a7f973083e266542",
+    "texas_fixed_wind_3d.png": "cad13466da9d52d2d1947e83a4cf8a26efc2f3f29068aae71b15a566d9113982",
+    "texas_six_projections.png": "200d19dab2fe8d6c9981c6c27684b21a0ae252cb39c16403bbe2ebf4413d722f"
+  }
+}

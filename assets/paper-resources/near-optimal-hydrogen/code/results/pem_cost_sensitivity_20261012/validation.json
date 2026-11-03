@@ -1,0 +1,17 @@
+{
+  "cases": 18,
+  "reoptimized_perturbations": 16,
+  "recovered_scenario_witnesses": 480,
+  "maximum_residuals": {
+    "total_slack_kg": 9.90294855682805e-05,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 9.094947017729282e-13,
+    "supply_violation_mw": 5.684341886080802e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 7.275957614183426e-12
+  },
+  "max_milp_bound_gap_usd": 1.1920928955078125e-07,
+  "max_baseline_design_regret_pct": 0.4312477103635137,
+  "all_cost_vectors_reconciled": true,
+  "all_cases_passed": true
+}

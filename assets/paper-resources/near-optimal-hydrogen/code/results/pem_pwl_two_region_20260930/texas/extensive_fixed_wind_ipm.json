@@ -1,0 +1,19 @@
+{
+  "status": "Time limit reached",
+  "optimal": false,
+  "method": "independent_full_hourly_fixed_wind_LP_IPM",
+  "fixed_wind": 20.0,
+  "model_size": {
+    "variables": 78844,
+    "constraints": 735840,
+    "nonzeros": 2114338,
+    "integer_variables": 0,
+    "operating_binary_variables": 0,
+    "general_integer_variables": 0,
+    "formulation": "hypograph"
+  },
+  "solve_s": 300.05658659990877,
+  "total_wall_s": 300.4750563998241,
+  "witness_max_matrix_violation": 6.64619723238502e-05,
+  "reported_in_physical_units": true
+}

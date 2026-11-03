@@ -1,0 +1,20 @@
+{
+  "tag": "continuous_cost_optimum",
+  "x": [
+    91.57174736358039,
+    163.27752870612792,
+    20.60070481526541,
+    81550.2727395364
+  ],
+  "cost": 57859605.15309028,
+  "cap": null,
+  "objective": 59.33181848109029,
+  "dual_objective": 59.331818481090295,
+  "duality_gap": -7.105427357601002e-15,
+  "separation_kg": 1.4159013517200947e-08,
+  "cost_cap_violation_usd": 0.0,
+  "lp_calls": 25,
+  "cuts": 85,
+  "seconds": 0.16697210003621876,
+  "fixed_wind": null
+}

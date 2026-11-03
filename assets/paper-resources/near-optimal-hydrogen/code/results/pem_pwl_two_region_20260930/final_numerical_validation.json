@@ -1,0 +1,24 @@
+{
+  "jeju": {
+    "inner_max_cost_violation_usd": 2.9802322387695312e-08,
+    "integer_reference_bound_gap_usd": 0.0,
+    "all_regions_converged": true,
+    "all_sections_converged": true,
+    "scenario_hours": [
+      8760,
+      8760,
+      8760
+    ]
+  },
+  "texas": {
+    "inner_max_cost_violation_usd": 1.4901161193847656e-08,
+    "integer_reference_bound_gap_usd": -7.450580596923828e-09,
+    "all_regions_converged": true,
+    "all_sections_converged": true,
+    "scenario_hours": [
+      8760,
+      8760,
+      8760
+    ]
+  }
+}

@@ -1,0 +1,685 @@
+{
+  "site": "texas",
+  "case": "baseline",
+  "asset": null,
+  "factor": 1.0,
+  "config": {
+    "site": "texas",
+    "technology_year": 2030,
+    "cost_scenario": "baseline",
+    "demand_kg_h": 1000.0,
+    "battery_duration_h": 6.0,
+    "pv_degradation_per_year": 0.0,
+    "pem_degradation_per_operating_h": 0.0,
+    "stack_replacement_years": 10,
+    "pem_life_h": 80000.0,
+    "pem_efficiency_floor": 0.7,
+    "overload_ratio": 1.0,
+    "overload_max_hours": 0,
+    "epsilon_kg": 0.001,
+    "segments": 24,
+    "production_curve": "origin_concave",
+    "time_limit_s": 600.0,
+    "mip_rel_gap": 0.0,
+    "pem_cold_start_fraction": 0.0,
+    "pem_cold_off_hours": 24,
+    "secondary_dispatch_objective": false,
+    "slack_penalty_usd_per_kg": 1000.0,
+    "solver_threads": 1,
+    "fixed_pwl_grid": true
+  },
+  "economics": {
+    "capital": [
+      788590.0,
+      751000.0,
+      224000.0,
+      11127887.4,
+      345.0
+    ],
+    "annualized_initial": [
+      67669.31577504468,
+      64443.698432719866,
+      19221.555857429095,
+      954889.7733673278,
+      29.60462844112963
+    ],
+    "annual_om": [
+      69790.21500000001,
+      15020.0,
+      28000.0,
+      267069.2976,
+      47.265
+    ],
+    "annualized_stack_replacement": [
+      25943.342938584236,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "annualized_replacement_admin": [
+      2594.3342938584237,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "annualized_salvage_credit": [
+      -3117.0039437611704,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fixed_labor_usd_per_year": 2268657.0719999997,
+    "water_usd_per_kg": 0.01296,
+    "oxygen_credit_usd_per_kg": 0.44,
+    "crf": 0.0858105172206656,
+    "discount_rate": 0.07,
+    "project_life_years": 25.0,
+    "replacement_years": [
+      10,
+      20
+    ],
+    "replacement_annual_fraction_of_pem_capex": 0.03289839198897302,
+    "stack_fraction_of_pem_capex": 0.5,
+    "replacement_downtime_h": 0,
+    "terminal_stack_remaining_life_fraction": 0.5,
+    "salvage_fraction_of_initial_pem_capex": 0.25,
+    "salvage_model": "linear remaining calendar life of stack installed at year 20; BOP salvage zero",
+    "historical_operating_hour_life_enforced": false
+  },
+  "cost_coefficients": {
+    "pem_mw": 162880.20406372618,
+    "pv_mw": 79463.69843271986,
+    "n_wind": 1221959.0709673278,
+    "tank_kg": 76.86962844112963
+  },
+  "cost_constant": -1472213.3280000002,
+  "relaxed_optimum": {
+    "tag": "baseline:relaxed",
+    "x": [
+      91.57174736358039,
+      163.27752870612792,
+      20.60070481526541,
+      81550.2727395364
+    ],
+    "cost": 57859605.15309028,
+    "cap": null,
+    "objective": 59.33181848109029,
+    "dual_objective": 59.331818481090295,
+    "duality_gap": -7.105427357601002e-15,
+    "separation_kg": 1.4159013517200947e-08,
+    "cost_cap_violation_usd": 0.0,
+    "lp_calls": 25,
+    "cuts": 85,
+    "seconds": 0.15714100003242493,
+    "fixed_wind": null
+  },
+  "optimum": {
+    "tag": "baseline:integer",
+    "x": [
+      93.67361092312979,
+      169.63074640761405,
+      20.0,
+      80437.78579274067
+    ],
+    "cost": 57887254.137858994,
+    "lower_bound_usd": 57887254.137858994,
+    "bound_gap_usd": 0.0,
+    "mip_gap": 0.0,
+    "separation_kg": 6.648697308264673e-05,
+    "milp_calls": 9,
+    "seconds": 0.1445399000076577,
+    "integer_variables": 1,
+    "solver": "HiGHS MILP with exact cyclic-storage constraint generation",
+    "feasibility_tolerance": 1e-09,
+    "status": "optimal"
+  },
+  "annual_hydrogen_kg": 8760000.0,
+  "lcoh_usd_kg": 6.608134034002168,
+  "cost_change_pct": -9.769962616701378e-13,
+  "baseline_design_cost_usd": 57887254.13785956,
+  "baseline_design_regret_pct": 9.769962616701378e-13,
+  "continuous_wind_bounds_2pct": [
+    14.640298587198952,
+    22.24718370539424
+  ],
+  "feasible_integer_wind_counts": {
+    "0.01": [
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "0.02": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+    ]
+  },
+  "conditional_optima": {
+    "15": {
+      "tag": "baseline:conditional:15",
+      "x": [
+        114.41790226866742,
+        226.91394570520765,
+        15.0,
+        70178.01016109133
+      ],
+      "cost": 58919562.92409204,
+      "cap": null,
+      "objective": 60.39177625209205,
+      "dual_objective": 60.39177625209206,
+      "duality_gap": -7.105427357601002e-15,
+      "separation_kg": 4.903995431959629e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 147,
+      "seconds": 0.043257700046524405,
+      "fixed_wind": 15
+    },
+    "16": {
+      "tag": "baseline:conditional:16",
+      "x": [
+        110.13093841241653,
+        214.36344977538883,
+        16.0,
+        72320.84325857753
+      ],
+      "cost": 58610670.40760632,
+      "cap": null,
+      "objective": 60.08288373560633,
+      "dual_objective": 60.08288373560633,
+      "duality_gap": 0.0,
+      "separation_kg": 0.0,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 10,
+      "cuts": 162,
+      "seconds": 0.06231189996469766,
+      "fixed_wind": 16
+    },
+    "17": {
+      "tag": "baseline:conditional:17",
+      "x": [
+        105.59213898027254,
+        203.06765890490857,
+        17.0,
+        74338.96544851057
+      ],
+      "cost": 58350875.88445976,
+      "cap": null,
+      "objective": 59.82308921245976,
+      "dual_objective": 59.82308921245975,
+      "duality_gap": 1.4210854715202004e-14,
+      "separation_kg": 4.452886059880257e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 6,
+      "cuts": 172,
+      "seconds": 0.038628899957984686,
+      "fixed_wind": 17
+    },
+    "18": {
+      "tag": "baseline:conditional:18",
+      "x": [
+        101.17725581176127,
+        192.17636498723357,
+        18.0,
+        76386.10015803124
+      ],
+      "cost": 58145637.873096004,
+      "cap": null,
+      "objective": 59.617851201096016,
+      "dual_objective": 59.617851201096,
+      "duality_gap": 1.4210854715202004e-14,
+      "separation_kg": 4.511093720793724e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 9,
+      "cuts": 185,
+      "seconds": 0.06199479999486357,
+      "fixed_wind": 18
+    },
+    "19": {
+      "tag": "baseline:conditional:19",
+      "x": [
+        96.81625513261015,
+        181.8567296436463,
+        19.0,
+        78311.99385044337
+      ],
+      "cost": 57985282.60519554,
+      "cap": null,
+      "objective": 59.45749593319554,
+      "dual_objective": 59.45749593319553,
+      "duality_gap": 7.105427357601002e-15,
+      "separation_kg": 1.83063093572855e-08,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 9,
+      "cuts": 197,
+      "seconds": 0.06401159998495132,
+      "fixed_wind": 19
+    },
+    "20": {
+      "tag": "baseline:conditional:20",
+      "x": [
+        93.6736109247312,
+        169.63074640382746,
+        20.0,
+        80437.78579326914
+      ],
+      "cost": 57887254.13785956,
+      "cap": null,
+      "objective": 59.35946746585956,
+      "dual_objective": 59.35946746585957,
+      "duality_gap": -7.105427357601002e-15,
+      "separation_kg": 6.645513349212706e-05,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 1,
+      "cuts": 197,
+      "seconds": 0.007455800077877939,
+      "fixed_wind": 20
+    },
+    "21": {
+      "tag": "baseline:conditional:21",
+      "x": [
+        93.28086705448578,
+        155.02908802909565,
+        21.0,
+        82871.56835627988
+      ],
+      "cost": 58072025.19071438,
+      "cap": null,
+      "objective": 59.544238518714394,
+      "dual_objective": 59.54423851871439,
+      "duality_gap": 7.105427357601002e-15,
+      "separation_kg": 7.029563130345196e-05,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 207,
+      "seconds": 0.05199880001600832,
+      "fixed_wind": 21
+    },
+    "22": {
+      "tag": "baseline:conditional:22",
+      "x": [
+        92.12594146257105,
+        151.47951077374313,
+        22.0,
+        83217.70873446607
+      ],
+      "cost": 58850414.891268894,
+      "cap": null,
+      "objective": 60.3226282192689,
+      "dual_objective": 60.32262821926889,
+      "duality_gap": 7.105427357601002e-15,
+      "separation_kg": 1.5570549294352531e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 213,
+      "seconds": 0.049379699979908764,
+      "fixed_wind": 22
+    }
+  },
+  "conditional_witness_audits": {
+    "15": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 6.821210263296962e-13,
+        "supply_violation_mw": 4.263256414560601e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 195482.71787875978,
+        "inventory_min_kg": 13381.887474334335,
+        "inventory_max_kg": 70178.01016109133,
+        "mean_load": 0.41930016047699364
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 4.249613994034007e-10,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 6.821210263296962e-13,
+        "supply_violation_mw": 4.263256414560601e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 180370.13320962782,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 70178.01016109133,
+        "mean_load": 0.41998765310343644
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 1.120952219935134e-10,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 6.821210263296962e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 188959.66642210033,
+        "inventory_min_kg": 5.684341886080802e-14,
+        "inventory_max_kg": 70178.01016109133,
+        "mean_load": 0.41865489163912295
+      }
+    ],
+    "16": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 6.821210263296962e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 187206.27721032413,
+        "inventory_min_kg": 13433.114289415713,
+        "inventory_max_kg": 72320.84325857753,
+        "mean_load": 0.4364575947870262
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 3.681179805425927e-10,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 171792.75759025614,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 72320.84325857753,
+        "mean_load": 0.43716163762796956
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 180970.09933606302,
+        "inventory_min_kg": 4.4565240386873484e-11,
+        "inventory_max_kg": 72320.84325857753,
+        "mean_load": 0.4357520923787354
+      }
+    ],
+    "17": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 180834.60783028317,
+        "inventory_min_kg": 13576.243119673176,
+        "inventory_max_kg": 74338.96544851057,
+        "mean_load": 0.45642696478187766
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 165091.11429898255,
+        "inventory_min_kg": 1.5774048733874224e-09,
+        "inventory_max_kg": 74338.96544851057,
+        "mean_load": 0.45715017871894076
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 174845.6273117832,
+        "inventory_min_kg": 7.503331289626658e-11,
+        "inventory_max_kg": 74338.96544851057,
+        "mean_load": 0.45566144583471346
+      }
+    ],
+    "18": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999994,
+        "curtailment_mwh": 175025.03273299924,
+        "inventory_min_kg": 13836.167810568599,
+        "inventory_max_kg": 76386.10015803124,
+        "mean_load": 0.4777754575821752
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 6.657501216977835e-10,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999994,
+        "curtailment_mwh": 158949.52719147145,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 76386.10015803124,
+        "mean_load": 0.47851039057796335
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999994,
+        "curtailment_mwh": 169265.23133948157,
+        "inventory_min_kg": 7.889866537880152e-11,
+        "inventory_max_kg": 76386.10015803124,
+        "mean_load": 0.4769536730956074
+      }
+    ],
+    "19": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.000000004,
+        "curtailment_mwh": 170004.75907201163,
+        "inventory_min_kg": 12458.309687929413,
+        "inventory_max_kg": 78311.99385044337,
+        "mean_load": 0.501051524509039
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.000000004,
+        "curtailment_mwh": 153603.5971383017,
+        "inventory_min_kg": 1.4288161764852703e-09,
+        "inventory_max_kg": 78311.99385044337,
+        "mean_load": 0.5017759322512646
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.000000004,
+        "curtailment_mwh": 164469.32789461946,
+        "inventory_min_kg": 6.480149750132114e-12,
+        "inventory_max_kg": 78311.99385044337,
+        "mean_load": 0.5001569146791648
+      }
+    ],
+    "20": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.000000002,
+        "curtailment_mwh": 161961.79155121185,
+        "inventory_min_kg": 5667.126390890075,
+        "inventory_max_kg": 80437.78579326914,
+        "mean_load": 0.5192521742768014
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 6.646205918059422e-05,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.99993354,
+        "curtailment_mwh": 145272.6201150616,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 80437.78579326914,
+        "mean_load": 0.5199642951807388
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.000000002,
+        "curtailment_mwh": 156703.96082702238,
+        "inventory_min_kg": 1.0231815394945443e-12,
+        "inventory_max_kg": 80437.78579326914,
+        "mean_load": 0.5182871046287238
+      }
+    ],
+    "21": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 7.029944254099973e-05,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.9999297,
+        "curtailment_mwh": 150949.16355132277,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 82871.56835627988,
+        "mean_load": 0.5213477394305825
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8760000.0,
+        "curtailment_mwh": 134025.77872739604,
+        "inventory_min_kg": 4674.805001795861,
+        "inventory_max_kg": 82871.56835627988,
+        "mean_load": 0.5220284871175768
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 3.171862772433087e-11,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999998,
+        "curtailment_mwh": 146032.9842200907,
+        "inventory_min_kg": 0.0,
+        "inventory_max_kg": 82871.56835627988,
+        "mean_load": 0.520336433941788
+      }
+    ],
+    "22": [
+      {
+        "scenario": "texas_2022_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999996,
+        "curtailment_mwh": 159096.6145985414,
+        "inventory_min_kg": 5.559286364587024e-11,
+        "inventory_max_kg": 83217.70873446607,
+        "mean_load": 0.5282949248778672
+      },
+      {
+        "scenario": "texas_2023_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 4.263256414560601e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999996,
+        "curtailment_mwh": 141684.0696998542,
+        "inventory_min_kg": 18944.296840183986,
+        "inventory_max_kg": 83217.70873446607,
+        "mean_load": 0.5289439200318206
+      },
+      {
+        "scenario": "texas_2024_fresh",
+        "total_slack_kg": 0.0,
+        "balance_kg": 7.275957614183426e-12,
+        "production_equality_kg_h": 4.547473508864641e-13,
+        "supply_violation_mw": 2.842170943040401e-14,
+        "rated_power_violation_mw": 0.0,
+        "inventory_violation_kg": 0.0,
+        "production_kg": 8759999.999999998,
+        "curtailment_mwh": 154215.3453293817,
+        "inventory_min_kg": 1161.5075637829275,
+        "inventory_max_kg": 83217.70873446607,
+        "mean_load": 0.5272462325229376
+      }
+    ]
+  },
+  "cap_reference": "Each case own reoptimized integer optimum",
+  "wall_s": 1.1454789000563323
+}

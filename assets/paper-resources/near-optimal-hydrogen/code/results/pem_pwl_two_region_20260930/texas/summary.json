@@ -1,0 +1,553 @@
+{
+  "site": "texas",
+  "config": {
+    "site": "texas",
+    "technology_year": 2030,
+    "cost_scenario": "baseline",
+    "demand_kg_h": 1000.0,
+    "battery_duration_h": 6.0,
+    "pv_degradation_per_year": 0.0,
+    "pem_degradation_per_operating_h": 0.0,
+    "stack_replacement_years": 10,
+    "pem_life_h": 80000.0,
+    "pem_efficiency_floor": 0.7,
+    "overload_ratio": 1.0,
+    "overload_max_hours": 0,
+    "epsilon_kg": 0.001,
+    "segments": 24,
+    "production_curve": "origin_concave",
+    "time_limit_s": 600.0,
+    "mip_rel_gap": 0.0,
+    "pem_cold_start_fraction": 0.0,
+    "pem_cold_off_hours": 24,
+    "secondary_dispatch_objective": false,
+    "slack_penalty_usd_per_kg": 1000.0,
+    "solver_threads": 1,
+    "fixed_pwl_grid": true
+  },
+  "years": [
+    2022,
+    2023,
+    2024
+  ],
+  "scenario_count": 3,
+  "hours_per_scenario": 8760,
+  "probabilities": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "turbine_rating_mw": 4.2,
+  "optimum": {
+    "tag": "integer_cost_optimum",
+    "x": [
+      93.6736109247282,
+      169.63074640383462,
+      20.0,
+      80437.78579326814
+    ],
+    "cost": 57887254.13785956,
+    "lower_bound_usd": 57887254.13785957,
+    "objective": 59.35946746585957,
+    "mip_gap": 0.0,
+    "bound_gap_usd": -7.450580596923828e-09,
+    "separation_kg": 6.644449604209512e-05,
+    "milp_calls": 9,
+    "integer_variables": 1,
+    "seconds": 0.10568220005370677,
+    "cuts": 98,
+    "solver": "HiGHS MILP with exact cyclic-storage constraint generation",
+    "status": "optimal"
+  },
+  "relaxed_optimum": {
+    "tag": "continuous_cost_optimum",
+    "x": [
+      91.57174736358039,
+      163.27752870612792,
+      20.60070481526541,
+      81550.2727395364
+    ],
+    "cost": 57859605.15309028,
+    "cap": null,
+    "objective": 59.33181848109029,
+    "dual_objective": 59.331818481090295,
+    "duality_gap": -7.105427357601002e-15,
+    "separation_kg": 1.4159013517200947e-08,
+    "cost_cap_violation_usd": 0.0,
+    "lp_calls": 25,
+    "cuts": 85,
+    "seconds": 0.16697210003621876,
+    "fixed_wind": null
+  },
+  "integrality_gap_usd": 27648.984769277275,
+  "cost_constant": -1472213.3280000002,
+  "cost_coefficients": {
+    "pem_mw": 162880.20406372618,
+    "pv_mw": 79463.69843271986,
+    "n_wind": 1221959.0709673278,
+    "tank_kg": 76.86962844112963
+  },
+  "cost_cap_reference": "global_integer_2SSP_MILP_optimum",
+  "investment_variables": [
+    "pem_mw",
+    "pv_mw",
+    "n_wind",
+    "tank_kg"
+  ],
+  "battery_included": false,
+  "production_curve": {
+    "model": "origin_concave_pwl",
+    "domain": [
+      0.0,
+      1.0
+    ],
+    "knots_load_fraction": [
+      0.0,
+      0.04368759824599982,
+      0.08526639832200021,
+      0.1268451983980003,
+      0.16842399847499975,
+      0.21000279855099963,
+      0.25158159862699964,
+      0.2931603987039993,
+      0.334739198780002,
+      0.3763179988559987,
+      0.41789679893200055,
+      0.45947559900900115,
+      0.5010543990850019,
+      0.5426331991609971,
+      0.5842119992369993,
+      0.6257907993140019,
+      0.6673695993899975,
+      0.7089483994660016,
+      0.7505271995420011,
+      0.7921059996189941,
+      0.8336847996950066,
+      0.8752635997710029,
+      0.9168423998469934,
+      0.9584211999240021,
+      1.0
+    ],
+    "knots_kg_h_per_mw": [
+      0.0,
+      1.0327306697635368,
+      1.9901025109399175,
+      2.9236365899541954,
+      3.8369419119061647,
+      4.732220218582736,
+      5.611062340797844,
+      6.474717341698956,
+      7.324214337522496,
+      8.160427850237689,
+      8.984117059103083,
+      9.795951350053267,
+      10.596527970675291,
+      11.386384802680329,
+      12.16600994073918,
+      12.935849086842325,
+      13.69631139412356,
+      14.44777417638669,
+      15.190586765729511,
+      15.925073716746104,
+      16.651537499679996,
+      17.370260787764636,
+      18.081508417209555,
+      18.785529080319975,
+      19.482556798271506
+    ],
+    "slopes_kg_mwh": [
+      23.638989352272233,
+      23.0254802790469,
+      22.452164980901603,
+      21.965648846542617,
+      21.532086184308717,
+      21.136784145014097,
+      20.771522970882096,
+      20.431012782252655,
+      20.111535474491397,
+      19.810316973067373,
+      19.52519768359674,
+      19.254442628422936,
+      18.996624014194417,
+      18.75054442729871,
+      18.515184292895093,
+      18.289664586070355,
+      18.0732195467279,
+      17.86517619520233,
+      17.664938614306223,
+      17.4719756608128,
+      17.285811201164606,
+      17.106016242532817,
+      16.932202512013184,
+      16.764017159646293
+    ],
+    "intercepts_kg_h_per_mw": [
+      0.0,
+      0.02680273791134402,
+      0.07568726848709706,
+      0.13739950407369106,
+      0.21042186123659024,
+      0.29343639576137726,
+      0.38532938586588106,
+      0.4851534885272626,
+      0.5920950665556575,
+      0.7054490102299491,
+      0.8245994486134922,
+      0.9490047897741913,
+      1.0781859405993899,
+      1.2117168940848249,
+      1.3492171087454512,
+      1.4903452663403627,
+      1.6347941055362902,
+      1.7822861066198836,
+      1.9325698574529042,
+      2.0854169706192476,
+      2.24061945087138,
+      2.3979874335841167,
+      2.5573472314000973,
+      2.718539638625213
+    ],
+    "segments": 24,
+    "source_reference": "Park et al. (2025), doi:10.1016/j.enconman.2024.119423",
+    "power_basis": "PEM system input including auxiliaries; converter upstream",
+    "construction": "Least concave majorant of the rated legacy PWL graph and origin",
+    "capacity_independent": true,
+    "physical_lower_bound": false,
+    "curve_sha256": "1171074f50d98a4ab634df4135bdb458463c22025ec2abc3b6baab00c5295aeb"
+  },
+  "model_integer_variables": 1,
+  "operational_binary_variables": 0,
+  "oracle_integer_variables": 0,
+  "coordinate_ranges": {
+    "0.01": [
+      [
+        86.52526327342773,
+        109.5428832525112
+      ],
+      [
+        143.19071016592582,
+        212.75193112317493
+      ],
+      [
+        16.531335802234643,
+        21.51015124053471
+      ],
+      [
+        73078.41111534002,
+        100169.69005259106
+      ]
+    ],
+    "0.02": [
+      [
+        83.34878061679541,
+        118.82822092099303
+      ],
+      [
+        136.82761989366588,
+        237.1606075544486
+      ],
+      [
+        14.64029858719738,
+        22.247183705394956
+      ],
+      [
+        69200.51661606542,
+        116997.1903339274
+      ]
+    ]
+  },
+  "coordinate_supports_s": 0.9759345999918878,
+  "metric_scale": [
+    35.479440304197624,
+    100.33298766078272,
+    7.606885118197576,
+    47796.67371786198
+  ],
+  "metric_definition": "coordinate spans of continuous 2-percent region",
+  "tolerance": 0.01,
+  "regions": {
+    "0.01": {
+      "converged": true,
+      "cost_cap_usd_per_year": 58466126.679238155,
+      "distance_upper_numerical": 0.009868541886335624,
+      "iterations": 29,
+      "inner_points": 38,
+      "final_outer_vertices": 1106,
+      "exploration_s": 2.5977268000133336,
+      "total_wall_s": 4.06590269994922,
+      "system_oracle_calls": 29,
+      "master_lp_calls": 92,
+      "physical_distance_upper": [
+        0.3501303427457186,
+        0.9901402913116296,
+        0.0750688644134759,
+        471.68347661223805
+      ]
+    },
+    "0.02": {
+      "converged": true,
+      "cost_cap_usd_per_year": 59044999.22061675,
+      "distance_upper_numerical": 0.009922605650764887,
+      "iterations": 51,
+      "inner_points": 98,
+      "final_outer_vertices": 2519,
+      "exploration_s": 11.57940509985201,
+      "total_wall_s": 15.369371799984947,
+      "system_oracle_calls": 51,
+      "master_lp_calls": 169,
+      "physical_distance_upper": [
+        0.35204849484840683,
+        0.9955646703210064,
+        0.0754801212585466,
+        474.2675447206229
+      ]
+    }
+  },
+  "fixed_wind_sections": {
+    "n17_gap1": {
+      "converged": true,
+      "distance_upper_numerical": 0.008173922289587854,
+      "iterations": 1,
+      "exploration_s": 0.19677289994433522,
+      "total_wall_s": 0.5008466001600027,
+      "inner_points": 8
+    },
+    "n17_gap2": {
+      "converged": true,
+      "distance_upper_numerical": 0.009386542389446167,
+      "iterations": 6,
+      "exploration_s": 1.394381299847737,
+      "total_wall_s": 1.8866596999578178,
+      "inner_points": 13
+    },
+    "n20_gap1": {
+      "converged": true,
+      "distance_upper_numerical": 0.00979507837621496,
+      "iterations": 6,
+      "exploration_s": 0.9591656001284719,
+      "total_wall_s": 1.4100212000776082,
+      "inner_points": 13
+    },
+    "n20_gap2": {
+      "converged": true,
+      "distance_upper_numerical": 0.0074914256300290605,
+      "iterations": 10,
+      "exploration_s": 2.7007972998544574,
+      "total_wall_s": 3.258504099911079,
+      "inner_points": 17
+    }
+  },
+  "complete": true,
+  "feasible_integer_wind_counts": {
+    "0.01": [
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "0.02": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+    ]
+  },
+  "representative_wind_counts": [
+    17,
+    20
+  ],
+  "conditional_optima": {
+    "15": {
+      "tag": "conditional_cost:15",
+      "x": [
+        114.41790226866742,
+        226.91394570520765,
+        15.0,
+        70178.01016109133
+      ],
+      "cost": 58919562.92409204,
+      "cap": null,
+      "objective": 60.39177625209205,
+      "dual_objective": 60.39177625209206,
+      "duality_gap": -7.105427357601002e-15,
+      "separation_kg": 4.903995431959629e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 572,
+      "seconds": 0.05864960001781583,
+      "fixed_wind": 15
+    },
+    "16": {
+      "tag": "conditional_cost:16",
+      "x": [
+        110.13093841241653,
+        214.36344977538883,
+        16.0,
+        72320.84325857753
+      ],
+      "cost": 58610670.40760632,
+      "cap": null,
+      "objective": 60.08288373560633,
+      "dual_objective": 60.08288373560633,
+      "duality_gap": 0.0,
+      "separation_kg": 0.0,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 9,
+      "cuts": 585,
+      "seconds": 0.07444689981639385,
+      "fixed_wind": 16
+    },
+    "17": {
+      "tag": "conditional_cost:17",
+      "x": [
+        105.59213898027254,
+        203.06765890490857,
+        17.0,
+        74338.96544851057
+      ],
+      "cost": 58350875.88445976,
+      "cap": null,
+      "objective": 59.82308921245976,
+      "dual_objective": 59.82308921245975,
+      "duality_gap": 1.4210854715202004e-14,
+      "separation_kg": 4.452886059880257e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 6,
+      "cuts": 594,
+      "seconds": 0.04846970015205443,
+      "fixed_wind": 17
+    },
+    "18": {
+      "tag": "conditional_cost:18",
+      "x": [
+        101.17725581175985,
+        192.1763649872369,
+        18.0,
+        76386.10015803076
+      ],
+      "cost": 58145637.873096,
+      "cap": null,
+      "objective": 59.617851201096,
+      "dual_objective": 59.617851201096,
+      "duality_gap": 0.0,
+      "separation_kg": 0.0,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 604,
+      "seconds": 0.05624160007573664,
+      "fixed_wind": 18
+    },
+    "19": {
+      "tag": "conditional_cost:19",
+      "x": [
+        96.81625513261015,
+        181.8567296436463,
+        19.0,
+        78311.99385044337
+      ],
+      "cost": 57985282.60519554,
+      "cap": null,
+      "objective": 59.45749593319554,
+      "dual_objective": 59.45749593319553,
+      "duality_gap": 7.105427357601002e-15,
+      "separation_kg": 1.83063093572855e-08,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 8,
+      "cuts": 614,
+      "seconds": 0.06428300007246435,
+      "fixed_wind": 19
+    },
+    "20": {
+      "tag": "conditional_cost:20",
+      "x": [
+        93.6736109247312,
+        169.63074640382746,
+        20.0,
+        80437.78579326914
+      ],
+      "cost": 57887254.13785956,
+      "cap": null,
+      "objective": 59.35946746585956,
+      "dual_objective": 59.35946746585957,
+      "duality_gap": -7.105427357601002e-15,
+      "separation_kg": 6.645513349212706e-05,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 1,
+      "cuts": 614,
+      "seconds": 0.007567199878394604,
+      "fixed_wind": 20
+    },
+    "21": {
+      "tag": "conditional_cost:21",
+      "x": [
+        93.28086705448578,
+        155.02908802909565,
+        21.0,
+        82871.56835627988
+      ],
+      "cost": 58072025.19071438,
+      "cap": null,
+      "objective": 59.544238518714394,
+      "dual_objective": 59.54423851871439,
+      "duality_gap": 7.105427357601002e-15,
+      "separation_kg": 7.029563130345196e-05,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 5,
+      "cuts": 620,
+      "seconds": 0.04283150006085634,
+      "fixed_wind": 21
+    },
+    "22": {
+      "tag": "conditional_cost:22",
+      "x": [
+        92.12594146257094,
+        151.47951077374339,
+        22.0,
+        83217.70873446601
+      ],
+      "cost": 58850414.891268894,
+      "cap": null,
+      "objective": 60.32262821926889,
+      "dual_objective": 60.32262821926889,
+      "duality_gap": 0.0,
+      "separation_kg": 1.1496013030409813e-09,
+      "cost_cap_violation_usd": 0.0,
+      "lp_calls": 7,
+      "cuts": 626,
+      "seconds": 0.05798569996841252,
+      "fixed_wind": 22
+    }
+  },
+  "provenance": {
+    "pem_planning\\pwl_two_region_study.py": "7a521d205ad1febae0d322fa31c0dfad2911201e561abaec23d7190277aec672",
+    "pem_planning\\pwl_capacity_oracle.py": "b8cbd6480b3a7b056551eb8d1703b1f552bad2c20db22761c5e2a03dd881e988",
+    "pem_planning\\continuous_oracle.py": "e044cc0a830f68dec206458c4272ed8c85082428c48a25ce46f8504049447254",
+    "pem_planning\\fixed_wind_slices.py": "e1eed96c35eecd0ba4500b11c76aeefb939f4be04776dc97165759ee68aebcd9",
+    "pem_planning\\pwl_planning.py": "4592ade55521790b761059bb595c400818e9d343b68d2ba1d958b4e7ebc4c741",
+    "pem_planning\\model.py": "547a543e8bf83ab2ff67eba03c2c5b4b4cb6e2ace049b869f3bfb892d137d295",
+    "pem_planning\\origin_pwl.py": "4e4cd04bf9f74d313aa07b67d768d2acc80b90d067361885271dcc813d8508a0",
+    "pem_planning\\pwl_study_inputs.py": "25c6db5704ee18ec88cf70c962e21fa0ef7f2e875cf2423165d38bc5e9fc387b",
+    "data\\py\\02_engine_adapter.py": "110bd02a03123d3a540175d7c98c6e6f484ddf30244430dbcf265d3e2c9ae199",
+    "data\\py\\turbines.py": "6aef07a9647ec1d0ce2d882055545fe067bd268058198dc6fb6a58ea45fd55e3",
+    "data\\py\\park_engine\\params.py": "38890ea9654a0e40e559f1db71802b2ffbb4ecbbb97d329e0a4d1572c85bc1f2",
+    "data\\py\\park_engine\\electrolyzer.py": "d52637fdda98af33ec69999d89a119ceb2cb8339406640b93b935f2ec5f5f69e",
+    "data\\era5\\texas_2022.npz": "34f0e6d0d6deb7749d920b7baa9c800798a58316471e5668da4ed4ba9e80bdf1",
+    "data\\era5\\texas_2023.npz": "f45724ad84c30f57da8daa9eb92b67eb646f3951e88dc39753631c4bd6ef3837",
+    "data\\era5\\texas_2024.npz": "e9dd99d1735af98c05500b049ed3c0044e7e8486c1bf6eb410de124d17f66778"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy": "2.3.5",
+    "scipy": "1.18.1",
+    "highspy": "1.15.1"
+  },
+  "total_wall_s": 28.22940679988824,
+  "system_oracle_calls": 153,
+  "master_solver_calls": 647
+}

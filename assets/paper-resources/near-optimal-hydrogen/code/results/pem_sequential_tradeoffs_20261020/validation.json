@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "design_checks": 53,
+  "weather_year_checks": 159,
+  "original_inputs_and_model_hashes_match": true,
+  "source_snapshot_saved": true,
+  "max_operating_residuals": {
+    "total_slack_kg": 7.347580321948044e-10,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 9.094947017729282e-13,
+    "supply_violation_mw": 8.526512829121202e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 7.275957614183426e-12
+  },
+  "max_duality_gap": 5.115907697472721e-13,
+  "note": "Numerical LP and physical-witness verification, not interval-arithmetic certification."
+}

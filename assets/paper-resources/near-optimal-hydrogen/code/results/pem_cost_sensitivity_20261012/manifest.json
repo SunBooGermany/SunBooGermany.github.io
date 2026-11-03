@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "cases": 18,
+  "perturbations_per_region": 8,
+  "protocol": "One equipment investment unit cost at 80% or 120% of baseline; proportional cash-flow items follow CAPEX; no simultaneous price shocks.",
+  "baseline": "results/pem_pwl_two_region_20260930",
+  "annual_hydrogen_kg": 8760000.0,
+  "full_hours_per_region": 26280,
+  "source_sha256": {
+    "pem_planning\\pwl_cost_sensitivity.py": "7e6afda2a4cada8bf998612d271e09000dd675f0b2acf36fc343881ccb325f10",
+    "pem_planning\\model.py": "547a543e8bf83ab2ff67eba03c2c5b4b4cb6e2ace049b869f3bfb892d137d295",
+    "pem_planning\\pwl_study_inputs.py": "25c6db5704ee18ec88cf70c962e21fa0ef7f2e875cf2423165d38bc5e9fc387b",
+    "pem_planning\\pwl_capacity_oracle.py": "b8cbd6480b3a7b056551eb8d1703b1f552bad2c20db22761c5e2a03dd881e988",
+    "pem_planning\\continuous_oracle.py": "e044cc0a830f68dec206458c4272ed8c85082428c48a25ce46f8504049447254",
+    "pem_planning\\origin_pwl.py": "4e4cd04bf9f74d313aa07b67d768d2acc80b90d067361885271dcc813d8508a0",
+    "data\\py\\02_engine_adapter.py": "110bd02a03123d3a540175d7c98c6e6f484ddf30244430dbcf265d3e2c9ae199",
+    "data\\py\\turbines.py": "6aef07a9647ec1d0ce2d882055545fe067bd268058198dc6fb6a58ea45fd55e3",
+    "data\\py\\park_engine\\params.py": "38890ea9654a0e40e559f1db71802b2ffbb4ecbbb97d329e0a4d1572c85bc1f2",
+    "data\\py\\park_engine\\electrolyzer.py": "d52637fdda98af33ec69999d89a119ceb2cb8339406640b93b935f2ec5f5f69e"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.3.5",
+  "scipy": "1.18.1",
+  "highspy": "1.15.1",
+  "total_wall_s": 17.750540199922398
+}

@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "section_count": 12,
+  "inner_generators_audited": 141,
+  "annual_scenarios_per_design": 3,
+  "max_unserved_hydrogen_kg": 9.751763093390764e-05,
+  "max_balance_residual_kg": 7.275957614183426e-12,
+  "max_inventory_violation_kg": 7.275957614183426e-12,
+  "max_normalized_distance": 0.009969580903180147,
+  "all_source_hashes_match": true,
+  "geometry_tests_passed": 3,
+  "figures_visually_reviewed": true,
+  "direct_query_seconds": 0.5684751999506261,
+  "direct_query_optimality_bracket_pct": 0.03005069853874165
+}

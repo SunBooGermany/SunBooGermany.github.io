@@ -1,0 +1,21 @@
+{
+  "tag": "integer_cost_optimum",
+  "x": [
+    124.34056576030879,
+    272.52182560376224,
+    23.0,
+    105419.8711642687
+  ],
+  "cost": 71735918.75347203,
+  "lower_bound_usd": 71735918.75347203,
+  "objective": 74.10184547347203,
+  "mip_gap": 0.0,
+  "bound_gap_usd": 0.0,
+  "separation_kg": 1.8044374883174896e-09,
+  "milp_calls": 6,
+  "integer_variables": 1,
+  "seconds": 0.06826229998841882,
+  "cuts": 72,
+  "solver": "HiGHS MILP with exact cyclic-storage constraint generation",
+  "status": "optimal"
+}

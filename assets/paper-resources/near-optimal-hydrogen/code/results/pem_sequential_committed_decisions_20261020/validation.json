@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "geometry_tests_passed": 6,
+  "source_hashes_match": true,
+  "audited_inner_generators": 21,
+  "annual_scenarios_per_design": 3,
+  "max_residuals": {
+    "total_slack_kg": 4.951061782776378e-10,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 9.094947017729282e-13,
+    "supply_violation_mw": 5.684341886080802e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 7.275957614183426e-12
+  },
+  "max_normalized_distance": 0.008521220868583562,
+  "figures_include_preceding_plan_as_additional_feasible_inner_generator": true,
+  "order_equalities": {
+    "wind": 19,
+    "storage_kg": 80000
+  },
+  "timing_scope": "Post hoc intersection, distance reassessment and cost-bound LPs only; initial construction and independent validation excluded."
+}

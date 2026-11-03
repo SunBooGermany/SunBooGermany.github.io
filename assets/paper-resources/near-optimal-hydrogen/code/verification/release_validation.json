@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "python": "3.12.14",
+  "unit_tests_passed": 11,
+  "core_model_class_and_function_bodies_preserved": [
+    "Config",
+    "Design",
+    "Scenario",
+    "scenario_probabilities",
+    "cross_weather",
+    "wind_rating",
+    "weather",
+    "hydrogen_per_mw",
+    "power_for_hydrogen",
+    "low_load_tangent",
+    "economic_parameters",
+    "cost_coefficients",
+    "cost_breakdown",
+    "tac",
+    "Matrix",
+    "planning_efficiency",
+    "cyclic_supply_schedule"
+  ],
+  "full_annual_proposed_runs": [
+    {
+      "case": "jeju_1pct",
+      "iterations": 65,
+      "final_distance": 0.00996570170737196,
+      "exact_final_generators_match": true,
+      "operating_witnesses_passed": true
+    },
+    {
+      "case": "jeju_2pct",
+      "iterations": 96,
+      "final_distance": 0.009989150944712893,
+      "exact_final_generators_match": true,
+      "operating_witnesses_passed": true
+    },
+    {
+      "case": "texas_1pct",
+      "iterations": 40,
+      "final_distance": 0.009910761173578907,
+      "exact_final_generators_match": true,
+      "operating_witnesses_passed": true
+    },
+    {
+      "case": "texas_2pct",
+      "iterations": 70,
+      "final_distance": 0.009831789855633405,
+      "exact_final_generators_match": true,
+      "operating_witnesses_passed": true
+    }
+  ],
+  "optional_cached_jeju_1pct": {
+    "projection_lp_solves": 3374,
+    "certificate_checks": 31060,
+    "reused_distances": 30164,
+    "independently_checked_states": 65,
+    "max_distance_error": 1.2580201047551753e-09,
+    "timing_scope": "First vertex enumeration, later vertex enumerations, projection LPs and reuse checks are all inside geometry_s; independent audit excluded.",
+    "submitted_paper_measurement": false
+  },
+  "performance_figures_byte_identical_to_submitted_figures": {
+    "figure_7_matched_convergence": "1b0f1512362475fc1bde309997014c5d3a4f06a0f6ef878e7e8b71e68c8909b7",
+    "figure_8_runtime_and_cuts": "5be15b08541c7f34c0dca057914fc0e3ceeb4a3d95d8b2d2a2ae2077977f9759"
+  },
+  "raw_input_count": 6,
+  "working_numerical_sources_and_manuscript_unmodified": true,
+  "release_io_changes": "Package-relative physics imports, selected source functions, 0.1% ORACLE default, and outputs/ defaults; underlying planning/separation algorithms unchanged."
+}

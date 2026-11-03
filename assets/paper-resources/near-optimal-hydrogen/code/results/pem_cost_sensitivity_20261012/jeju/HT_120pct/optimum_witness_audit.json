@@ -1,0 +1,44 @@
+[
+  {
+    "scenario": "jeju_2022_fresh",
+    "total_slack_kg": 0.0,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 4.263256414560601e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8760000.000000004,
+    "curtailment_mwh": 147461.06012403755,
+    "inventory_min_kg": 9.972609404940158e-10,
+    "inventory_max_kg": 83634.33195421827,
+    "mean_load": 0.3841769735539257
+  },
+  {
+    "scenario": "jeju_2023_fresh",
+    "total_slack_kg": 2.0270363165764138e-10,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 4.263256414560601e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8760000.000000004,
+    "curtailment_mwh": 106817.78228285829,
+    "inventory_min_kg": 0.0,
+    "inventory_max_kg": 83634.33195421827,
+    "mean_load": 0.38612587858271996
+  },
+  {
+    "scenario": "jeju_2024_fresh",
+    "total_slack_kg": 0.0,
+    "balance_kg": 7.275957614183426e-12,
+    "production_equality_kg_h": 4.547473508864641e-13,
+    "supply_violation_mw": 4.263256414560601e-14,
+    "rated_power_violation_mw": 0.0,
+    "inventory_violation_kg": 0.0,
+    "production_kg": 8760000.000000004,
+    "curtailment_mwh": 118715.60374665419,
+    "inventory_min_kg": 14740.828260309641,
+    "inventory_max_kg": 83634.33195421827,
+    "mean_load": 0.3845919144856298
+  }
+]
