@@ -11,8 +11,8 @@ losses, and computes PV output. Actual February 29 timestamps are removed
 before planning, leaving 8,760 hours in each weather scenario. Wind/PV remain
 paired within each year.
 
-These are extracts/processed inputs based on ERA5, not a redistribution of the
-complete global reanalysis. Generated using Copernicus Climate Change Service
+These study inputs are extracted and processed from ERA5. Generated using
+Copernicus Climate Change Service
 information. ECMWF Reanalysis data (ERA5), © ECMWF, retrieved via the Copernicus
 Climate Data Store. The data have been extracted and processed for this study.
 The data provider's [CC-BY licence](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=download)
@@ -24,9 +24,8 @@ any use that may be made of the Copernicus information or data it contains.
 The PEM/PV/economic parameterization follows Park et al. (2025),
 *Energy Conversion and Management*, 325, 119423,
 DOI: [10.1016/j.enconman.2024.119423](https://doi.org/10.1016/j.enconman.2024.119423).
-`pem_planning/physics/` contains the study's Python implementations of the
-documented equations and transcribed parameter values. It does not contain
-the authors' Excel workbook or manuscript/supplementary PDFs.
+`pem_planning/physics/` contains Python implementations of the documented
+equations and parameter values.
 
 The study uses a 25-year project life, 7% discount rate, 10-year calendar stack
 replacement, and 98.2% converter efficiency. The Jeju and Texas turbine ratings

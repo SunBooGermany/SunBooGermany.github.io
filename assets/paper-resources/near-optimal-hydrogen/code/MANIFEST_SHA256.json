@@ -10,7 +10,7 @@
     "data/era5/texas_2022.npz": "34f0e6d0d6deb7749d920b7baa9c800798a58316471e5668da4ed4ba9e80bdf1",
     "data/era5/texas_2023.npz": "f45724ad84c30f57da8daa9eb92b67eb646f3951e88dc39753631c4bd6ef3837",
     "data/era5/texas_2024.npz": "e9dd99d1735af98c05500b049ed3c0044e7e8486c1bf6eb410de124d17f66778",
-    "data/README.md": "099eddf974ddf40a07b7c7b0cfabb0bc87f893015d4153c20663056535ab3c9f",
+    "data/README.md": "04e4413fb469c2a328b455d3fadabb34bcb75ef5f165879c56adb90cc6dc6e82",
     "LICENSE.md": "845addaaf103aa4dda1c0cef2c3d01b10e00f8ea65f2b8fd06d292089fad3b13",
     "pem_planning/__init__.py": "12f490cf279c37ee9446f3954680a6212eeac4eadd80fd75b6a74cdd063299b6",
     "pem_planning/__main__.py": "1b942fb3581af99bd8d3ec6f8943779087fe29ba499591382c905268ccd6bbe9",
@@ -42,8 +42,8 @@
     "pem_planning/test_g_oracle_benchmark.py": "c463d2186a312c3f1fbc4680665edb712b86d52d44ebad569b1a0a58b9e17793",
     "pem_planning/test_oracle_matched_benchmark.py": "cdede648ae73aca9a2d5bf2f22f3ed0b6ff861ede8e2e0eefd962cfd3b5ff4b1",
     "pem_planning/test_pwl_capacity_oracle.py": "75ee9a9002a2345739672ddaf97313161b097ce1a9b4929fbf9370a6f4c74ecc",
-    "README.md": "ffc689ee0990a5323d8a2028356ee946b083e64d536369d37ede4e7f9f1619b8",
-    "README_KO.md": "685c4795c983ccc253765a66e563856a372223bccaef6d91c360e059fdac6093",
+    "README.md": "ea17fa435e4364010e04c6ffbfc4a5f3f75b7bada41909cc72422027688ca5ad",
+    "README_KO.md": "f028bb6e480822d1429c66a18b4c502a27222612794ce7e1d627d8660f99f683",
     "reference_figures/figure_7_matched_convergence.pdf": "952c2b8ead2ca4892ee01757867d67e52240b9000fa01d6330344419365db492",
     "reference_figures/figure_7_matched_convergence.png": "1b0f1512362475fc1bde309997014c5d3a4f06a0f6ef878e7e8b71e68c8909b7",
     "reference_figures/figure_7_matched_convergence.svg": "fd4fa4a066fceb91d6f91fa158a57dff9db2dbdef15d85a7ae2dca73d6489e78",
@@ -196,7 +196,7 @@
     "scripts/plot_layout.py": "32c793253507c7f3fa6fc65c0f6d54fb7f11893f441e13b2429323d207e3c2f1",
     "scripts/reproduce_performance.py": "17d79ac84cb2f2cc94c7489f00e53335e3556c7f2aec7c64f9a2458f6324d96d",
     "THIRD_PARTY_NOTICES.md": "7c140b04c0df1337043fe38029a513f700732cc5f735b961db2bdcd6606893ba",
-    "verification/README.md": "122cee679153842a0e9133c6026559fe4b3e080780efc12fb1c53040d3836abd",
+    "verification/README.md": "e545b1f469c5a13f8319cd6ab1c9fc26d96cd5451a47960c462339cd984da15d",
     "verification/release_validation.json": "6a3a35f327cdb5f9c22d5b1ae1a575008833da514f6452fc076763b2f86216d7"
   }
 }
