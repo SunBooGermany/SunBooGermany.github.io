@@ -35,24 +35,24 @@ Average error on independent evaluation data summarizes predictive quality acros
 
 Recompute product specifications, physical consistency, and cost at those decisions. Separately check whether the solver correctly represented the fitted model.
 
-This week traces these distinctions using the unchanged frozen network from Week 6.
+This week: these distinctions with the unchanged frozen network from Week 6.
 
 <!-- lecture-page -->
 
 ## Learning objectives and final report
 
-1. Distinguish prediction error, formulation error, and process constraint violation.
-2. Compare costs of candidates feasible in the reference process model.
-3. Revalidate the effects of margins and local data correction.
-4. Record models, data, solvers, and candidate selection reproducibly.
+1. Prediction error, formulation error, and process constraint violation
+2. Cost comparison among candidates feasible in the reference process model
+3. Revalidation after margins and local data correction
+4. Reproducible records of models, data, solvers, and candidate selection
 
-The final report identifies the accepted candidate, reasons for rejection, remaining checks, and additional data locations.
+Final report: accepted candidate, rejection reasons, remaining checks, and additional data locations.
 
 <!-- lecture-page -->
 
 ## Reactor assumptions and variables
 
-Use an ideal steady-state isothermal CSTR with consecutive first-order reactions A → B → C. Feed A is 1.2 mol/L, feed B and C are zero, and density and flow are constant.
+Reference process: ideal steady-state isothermal CSTR; consecutive first-order reactions A → B → C. Feed concentrations: A 1.2 mol/L, B and C zero. Constant density and flow.
 
 Temperature T spans 310-350 K and residence time τ spans 2-10 min. At fixed F = 1 L/min, V = Fτ, so τ is also a reactor-sizing decision.
 
@@ -88,7 +88,7 @@ J is measured in $/h. Assume a volume cost of 12 $/(L·h) and, at fixed flow, a 
 
 This cost compares designs meeting product specifications. It includes neither sales revenue nor actual equipment quotations.
 
-The baseline T = 330 K, τ = 6 min costs 76.80 $/h.
+Baseline: T = 330 K, τ = 6 min; cost 76.80 $/h.
 
 <!-- lecture-page -->
 
@@ -170,7 +170,7 @@ Using a large error observed anywhere in the domain as a margin can be costly in
 
 Form a 3 × 3 grid around the unadjusted candidate using offsets −0.06, 0, +0.06 on each scaled axis. Clip to the original input box and obtain nine reference outputs.
 
-Use these data for local residual correction, separately from the 997 final-evaluation inputs.
+Local residual correction: these data, separate from the 997 final-evaluation inputs
 
 Choose points to examine constraint boundaries, the current candidate, and error direction. For physical experiments, include accessible conditions and experimental costs.
 
@@ -210,7 +210,7 @@ Specification feasibility of this candidate is checked directly with the referen
 
 At each T, solve the quadratic equation for the smaller τ giving B = 0.38. Check τ bounds and the C specification, then use 4,001 temperature grid points and a scalar search near the best grid point.
 
-The comparison candidate is T = 344.9116 K, τ = 2.75110 min, costing 41.3920 $/h.
+Comparison candidate: T = 344.9116 K, τ = 2.75110 min; cost 41.3920 $/h.
 
 This supplies a feasible benchmark, not a certified global bound over the continuous domain. Report cost differences as observed benchmark differences.
 
@@ -290,7 +290,7 @@ The [Week 8 companion](/courses/surrogate-models/week-08-reading/) derives the s
 
 ## 예측 검증과 의사결정 검증
 
-독립 평가 데이터의 평균 오차는 입력 영역 전반의 예측 품질을 요약합니다. 최적화는 그중 비용이 낮고 제약 경계에 가까운 일부 지점을 선택합니다.
+독립 평가 데이터의 평균 오차는 입력 영역 전반의 예측 품질을 요약합니다. 최적화는 그중 비용이 낮고 제약 경계에 가까운 일부 지점을 선택
 
 따라서 선택 지점에서 제품 규격, 물리적 일관성, 비용을 다시 계산합니다. Solver가 학습 모델을 정확히 풀었는지도 별도로 검사합니다.
 
@@ -300,9 +300,9 @@ The [Week 8 companion](/courses/surrogate-models/week-08-reading/) derives the s
 
 ## 학습 목표와 최종 보고서
 
-1. 예측 오차, 정식화 오차, 공정 제약 위반을 구분합니다.
-2. 기준 공정 모델에서 feasible한 후보의 비용을 비교합니다.
-3. Margin과 국소 데이터 보정의 효과를 재검증합니다.
+1. 예측 오차, 정식화 오차, 공정 제약 위반을 구분
+2. 기준 공정 모델에서 feasible한 후보의 비용을 비교
+3. Margin과 국소 데이터 보정의 효과를 재검증
 4. 모델·데이터·solver·후보 선택을 재현 가능한 기록으로 남깁니다.
 
 최종 보고서는 채택한 후보, 기각한 이유, 남은 검증 항목과 추가 데이터 위치를 포함합니다.
@@ -311,7 +311,7 @@ The [Week 8 companion](/courses/surrogate-models/week-08-reading/) derives the s
 
 ## 반응기 모델의 가정과 변수
 
-A → B → C의 연속 1차 반응이 일어나는 이상적인 정상상태 등온 CSTR입니다. 유입 A는 1.2 mol/L, 유입 B와 C는 0이며 밀도·유량은 일정합니다.
+기준 공정: A → B → C의 연속 1차 반응, 이상적인 정상상태 등온 CSTR. 유입 농도: A 1.2 mol/L, B·C 0. 밀도·유량: 일정
 
 온도 T는 310-350 K, 체류시간 τ는 2-10 min입니다. 유량 F = 1 L/min를 고정하므로 V = Fτ이고, τ는 반응기 크기도 바꾸는 설계변수입니다.
 
@@ -323,7 +323,7 @@ A → B → C의 연속 1차 반응이 일어나는 이상적인 정상상태 �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><mn>.2</mn><mi mathvariant="normal">exp</mi><mo>[</mo><mfrac><mrow><mn>40000</mn></mrow><mrow><mn>8.314</mn></mrow></mfrac><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>330</mn></mrow></mfrac><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>T</mi></mrow></mfrac><mo>)</mo><mo>]</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><mn>.1</mn><mi mathvariant="normal">exp</mi><mo>[</mo><mfrac><mrow><mn>50000</mn></mrow><mrow><mn>8.314</mn></mrow></mfrac><mo>(</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>330</mn></mrow></mfrac><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>T</mi></mrow></mfrac><mo>)</mo><mo>]</mo></mrow></mtd></mtr></mtable></math>
 
-k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K)입니다. 330 K에서 k₁ = 0.2, k₂ = 0.1입니다.
+k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K). 330 K에서 k₁ = 0.2, k₂ = 0.1
 
 계수는 강의용으로 정한 값입니다. 온도는 외부에서 유지된다고 가정하며 에너지 수지나 냉각 한계는 이 모델에 포함하지 않습니다.
 
@@ -333,7 +333,7 @@ k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K)입니
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>1.2</mn></mrow><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mi>τ</mi><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mi>τ</mi></mrow></mfrac><mo>,</mo><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mi>τ</mi><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-규격은 <math><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></math> ≥ 0.38, <math><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></math> ≤ 0.25 mol/L입니다. 모든 농도는 0 이상이고 합은 1.2 mol/L여야 합니다.
+규격은 <math><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></math> ≥ 0.38, <math><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></math> ≤ 0.25 mol/L. 모든 농도는 0 이상이고 합은 1.2 mol/L여야 합니다.
 
 이 공정식으로 재검증한 결과는 해당 가정 아래의 계산입니다. 실제 설비에서는 동특성·열관리·계측 오차 등 추가 조건을 확인해야 합니다.
 
@@ -347,7 +347,7 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 이 비용은 제품 규격을 만족하는 설계의 비교용입니다. 판매 수익과 실제 설비 견적은 포함하지 않습니다.
 
-기준 후보 T = 330 K, τ = 6 min의 비용은 76.80 $/h입니다.
+기준 후보: T = 330 K, τ = 6 min. 비용: 76.80 $/h
 
 <!-- lecture-page -->
 
@@ -391,9 +391,9 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 후보가 training box 안에 있어도 주변 데이터가 적거나 응답이 빠르게 변하면 오차가 커질 수 있습니다. Box 내부라는 사실만으로 내삽의 정확성을 보장하지는 않습니다.
 
-입력별 범위, 정규화 좌표, 가까운 학습점까지의 거리와 경계 부근 오차를 확인합니다. 범위를 넓힌 최적화는 별도의 모델 검증이 필요합니다.
+입력별 범위, 정규화 좌표, 가까운 학습점까지의 거리와 경계 부근 오차를 확인. 범위를 넓힌 최적화는 별도의 모델 검증이 필요합니다.
 
-정식화의 유효 bounds도 새 영역에 맞게 다시 계산합니다.
+정식화의 유효 bounds도 새 영역에 맞게 다시 계산
 
 <!-- lecture-page -->
 
@@ -411,7 +411,7 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>Ĉ</mi><mrow><mi>B</mi></mrow></msub><mo>≥</mo><mn>.38</mn><mo>+</mo><msub><mi>δ</mi><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>Ĉ</mi><mrow><mi>C</mi></mrow></msub><mo>≤</mo><mn>.25</mn><mo>−</mo><msub><mi>δ</mi><mrow><mi>C</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibration grid의 오차로 <math><msub><mi>δ</mi><mrow><mi>B</mi></mrow></msub></math> = 0.02130, <math><msub><mi>δ</mi><mrow><mi>C</mi></mrow></msub></math> = 0.01305 mol/L를 계산합니다.
+규격 위반 위험 방향: B 과대예측, C 과소예측. 별도 calibration grid의 오차로 <math><msub><mi>δ</mi><mrow><mi>B</mi></mrow></msub></math> = 0.02130, <math><msub><mi>δ</mi><mrow><mi>C</mi></mrow></msub></math> = 0.01305 mol/L를 계산
 
 961개 점에서 관측한 최대 오차입니다. 전체 연속 영역의 오차 상한을 증명한 값은 아니므로 새 후보를 다시 공정식에 넣습니다.
 
@@ -427,9 +427,9 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 ## 추가 데이터 위치의 선택
 
-무보정 후보 주변의 정규화 좌표에서 각 축으로 −0.06, 0, +0.06을 이동한 3 × 3 격자를 계산합니다. 원래 입력 box로 잘라낸 뒤 공정 출력 9개를 얻습니다.
+무보정 후보 주변의 정규화 좌표에서 각 축으로 −0.06, 0, +0.06을 이동한 3 × 3 격자를 계산. 원래 입력 box로 잘라낸 뒤 공정 출력 9개를 얻습니다.
 
-이 데이터는 후보 주변의 잔차 보정에 사용합니다. 최종 평가용 997개 입력과 분리합니다.
+데이터 용도: 후보 주변의 잔차 보정. 최종 평가용 997개 입력과 별도 구성
 
 새 점은 제약 경계·현재 후보·오차 방향을 확인하도록 고릅니다. 실제 실험이라면 접근 가능한 조건과 실험 비용도 제한에 포함합니다.
 
@@ -439,7 +439,7 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>x</mi><mrow><mn>1</mn></mrow></msub><mo>=</mo><mfrac><mrow><mi>T</mi><mo>−</mo><mn>310</mn></mrow><mrow><mn>40</mn></mrow></mfrac><mo>,</mo><msub><mi>x</mi><mrow><mn>2</mn></mrow></msub><mo>=</mo><mfrac><mrow><mi>τ</mi><mo>−</mo><mn>2</mn></mrow><mrow><mn>8</mn></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msup><mi>C</mi><mrow><mi>c</mi><mi>o</mi><mi>r</mi><mi>r</mi></mrow></msup><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mo>(</mo><mi>x</mi><mo>)</mo><mo>+</mo><msub><mi>β</mi><mrow><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>β</mi><mrow><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>β</mi><mrow><mn>2</mn></mrow></msub><msub><mi>x</mi><mrow><mn>2</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-9개 점의 기준 출력과 예측 출력 차이에 affine 모델을 맞춥니다. 최적화 입력은 그 격자의 box로 제한하고, 양쪽 제품 제약에 0.002 mol/L margin을 사용합니다.
+9개 점의 기준 출력과 예측 출력 차이에 affine 모델을 맞춥니다. 최적화 입력은 그 격자의 box로 제한하고, 양쪽 제품 제약에 0.002 mol/L margin을 사용
 
 이 margin은 휴리스틱 값입니다. Affine 보정은 MILP 구조를 유지하지만 잔차의 균일한 오차 상한을 제공하지는 않습니다.
 
@@ -459,7 +459,7 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 기준식이 저렴하게 계산되는 이 예제에서는 T = 339.8152 K를 고정하고, B = 0.382를 만족하는 작은 쪽 τ를 직접 계산합니다. 원래 전체 입력 범위에서 계산하며 국소 보정 box에 묶지 않습니다.
 
-τ = 3.08559 min에서 기준 C는 0.199530 mol/L이고 비용은 44.1828 $/h입니다. 원래 규격을 모두 만족합니다.
+τ = 3.08559 min에서 기준 C는 0.199530 mol/L이고 비용은 44.1828 $/h. 원래 규격을 모두 만족합니다.
 
 이 후보의 규격 충족은 기준식으로 직접 확인한 결과이며, 국소 보정 모델의 보장 범위에는 포함되지 않습니다.
 
@@ -467,9 +467,9 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 ## 기준 공정의 비교용 최적화
 
-각 T에서 B = 0.38의 작은 쪽 τ를 이차방정식으로 구합니다. τ 범위와 C 규격을 확인한 뒤, 4,001개 온도 격자와 최선 격자점 주변의 1차원 탐색을 사용합니다.
+각 T에서 B = 0.38의 작은 쪽 τ를 이차방정식으로 구합니다. τ 범위와 C 규격을 확인한 뒤, 4,001개 온도 격자와 최선 격자점 주변의 1차원 탐색을 사용
 
-비교용 후보는 T = 344.9116 K, τ = 2.75110 min, 비용 41.3920 $/h입니다.
+비교용 후보: T = 344.9116 K, τ = 2.75110 min. 비용: 41.3920 $/h
 
 이 계산은 feasible benchmark를 제공합니다. 연속 전체 영역의 전역 최적값에 대한 인증된 bound는 아니므로, 비용 차이를 관측된 benchmark 차이로 보고합니다.
 
@@ -487,7 +487,7 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 <figure><img src="/assets/courses/surrogate-models/week-08/cost-ko.png" alt="기준 공정에서 feasible한 후보의 비용 비교" /></figure>
 
-기준식 보완 후보는 초기 기준 후보보다 32.6172 $/h 낮습니다. 비교용 benchmark와의 차이는 2.7908 $/h입니다.
+기준식 보완 후보는 초기 기준 후보보다 32.6172 $/h 낮습니다. 비교용 benchmark와의 차이는 2.7908 $/h
 
 모든 값은 가정한 비용 계수에 대한 계산입니다. 기준식 호출 비용과 모델 학습·최적화 시간을 별도로 기록합니다.
 
@@ -495,10 +495,10 @@ B는 과대예측, C는 과소예측이 위험한 방향입니다. 별도 calibr
 
 ## 반복 절차와 채택 기준
 
-1. 학습 모델·domain·context·제품 규격·비용을 고정합니다.
-2. 후보를 구하고 forward 일치와 solver 종료 상태를 검사합니다.
+1. 학습 모델·domain·context·제품 규격·비용을 고정
+2. 후보를 구하고 forward 일치와 solver 종료 상태를 검사
 3. 기준 공정식에서 원래 제약을 확인합니다. 실패하면 feasible 기준 후보를 유지합니다.
-4. 추가 데이터를 얻어 모델이나 영역을 조정한 뒤 새 후보를 재검증합니다.
+4. 추가 데이터를 얻어 모델이나 영역을 조정한 뒤 새 후보를 재검증
 
 Trust-region 방법의 수렴에는 모델 정확도와 수락 규칙 등의 조건이 필요합니다. 이번 국소 보정 절차에서는 이 조건을 확인하지 않았으므로 수렴을 보장하지 않습니다.
 
@@ -519,7 +519,7 @@ python -m pip install -r requirements.txt
 python week08_lab.py --output-dir my-results
 ```
 
-코드 묶음은 6주차의 고정 네트워크와 필요한 계산 함수를 포함합니다. 결과 JSON, 후보 비교 CSV, 독립 평가 데이터와 보완 데이터 9개를 저장합니다.
+코드 묶음은 6주차의 고정 네트워크와 필요한 계산 함수를 포함합니다. 결과 JSON, 후보 비교 CSV, 독립 평가 데이터와 보완 데이터 9개를 저장
 
 Margin 또는 국소 격자 폭을 한 번 변경해 새 후보를 계산하고, 원래 규격으로 재검증합니다. 데이터 수와 비용을 기록하고 채택·기각 이유를 설명합니다.
 

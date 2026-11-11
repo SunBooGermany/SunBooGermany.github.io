@@ -24,7 +24,7 @@ A reactor design review requires repeated searches over temperature and residenc
 
 <figure><img src="/assets/courses/surrogate-models/week-06/motivation-en.svg" alt="Reactor input domain and concentration specifications" /></figure>
 
-This week develops ways to assess unfinished solves and adjust bounds and formulations.
+This week: unfinished-solve assessment, bounds, and formulation choices.
 
 <!-- lecture-page -->
 
@@ -34,16 +34,16 @@ Add temperature as an input to the Week 5 reactor setting. At a fixed flow of 1 
 
 Hold the fitted ReLU model, input domain, objective, and product specifications fixed while comparing formulations. Arbitrarily shrinking the temperature interval changes the design problem.
 
-All LPs and MILPs use the open-source HiGHS solver.
+Solver for all LPs and MILPs: open-source HiGHS.
 
 <!-- lecture-page -->
 
 ## Learning objectives for formulations and solver results
 
-1. Distinguish an incumbent objective from an objective bound and calculate a gap.
-2. Compare interval propagation with LP-based bound tightening.
-3. Connect a frozen network and its scaling through Pyomo and OMLT.
-4. Report termination, time, forward agreement, and constraint residuals.
+1. Incumbent objective, objective bound, and gap
+2. Interval propagation versus LP-based bound tightening
+3. Frozen network and scaling in Pyomo and OMLT
+4. Termination, time, forward agreement, and constraint residuals
 
 Review the Week 5 Big-M equivalence and input-bound calculations first.
 
@@ -93,7 +93,7 @@ This triangle is the convex hull of the scalar (a, h) graph. Correlations across
 
 ## Two neurons coupled by an equality
 
-Use this dimensionless example to calculate a dependence that box bounds miss.
+Dimensionless example: a dependence missed by box bounds
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
 
@@ -155,7 +155,7 @@ This is optimization-based bound tightening, or OBBT. The lab solves 54 LPs over
 
 These cases need no binary variable. Only neurons whose intervals cross zero remain candidates for branching.
 
-The hand-built MILP uses 24 binaries with loose bounds, 22 with interval propagation, and 19 with LP-OBBT. These are binary-variable counts before solver presolve.
+Hand-built MILP binary counts: 24 with loose bounds, 22 with interval propagation, 19 with LP-OBBT. Counts before solver presolve.
 
 <!-- lecture-page -->
 
@@ -173,7 +173,7 @@ Outputs in this lab already use mol/L. If outputs were standardized, include the
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mi>α</mi><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><mi>α</mi><mo>=</mo><mn>.02</mn><mtext> min/K</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mn>2</mn><mo>+</mo><mn>8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-This educational objective combines residence time and a temperature-increase term weighted by α, measured as a min-equivalent score.
+Educational objective: residence time + temperature increase weighted by α. Unit: min-equivalent score.
 
 Dropping the constant 2 preserves the optimizer but changes the denominator of a relative gap. The lab reports objectives and bounds with the constant included.
 
@@ -207,7 +207,7 @@ model.obj = pyo.Objective(
     expr=model.nn.inputs[1] + .02*(model.nn.inputs[0]-310))
 ```
 
-The lab function `make_omlt` contains the complete construction.
+Complete construction: lab function `make_omlt`.
 
 <!-- lecture-page -->
 
@@ -228,9 +228,9 @@ This OMLT version creates a binary for each ReLU. The hand-built model represent
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><mi>T</mi><mo>,</mo><mi>τ</mi></mrow></msub><mtext>  </mtext><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mn>.02</mn><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mn>310</mn><mo>≤</mo><mi>T</mi><mo>≤</mo><mn>350</mn><mo>,</mo><mtext>  </mtext><mn>2</mn><mo>≤</mo><mi>τ</mi><mo>≤</mo><mn>10</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><msub><mrow><mi>f</mi></mrow><mrow><mi>θ</mi></mrow></msub><mo>(</mo><mi>T</mi><mo>,</mo><mi>τ</mi><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>y</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>≥</mo><mn>.38</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>y</mi></mrow><mrow><mi>C</mi></mrow></msub><mo>≤</mo><mn>.25</mn></mrow></mtd></mtr></mtable></math>
 
-Concentrations use mol/L, temperature uses K, and residence time uses min. Predicted concentrations are also constrained to be nonnegative.
+Units: concentrations mol/L, temperature K, residence time min. Additional constraint: nonnegative predicted concentrations.
 
-The network has two inputs, two hidden layers of 12 ReLUs each, and three linear outputs. Every comparison uses the same frozen coefficients.
+Architecture: two inputs, two hidden layers of 12 ReLUs each, and three linear outputs. All comparisons: the same frozen coefficients.
 
 <!-- lecture-page -->
 
@@ -344,8 +344,8 @@ python week06_lab.py --output-dir my-results
 ```
 
 1. Verify the toy LP values 0 and 0.4 and MILP value 0.7 by hand.
-2. Compare bounds, binary counts, LP lower bounds, and total times for the same frozen model.
-3. Report termination, gap, forward differences, and the reference CSTR B-specification violation.
+2. Comparison for the same frozen model: bounds, binary counts, LP lower bounds, and total times
+3. Report: termination, gap, forward differences, and reference CSTR B-specification violation
 
 [Reading companion](/courses/surrogate-models/week-06-reading/) · [Lab ZIP](/assets/courses/surrogate-models/week-06/week06-lab.zip)
 
@@ -385,10 +385,10 @@ Work through the companion derivations of the triangle relaxation, OBBT bound di
 
 ## 정식화와 solver 결과의 학습 목표
 
-1. 가능해의 목적값과 최적값에 대한 bound를 구분하고 gap을 계산합니다.
-2. 구간 전파와 LP 기반 bound tightening을 비교합니다.
-3. Pyomo·OMLT에 고정 신경망과 scaling을 연결합니다.
-4. 종료 상태, 계산 시간, forward 일치와 제약 잔차를 보고합니다.
+1. 가능해의 목적값, 최적값에 대한 bound와 gap
+2. 구간 전파와 LP 기반 bound tightening 비교
+3. Pyomo·OMLT의 고정 신경망과 scaling 연결
+4. 종료 상태, 계산 시간, forward 일치와 제약 잔차
 
 5주차의 Big-M 동치성과 입력 bounds 계산을 복습한 뒤 시작합니다.
 
@@ -438,7 +438,7 @@ a = 0에서 허용하는 최대 h는 −UL/(U − L)입니다. L = −1, U = 1�
 
 ## 등식 제약이 있는 두 뉴런 예제
 
-다음 무차원 예제로 bounds가 놓치는 관계를 직접 계산합니다.
+다음 무차원 예제로 bounds가 놓치는 관계를 직접 계산
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
 
@@ -490,7 +490,7 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>min</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>U</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>max</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>
 
-이 방식은 optimization-based bound tightening(OBBT)입니다. 실습은 제품 규격을 제외한 입력 영역 전체에서 LP 54개를 풀고, bounds를 적용한 MILP를 새로 만듭니다.
+이 방식은 optimization-based bound tightening(OBBT). 실습은 제품 규격을 제외한 입력 영역 전체에서 LP 54개를 풀고, bounds를 적용한 MILP를 새로 만듭니다.
 
 <!-- lecture-page -->
 
@@ -500,7 +500,7 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 이 두 경우에는 이진변수가 필요하지 않습니다. 0을 가로지르는 뉴런만 분기 대상으로 남깁니다.
 
-실습에서 직접 작성한 MILP는 넓은 bounds에서 이진변수 24개, 구간 전파에서 22개, LP-OBBT에서 19개를 사용합니다. 이 개수는 solver presolve를 적용하기 전의 이진변수 수입니다.
+직접 작성한 MILP의 이진변수 수: 넓은 bounds 24개, 구간 전파 22개, LP-OBBT 19개. 집계 시점: solver presolve 적용 전
 
 <!-- lecture-page -->
 
@@ -510,7 +510,7 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 학습 때 사용한 offset과 scale을 그대로 가져옵니다. 물리 입력의 bounds를 scaled 입력에 잘못 전달하면 신경망을 평가하는 영역이 바뀝니다.
 
-이 실습의 출력 단위는 mol/L입니다. 표준화된 출력을 사용한다면 제품 규격에 연결하기 전에 고정된 역변환도 넣어야 합니다.
+실습 출력 단위: mol/L. 표준화된 출력을 사용한다면 제품 규격에 연결하기 전에 고정된 역변환도 넣어야 합니다.
 
 <!-- lecture-page -->
 
@@ -518,9 +518,9 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mi>α</mi><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><mi>α</mi><mo>=</mo><mn>.02</mn><mtext> min/K</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mi>J</mi><mo>=</mo><mn>2</mn><mo>+</mo><mn>8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.8</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-이 목적함수는 체류시간과 온도 증가를 α로 가중해 합한 교육용 점수이며, 단위는 min 등가입니다.
+교육용 목적함수: 체류시간 + α로 가중한 온도 증가. 단위: min 등가
 
-상수 2를 빼도 최적 입력은 같지만 상대 gap의 분모는 바뀝니다. 실습은 상수를 포함한 목적값과 bound를 그대로 보고합니다.
+상수 2를 빼도 최적 입력은 같지만 상대 gap의 분모는 바뀝니다. 실습은 상수를 포함한 목적값과 bound를 그대로 보고
 
 <!-- lecture-page -->
 
@@ -535,13 +535,13 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 모든 LP와 MILP는 MIT 라이선스의 오픈소스 HiGHS로 풉니다.
 
-OMLT가 만든 제약도 입력 순서, scaling, bounds와 함께 확인합니다. [HiGHS 공식 안내](https://highs.dev/)
+OMLT가 만든 제약도 입력 순서, scaling, bounds와 함께 확인. [HiGHS 공식 안내](https://highs.dev/)
 
 <!-- lecture-page -->
 
 ## OMLT와 공정 제약 연결
 
-가중치와 scaling을 담은 `definition`을 만든 뒤 다음과 같이 연결합니다. `nn.inputs`는 물리 단위이고 `scaled_inputs`는 변환된 입력입니다.
+가중치와 scaling을 담은 `definition`을 만든 뒤 다음과 같이 연결. `nn.inputs`는 물리 단위이고 `scaled_inputs`는 변환된 입력
 
 ```python
 model.nn = OmltBlock()
@@ -558,7 +558,7 @@ model.obj = pyo.Objective(
 
 ## 5주차 예제의 OMLT 재현
 
-온도 330 K, 유입 A 농도 1.2 mol/L에서 체류시간만 선택하는 기존 보간 모델을 먼저 확인합니다. B ≥ 0.40, C ≤ 0.25 mol/L를 적용합니다.
+온도 330 K, 유입 A 농도 1.2 mol/L에서 체류시간만 선택하는 기존 보간 모델을 먼저 확인. B ≥ 0.40, C ≤ 0.25 mol/L를 적용
 
 | 정식화 | 최소 체류시간 [min] | 생성된 이진변수 |
 | --- | --- | --- |
@@ -573,15 +573,15 @@ OMLT는 이 버전에서 ReLU마다 이진변수를 생성합니다. 직접 작�
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><mi>T</mi><mo>,</mo><mi>τ</mi></mrow></msub><mtext>  </mtext><mi>J</mi><mo>=</mo><mi>τ</mi><mo>+</mo><mn>.02</mn><mo>(</mo><mi>T</mi><mo>−</mo><mn>310</mn><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mn>310</mn><mo>≤</mo><mi>T</mi><mo>≤</mo><mn>350</mn><mo>,</mo><mtext>  </mtext><mn>2</mn><mo>≤</mo><mi>τ</mi><mo>≤</mo><mn>10</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><msub><mrow><mi>f</mi></mrow><mrow><mi>θ</mi></mrow></msub><mo>(</mo><mi>T</mi><mo>,</mo><mi>τ</mi><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>y</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>≥</mo><mn>.38</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>y</mi></mrow><mrow><mi>C</mi></mrow></msub><mo>≤</mo><mn>.25</mn></mrow></mtd></mtr></mtable></math>
 
-농도는 mol/L, 온도는 K, 체류시간은 min입니다. 각 예측 농도에는 비음수 제약도 적용합니다.
+농도는 mol/L, 온도는 K, 체류시간은 min. 각 예측 농도에는 비음수 제약도 적용
 
-신경망은 입력 2개, 뉴런이 12개씩인 ReLU 은닉층 두 개, 선형 출력 3개로 구성됩니다. 모든 비교에 같은 고정 계수를 사용합니다.
+신경망 구조: 입력 2개, 뉴런 12개씩의 ReLU 은닉층 두 개, 선형 출력 3개. 비교 기준: 동일한 고정 계수
 
 <!-- lecture-page -->
 
 ## 고정 모델의 학습과 독립 예측 평가
 
-이상적 등온 A → B → C CSTR 수지에서 학습 입력 1,200개의 농도를 생성하고 NumPy Adam으로 6,000회 갱신했습니다. 독립 난수 입력 500개에서 물리 단위 오차를 평가합니다.
+이상적 등온 A → B → C CSTR 수지에서 학습 입력 1,200개의 농도를 생성하고 NumPy Adam으로 6,000회 갱신했습니다. 독립 난수 입력 500개에서 물리 단위 오차를 평가
 
 | 성분 | Test RMSE [mol/L] |
 | --- | --- |
@@ -688,9 +688,9 @@ python -m pip install -r requirements.txt
 python week06_lab.py --output-dir my-results
 ```
 
-1. 두 뉴런 예제의 LP 값 0, 0.4와 MILP 값 0.7을 손으로 확인합니다.
-2. 동일한 고정 모델에서 bounds·이진변수 수·LP 하한·총시간을 비교합니다.
-3. 종료 상태·gap·forward 차이와 기준 CSTR의 B 규격 위반을 보고합니다.
+1. 두 뉴런 예제의 LP 값 0, 0.4와 MILP 값 0.7을 손으로 확인
+2. 동일한 고정 모델에서 bounds·이진변수 수·LP 하한·총시간을 비교
+3. 종료 상태·gap·forward 차이와 기준 CSTR의 B 규격 위반을 보고
 
 [읽기자료](/courses/surrogate-models/week-06-reading/) · [실습 ZIP](/assets/courses/surrogate-models/week-06/week06-lab.zip)
 
@@ -704,4 +704,4 @@ python week06_lab.py --output-dir my-results
 
 [HiGHS 공식 사이트와 MIT 라이선스 안내](https://highs.dev/) · [Pyomo의 HiGHS 인터페이스](https://pyomo.readthedocs.io/en/stable/api/pyomo.contrib.appsi.solvers.highs.Highs.html)
 
-읽기자료에서 삼각형 완화 유도, OBBT의 bound 방향, scaling과 gap 계산을 따라갑니다. Anderson 등의 다변수 강한 정식화와 partition formulation은 선택 심화입니다.
+읽기자료에서 삼각형 완화 유도, OBBT의 bound 방향, scaling과 gap 계산을 따라갑니다. Anderson 등의 다변수 강한 정식화와 partition formulation은 선택 심화

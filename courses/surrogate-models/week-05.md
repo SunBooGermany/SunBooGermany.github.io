@@ -32,18 +32,18 @@ Given a residence time, the network predicts outlet concentrations. Design asks 
 
 Longer residence converts A to B, but also converts B to C. Maximizing B and minimizing volume are different objectives.
 
-This week we formulate that choice and express a frozen ReLU computation using linear constraints and binary variables.
+This week: decision formulation and frozen ReLU computation using linear constraints and binary variables.
 
 <!-- lecture-page -->
 
 ## Learning objectives for optimization formulation
 
-1. Separate decisions, fixed context, and predicted outputs; write the objective and constraints.
-2. Prove the Big-M representation of one ReLU by examining both branches.
-3. Derive valid pre-activation bounds from the input domain.
-4. Compare a hand-built MILP with the forward pass at identical inputs.
+1. Decisions, fixed context, predicted outputs, objective, and constraints
+2. Big-M equivalence for one ReLU: proof by branch
+3. Valid pre-activation bounds from the input domain
+4. Hand-built MILP versus forward pass at identical inputs
 
-Submit the formulation, verification results, and interpretation of the solution.
+Submission: formulation, verification results, and solution interpretation.
 
 <!-- lecture-page -->
 
@@ -65,9 +65,9 @@ Here τ is a design variable selecting volume at fixed flow. Choosing temperatur
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><mi>u</mi><mo>,</mo><mi>y</mi></mrow></msub><mtext>  </mtext><mi>J</mi><mrow><mo>(</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>;</mo><mi>d</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><msub><mrow><mi>f</mi></mrow><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><mi>u</mi><mo>;</mo><mi>d</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><mi>g</mi><mrow><mo>(</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>;</mo><mi>d</mi><mo>)</mo></mrow><mo>≤</mo><mn>0</mn></mrow></mtd></mtr></mtable></math>
 
-u denotes decisions, d fixed context, and y model outputs. The fitted weights θ are also fixed.
+Notation: decisions u, fixed context d, model outputs y. Fitted weights θ: fixed.
 
-A feasible point satisfies both the network equations and the process constraints. We seek the feasible point with the smallest objective.
+Feasible point: satisfies network equations and process constraints. Optimum: feasible point with the smallest objective.
 
 <!-- lecture-page -->
 
@@ -95,7 +95,7 @@ We evaluate these equations at five residence times to construct a small ReLU mo
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msup><mrow><mi>h</mi></mrow><mrow><mn>0</mn></mrow></msup><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd><mrow><msup><mrow><mi>a</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>=</mo><msup><mrow><mi>W</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><msup><mrow><mi>h</mi></mrow><mrow><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msup><mrow><mi>b</mi></mrow><mrow><mi>ℓ</mi></mrow></msup></mrow></mtd></mtr><mtr><mtd><mrow><msup><mrow><mi>h</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>0</mn><mo>,</mo><msup><mrow><mi>a</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><msub><mrow><mi>W</mi></mrow><mrow><mi>out</mi></mrow></msub><msup><mrow><mi>h</mi></mrow><mrow><mi>K</mi></mrow></msup><mo>+</mo><msub><mrow><mi>b</mi></mrow><mrow><mi>out</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-ReLU acts componentwise in each hidden layer. Inputs, intermediate values, and outputs are optimization variables; W and b are numeric constants.
+ReLU: componentwise in each hidden layer. Optimization variables: inputs, intermediate values, and outputs. Numeric constants: W and b.
 
 Making weights variable introduces products of W and h, so the MILP derived here would no longer apply.
 
@@ -136,7 +136,7 @@ Assume valid finite bounds L ≤ a ≤ U with L < 0 < U.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mtext>  </mtext><mi>h</mi><mo>≥</mo><mi>a</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>a</mi><mo>−</mo><mi>L</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>z</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>U</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>z</mi><mo>∈</mo><mo>{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>}</mo></mrow></mtd></mtr></mtable></math>
 
-z = 0 selects the inactive branch; z = 1 selects the active branch. L and U bound this neuron’s pre-activation.
+Branches: inactive at z = 0; active at z = 1. L and U: bounds on this neuron’s pre-activation.
 
 <!-- lecture-page -->
 
@@ -245,7 +245,7 @@ The Week 4 projection can also be appended as affine equalities when its coeffic
 
 Fix one residence time, remove product specifications, and solve the network equations. Compare every h and y with the forward pass.
 
-We checked 41 inputs covering domain endpoints, all breakpoints, both sides of interior breakpoints, and random inputs. The maximum difference was 1.25e-08.
+41 checked inputs: domain endpoints, all breakpoints, both sides of interior breakpoints, and random inputs. Maximum difference: 1.25e-08.
 
 This tests the formulation implementation. Process prediction error requires comparison with separate reference values.
 
@@ -292,8 +292,8 @@ python -m pip install -r requirements.txt
 python week05_lab.py --output-dir my-results
 ```
 
-1. Check one neuron’s bounds and matrix signs by hand.
-2. Inspect forward error and termination status in `results.json`.
+1. Hand checks: one neuron’s bounds and matrix signs
+2. Checks in `results.json`: forward error and termination status
 3. Translate one row of `milp_matrix.csv` back into an equation.
 4. Change the B lower bound from 0.40 to 0.41 and explain whether feasibility remains.
 
@@ -333,10 +333,10 @@ The [reading companion](/courses/surrogate-models/week-05-reading/) contains der
 
 1. 조작변수·고정 조건·예측 출력을 구분하고 목적함수와 제약을 적습니다.
 2. ReLU 한 개의 Big-M 식을 두 분기로 증명합니다.
-3. 입력 범위에서 유효한 pre-activation bounds를 계산합니다.
+3. 입력 범위에서 유효한 pre-activation bounds를 계산
 4. 직접 작성한 MILP와 forward 계산을 같은 입력에서 대조합니다.
 
-실습의 최종 제출물은 정식화, 검증 결과와 해의 해석입니다.
+실습 제출물: 정식화, 검증 결과와 해의 해석
 
 <!-- lecture-page -->
 
@@ -350,7 +350,7 @@ The [reading companion](/courses/surrogate-models/week-05-reading/) contains der
 | 예측 출력 | A·B·C 농도 y [mol/L] |
 | 목적 | 부피 V = Qτ [L] 최소화 |
 
-여기서 τ는 고정 유량에서 부피를 선택하는 설계변수입니다. 온도까지 선택하려면 온도를 입력으로 받는 모델과 그 영역의 bounds가 필요합니다.
+여기서 τ는 고정 유량에서 부피를 선택하는 설계변수. 온도까지 선택하려면 온도를 입력으로 받는 모델과 그 영역의 bounds가 필요합니다.
 
 <!-- lecture-page -->
 
@@ -360,7 +360,7 @@ The [reading companion](/courses/surrogate-models/week-05-reading/) contains der
 
 u는 설계·운전 변수, d는 고정 조건, y는 모델 출력입니다. 학습을 마친 가중치 θ도 고정합니다.
 
-신경망 등식과 공정 제약을 모두 만족하는 점이 가능해입니다. 그중 목적함수가 가장 작은 점을 찾습니다.
+가능해: 신경망 등식과 공정 제약을 모두 만족하는 점. 최적해: 가능해 중 목적함수가 가장 작은 점
 
 <!-- lecture-page -->
 
@@ -370,7 +370,7 @@ u는 설계·운전 변수, d는 고정 조건, y는 모델 출력입니다. 학
 
 Q = 1 L/min이므로 τ를 줄이면 V도 줄어듭니다. y의 농도 단위는 mol/L이며, 모델의 출력은 이 단위로 복원한 뒤 규격과 비교합니다.
 
-B ≥ 0.40은 농도 규격입니다. 순도나 생산량을 요구한다면 해당 정의로 제약을 다시 적어야 합니다.
+농도 규격: B ≥ 0.40. 순도나 생산량을 요구한다면 해당 정의로 제약을 다시 적어야 합니다.
 
 <!-- lecture-page -->
 
@@ -388,7 +388,7 @@ B ≥ 0.40은 농도 규격입니다. 순도나 생산량을 요구한다면 해
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msup><mrow><mi>h</mi></mrow><mrow><mn>0</mn></mrow></msup><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd><mrow><msup><mrow><mi>a</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>=</mo><msup><mrow><mi>W</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><msup><mrow><mi>h</mi></mrow><mrow><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><msup><mrow><mi>b</mi></mrow><mrow><mi>ℓ</mi></mrow></msup></mrow></mtd></mtr><mtr><mtd><mrow><msup><mrow><mi>h</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>0</mn><mo>,</mo><msup><mrow><mi>a</mi></mrow><mrow><mi>ℓ</mi></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><msub><mrow><mi>W</mi></mrow><mrow><mi>out</mi></mrow></msub><msup><mrow><mi>h</mi></mrow><mrow><mi>K</mi></mrow></msup><mo>+</mo><msub><mrow><mi>b</mi></mrow><mrow><mi>out</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
-각 hidden layer의 ReLU는 성분별로 적용합니다. 입력·중간값·출력은 최적화 변수이고 W와 b는 수치 상수입니다.
+ReLU: 각 은닉층에서 성분별 적용. 최적화 변수: 입력·중간값·출력. 수치 상수: W, b
 
 가중치까지 변수로 두면 W와 h의 곱이 생기므로 여기서 유도하는 MILP가 성립하지 않습니다.
 
@@ -429,7 +429,7 @@ a = −0.2일 때 h = 0.4도 이 두 식을 만족하지만 ReLU 출력은 0입�
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mtext>  </mtext><mi>h</mi><mo>≥</mo><mi>a</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>a</mi><mo>−</mo><mi>L</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>z</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>U</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>z</mi><mo>∈</mo><mo>{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>}</mo></mrow></mtd></mtr></mtable></math>
 
-z = 0은 비활성 분기, z = 1은 활성 분기를 선택합니다. L과 U는 해당 뉴런의 pre-activation 범위입니다.
+분기: z = 0은 비활성, z = 1은 활성. L·U: 해당 뉴런의 pre-activation 하한·상한
 
 <!-- lecture-page -->
 
@@ -493,7 +493,7 @@ a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 
 ## ReLU 보간 모델의 고정 계수
 
-τ = 2, 4, 6, 8, 10 min의 기준 농도를 선형 보간합니다. 꺾이는 위치를 hidden layer에 고정하고, 보간 기울기에서 출력 가중치를 계산합니다.
+τ = 2, 4, 6, 8, 10 min의 기준 농도를 선형 보간합니다. 꺾이는 위치를 hidden layer에 고정하고, 보간 기울기에서 출력 가중치를 계산
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><mi>x</mi><mo>−</mo><msub><mrow><mi>t</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>,</mo><mtext>  </mtext><msub><mrow><mi>h</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><mi>max</mi><mrow><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>t</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><mn>0</mn></mrow></mtd><mtd><mrow><mn>.25</mn></mrow></mtd><mtd><mrow><mn>.50</mn></mrow></mtd><mtd><mrow><mn>.75</mn></mrow></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mrow><mi>b</mi></mrow><mrow><mi>k</mi></mrow></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mn>3</mn></munderover><msub><mrow><mi>W</mi></mrow><mrow><mi>jk</mi></mrow></msub><msub><mrow><mi>h</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
@@ -516,7 +516,7 @@ j = 0, 1, 2, 3이며 출력 k는 A, B, C입니다. 이 실습의 모델 구성�
 
 ## Big-M 제약의 행렬 표현
 
-뉴런 1에서 a₁ = x − 0.25, L₁ = −0.25, U₁ = 0.75입니다.
+뉴런 1에서 a₁ = x − 0.25, L₁ = −0.25, U₁ = 0.75
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>≥</mo><mo>−</mo><mn>.25</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>+</mo><mn>.25</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mn>.75</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr></mtable></math>
 
@@ -536,9 +536,9 @@ h₁ ≥ 0과 0 ≤ z₁ ≤ 1은 변수 bounds에 적고, z₁을 정수로 지
 
 ## 고정 입력의 MILP·forward 일치 검사
 
-체류시간 하나를 고정하고 제품 규격 제약을 뺀 뒤 신경망 등식만 풉니다. 계산된 모든 h와 y를 forward 결과와 비교합니다.
+체류시간 하나를 고정하고 제품 규격 제약을 뺀 뒤 신경망 등식만 풉니다. 계산된 모든 h와 y를 forward 결과와 비교
 
-끝점, 모든 꺾임점, 꺾임점 양쪽과 난수 입력을 포함해 41개 입력을 확인했습니다. 최대 차이는 1.25e-08입니다.
+확인 입력 41개: 끝점, 모든 꺾임점, 꺾임점 양쪽, 난수 입력. 최대 차이: 1.25e-08
 
 이 대조는 정식화 구현을 검사합니다. 공정 예측 오차는 별도의 기준값과 비교해야 합니다.
 
@@ -564,7 +564,7 @@ MILP는 고정한 보간 모델을 정확히 표현합니다. 이 성질이 보�
 
 선택된 τ = 5.353846 min에서 기준 농도는 [0.579495, 0.404137, 0.216369] mol/L이고, 모델 예측과 차이가 있습니다.
 
-이 해는 주어진 surrogate 문제의 최적해입니다. 실제 공정에 대한 설계 판단에는 기준 공정의 규격 확인과 목적값 비교가 더 필요합니다.
+해의 범위: 주어진 surrogate 문제의 최적해. 실제 공정에 대한 설계 판단에는 기준 공정의 규격 확인과 목적값 비교가 더 필요합니다.
 
 <!-- lecture-page -->
 
@@ -585,10 +585,10 @@ python -m pip install -r requirements.txt
 python week05_lab.py --output-dir my-results
 ```
 
-1. 한 뉴런의 bounds와 행렬 부호를 손으로 확인합니다.
-2. `results.json`의 forward 오차와 종료 상태를 확인합니다.
+1. 한 뉴런의 bounds와 행렬 부호를 손으로 확인
+2. `results.json`의 forward 오차와 종료 상태를 확인
 3. `milp_matrix.csv`의 행 하나를 수식으로 되돌려 적습니다.
-4. B 하한을 0.40에서 0.41로 바꾸고 가능해가 남는지 설명합니다.
+4. B 하한을 0.40에서 0.41로 바꾸고 가능해가 남는지 설명
 
 [읽기자료](/courses/surrogate-models/week-05-reading/)에는 유도, 가중치 표와 연습문제 풀이가 있습니다. [실습 묶음](/assets/courses/surrogate-models/week-05/week05-lab.zip)을 내려받아 실행합니다.
 

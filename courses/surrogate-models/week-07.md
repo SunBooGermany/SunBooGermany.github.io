@@ -25,7 +25,7 @@ A changing supply condition requires a new heating-load decision. When a neural 
 
 <figure><img src="/assets/courses/surrogate-models/week-07/motivation-en.png" alt="Heating load, cost curve, and fixed supply context" /></figure>
 
-We will preserve convex cost structure while selecting the load.
+Goal: load selection with preserved convex cost structure.
 
 <!-- lecture-page -->
 
@@ -41,10 +41,10 @@ Structural restrictions reduce the function class, so evaluate prediction error 
 
 ## Learning objectives and deliverables
 
-1. Separate decisions from fixed context and check ICNN sign conditions.
-2. Explain objective-value equivalence and the conditions for a ReLU epigraph LP.
-3. Calculate counterexamples involving inequality direction, negative weights, and variable context.
-4. Validate a small fitted ICNN decision by forward evaluation and a reference function.
+1. Decisions, fixed context, and ICNN sign conditions
+2. Objective-value equivalence and conditions for a ReLU epigraph LP
+3. Counterexamples: inequality direction, negative weights, and variable context
+4. Fitted ICNN decision validation: forward evaluation and reference function
 
 <!-- lecture-page -->
 
@@ -124,7 +124,7 @@ To use these lower bounds in an LP, it must be possible to reduce the auxiliary 
 
 ## An extended LP for a ReLU ICNN
 
-Use these constraints for a finite ReLU network with frozen weights.
+Constraint scope: a finite ReLU network with frozen weights
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>h</mi><mrow><mi>k</mi></mrow></msub><mo>≥</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>h</mi><mrow><mi>k</mi></mrow></msub><mo>≥</mo><msub><mi>W</mi><mrow><mi>k</mi></mrow></msub><msub><mi>h</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>A</mi><mrow><mi>k</mi></mrow></msub><mi>u</mi><mo>+</mo><msub><mi>b</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi>t</mi><mo>≥</mo><msup><mi>a</mi><mrow><mi>T</mi></mrow></msup><mi>u</mi><mo>+</mo><mi>d</mi><mo>+</mo><msup><mi>w</mi><mrow><mi>T</mi></mrow></msup><msub><mi>h</mi><mrow><mi>K</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
@@ -156,9 +156,9 @@ Also inspect any other constraints that favor larger h or t.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>f</mi><mo>(</mo><mi>u</mi><mo>)</mo><mo>=</mo><mn>.4</mn><mo>−</mo><mn>.6</mn><mi>u</mi><mo>+</mo><msub><mi>h</mi><mrow><mn>1</mn></mrow></msub><mo>+</mo><mn>.5</mn><msub><mi>h</mi><mrow><mn>2</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>h</mi><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi mathvariant="normal">ReLU</mi><mo>(</mo><mi>u</mi><mo>−</mo><mn>.4</mn><mo>)</mo><mo>,</mo><msub><mi>h</mi><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi mathvariant="normal">ReLU</mi><mo>(</mo><mi>u</mi><mo>−</mo><mn>.7</mn><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><mi>u</mi><mo>≤</mo><mn>1</mn></mrow></mtd></mtr></mtable></math>
 
-This dimensionless cost example supports direct numerical checks. Its successive slopes are −0.6, 0.4, and 0.9.
+Dimensionless cost example for direct numerical checks. Successive slopes: −0.6 → 0.4 → 0.9.
 
-The minimum is at the first slope change, u = 0.4, with f(0.4) = 0.16.
+Minimum: first slope change at u = 0.4; f(0.4) = 0.16.
 
 <!-- lecture-page -->
 
@@ -168,7 +168,7 @@ The minimum is at the first slope change, u = 0.4, with f(0.4) = 0.16.
 
 A cost cap of 0.25 leaves the feasible input interval [0.25, 0.625]. Bound the affine output expression above to obtain this interval in the LP.
 
-The lab checks the minimum value 0.16 and forward agreement.
+Lab checks: minimum value 0.16 and forward agreement.
 
 <!-- lecture-page -->
 
@@ -236,7 +236,7 @@ This shallow ICNN with fixed knots is a special case with convex training. The c
 
 <figure><img src="/assets/courses/surrogate-models/week-07/fit-en.png" alt="Convex reference, fitted ICNN, and selected input" /></figure>
 
-Independent-evaluation RMSE is 0.000760. The LP selects u = 0.50, while the reference minimum is at u = 0.55.
+Independent-evaluation RMSE: 0.000760. LP choice: u = 0.50. Reference minimum: u = 0.55.
 
 The reference cost difference is 0.0025. Close prediction curves can still have different minimizers.
 
@@ -249,7 +249,7 @@ The reference cost difference is 0.0025. Close prediction curves can still have 
 3. Evaluate the original network at the chosen u and compare with the LP objective.
 4. Separately evaluate the reference objective and constraints.
 
-The fitted-model LP objective is 0.258437, while the reference cost is 0.260000. Their difference is surrogate error.
+Fitted-model LP objective: 0.258437. Reference cost: 0.260000. Difference: surrogate error.
 
 <!-- lecture-page -->
 
@@ -279,7 +279,7 @@ Automatic checks cover the hand optimum 0.16, fitted sign conditions, LP/forward
 3. Change fitted knot spacing from 0.1 to 0.05; compare prediction error and reference decision loss.
 4. Explain why c is fixed and which output uses your formulation permits.
 
-The companion provides derivations and short answer checks.
+Companion: derivations and short answer checks.
 
 <!-- lecture-page -->
 
@@ -319,8 +319,8 @@ The [Week 7 companion](/courses/surrogate-models/week-07-reading/) works through
 
 1. 결정변수와 고정 context를 구분하고 ICNN의 부호 조건을 확인합니다.
 2. ReLU epigraph LP의 목적값 동치성과 적용 조건을 설명합니다.
-3. 부등식 방향·음의 가중치·가변 context에 대한 반례를 계산합니다.
-4. 학습한 작은 ICNN의 LP 해를 forward 계산과 기준 함수로 검증합니다.
+3. 부등식 방향·음의 가중치·가변 context에 대한 반례를 계산
+4. 학습한 작은 ICNN의 LP 해를 forward 계산과 기준 함수로 검증
 
 <!-- lecture-page -->
 
@@ -384,7 +384,7 @@ Gradient 갱신 뒤 W를 max(W, 0)으로 투영하거나, 자유 매개변수 V�
 
 여기서 softplus는 가중치를 양수로 만드는 매개화입니다. 추론할 때 은닉 활성화는 ReLU로 유지합니다.
 
-학습을 마치면 가중치의 부호를 검사합니다. 일반적인 깊은 ICNN의 매개변수 학습은 비선형·비볼록 문제입니다.
+학습 후 확인: 가중치의 부호. 일반적인 깊은 ICNN의 매개변수 학습: 비선형·비볼록 문제
 
 <!-- lecture-page -->
 
@@ -400,7 +400,7 @@ Gradient 갱신 뒤 W를 max(W, 0)으로 투영하거나, 자유 매개변수 V�
 
 ## ReLU ICNN의 확장 LP
 
-유한한 ReLU 네트워크와 고정된 가중치에 다음 제약을 사용합니다.
+제약 적용 범위: 유한한 ReLU 네트워크, 고정된 가중치
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>h</mi><mrow><mi>k</mi></mrow></msub><mo>≥</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>h</mi><mrow><mi>k</mi></mrow></msub><mo>≥</mo><msub><mi>W</mi><mrow><mi>k</mi></mrow></msub><msub><mi>h</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>A</mi><mrow><mi>k</mi></mrow></msub><mi>u</mi><mo>+</mo><msub><mi>b</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi>t</mi><mo>≥</mo><msup><mi>a</mi><mrow><mi>T</mi></mrow></msup><mi>u</mi><mo>+</mo><mi>d</mi><mo>+</mo><msup><mi>w</mi><mrow><mi>T</mi></mrow></msup><msub><mi>h</mi><mrow><mi>K</mi></mrow></msub></mrow></mtd></mtr></mtable></math>
 
@@ -432,9 +432,9 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>f</mi><mo>(</mo><mi>u</mi><mo>)</mo><mo>=</mo><mn>.4</mn><mo>−</mo><mn>.6</mn><mi>u</mi><mo>+</mo><msub><mi>h</mi><mrow><mn>1</mn></mrow></msub><mo>+</mo><mn>.5</mn><msub><mi>h</mi><mrow><mn>2</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>h</mi><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi mathvariant="normal">ReLU</mi><mo>(</mo><mi>u</mi><mo>−</mo><mn>.4</mn><mo>)</mo><mo>,</mo><msub><mi>h</mi><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi mathvariant="normal">ReLU</mi><mo>(</mo><mi>u</mi><mo>−</mo><mn>.7</mn><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><mi>u</mi><mo>≤</mo><mn>1</mn></mrow></mtd></mtr></mtable></math>
 
-이 함수는 수치를 직접 확인하는 무차원 비용 예제입니다. 구간별 기울기는 −0.6, 0.4, 0.9로 증가합니다.
+직접 수치 검증을 위한 무차원 비용 예제. 구간별 기울기: −0.6 → 0.4 → 0.9
 
-최소점은 첫 번째 기울기 전환점 u = 0.4이고, f(0.4) = 0.16입니다.
+최소점: 첫 번째 기울기 전환점 u = 0.4. 최솟값: f(0.4) = 0.16
 
 <!-- lecture-page -->
 
@@ -444,13 +444,13 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 
 비용 상한 0.25를 추가하면 feasible 입력은 [0.25, 0.625]입니다. 같은 LP의 출력 affine 식에 상한을 걸어 이 구간을 얻습니다.
 
-실습은 최소 목적값 0.16과 forward 일치를 검사합니다.
+실습 검증: 최소 목적값 0.16, forward 일치
 
 <!-- lecture-page -->
 
 ## 출력 하한 제약의 반례
 
-0 ≤ u ≤ 1에서 f(u) = ReLU(u)라 두고 f(u) ≥ 0.8을 만족하며 u를 최소화합니다. 실제 최적점은 u = 0.8입니다.
+0 ≤ u ≤ 1에서 f(u) = ReLU(u)라 두고 f(u) ≥ 0.8을 만족하며 u를 최소화. 실제 최적점은 u = 0.8
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mi>u</mi><mo>,</mo><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mi>h</mi><mo>≥</mo><mn>.8</mn></mrow></mtd></mtr></mtable></math>
 
@@ -492,7 +492,7 @@ c도 최적화하면 W(c)h나 A(c)u가 비선형 결합이 될 수 있습니다.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>f</mi><mo>(</mo><mi>u</mi><mo>;</mo><mi>c</mi><mo>)</mo><mo>=</mo><mo>&#124;</mo><mi>u</mi><mo>−</mo><mi>c</mi><mo>&#124;</mo><mo>−</mo><mn>.1</mn><msup><mi>c</mi><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><mi>u</mi><mo>≤</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo>≤</mo><mi>c</mi><mo>≤</mo><mn>1</mn></mrow></mtd></mtr></mtable></math>
 
-고정 c에서 최적점은 u = c입니다. 실습은 c = 0.2, 0.5, 0.8에 대한 LP를 각각 풉니다.
+고정 c에서 최적점은 u = c. 실습은 c = 0.2, 0.5, 0.8에 대한 LP를 각각 풉니다.
 
 u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 −0.05인데 중점 값은 −0.025이므로 공동 convexity 조건을 위반합니다.
 
@@ -512,7 +512,7 @@ u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 
 
 <figure><img src="/assets/courses/surrogate-models/week-07/fit-ko.png" alt="Convex 기준 함수와 학습 ICNN 및 선택 입력" /></figure>
 
-독립 평가 RMSE는 0.000760입니다. LP는 u = 0.50을 선택하고, 기준 함수의 최소점은 u = 0.55입니다.
+독립 평가 RMSE: 0.000760. LP 선택: u = 0.50. 기준 함수의 최소점: u = 0.55
 
 두 점 사이의 기준 비용 차이는 0.0025입니다. 예측 곡선이 가까워도 최소점 위치는 달라질 수 있습니다.
 
@@ -520,12 +520,12 @@ u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 
 
 ## LP 결과의 검증 항목
 
-1. 입력 domain, context, scaling, 모델 가중치를 저장합니다.
-2. W와 w의 부호, 목적함수 방향, 모든 출력 사용 위치를 확인합니다.
-3. 선택한 u를 원래 네트워크에 넣어 LP 목적값과 비교합니다.
-4. 기준 함수의 목적값·제약을 따로 계산합니다.
+1. 입력 domain, context, scaling, 모델 가중치를 저장
+2. W와 w의 부호, 목적함수 방향, 모든 출력 사용 위치를 확인
+3. 선택한 u를 원래 네트워크에 넣어 LP 목적값과 비교
+4. 기준 함수의 목적값·제약을 따로 계산
 
-실습에서 학습 모델의 LP 목적값은 0.258437이고 기준 비용은 0.260000입니다. 이 차이는 서로게이트 오차입니다.
+학습 모델의 LP 목적값: 0.258437. 기준 비용: 0.260000. 두 값의 차이: 서로게이트 오차
 
 <!-- lecture-page -->
 
@@ -542,7 +542,7 @@ python -m pip install -r requirements.txt
 python week07_lab.py --output-dir my-results
 ```
 
-코드 묶음을 풀어 실행합니다. results.json, 학습 계수, training.csv와 heldout.csv를 저장합니다.
+코드 묶음을 풀어 실행합니다. results.json, 학습 계수, training.csv와 heldout.csv를 저장
 
 손 계산 최적값 0.16, 학습 모델의 부호 조건, LP·forward 일치, 출력 하한 반례와 unbounded 반례를 자동 검사합니다. Notebook에는 같은 함수를 단계별로 실행하는 셀이 있습니다.
 
@@ -550,18 +550,18 @@ python week07_lab.py --output-dir my-results
 
 ## 과제: 동치성 조건과 의사결정 오차
 
-1. 두 hinge 모델에 비용 상한 0.25를 추가하고 feasible 구간의 양 끝을 계산합니다.
-2. 출력 하한 반례를 실행하고 잘못 허용된 u와 실제 출력을 기록합니다.
-3. 학습 모델의 knot 간격을 0.1에서 0.05로 바꿔 예측 오차와 기준 비용 손실을 비교합니다.
+1. 두 hinge 모델에 비용 상한 0.25를 추가하고 feasible 구간의 양 끝을 계산
+2. 출력 하한 반례를 실행하고 잘못 허용된 u와 실제 출력을 기록
+3. 학습 모델의 knot 간격을 0.1에서 0.05로 바꿔 예측 오차와 기준 비용 손실을 비교
 4. c를 고정해야 하는 이유와 현재 모델에 허용된 출력 사용 방식을 설명합니다.
 
-읽기자료에서 유도 과정과 짧은 답을 확인합니다.
+읽기자료에서 유도 과정과 짧은 답을 확인
 
 <!-- lecture-page -->
 
 ## 해설 자료와 원문
 
-[7주차 해설과 연습](/courses/surrogate-models/week-07-reading/)에서 epigraph 동치성 증명, LP 행렬, 부호 제약 학습과 반례를 계산합니다.
+[7주차 해설과 연습](/courses/surrogate-models/week-07-reading/)에서 epigraph 동치성 증명, LP 행렬, 부호 제약 학습과 반례를 계산
 
 [Amos, Xu and Kolter, Input Convex Neural Networks, ICML 2017, pp. 146-155](https://proceedings.mlr.press/v70/amos17b.html)
 

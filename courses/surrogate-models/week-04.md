@@ -30,18 +30,18 @@ An MLP predicts [0.70, 0.45, 0.25] mol/L for A, B, and C with a 1.20 mol/L feed.
 
 The next separator calculates its load from incoming component amounts. A total-concentration error in the reactor surrogate enters that calculation directly, so prediction error and balance violation need separate checks.
 
-This week we penalize residuals in the loss and project outputs onto specified linear equalities. We also measure component errors before and after correction.
+This week: residual penalties in the loss, output projection onto specified linear equalities, and component errors before and after correction.
 
 <!-- lecture-page -->
 
 ## Comparisons for learning with physical constraints
 
-1. Compare an MLP, a soft sum penalty, and a hard sum projection on the same data.
-2. Derive the nearest-point projection from KKT conditions and check rank assumptions.
-3. Compare hand gradients with automatic differentiation through a fixed layer.
-4. Report component errors, equality violations, negative concentrations, and unenforced balances separately.
+1. MLP, soft sum penalty, and hard sum projection on the same data
+2. Nearest-point projection from KKT conditions; rank assumptions
+3. Hand gradients versus automatic differentiation through a fixed layer
+4. Separate reporting: component errors, equality violations, negative concentrations, and unenforced balances
 
-The lab uses the Week 2 steady-state CSTR.
+Lab reference: the Week 2 steady-state CSTR.
 
 <!-- lecture-page -->
 
@@ -82,7 +82,7 @@ The sum residual is r_sum = C_A + C_B + C_C − C_Af, in mol/L. Known kinetics a
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>A</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>Af</mi></mrow></msub><mo>−</mo><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>=</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>2</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>C</mi></mrow></msub><mo>=</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>2</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-These three residuals have units mol/(L·min). The lab trains with the sum residual only and uses the species residuals as a separate evaluation.
+Units for these three residuals: mol/(L·min). Training: sum residual only. Separate evaluation: species residuals.
 
 <!-- lecture-page -->
 
@@ -130,7 +130,7 @@ For the CSTR, x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], and b = 0. Thu
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><msub><mrow><mi>argmin</mi></mrow><mrow><mi>z</mi></mrow></msub><mtext>  </mtext><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>‖</mo><mi>z</mi><mo>−</mo><mover><mi>y</mi><mo>^</mo></mover><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mtext>   subject to   </mtext><mi>B</mi><mi>z</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-Hold x and the raw prediction ŷ fixed and adjust only output z. Distance here is Euclidean distance in physical concentration coordinates.
+Fixed quantities: x and raw prediction ŷ. Adjusted variable: output z. Metric: Euclidean distance in physical concentration coordinates.
 
 The objective is strictly convex, so a nonempty feasible set has a unique projected output. KKT conditions give a closed form for this equality-only QP.
 
@@ -220,7 +220,7 @@ Detaching the output or wrapping projection in no_grad cuts the required path. T
 
 An upstream gradient [1, 0, 0] at the projected output becomes [2/3, −1/3, −1/3] at the raw output. Its sum is zero, so it lies in the equality’s tangent space.
 
-The lab also checks an analytic Jacobian and double-precision gradcheck for two independent equalities.
+Additional checks: analytic Jacobian and double-precision gradcheck for two independent equalities.
 
 <!-- lecture-page -->
 
@@ -246,7 +246,7 @@ D is diagonal, hence Dᵀ = D. A loss divided by component-specific standard dev
 
 ## A minimal PyTorch implementation
 
-raw is already in mol/L; feed has shape (batch, 1).
+raw units: mol/L. feed shape: (batch, 1).
 
 ```python
 raw = y_mean + y_scale * net(x_scaled)
@@ -303,7 +303,7 @@ They share initial weights, batch order, and training statistics. Use Adam 0.001
 | MLP + post | 0.003426 | 2.22e-16 | 1 |
 | Hard | 0.003036 | 3.33e-16 | 1 |
 
-Concentrations and errors are in mol/L. Negative entries count values below −10⁻⁸ among 900 test component values.
+Concentration and error units: mol/L. Negative-entry count: values below −10⁻⁸ among 900 test component values.
 
 In this run, the soft penalty reduced sum violations but increased RMSE. Hard and post satisfied the sum while retaining negative concentrations. One seed does not establish a general accuracy ranking.
 
@@ -362,9 +362,9 @@ When τ is an input, the equality right side d(x) depends nonlinearly on τ. Com
 1. Project [0.70, 0.45, 0.25] onto total 1.20; backpropagate an upstream gradient [1, 0, 0].
 2. Explain feasibility for B rows [1, 1, 1], [2, 2, 2] and d = [1.2, 2.5].
 3. Compare λ = 0.1, 1, 10 using validation; evaluate only the selected setting on test.
-4. Submit A/B/C RMSE, sum MAE/max, minimum concentration, and species-balance residuals for each model.
+4. Submission for each model: A/B/C RMSE, sum MAE/max, minimum concentration, and species-balance residuals
 
-Next week, freeze a trained ReLU predictor and define an optimization problem.
+Next week: frozen ReLU predictor and optimization-problem definition.
 
 <!-- lecture-page -->
 
@@ -398,18 +398,18 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 다음 분리기는 각 성분의 유입량으로 부하를 계산합니다. 반응기 surrogate의 합 오차가 그 계산에 그대로 들어가므로, 예측 오차와 물질수지 위반을 따로 확인해야 합니다.
 
-이번 주에는 loss에 위반을 벌점으로 넣는 방법과, 출력이 지정한 선형 등식을 만족하도록 투영하는 방법을 다뤄봅니다. 보정 전후의 성분 오차도 함께 계산합니다.
+이번 주의 주제: loss의 위반 벌점, 지정한 선형 등식으로의 출력 투영, 보정 전후의 성분 오차
 
 <!-- lecture-page -->
 
 ## 물리 제약 학습의 비교 항목
 
-1. 같은 데이터로 MLP·soft sum penalty·hard sum projection을 비교합니다.
+1. 같은 데이터로 MLP·soft sum penalty·hard sum projection을 비교
 2. 최소 거리 투영을 KKT 조건으로 유도하고 rank 가정을 확인합니다.
 3. 고정 투영층의 역전파를 손계산과 자동미분으로 대조합니다.
-4. 성분별 오차·등식 위반·음수 농도·미반영 수지를 따로 보고합니다.
+4. 성분별 오차·등식 위반·음수 농도·미반영 수지를 따로 보고
 
-실습은 2주차의 정상상태 CSTR를 사용합니다.
+실습 기준 모델: 2주차의 정상상태 CSTR
 
 <!-- lecture-page -->
 
@@ -450,7 +450,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>A</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>Af</mi></mrow></msub><mo>−</mo><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>=</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>1</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>A</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>2</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>C</mi></mrow></msub><mo>=</mo><msub><mrow><mi>k</mi></mrow><mrow><mn>2</mn></mrow></msub><msub><mrow><mi>C</mi></mrow><mrow><mi>B</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-이 세 residual의 단위는 mol/(L·min)입니다. 실습은 합 residual만 학습에 사용하고, 성분수지 residual은 별도 평가로 남깁니다.
+세 residual의 단위: mol/(L·min). 학습 대상: 합 residual. 별도 평가: 성분수지 residual
 
 <!-- lecture-page -->
 
@@ -458,7 +458,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>soft</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mo>‖</mo><mfrac><mrow><msub><mrow><mover><mi>y</mi><mo>^</mo></mover></mrow><mrow><mi>i</mi></mrow></msub><mo>−</mo><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mo>+</mo><mi>λ</mi><mfrac><mrow><mn>1</mn></mrow><mrow><mi>N</mi></mrow></mfrac><msub><mrow><mo>∑</mo></mrow><mrow><mi>i</mi></mrow></msub><msup><mrow><mrow><mo>(</mo><mfrac><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>sum</mi><mo>,</mo><mi>i</mi></mrow></msub></mrow><mrow><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></mrow></mfrac><mo>)</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
-두 항은 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L로 무차원화합니다. 실습의 λ = 10은 합 residual 한 개와 성분 오차 세 개의 평균 정의까지 포함한 선택입니다.
+두 항은 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L로 무차원화합니다. 실습의 λ = 10은 합 residual 한 개와 성분 오차 세 개의 평균 정의까지 포함한 선택
 
 λ를 바꾸면 학습 목표와 gradient 크기가 달라집니다. 유한한 λ와 학습 종료만으로 모든 입력의 residual이 0이라고 보장할 수는 없습니다.
 
@@ -466,7 +466,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 ## 유한한 벌점의 해를 직접 구하기
 
-스칼라 예제로 ½(z − a)² + ½λ(z − b)²를 최소화합니다. 데이터는 a를, 등식은 z = b를 요구하며 λ ≥ 0입니다. 미분을 0으로 놓으면:
+스칼라 예제로 ½(z − a)² + ½λ(z − b)²를 최소화. 데이터는 a를, 등식은 z = b를 요구하며 λ ≥ 0. 미분을 0으로 놓으면:
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>=</mo><mfrac><mrow><mi>a</mi><mo>+</mo><mi>λ</mi><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>z</mi></mrow><mrow><mo>∗</mo></mrow></msub><mo>−</mo><mi>b</mi><mo>=</mo><mfrac><mrow><mi>a</mi><mo>−</mo><mi>b</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
@@ -480,7 +480,7 @@ a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 
 
 연속시간 PINN에서 y_θ(t)를 사용한다면 residual은 ∂y_θ/∂t − F(y_θ, u)처럼 좌표 미분도 포함합니다. 이는 θ에 대한 학습 gradient와 구분해야 합니다.
 
-시간을 t̃ = (t − μ_t)/s_t로 표준화했다면 ∂y/∂t = (1/s_t)∂y/∂t̃입니다.
+시간을 t̃ = (t − μ_t)/s_t로 표준화했다면 ∂y/∂t = (1/s_t)∂y/∂t̃
 
 <!-- lecture-page -->
 
@@ -488,7 +488,7 @@ a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>A</mi><mi>x</mi><mo>+</mo><mi>B</mi><mi>y</mi><mo>=</mo><mi>b</mi><mo>,</mo></mrow></mtd></mtr><mtr><mtd><mrow><mi>B</mi><mi>y</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>,</mo><mtext>  </mtext><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>b</mi><mo>−</mo><mi>A</mi><mi>x</mi></mrow></mtd></mtr></mtable></math>
 
-x ∈ ℝᵖ, y ∈ ℝⁿ, A ∈ ℝᵐˣᵖ, B ∈ ℝᵐˣⁿ, b ∈ ℝᵐ입니다. A·B·b는 고정 계수이고, raw 출력은 ŷ = f_θ(x)입니다.
+x ∈ ℝᵖ, y ∈ ℝⁿ, A ∈ ℝᵐˣᵖ, B ∈ ℝᵐˣⁿ, b ∈ ℝᵐ. A·B·b는 고정 계수이고, raw 출력은 ŷ = f_θ(x)
 
 CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다. 따라서 d(x) = C_Af입니다.
 
@@ -498,7 +498,7 @@ CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><msub><mrow><mi>argmin</mi></mrow><mrow><mi>z</mi></mrow></msub><mtext>  </mtext><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><msup><mrow><mo>‖</mo><mi>z</mi><mo>−</mo><mover><mi>y</mi><mo>^</mo></mover><mo>‖</mo></mrow><mrow><mn>2</mn></mrow></msup><mtext>   subject to   </mtext><mi>B</mi><mi>z</mi><mo>=</mo><mi>d</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-입력 x와 raw 예측 ŷ를 고정한 뒤 출력 z만 조정합니다. 여기서 거리는 물리 농도 좌표의 Euclidean 거리입니다.
+고정값: 입력 x와 raw 예측 ŷ. 조정 대상: 출력 z. 거리 기준: 물리 농도 좌표의 Euclidean 거리
 
 목적함수는 strictly convex입니다. 가능한 집합이 비어 있지 않으면 투영 출력은 유일합니다. 등식만 있는 이 작은 QP는 KKT 조건으로 닫힌 형태를 구할 수 있습니다.
 
@@ -588,7 +588,7 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 투영 행렬 P�
 
 투영 출력에서 올라온 gradient가 [1, 0, 0]이면 raw 출력에 전달되는 값은 [2/3, −1/3, −1/3]입니다. 합이 0이므로 등식의 접공간 방향입니다.
 
-실습은 두 개의 독립 등식에서도 analytic Jacobian과 double-precision gradcheck를 확인합니다.
+실습은 두 개의 독립 등식에서도 analytic Jacobian과 double-precision gradcheck를 확인
 
 <!-- lecture-page -->
 
@@ -614,7 +614,7 @@ D는 대각행렬이라 Dᵀ = D입니다. 성분별 표준편차로 loss까지 
 
 ## PyTorch의 최소 구현
 
-raw는 이미 mol/L 단위이고 feed의 shape은 (batch, 1)입니다.
+raw 단위: mol/L. feed shape: (batch, 1)
 
 ```python
 raw = y_mean + y_scale * net(x_scaled)
@@ -634,7 +634,7 @@ optimizer.step()
 
 Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [−0.053333, 0.826667, 0.426667] mol/L가 됩니다.
 
-합은 맞고 A는 음수입니다. 음수만 0으로 자르면 합이 약 1.253333으로 바뀝니다.
+합은 맞고 A는 음수. 음수만 0으로 자르면 합이 약 1.253333으로 바뀝니다.
 
 비음수성과 합을 함께 요구하려면 simplex 투영처럼 해당 부등식까지 포함한 방법이 필요합니다. 활성 부등식이 바뀌면 gradient도 구간별로 달라집니다.
 
@@ -654,11 +654,11 @@ Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [�
 
 ## 비교 실험의 조건을 고정하기
 
-입력 영역은 T = 305-355 K, τ = 1-8 min, C_Af = 0.8-1.5 mol/L입니다. 속도식은 k₁ = 0.2 exp[6000(1/330 − 1/T)], k₂ = 0.1 exp[5000(1/330 − 1/T)] min⁻¹입니다.
+입력 영역은 T = 305-355 K, τ = 1-8 min, C_Af = 0.8-1.5 mol/L. 속도식은 k₁ = 0.2 exp[6000(1/330 − 1/T)], k₂ = 0.1 exp[5000(1/330 − 1/T)] min⁻¹
 
 Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label을 사용합니다. 모델은 모두 3 → 32 → 32 → 3 ReLU MLP(1283개 파라미터)입니다.
 
-초기 가중치·batch 순서·train 통계량을 공유합니다. Adam 0.001, batch 128, 600 epoch 중 validation 물리 MSE가 최소인 가중치를 선택하고 test를 평가합니다.
+초기 가중치·batch 순서·train 통계량을 공유합니다. Adam 0.001, batch 128, 600 epoch 중 validation 물리 MSE가 최소인 가중치를 선택하고 test를 평가
 
 <!-- lecture-page -->
 
@@ -671,7 +671,7 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 | MLP + post | 0.003426 | 2.22e-16 | 1 |
 | Hard | 0.003036 | 3.33e-16 | 1 |
 
-농도와 오차 단위는 mol/L입니다. 음수 항목은 900개 test 성분값 중 −10⁻⁸ 미만인 값입니다.
+농도·오차 단위: mol/L. 음수 집계 기준: 900개 test 성분값 중 −10⁻⁸ 미만
 
 이번 실행에서 soft penalty는 합 위반을 줄였지만 RMSE가 커졌습니다. Hard와 post는 합을 맞췄고 음수 농도는 남았습니다. 한 seed의 결과이므로 일반적인 정확도 순위를 뜻하지 않습니다.
 
@@ -688,7 +688,7 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 
 단위는 모두 mol/L입니다. 전체 RMSE만 보면 성분별 차이를 놓칠 수 있습니다.
 
-최소 농도는 세 성분과 test 행 전체에서 구합니다. 평가 tolerance와 실제 최소값을 함께 기록합니다.
+최소 농도는 세 성분과 test 행 전체에서 구합니다. 평가 tolerance와 실제 최소값을 함께 기록
 
 <!-- lecture-page -->
 
@@ -727,12 +727,12 @@ python week04_lab.py --output-dir week04-results
 
 ## 연습문제와 제출물
 
-1. [0.70, 0.45, 0.25]를 합 1.20에 투영하고 gradient [1, 0, 0]의 역전파를 계산합니다.
+1. [0.70, 0.45, 0.25]를 합 1.20에 투영하고 gradient [1, 0, 0]의 역전파를 계산
 2. B의 두 행이 [1, 1, 1], [2, 2, 2]일 때 d = [1.2, 2.5]의 가능 여부를 설명합니다.
-3. λ = 0.1, 1, 10을 validation으로 비교하고, 선택한 설정만 test에서 평가합니다.
-4. 각 모델의 A/B/C RMSE·합 MAE/최대값·최소 농도·성분수지 residual을 제출합니다.
+3. λ = 0.1, 1, 10을 validation으로 비교하고, 선택한 설정만 test에서 평가
+4. 각 모델의 A/B/C RMSE·합 MAE/최대값·최소 농도·성분수지 residual을 제출
 
-다음 주에는 학습을 끝낸 ReLU predictor를 고정하고 최적화 문제를 정의합니다.
+다음 주: 학습한 ReLU predictor의 고정과 최적화 문제 정의
 
 <!-- lecture-page -->
 

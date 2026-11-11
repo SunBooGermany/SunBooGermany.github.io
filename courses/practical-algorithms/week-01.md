@@ -24,11 +24,11 @@ Repeatedly rescanning history becomes expensive as the log grows. This week reta
 
 ## Week 1 problems and learning outcomes
 
-Session 1 compares array, set, and dictionary costs, then links values to earlier positions. Session 2 justifies pointer moves in sorted values and extends the idea to three-value sums.
+Session 1: array, set, and dictionary costs; values linked to earlier positions. Session 2: justified pointer moves in sorted values; extension to three-value sums.
 
-- Define inputs, outputs, and constraints first.
-- Explain the stored state and why discarded candidates cannot be answers.
-- Separate time, auxiliary storage, and output costs.
+- Input, output, and constraint definitions
+- Stored state and justification for discarding candidates
+- Time, auxiliary storage, and output costs
 
 Practice uses LeetCode 1, 219, 167, and 15.
 
@@ -36,7 +36,11 @@ Practice uses LeetCode 1, 219, 167, and 15.
 
 ## Information in lists, sets, and dictionaries
 
-A list preserves positions and duplicates. A set stores membership. A dictionary associates one value with each key. The same log calls for different stored information depending on the question.
+- List: values by position and duplicates
+- Set: membership
+- Dictionary: key-value associations
+
+The question determines what information to store.
 
 ```python
 events = [4, 7, 4, 4]
@@ -410,19 +414,23 @@ Use each official LeetCode problem link for its complete input contract. Next we
 
 ## 1주차의 문제와 학습 목표
 
-1차시는 배열·집합·사전의 연산 비용을 비교하고, 값과 이전 위치를 연결합니다. 2차시는 정렬된 값에서 두 포인터의 이동을 정당화하고 세 값의 합으로 확장합니다.
+1차시: 배열·집합·사전의 연산 비용, 값과 이전 위치의 연결. 2차시: 정렬된 값에서 두 포인터 이동의 근거와 세 값의 합으로의 확장
 
-- 입력·출력·제약을 먼저 정의합니다.
-- 저장한 상태의 의미와 후보를 버리는 근거를 설명합니다.
-- Python 구현의 시간·보조 공간·출력 비용을 구분합니다.
+- 입력·출력·제약 정의
+- 저장 상태의 의미와 후보 제거 근거
+- Python 구현의 시간·보조 공간·출력 비용
 
-실습은 LeetCode 1, 219, 167, 15입니다.
+실습: LeetCode 1, 219, 167, 15
 
 <!-- lecture-page -->
 
 ## 리스트·집합·사전의 정보
 
-리스트는 위치별 값과 중복을 보존합니다. 집합은 값의 존재 여부를 저장하며, 사전은 키 하나에 값 하나를 연결합니다. 같은 로그라도 어떤 질문에 답하는지에 따라 저장 구조가 달라집니다.
+- 리스트: 위치별 값과 중복
+- 집합: 값의 존재 여부
+- 사전: 키와 값의 연결
+
+저장 구조는 답하려는 질문에 따라 달라집니다.
 
 ```python
 events = [4, 7, 4, 4]
@@ -438,7 +446,7 @@ print(latest[4])        # 3
 
 ## 입력 크기와 연산 비용
 
-n은 기록 수입니다. 다음 비용은 고정 폭 정수와 Python의 배열·해시 컨테이너를 기준으로 합니다.
+입력 크기 n: 기록 수. 비용 분석 기준: 고정 폭 정수와 Python의 배열·해시 컨테이너
 
 | 작업 | 비용 | 이유 |
 | --- | --- | --- |
@@ -542,7 +550,7 @@ n개를 한 번씩 읽으므로 평균 시간 O(n), 보조 공간 O(n)입니다.
 
 `nums=[4,7,4,4], k=1`은 마지막 두 위치 때문에 True입니다. k=0이면 서로 다른 위치를 만족할 수 없습니다.
 
-각 위치에서 앞의 최대 k개를 다시 보면 O(n·min(n,k)) 시간입니다. 슬라이스를 만들면 반복마다 복사 비용도 듭니다. 값마다 어떤 과거 위치 하나를 남기면 충분한지 살펴봅니다.
+각 위치에서 앞의 최대 k개를 다시 보면 O(n·min(n,k)) 시간. 슬라이스를 만들면 반복마다 복사 비용도 듭니다. 값마다 어떤 과거 위치 하나를 남기면 충분한지 살펴봅니다.
 
 <!-- lecture-page -->
 
@@ -577,7 +585,7 @@ def nearby_duplicate(nums, k):
 
 ## 최근 상태의 정당성과 저장 비용
 
-현재 위치 j에서 같은 값의 이전 위치 i 중 가장 큰 i가 거리 j-i를 최소화합니다. 최근 위치가 k 이내면 답이며, 아니면 이전 위치 어느 것도 답이 아닙니다. 갱신 후 다음 반복에서도 같은 의미가 유지됩니다.
+현재 위치 j에서 같은 값의 가장 최근 위치 i가 거리 j-i를 최소화합니다. 최근 위치가 k 이내면 답이며, 아니면 이전 위치 어느 것도 답이 아닙니다. 갱신 후 다음 반복에서도 같은 의미가 유지됩니다.
 
 n은 길이, d는 서로 다른 값의 수입니다. 평균 시간 O(n), 보조 공간 O(d)이며 d<=n입니다. 이는 오래된 키를 지우지 않는 현재 구현의 비용입니다.
 
@@ -600,7 +608,7 @@ n은 길이, d는 서로 다른 값의 수입니다. 평균 시간 O(n), 보조 
 
 정렬된 길이 `[1,4,6,9]`에서 합이 7인 두 부품을 찾습니다. 왼쪽 값 1과 오른쪽 값 9의 합은 10입니다. 지금 9를 버려도 되는 이유를 설명할 수 있나요?
 
-2차시에서는 정렬 순서가 한 번에 여러 후보를 지우는 근거임을 보입니다. 포인터 이동을 암기하기 전에 제거되는 모든 쌍을 확인합니다.
+2차시에서는 정렬 순서가 한 번에 여러 후보를 지우는 근거임을 보입니다. 포인터 이동을 암기하기 전에 제거되는 모든 쌍을 확인
 
 <!-- lecture-page -->
 
@@ -679,9 +687,9 @@ left는 오른쪽으로만, right는 왼쪽으로만 움직입니다. 이동 횟
 
 ## 정렬과 고정 값의 역할
 
-입력을 복사 정렬하고 index를 첫 원소의 위치로 고정합니다. left=index+1, right=n-1로 두면 세 위치가 항상 다릅니다.
+초기 설정: 입력의 복사 정렬, 첫 원소의 위치 index 고정. left=index+1, right=n-1로 두면 세 위치가 항상 다릅니다.
 
-현재 세 값의 합이 음수면 left를 늘리고, 양수면 right를 줄입니다. 167과 같은 정렬 기반 제거입니다.
+현재 세 값의 합이 음수면 left를 늘리고, 양수면 right를 줄입니다. 167과 같은 정렬 기반 제거
 
 3Sum은 값 조합을 반환하므로 정렬한 배열에서 탐색합니다. 원래 인덱스를 반환하는 문제에서는 값과 원래 인덱스를 함께 저장해야 합니다.
 
@@ -695,13 +703,13 @@ left는 오른쪽으로만, right는 왼쪽으로만 움직입니다. 이동 횟
 | 0,2,3 | -2,1,1 | 0 | [-2,1,1] 저장; 양쪽 이동 |
 | 0,3,2 | 범위 끝 | - | 고정 값 -2의 탐색 종료 |
 
-그다음 고정 값은 0입니다. 값 1·1·2에서 두 값을 골라도 0의 음수인 0을 만들지 못합니다. 현재 고정 값에서 찾지 못한 조합과 다음 고정 값의 조합을 구분합니다.
+다음 고정 값: 0. 값 1·1·2에서 두 값을 골라도 0의 음수인 0을 만들지 못합니다. 현재 고정 값에서 찾지 못한 조합과 다음 고정 값의 조합을 구분
 
 <!-- lecture-page -->
 
 ## 3Sum 구현: 고정과 후보 이동
 
-아래 구현과 다음 페이지의 코드는 이어지는 하나의 함수입니다.
+함수 구현: 아래 코드와 다음 페이지의 코드가 이어지는 구조
 
 ```python
 def three_sum(nums):
@@ -774,7 +782,7 @@ n은 입력 길이, z는 출력 조합 수입니다. 복사 정렬은 O(n log n)
 
 각 문제에 상태의 의미, 정당성, 시간·공간 분석과 경계 입력을 함께 제출합니다. 막힐 때는 [단계별 힌트·해설](/courses/practical-algorithms/week-01-reading/)을 필요한 단계까지만 확인합니다.
 
-[Python 실습 묶음](/assets/courses/practical-algorithms/practical-algorithms-code.zip)에서 `python week01_walkthrough.py`로 강의의 예시와 추적 결과를 확인합니다.
+[Python 실습 묶음](/assets/courses/practical-algorithms/practical-algorithms-code.zip)에서 `python week01_walkthrough.py`로 강의의 예시와 추적 결과를 확인
 
 <!-- lecture-page -->
 
