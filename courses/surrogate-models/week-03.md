@@ -38,11 +38,11 @@ At the same temperature, different current tank compositions can lead to differe
 
 ## State-transition model training and rollout evaluation
 
-1. Define the current state, prescribed future inputs, fixed context, and sampling interval.
-2. Train a state-transition MLP on concentration increments.
-3. Compare one-step predictions and 30 min rollout on held-out trajectories.
+1. Current state, prescribed future inputs, fixed context, and sampling interval
+2. State-transition MLP training on concentration increments
+3. One-step versus 30 min rollout on held-out trajectories
 
-Submit the same model’s component errors in both evaluations, error versus horizon, and two temperature-plan trajectories. RNN/LSTM and encoder-decoder are optional extensions.
+Submission: the same model’s component errors in both evaluations, error versus horizon, and two temperature-plan trajectories. Optional extensions: RNN/LSTM and encoder-decoder.
 
 <!-- lecture-page -->
 
@@ -85,7 +85,7 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)] i
 
 For each interval [t_k, t_k + Δt), hold T_k constant. Integrate the balances over that interval to obtain c_k+1. The state stays continuous when the input switches.
 
-30 min / 0.2 min = 150 transitions, with 151 sampled states. The temperature step at 10 min starts at interval index 50.
+30 min / 0.2 min = 150 transitions; 151 sampled states including the initial state. Temperature step at 10 min: interval index 50.
 
 The learned map predicts a 0.2 min transition. Increasing the number of applications extends the horizon; it does not change the sampling interval.
 
@@ -105,7 +105,7 @@ At c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L: c₁ ≈ [1.1538
 
 ## Trajectory generation and transition-pair construction
 
-Use 300-360 K, τ = 1-10 min, and feed = 0.8-1.5 mol/L. Random temperature plans contain six 5 min blocks. Each trajectory has its own initial composition, with nonnegative components summing to feed.
+Input ranges: 300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L. Random temperature plans: six 5 min blocks. Initial composition for each trajectory: nonnegative components summing to feed.
 
 | Split | Trajectories | Transition rows |
 | --- | --- | --- |
@@ -126,17 +126,17 @@ Use 300-360 K, τ = 1-10 min, and feed = 0.8-1.5 mol/L. Random temperature plans
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>Δc</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>μ</mi><mrow><mi>Δ</mi></mrow></msub><mo>+</mo><msub><mi>s</mi><mrow><mi>Δ</mi></mrow></msub><mo>⊙</mo><msub><mi>g</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>ṽ</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-The target is a change in mol/L.
+Target: concentration increment in mol/L
 
 <!-- lecture-page -->
 
 ## The transition MLP and its scaling
 
-Use 6 → 32 → 32 → 3, ReLU hidden layers, and a linear output. The parameter count is (6×32 + 32) + (32×32 + 32) + (32×3 + 3) = 1379.
+Architecture: 6 → 32 → 32 → 3; ReLU hidden layers and a linear output. Parameters: (6×32 + 32) + (32×32 + 32) + (32×3 + 3) = 1379.
 
 Compute input and increment means/standard deviations from train rows. Apply those same statistics to validation, test, and rollout states.
 
-The MLP predicts standardized increments. Restore each increment to mol/L before adding it to the current state.
+MLP output: standardized increments. Restore each increment to mol/L before adding it to the current state.
 
 <!-- lecture-page -->
 
@@ -146,7 +146,7 @@ Each train input contains the reference current state. Minimize the mean squared
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>L</mi><mrow><mn>1</mn></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><msub><mo>∑</mo><mrow><mi>n</mi></mrow></msub><msub><mo>∑</mo><mrow><mi>j</mi></mrow></msub><msup><mrow><mo>(</mo><msub><msub><mi>g</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>ṽ</mi><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow><mrow><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>Δc̃</mi><mrow><mi>n</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
-Adam: learning rate 0.001, batch size 512, up to 800 epochs. Retain the weights with minimum validation loss. Test trajectories are used after this selection.
+Training: Adam, learning rate 0.001, batch size 512, up to 800 epochs. Weight selection: minimum validation loss. Test-trajectory evaluation after selection.
 
 <!-- lecture-page -->
 
@@ -294,7 +294,7 @@ python week03_lab.py --output-dir week03-results
 python week03_lab.py --train --output-dir week03-retrained
 ```
 
-Submit state/input definitions, split/scaling details, one-step and rollout RMSE, horizon plots, and the two temperature-plan trajectories.
+Submission: state/input definitions, split/scaling details, one-step and rollout RMSE, horizon plots, and two temperature-plan trajectories.
 
 <!-- lecture-page -->
 
@@ -355,9 +355,9 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 1. 현재 상태, 주어진 미래 입력, 고정 조건(context)과 표본 간격을 정의합니다.
 2. 농도 변화량을 학습하는 상태전이 MLP를 만듭니다.
-3. 독립 test 궤적에서 one-step 예측과 30분 rollout을 비교합니다.
+3. 독립 test 궤적에서 one-step 예측과 30분 rollout을 비교
 
-같은 모델의 두 평가에서 성분별 오차, 예측 거리(horizon)에 따른 오차와 두 온도 계획의 궤적을 제출합니다. RNN/LSTM과 encoder-decoder는 선택 확장입니다.
+제출물: 같은 모델의 두 평가에서 성분별 오차, 예측 거리(horizon)에 따른 오차, 두 온도 계획의 궤적. 선택 확장: RNN/LSTM과 encoder-decoder
 
 <!-- lecture-page -->
 
@@ -392,17 +392,17 @@ Rollout 전에 c_0와 전체 온도 입력열을 정합니다. 실습에서는 �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>Af</mi></mrow></msub><mo>−</mo><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>C</mi><mrow><mi>A</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac><mo>−</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub><mo>−</mo><mfrac><mrow><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></mrow><mrow><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]이며 단위는 min⁻¹입니다. 330 K에서 k₁ = 0.2, k₂ = 0.1 min⁻¹입니다.
+k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]이며 단위는 min⁻¹. 330 K에서 k₁ = 0.2, k₂ = 0.1 min⁻¹
 
 <!-- lecture-page -->
 
 ## 연속 공정을 일정 간격으로 관찰하기
 
-각 구간 [t_k, t_k + Δt)에서 T_k를 일정하게 유지하고 수지를 적분해 c_k+1을 구합니다. 입력이 바뀌는 순간에도 상태는 연속입니다.
+각 구간 [t_k, t_k + Δt)에서 T_k를 일정하게 유지하고 수지를 적분해 c_k+1을 구합니다. 입력이 바뀌는 순간에도 상태는 연속
 
-30 min / 0.2 min = 상태전이 150개이며, 초기값을 포함한 관찰 상태는 151개입니다. 10분 온도 변경은 index 50 구간에서 시작합니다.
+30 min / 0.2 min = 상태전이 150개. 초기값을 포함한 관찰 상태: 151개. 10분 온도 변경 시작: index 50 구간
 
-학습한 관계식은 0.2분 전이를 예측합니다. 반복 횟수를 늘리면 예측 거리가 길어지고 표본 간격은 그대로 유지됩니다.
+학습한 관계식은 0.2분 전이를 예측. 반복 횟수를 늘리면 예측 거리가 길어지고 표본 간격은 그대로 유지됩니다.
 
 <!-- lecture-page -->
 
@@ -412,7 +412,7 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]�
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><mi>c</mi><mo>,</mo><mi>u</mi><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>=</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>+</mo><msup><mi>e</mi><mrow><mi>M</mi><mi>Δt</mi></mrow></msup><mrow><mo>(</mo><mi>c</mi><mo>−</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-실습은 이 식의 해석해로 정한 Δt의 기준값을 생성합니다. M과 성분별 식의 유도는 읽기자료에서 확인합니다.
+실습은 이 식의 해석해로 정한 Δt의 기준값을 생성. M과 성분별 식의 유도는 읽기자료에서 확인
 
 c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.153870, 0.045672, 0.000458] mol/L입니다.
 
@@ -420,7 +420,7 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 ## 궤적 생성과 상태전이 데이터 구성
 
-300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L를 사용합니다. 무작위 온도 계획은 5분 구간 6개로 구성하며, 각 궤적의 초기 조성은 비음수이고 합은 유입 농도입니다.
+입력 범위: 300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L. 무작위 온도 계획: 5분 구간 6개. 각 궤적의 초기 조성: 비음수, 합은 유입 농도
 
 | 분할 | 궤적 수 | 상태전이 행 수 |
 | --- | --- | --- |
@@ -441,15 +441,15 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>Δc</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>μ</mi><mrow><mi>Δ</mi></mrow></msub><mo>+</mo><msub><mi>s</mi><mrow><mi>Δ</mi></mrow></msub><mo>⊙</mo><msub><mi>g</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>ṽ</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-학습 대상은 mol/L 단위의 농도 변화량입니다.
+학습 대상: mol/L 단위의 농도 변화량
 
 <!-- lecture-page -->
 
 ## 상태전이 MLP와 scaling
 
-6 → 32 → 32 → 3 MLP에 ReLU 은닉층과 선형 출력층을 사용합니다. 파라미터 수는 (6×32 + 32) + (32×32 + 32) + (32×3 + 3) = 1379개입니다.
+MLP 구조: 6 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층. 파라미터 수: (6×32 + 32) + (32×32 + 32) + (32×3 + 3) = 1379개
 
-입력과 변화량의 평균·표준편차는 train 행으로 계산하며, 같은 통계량을 validation·test·rollout 상태에 적용합니다.
+입력과 변화량의 평균·표준편차는 train 행으로 계산하며, 같은 통계량을 validation·test·rollout 상태에 적용
 
 MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더합니다.
 
@@ -457,11 +457,11 @@ MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더�
 
 ## 기준 현재 상태에서 학습하기
 
-각 train 입력에는 기준 현재 상태를 넣고, 표준화 변화량의 평균제곱 오차를 최소화합니다.
+각 train 입력에는 기준 현재 상태를 넣고, 표준화 변화량의 평균제곱 오차를 최소화
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>L</mi><mrow><mn>1</mn></mrow></msub><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><msub><mo>∑</mo><mrow><mi>n</mi></mrow></msub><msub><mo>∑</mo><mrow><mi>j</mi></mrow></msub><msup><mrow><mo>(</mo><msub><msub><mi>g</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>ṽ</mi><mrow><mi>n</mi></mrow></msub><mo>)</mo></mrow><mrow><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>Δc̃</mi><mrow><mi>n</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow><mrow><mn>2</mn></mrow></msup></mrow></mtd></mtr></mtable></math>
 
-Adam을 학습률 0.001, batch size 512, 최대 800 epoch로 실행합니다. Validation loss가 가장 작은 가중치를 보관한 뒤 test 궤적을 평가합니다.
+학습 설정: Adam, 학습률 0.001, batch size 512, 최대 800 epoch. 가중치 선택: 최소 validation loss. 이후 test 궤적 평가
 
 <!-- lecture-page -->
 
@@ -477,7 +477,7 @@ Adam을 학습률 0.001, batch size 512, 최대 800 epoch로 실행합니다. Va
 
 One-step에서는 매 시각 기준 상태를 입력으로 새로 넣습니다.
 
-Rollout에서는 c₀에서 시작해 예측 상태를 다음 전이에 계속 넣습니다. 두 평가의 미래 입력과 context는 동일하게 유지합니다.
+Rollout에서는 c₀에서 시작해 예측 상태를 다음 전이에 계속 넣습니다. 두 평가의 미래 입력과 context는 동일하게 유지
 
 One-step은 매 시각 기준 상태를 다시 받으므로, 초기 상태에서 한 번만 시작하는 예측보다 더 많은 상태 정보를 사용합니다.
 
@@ -510,7 +510,7 @@ e_k = ĉ_k − c_k로 정의하고, 기준 상태에서 계산한 예측값을 �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-첫 번째 차이는 기존 상태 오차가 학습된 관계식을 거쳐 전달되는 부분입니다. δ_k는 기준 상태에서의 한 단계 예측 오차로, 작더라도 매번 다음 예측에 더해집니다.
+첫 번째 차이는 기존 상태 오차가 학습된 관계식을 거쳐 전달되는 부분. δ_k는 기준 상태에서의 한 단계 예측 오차로, 작더라도 매번 다음 예측에 더해집니다.
 
 <!-- lecture-page -->
 
@@ -520,7 +520,7 @@ e_k = ĉ_k − c_k로 정의하고, 기준 상태에서 계산한 예측값을 �
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>h</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>0.9</mn><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>+</mo><mn>0.001</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>=</mo><mn>0.001</mn><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mn>0.9</mn><mrow><mi>h</mi></mrow></msup></mrow><mrow><mn>1</mn><mo>−</mo><mn>0.9</mn></mrow></mfrac></mrow></mtd></mtr></mtable></math>
 
-One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651입니다. 수축하는 관계식에서는 누적이 제한되며, 상태 민감도가 달라지면 예측 거리에 따른 오차도 달라집니다.
+One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651. 수축하는 관계식에서는 누적이 제한되며, 상태 민감도가 달라지면 예측 거리에 따른 오차도 달라집니다.
 
 <!-- lecture-page -->
 
@@ -541,7 +541,7 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651입니다. 
 | 0 ≤ t < 10 min | 330 K | 330 K |
 | 10 ≤ t ≤ 30 min | 330 K | 345 K |
 
-동일한 온도 계획에서 기준 궤적과 MLP rollout을 비교합니다. 두 곡선이 달라지기 시작하는 시점과 새 정상상태 응답에 접근하는 과정을 살펴봅니다.
+동일한 온도 계획에서 기준 궤적과 MLP rollout을 비교. 두 곡선이 달라지기 시작하는 시점과 새 정상상태 응답에 접근하는 과정을 살펴봅니다.
 
 <!-- lecture-page -->
 
@@ -558,7 +558,7 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651입니다. 
 | One-step | 0.001170 | 0.001288 | 0.001163 |
 | Rollout | 0.009465 | 0.009629 | 0.010425 |
 
-독립 test 궤적 20개에서 궤적당 예측 시각 150개를 평가한 결과입니다. 이번 실행에서는 rollout 오차가 더 큽니다. 예측 3000개의 성분별 RMSE를 계산하고 각 예측 거리의 오차도 따로 확인합니다.
+독립 test 궤적 20개에서 궤적당 예측 시각 150개를 평가한 결과. 이번 실행에서는 rollout 오차가 더 큽니다. 예측 3000개의 성분별 RMSE를 계산하고 각 예측 거리의 오차도 따로 확인
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>RMSE</mi><mrow><mi>j</mi><mo>,</mo><mi>h</mi></mrow></msub><mo>=</mo><msqrt><mfrac><mrow><mn>1</mn></mrow><mrow><mi>N</mi></mrow></mfrac><msub><mo>∑</mo><mrow><mi>n</mi></mrow></msub><msup><mrow><mo>(</mo><msub><mover><mi>C</mi><mo>^</mo></mover><mrow><mi>n</mi><mo>,</mo><mi>h</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>h</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow><mrow><mn>2</mn></mrow></msup></msqrt></mrow></mtd></mtr></mtable></math>
 
@@ -592,7 +592,7 @@ S₀ = C_Af이고 유입 농도가 고정이면 기준 농도 합은 유입 농�
 | 일정 330 K | 0.400091 | 0.399819 |
 | 10분에 330 → 345 K | 0.420021 | 0.411526 |
 
-두 계산 모두 온도 변경 계획의 30분 B 농도가 더 높습니다. MLP는 그 최종 농도를 약 0.00850 mol/L 낮게 예측합니다.
+두 계산 모두 온도 변경 계획의 30분 B 농도가 더 높습니다. MLP는 그 최종 농도를 약 0.00850 mol/L 낮게 예측
 
 시간에 따라 적용되는 제품 규격을 확인할 때는 마지막 표본과 함께 해당 구간 전체를 살펴야 합니다.
 
@@ -609,18 +609,18 @@ python week03_lab.py --output-dir week03-results
 python week03_lab.py --train --output-dir week03-retrained
 ```
 
-상태·입력 정의, 데이터 분할·scaling, one-step·rollout RMSE, 예측 거리에 따른 오차 그림과 두 온도 계획의 궤적을 제출합니다.
+제출물: 상태·입력 정의, 데이터 분할·scaling, one-step·rollout RMSE, 예측 거리에 따른 오차 그림, 두 온도 계획의 궤적
 
 <!-- lecture-page -->
 
 ## 연습문제와 읽기자료
 
 1. dS/dt를 유도하고 S가 유입 농도와 같게 유지되는 조건을 적습니다.
-2. 첫 0.2분 전이를 계산해 forward Euler와 비교합니다.
+2. 첫 0.2분 전이를 계산해 forward Euler와 비교
 3. 두 평가에서 같은 MLP에 서로 다른 상태를 입력하는 이유를 설명합니다.
-4. 입력 계획은 유지한 채 초기 상태를 바꿔 기준 궤적과 예측 궤적을 비교합니다.
+4. 입력 계획은 유지한 채 초기 상태를 바꿔 기준 궤적과 예측 궤적을 비교
 
-[읽기자료](/courses/surrogate-models/week-03-reading/)에서 유도·계산 예·코드와 답을 확인합니다. 오차 전달식을 계산하고 multi-step 학습 목적함수는 선택 내용으로 다룹니다.
+[읽기자료](/courses/surrogate-models/week-03-reading/)에서 유도·계산 예·코드와 답을 확인. 오차 전달식을 계산하고 multi-step 학습 목적함수는 선택 내용으로 다룹니다.
 
 <!-- lecture-page -->
 
@@ -640,7 +640,7 @@ RNN은 학습된 은닉 상태를 갱신하고 LSTM은 gate를 사용한 메모�
 
 Encoder는 과거 관측과 입력열을 상태 표현으로 요약합니다.
 
-Decoder는 그 표현과 주어진 미래 입력 계획으로 미래 농도열을 예측합니다. 각 미래 입력이 해당 예측 단계에 전달되도록 구성합니다.
+Decoder는 그 표현과 주어진 미래 입력 계획으로 미래 농도열을 예측. 각 미래 입력이 해당 예측 단계에 전달되도록 구성합니다.
 
 Sutskever·Vinyals·Le (2014)의 1-2절에서 sequence-to-sequence 아이디어를 읽습니다.
 

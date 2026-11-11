@@ -22,18 +22,18 @@ In the event log `"abba c"`, find the longest contiguous interval containing no 
 
 Rebuilding the character collection for every interval repeatedly reads the same records. Can we update only the entering and leaving characters as the boundaries move?
 
-This week develops incremental window state and stacks that retrieve the most recently stored information first.
+This week: incremental window state and stacks that retrieve the most recently stored information first.
 
 <!-- lecture-page -->
 
 ## Week 2 problems and learning outcomes
 
-Session 3 compares fixed-width and variable-width intervals. Session 4 develops per-depth minima and the evaluation order of postfix expressions.
+Session 3: fixed-width and variable-width intervals. Session 4: per-depth minima and postfix evaluation order.
 
-- Define window boundaries and the meaning of stored state.
-- Count total pointer movements to derive time costs.
-- Explain which stack state must be restored and in which operand order.
-- Check positivity, repeated minima, and negative integer division.
+- Window boundaries and stored state
+- Total pointer movements and time cost
+- Restored stack state and operand order
+- Positivity, repeated minima, and negative division checks
 
 Practice uses LeetCode 3, 209, 155, and 150. Examples and trace tables are original teaching examples.
 
@@ -49,7 +49,7 @@ For `nums=[1,2,4,2]` and width `w=2`, the contiguous window sums are `[3,6,6]`. 
 | 2 | nums[0] = 1 | nums[2] = 4 | 3 - 1 + 4 = 6 |
 | 3 | nums[1] = 2 | nums[3] = 2 | 6 - 2 + 2 = 6 |
 
-When the new right index is `r`, the leaving index is `r-w`. The range `range(w, len(nums))` includes the final index.
+New right index `r`: leaving index `r-w`. The range `range(w, len(nums))` includes the final index.
 
 <!-- lecture-page -->
 
@@ -81,7 +81,7 @@ A fixed-width window moves both boundaries by one position. A variable-width win
 | Longest unique interval | Current character set | While the incoming character is present |
 | Shortest interval reaching a target | Current sum | While the sum reaches the target |
 
-Here `left` and `right` are inclusive endpoints. Length is `right-left+1`; shrinking can leave an empty interval.
+Inclusive endpoints: `left`, `right`. Length: `right-left+1`. Shrinking can leave an empty interval.
 
 <!-- lecture-page -->
 
@@ -89,7 +89,7 @@ Here `left` and `right` are inclusive endpoints. Length is `right-left+1`; shrin
 
 [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) asks for the maximum length of a contiguous substring with no repeated character. A subsequence may skip positions; a substring cannot.
 
-The input has 0 to 100000 characters, including letters, digits, symbols, and spaces. Empty text returns 0.
+Input: 0 to 100000 characters, including letters, digits, symbols, and spaces. Empty text: 0.
 
 A baseline starts an empty set at every left endpoint and scans right until a repeat appears. This revisits intervals and performs <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math> character checks in the worst case.
 
@@ -152,7 +152,7 @@ Under expected O(1) hash-set operations, total time is expected O(n), with O(min
 
 [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) asks for the shortest contiguous interval whose sum is at least `target`. Return 0 when none exists.
 
-Input length is 1 to 100000, each value is 1 to 10000, and `target` is 1 to <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>10</mn><mn>9</mn></msup></math>. All values and the target are positive.
+Input length: 1 to 100000. Each value: 1 to 10000. `target`: 1 to <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>10</mn><mn>9</mn></msup></math>. All values and the target are positive.
 
 For `target=6` and `nums=[1,2,4,2]`, either `[2,4]` or `[4,2]` gives length 2. Accumulating sums separately from every starting position takes <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math> time in the worst case.
 
@@ -189,7 +189,9 @@ def min_subarray(target, nums):
     return 0 if best > len(nums) else best
 ```
 
-`best=n+1` marks that no valid interval has been found. With `target=8` and `[1,2,4]`, the total is insufficient, so the result is 0.
+`best=n+1`: no valid interval found yet
+
+With `target=8` and `[1,2,4]`, the total is insufficient, so the result is 0.
 
 <!-- lecture-page -->
 
@@ -330,7 +332,8 @@ The official problem requires O(1) abstract stack operations. For this dynamic-a
 
 There are 1 to 10000 tokens. Operands are integers from -200 to 200; operators are `+ - * /`. The expression is valid, never divides by zero, and all intermediate results and the answer fit signed 32-bit integers.
 
-Push numbers. For an operator, pop the right operand first and the left operand second, then push the result.
+- Number: push onto the stack
+- Operator: pop right, then left; push the result
 
 <!-- lecture-page -->
 
@@ -403,10 +406,10 @@ Each token causes at most two pops and one push. For t tokens under the bounded-
 1. Explain the final result and retained state of `push(2), push(2), pop(), getMin()`.
 2. Which inputs expose two `MinStack` objects accidentally sharing a list?
 3. In `["9","4","-"]`, which operand is returned by the first `pop`?
-4. Compare `5//-2` with the problem's required result for `5/-2`.
+4. Comparison: `5//-2` with the problem's required result for `5/-2`
 5. How does calling `min(entries)` inside `getMin` change query cost?
 
-Answer checks are in the [worked companion](/courses/practical-algorithms/week-02-reading/).
+Answer checks: in the [worked companion](/courses/practical-algorithms/week-02-reading/)
 
 <!-- lecture-page -->
 
@@ -452,20 +455,20 @@ Use the official LeetCode pages for complete problem statements and constraints.
 
 로그가 길어질 때 구간마다 문자를 다시 모으면 같은 기록을 반복해서 읽습니다. 구간의 양끝이 움직일 때 들어오는 문자와 나가는 문자만 반영하면 어떨까요?
 
-이번 주에는 구간 상태를 갱신하는 방법과, 가장 최근에 저장한 정보부터 꺼내는 스택을 다룹니다.
+이번 주의 주제: 구간 상태 갱신과 가장 최근에 저장한 정보부터 꺼내는 스택
 
 <!-- lecture-page -->
 
 ## 2주차의 문제와 학습 목표
 
-3차시는 고정 길이와 가변 길이 구간을 비교합니다. 4차시는 스택의 깊이별 최솟값과 후위 표기 식의 계산 순서를 다룹니다.
+3차시: 고정 길이와 가변 길이 구간. 4차시: 깊이별 최솟값과 후위 표기 식의 계산 순서.
 
-- 구간 경계와 저장한 상태의 의미를 정의합니다.
-- 포인터의 전체 이동 수로 시간 비용을 계산합니다.
-- 스택에서 복원해야 할 정보와 피연산자 순서를 설명합니다.
-- 양수 조건, 중복 최솟값, 음수 나눗셈을 검증합니다.
+- 구간 경계와 저장 상태의 의미
+- 포인터의 전체 이동 수와 시간 비용
+- 스택의 복원 정보와 피연산자 순서
+- 양수 조건, 중복 최솟값, 음수 나눗셈 검증
 
-실습 문제는 LeetCode 3, 209, 155, 150입니다. 예제와 상태 표는 강의용으로 구성했습니다.
+실습 문제: LeetCode 3, 209, 155, 150. 예제와 상태 표는 강의용으로 구성했습니다.
 
 <!-- lecture-page -->
 
@@ -479,7 +482,7 @@ Use the official LeetCode pages for complete problem statements and constraints.
 | 2 | nums[0] = 1 | nums[2] = 4 | 3 - 1 + 4 = 6 |
 | 3 | nums[1] = 2 | nums[3] = 2 | 6 - 2 + 2 = 6 |
 
-새 오른쪽 인덱스가 `r`이면 나가는 위치는 `r-w`입니다. `range(w, len(nums))`는 마지막 인덱스까지 방문합니다.
+새 오른쪽 인덱스 `r`: 나가는 위치는 `r-w`. `range(w, len(nums))`는 마지막 인덱스까지 방문합니다.
 
 <!-- lecture-page -->
 
@@ -497,7 +500,7 @@ def fixed_window_sums(nums, width):
     return result
 ```
 
-정수 연산을 상수 비용으로 보면 시간은 O(n)입니다. 초기 슬라이스는 O(w) 임시 공간, 결과는 O(n-w+1) 공간을 사용합니다. `total += value`는 누적이고 `total =+ value`는 양의 부호를 붙인 값을 대입합니다.
+정수 연산을 상수 비용으로 보면 시간은 O(n). 공간 비용: 초기 슬라이스 O(w), 결과 O(n-w+1). `total += value`는 누적이고 `total =+ value`는 양의 부호를 붙인 값을 대입합니다.
 
 <!-- lecture-page -->
 
@@ -511,7 +514,7 @@ def fixed_window_sums(nums, width):
 | 중복 없는 최장 구간 | 현재 문자 집합 | 새 문자가 이미 존재하는 동안 |
 | 목표 합 이상의 최단 구간 | 현재 합 | 합이 목표 이상인 동안 |
 
-이 강의에서 `left`와 `right`는 포함되는 양끝입니다. 길이는 `right-left+1`이며, 축소 뒤에는 구간이 비어 있을 수도 있습니다.
+포함되는 양끝: `left`, `right`. 길이: `right-left+1`. 축소 뒤에는 구간이 비어 있을 수도 있습니다.
 
 <!-- lecture-page -->
 
@@ -519,7 +522,7 @@ def fixed_window_sums(nums, width):
 
 [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)는 문자가 중복되지 않는 연속 부분문자열의 최대 길이를 요구합니다. 문자를 건너뛰어 고르는 부분수열과 구분합니다.
 
-입력 길이는 0부터 100000까지이며 영문자·숫자·기호·공백을 포함합니다. 빈 문자열의 답은 0입니다.
+입력: 길이 0~100000의 문자열; 영문자·숫자·기호·공백 포함. 빈 문자열의 답: 0
 
 단순 풀이에서는 시작점마다 빈 집합을 만들고 중복이 나타날 때까지 오른쪽으로 읽습니다. 최악에는 많은 구간을 다시 방문하므로 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math>번 문자를 검사합니다.
 
@@ -527,7 +530,7 @@ def fixed_window_sums(nums, width):
 
 ## 중복 없는 구간의 불변식
 
-새 문자를 넣기 전 `active`는 `text[left:right]`에 있는 서로 다른 문자들의 집합입니다. 새 문자 `char`가 이미 있으면 `text[left]`를 지우고 `left`를 한 칸 옮깁니다.
+새 문자 추가 전 `active`: `text[left:right]`의 서로 다른 문자 집합. 새 문자 `char`가 이미 있으면 `text[left]`를 지우고 `left`를 한 칸 옮깁니다.
 
 중복 문자가 없어질 때까지 반복한 뒤 `char`를 추가합니다. 이제 집합은 양끝을 포함한 `text[left:right+1]`의 문자와 일치하고, 구간 안에는 중복이 없습니다.
 
@@ -572,7 +575,7 @@ def longest_unique(text):
 
 중복 문자의 이전 위치를 포함하는 구간은 새 문자와 함께 사용할 수 없습니다. 그 위치를 지날 때까지만 왼쪽 끝을 옮기므로 각 오른쪽 끝에서 가능한 가장 긴 구간을 검사합니다. 이전에 제외한 시작점은 이미 중복을 포함하므로 다시 유효해지지 않습니다.
 
-오른쪽 포인터는 n번, 왼쪽 포인터는 최대 n번 이동합니다. 중첩된 `while`의 전체 실행 횟수도 최대 n번입니다.
+포인터 이동: 오른쪽 n번, 왼쪽 최대 n번. 중첩된 `while`의 전체 실행 횟수: 최대 n번
 
 해시 집합 연산의 평균 비용을 O(1)로 보면 전체 시간은 평균 O(n), 보조 공간은 O(min(n,a))입니다. a는 입력에서 가능한 문자 종류 수이며, 해시의 최악 비용을 상수라고 가정하지 않습니다.
 
@@ -582,7 +585,7 @@ def longest_unique(text):
 
 [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)은 합이 `target` 이상인 연속 구간의 최소 길이를 요구하며, 해당 구간이 없으면 0을 반환합니다.
 
-입력 길이는 1부터 100000, 각 값은 1부터 10000, `target`은 1부터 <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>10</mn><mn>9</mn></msup></math>입니다. 모든 원소와 목표가 양수입니다.
+입력 길이는 1부터 100000, 각 값은 1부터 10000, `target`은 1부터 <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>10</mn><mn>9</mn></msup></math>. 모든 원소와 목표가 양수
 
 `target=6`, `nums=[1,2,4,2]`이면 `[2,4]` 또는 `[4,2]`의 길이 2가 답입니다. 시작점마다 합을 누적하는 단순 풀이는 최악 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math> 시간입니다.
 
@@ -600,7 +603,7 @@ def longest_unique(text):
 | 2 제거, 축소 종료 | [4] | 4 | 2 |
 | 마지막 2 추가, 기록 | [4,2] | 6 | 2 |
 
-마지막에도 4를 제거한 뒤 합이 2가 되어 축소를 멈춥니다. 길이 기록이 제거보다 먼저입니다.
+마지막에도 4를 제거한 뒤 합이 2가 되어 축소를 멈춥니다. 길이 기록이 제거보다 먼저
 
 <!-- lecture-page -->
 
@@ -619,7 +622,9 @@ def min_subarray(target, nums):
     return 0 if best > len(nums) else best
 ```
 
-`best=n+1`은 유효한 구간을 아직 찾지 못했다는 표시입니다. `target=8`, `[1,2,4]`이면 합이 부족하므로 0을 반환합니다.
+`best=n+1`: 유효한 구간을 아직 찾지 못한 상태
+
+`target=8`, `[1,2,4]`이면 합이 부족하므로 0을 반환합니다.
 
 <!-- lecture-page -->
 
@@ -629,7 +634,7 @@ def min_subarray(target, nums):
 
 합이 충분하면 길이를 기록한 뒤 줄입니다. 버린 시작점은 이미 유효한 길이를 기록했으며, 그 시작점을 이후에 다시 사용하면 더 긴 구간만 만듭니다. 따라서 더 짧은 답을 잃지 않습니다.
 
-각 값은 최대 한 번 더하고 한 번 뺍니다. 고정 폭 정수 연산 모델에서 전체 시간은 O(n), 보조 공간은 O(1)입니다.
+각 값은 최대 한 번 더하고 한 번 뺍니다. 고정 폭 정수 연산 모델에서 전체 시간은 O(n), 보조 공간은 O(1)
 
 <!-- lecture-page -->
 
@@ -648,7 +653,7 @@ def min_subarray(target, nums):
 1. `nums=[1,2,4,2]`, 폭 2에서 마지막 구간의 합은 얼마인가요? 나가는 인덱스도 적습니다.
 2. `"abba"`에서 `while`을 `if`로 바꾸면 처음 어긋나는 상태는 무엇인가요?
 3. `for` 안의 `while`이 전체 O(n)번만 실행되는 근거는 무엇인가요?
-4. `target=3`, `[1,-1,3]`에서 양수 전용 풀이가 반환하는 값과 실제 답을 비교합니다.
+4. `target=3`, `[1,-1,3]`에서 양수 전용 풀이가 반환하는 값과 실제 답을 비교
 
 먼저 답을 적고 [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)의 확인 답과 대조합니다.
 
@@ -675,7 +680,7 @@ right = stack.pop()  # 4
 left = stack.pop()   # 9
 ```
 
-리스트 끝을 스택의 맨 위로 사용합니다. `append`와 끝의 `pop`은 상각 O(1), `stack[-1]`은 O(1)입니다. `pop(0)`은 뒤의 원소를 옮겨 O(d) 시간이 듭니다.
+스택의 맨 위: 리스트 끝. `append`와 끝의 `pop`은 상각 O(1), `stack[-1]`은 O(1). `pop(0)`은 뒤의 원소를 옮겨 O(d) 시간이 듭니다.
 
 빈 리스트에서 `pop()`이나 `[-1]`을 사용하면 예외가 납니다. d는 현재 깊이이며, 상각 비용은 여러 연산에 걸친 총비용으로 계산합니다.
 
@@ -756,11 +761,12 @@ print(first.getMin(), second.getMin())  # 2 7
 
 ## LeetCode 150: 후위 표기와 부분식
 
-[Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)은 연산자가 피연산자 뒤에 오는 식을 계산합니다. `9 4 - -2 /`는 `(9-4)/(-2)`를 뜻하며 결과는 -2입니다.
+[Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)은 연산자가 피연산자 뒤에 오는 식을 계산. `9 4 - -2 /`는 `(9-4)/(-2)`를 뜻하며 결과는 -2
 
 토큰은 1부터 10000개, 피연산자는 -200부터 200의 정수, 연산자는 `+ - * /`입니다. 입력은 유효한 식이며 0으로 나누지 않습니다. 중간 결과와 답은 부호 있는 32비트 범위입니다.
 
-숫자는 스택에 넣습니다. 연산자를 읽으면 먼저 오른쪽, 다음 왼쪽 값을 꺼내 계산한 결과를 다시 넣습니다.
+- 숫자: 스택에 추가
+- 연산자: 오른쪽, 왼쪽 순서로 꺼내 계산한 결과를 스택에 추가
 
 <!-- lecture-page -->
 
@@ -830,7 +836,7 @@ def rpn(tokens):
 
 ## 4차시 이해 확인
 
-1. `push(2), push(2), pop(), getMin()`의 마지막 결과와 보존된 정보를 설명합니다.
+1. `push(2), push(2), pop(), getMin()`의 마지막 결과와 보존된 정보를 설명
 2. `MinStack` 객체 두 개가 같은 리스트를 공유하면 어떤 입력으로 오류를 찾을 수 있나요?
 3. `["9","4","-"]`에서 첫 번째 `pop`은 어느 피연산자인가요?
 4. `5//-2`와 공식 문제의 `5/-2`는 각각 얼마인가요?
@@ -855,7 +861,7 @@ def rpn(tokens):
 
 ## 독립 실습과 제출물
 
-[학생 실습](/courses/practical-algorithms/week-02-practice/)에서 입력·출력·제약을 적은 뒤 `student_week_02.py`에 풀이를 작성합니다. 각 문제에 상태의 의미, 정당성, 시간·공간 비용, 직접 만든 경계 입력을 붙입니다.
+[학생 실습](/courses/practical-algorithms/week-02-practice/)에서 입력·출력·제약을 적은 뒤 `student_week_02.py`에 풀이를 작성합니다. 각 문제에 상태의 의미, 정당성, 시간·공간 비용, 직접 만든 경계 입력을 첨부
 
 [2주차 코드 묶음](/assets/courses/practical-algorithms/week-02-code.zip)에는 실습 파일, 완성 풀이, 실행 예제와 검증 스크립트가 있습니다. 힌트가 필요하면 [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)를 단계별로 확인합니다.
 
@@ -867,7 +873,7 @@ def rpn(tokens):
 
 Erik Demaine·Srini Devadas, [Introduction to Algorithms, MIT 6.006](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011년 가을 학기). 알고리즘의 상태·정당성·비용 분석을 함께 공부합니다.
 
-문제의 전체 정의와 제약은 각 LeetCode 공식 페이지를 사용합니다.
+전체 문제 정의와 제약: 각 LeetCode 공식 페이지
 
 - [3: Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
 - [209: Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)

@@ -44,20 +44,20 @@ Experiments or detailed process calculations take time at each condition. Could 
 
 A model can reproduce its training data and still make large errors at new inputs. Units, operating range, and fixed assumptions also determine what its output means.
 
-This week we define a prediction task and evaluate it on independent data. A small CSTR with a computable reference response lets us check each label.
+This week: prediction-task definition and independent evaluation. A small CSTR with a computable reference response lets us check each label.
 
 <!-- lecture-page -->
 
 ## Predictor fitting and independent evaluation
 
-1. Define inputs, outputs, context, units, and the domain.
-2. Generate steady-state reference data and keep train, validation, and test separate.
-3. Fit a quadratic regression baseline and report test errors in physical units.
-4. Inspect concentration-conversion consistency and where the errors occur.
+1. Input, output, context, units, and domain definition
+2. Steady-state reference data and separate train, validation, and test sets
+3. Quadratic regression baseline and test errors in physical units
+4. Concentration-conversion consistency and locations of large errors
 
 Course roadmap: Week 2 learns multicomponent MLPs; Week 3 adds time response; Week 4 examines physical consistency. Weeks 5-7 address optimization formulations and model structure. Week 8 selects and revalidates operating conditions.
 
-Submit a predictor with an independent evaluation.
+Deliverable: predictor with an independent evaluation.
 
 <!-- lecture-page -->
 
@@ -71,7 +71,7 @@ Submit a predictor with an independent evaluation.
 | Fixed context | Ideal mixing, constant volume/density, first-order A → B, declared rate parameters |
 | Reference | Steady-state solution of the specified CSTR balance |
 
-Feed concentration varies in this prediction task.
+Feed concentration: a variable input in this prediction task.
 
 <!-- lecture-page -->
 
@@ -87,7 +87,7 @@ Here concentrations are in mol/L, time and residence time in minutes, T in kelvi
 
 ## Temperature dependence and operating domain
 
-The rate constant depends on temperature as follows:
+Temperature-dependent rate constant:
 
 <math display="block" aria-label="Educational temperature-dependent rate law"><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><msub><mi>k</mi><mtext>ref</mtext></msub><mi>exp</mi><mo>[</mo><mi>β</mi><mo>(</mo><mfrac><mn>1</mn><msub><mi>T</mi><mtext>ref</mtext></msub></mfrac><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>)</mo><mo>]</mo></math>
 
@@ -136,9 +136,9 @@ At 330 K and 5 min, conversion is 0.5; with feed 1.2 mol/L, outlet concentration
 
 ## 4. Keep data roles separate
 
-Generate 400 train, 120 validation, and 160 test points independently inside the declared box, with seed 42.
+Independent samples within the declared box: 400 train, 120 validation, 160 test; seed 42.
 
-Fit coefficients with train data. Use validation for model choices. Reserve test for the final error report. The supplied baseline has a fixed quadratic basis.
+Data roles: train for coefficient fitting; validation for model choices; test for the final error report. Supplied baseline: a fixed quadratic basis.
 
 <!-- lecture-page -->
 
@@ -148,9 +148,9 @@ Scale each input using its declared lower and upper bounds:
 
 <math display="block" aria-label="Input scaling using the declared domain"><msub><mi>x̃</mi><mi>j</mi></msub><mo>=</mo><mn>2</mn><mfrac><mrow><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow><mrow><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow></mfrac><mo>−</mo><mn>1</mn></math>
 
-Use ten features: a constant, three scaled inputs, three squares, and three pairwise products. The feature matrix Φ is 400 × 10; Y is 400 × 2; B is 10 × 2.
+Ten features: a constant, three scaled inputs, three squares, and three pairwise products. Matrix dimensions: Φ 400 × 10; Y 400 × 2; B 10 × 2.
 
-Fit both outputs by least squares:
+Coefficient fitting for both outputs: least squares
 
 <math display="block" aria-label="Least-squares training of the two-output baseline"><munder><mi>min</mi><mi mathvariant="bold">B</mi></munder><msubsup><mrow><mo>‖</mo><mi mathvariant="bold">Φ</mi><mi mathvariant="bold">B</mi><mo>−</mo><mi mathvariant="bold">Y</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup><mo>,</mo><mspace width="1em"/><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mi>φ</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mi mathvariant="bold">B</mi></math>
 
@@ -160,7 +160,7 @@ At prediction time, keep the fitted regression coefficients fixed and evaluate a
 
 ## 6. Evaluate errors and output consistency
 
-Evaluate each output on the held-out test set:
+Per-output error on the held-out test set:
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
 
@@ -206,7 +206,7 @@ python week01_lab.py --output-dir week01-results --seed 42
 
 The default run saves the dataset, prediction metrics, the reference map, and test parity plots. Compare the [published dataset]({{ '/assets/courses/surrogate-models/week-01/week01_dataset.csv' | relative_url }}) and [recorded results]({{ '/assets/courses/surrogate-models/week-01/results.json' | relative_url }}).
 
-Optional later-topic examples are retained in the script behind `--extensions`.
+Optional later-topic examples: retained in the script behind `--extensions`
 
 <!-- lecture-page -->
 
@@ -218,7 +218,7 @@ Optional later-topic examples are retained in the script behind `--extensions`.
 4. Re-run with another seed and compare held-out errors. Explain why train error alone is insufficient.
 5. For predicted C_A = 0.65 mol/L and X = 0.45 at feed 1.2 mol/L, calculate the consistency residual.
 
-Submit a prediction specification, the fitted baseline, and a test report with units, parity plots, and consistency diagnostics.
+Submission: prediction specification, fitted baseline, and test report with units, parity plots, and consistency diagnostics.
 
 Answer checks: C_A = 0.4 mol/L and X = 2/3 in Question 2; ten features; residual −0.01 mol/L in Question 5.
 
@@ -264,14 +264,14 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 ## 예측 모델의 학습과 독립 평가
 
-1. 입력·출력·고정 조건(context)·단위·영역을 정의합니다.
-2. 정상상태 기준 데이터를 만들고 train·validation·test의 역할을 구분합니다.
-3. 이차 회귀 기준 모델(baseline)을 학습하고 test 오차를 물리 단위로 보고합니다.
-4. 농도와 전환율의 일관성, 오차가 커지는 입력 조건을 살펴봅니다.
+1. 입력·출력·고정 조건(context)·단위·영역 정의
+2. 정상상태 기준 데이터 생성과 train·validation·test 구분
+3. 이차 회귀 기준 모델(baseline) 학습과 물리 단위의 test 오차
+4. 농도·전환율의 일관성과 오차가 커지는 입력 조건
 
 2주차는 다성분 MLP, 3주차는 시간 응답, 4주차는 물리적 일관성을 다룹니다. 5-7주차에서 최적화 정식화와 모델 구조를 배운 뒤, 8주차에는 운전 조건을 선택하고 기준 모델로 재검증합니다.
 
-이번 주에는 독립 평가를 마친 예측 모델을 제출합니다.
+제출물: 독립 평가를 마친 예측 모델
 
 <!-- lecture-page -->
 
@@ -285,7 +285,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 | 고정 context | 이상적 혼합, 일정 부피·밀도, 1차 반응 A → B, 명시한 속도식 파라미터 |
 | 기준값 | 정의한 CSTR 수지의 정상상태 해 |
 
-유입 농도는 이 예측 문제에서 달라지는 입력입니다.
+유입 농도: 이 예측 문제의 가변 입력
 
 <!-- lecture-page -->
 
@@ -301,7 +301,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 ## 온도 의존성과 운전 영역
 
-속도상수는 온도에 따라 아래 식으로 계산합니다.
+온도에 따른 속도상수:
 
 <math display="block" aria-label="교육용 온도 의존 속도식"><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><msub><mi>k</mi><mtext>ref</mtext></msub><mi>exp</mi><mo>[</mo><mi>β</mi><mo>(</mo><mfrac><mn>1</mn><msub><mi>T</mi><mtext>ref</mtext></msub></mfrac><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>)</mo><mo>]</mo></math>
 
@@ -322,7 +322,7 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 <math display="block" aria-label="CSTR 정상상태 농도와 전환율"><msub><mi>C</mi><mi>A</mi></msub><mo>=</mo><mfrac><msub><mi>C</mi><mrow><mi>A</mi><mi>f</mi></mrow></msub><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mi>τ</mi></mrow></mfrac><mo>,</mo><mspace width="1em"/><mi>X</mi><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><msub><mi>C</mi><mi>A</mi></msub><msub><mi>C</mi><mrow><mi>A</mi><mi>f</mi></mrow></msub></mfrac><mo>=</mo><mfrac><mrow><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mi>τ</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mi>τ</mi></mrow></mfrac></math>
 
-온도·체류시간·유입 농도라는 세 입력에서 출구 농도와 전환율을 계산합니다. 이 1차 반응 모델에서는 전환율이 유입 농도에 무관합니다.
+입력 3개: 온도·체류시간·유입 농도. 출력 2개: 출구 농도·전환율. 이 1차 반응 모델에서는 전환율이 유입 농도에 무관합니다.
 
 <!-- lecture-page -->
 
@@ -350,9 +350,9 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 ## 4. Train·validation·test의 역할 나누기
 
-Seed 42로 명시한 영역 안에서 train 400개, validation 120개, test 160개를 독립적으로 생성합니다.
+Seed 42로 명시한 영역 안에서 train 400개, validation 120개, test 160개를 독립적으로 생성
 
-Train으로 계수를 학습하고 validation으로 모델을 선택하며, test는 최종 오차 보고에 사용합니다. 제공하는 기준 모델의 이차 기저함수는 미리 정해져 있습니다.
+데이터 역할: train은 계수 학습, validation은 모델 선택, test는 최종 오차 보고. 제공 기준 모델: 미리 정한 이차 기저함수
 
 <!-- lecture-page -->
 
@@ -362,9 +362,9 @@ Train으로 계수를 학습하고 validation으로 모델을 선택하며, test
 
 <math display="block" aria-label="Input scaling using the declared domain"><msub><mi>x̃</mi><mi>j</mi></msub><mo>=</mo><mn>2</mn><mfrac><mrow><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow><mrow><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow></mfrac><mo>−</mo><mn>1</mn></math>
 
-상수 1개, 크기를 조정한 입력 3개, 제곱 3개, 두 입력의 곱 3개로 총 10개 특징량(feature)을 만듭니다. Φ는 400 × 10, Y는 400 × 2, B는 10 × 2 행렬입니다.
+특징량(feature) 10개: 상수 1개, 크기를 조정한 입력 3개, 제곱 3개, 두 입력의 곱 3개. 행렬 크기: Φ 400 × 10, Y 400 × 2, B 10 × 2
 
-최소제곱법(least squares)으로 두 출력의 회귀 계수를 학습합니다.
+학습: 최소제곱법(least squares)을 통한 두 출력의 회귀 계수 추정
 
 <math display="block" aria-label="Least-squares training of the two-output baseline"><munder><mi>min</mi><mi mathvariant="bold">B</mi></munder><msubsup><mrow><mo>‖</mo><mi mathvariant="bold">Φ</mi><mi mathvariant="bold">B</mi><mo>−</mo><mi mathvariant="bold">Y</mi><mo>‖</mo></mrow><mi>F</mi><mn>2</mn></msubsup><mo>,</mo><mspace width="1em"/><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mi>φ</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mi mathvariant="bold">B</mi></math>
 
@@ -374,11 +374,11 @@ Train으로 계수를 학습하고 validation으로 모델을 선택하며, test
 
 ## 6. 예측 오차와 출력 일관성 확인하기
 
-학습에 사용하지 않은 test 데이터에서 출력별 오차를 계산합니다.
+학습에 사용하지 않은 test 데이터의 출력별 오차:
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
 
-농도 RMSE의 단위는 mol/L입니다. 전환율 RMSE는 무차원이며 0.025608은 약 2.56%p에 해당합니다. 두 예측 출력이 전환율의 정의와도 일치하는지 확인합니다.
+농도 RMSE 단위: mol/L. 전환율 RMSE는 무차원이며 0.025608은 약 2.56%p에 해당합니다. 두 예측 출력이 전환율의 정의와도 일치하는지 확인
 
 <math display="block" aria-label="Consistency residual of concentration and conversion"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><msub><mi>C</mi><mi>Af</mi></msub><mover><mi>X</mi><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
@@ -426,20 +426,20 @@ python week01_lab.py --output-dir week01-results --seed 42
 
 ## 8. 연습문제와 필수 제출물
 
-1. 정상상태 수지에서 C_A와 X를 유도하고 단위를 확인합니다.
-2. 330 K, 10 min, 유입 1.2 mol/L의 응답을 계산합니다.
+1. 정상상태 수지에서 C_A와 X를 유도하고 단위를 확인
+2. 330 K, 10 min, 유입 1.2 mol/L의 응답을 계산
 3. 이차 특징량의 수와 Φ·B·Y의 차원을 적습니다.
 4. 다른 seed로 다시 실행해 독립 평가 오차를 비교하고, train 오차만으로 충분하지 않은 이유를 설명합니다.
 5. 유입 1.2 mol/L에서 예측 C_A = 0.65 mol/L, X = 0.45의 일관성 residual을 구합니다.
 
-예측 문제 정의, 학습한 기준 모델, 단위·parity plot·일관성 진단을 포함한 test 보고서를 제출합니다.
+제출물: 예측 문제 정의, 학습한 기준 모델, 단위·parity plot·일관성 진단을 포함한 test 보고서
 
-답 확인: 2번은 C_A = 0.4 mol/L, X = 2/3입니다. 특징량은 10개이고, 5번 residual은 −0.01 mol/L입니다.
+답 확인: 2번은 C_A = 0.4 mol/L, X = 2/3. 특징량은 10개이고, 5번 residual은 −0.01 mol/L
 
 <!-- lecture-page -->
 
 ## 읽기자료와 다음 예측 문제
 
-[1주차 읽기자료]({{ page.reading_note | relative_url }}) 또는 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 데이터 정의, CSTR 유도, 입력 크기 조정, 회귀와 독립 평가를 계산하고 답을 확인합니다.
+[1주차 읽기자료]({{ page.reading_note | relative_url }}) 또는 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 데이터 정의, CSTR 유도, 입력 크기 조정, 회귀와 독립 평가를 계산하고 답을 확인
 
 예측 모델을 운전 조건 선택에 사용하려면 목적함수와 운전 제약을 정의하고 기준 공정 모델로 재검증해야 합니다. 이 과정은 5-8주차에서 다룹니다.

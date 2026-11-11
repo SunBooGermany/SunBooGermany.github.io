@@ -48,15 +48,15 @@ Can one model predict A, B, and C consistently?
 
 All three concentrations have the same units, but their variation differs. An unscaled loss can emphasize one component.
 
-This week we calculate MLP outputs, follow one gradient update, and evaluate each component.
+This week: MLP outputs, one gradient update, and component-wise evaluation.
 
 <!-- lecture-page -->
 
 ## Learn and check the steady-state MLP
 
-1. Derive steady-state labels for A, B, and C.
-2. Scale the data and follow a forward pass, backpropagation, and one parameter update.
-3. Train the MLP and compare component RMSE and concentration-sum residuals.
+1. Steady-state label derivation for A, B, and C
+2. Data scaling, forward pass, backpropagation, and one parameter update
+3. MLP training; comparison of component RMSE and concentration-sum residuals
 
 <!-- lecture-page -->
 
@@ -143,9 +143,9 @@ The three concentrations have the same units but different variations. In the tr
 
 ## 4. Forward calculation and scaling
 
-Use a 3 → 32 → 32 → 3 MLP, with ReLU hidden layers and a linear output layer:
+MLP architecture: 3 → 32 → 32 → 3; ReLU hidden layers and a linear output layer.
 
-Each hidden layer first computes a weighted sum and bias. ReLU(a) = max(0, a) retains positive values and sets negative values to zero. The weights and biases are the parameters fitted to the concentration data.
+Hidden-layer calculation: weighted sum + bias → ReLU(a) = max(0, a). Positive values retained; negative values set to zero. Parameters fitted to concentration data: weights and biases.
 
 <math display="block" aria-label="MLP forward computation"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">h</mi><mn>1</mn></msub><mo>=</mo><mtext>ReLU</mtext><mo>(</mo><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub><mi mathvariant="bold">x̃</mi><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>1</mn></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">h</mi><mn>2</mn></msub><mo>=</mo><mtext>ReLU</mtext><mo>(</mo><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><msub><mi mathvariant="bold">h</mi><mn>1</mn></msub><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>2</mn></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mover><mi mathvariant="bold">z</mi><mo>^</mo></mover><mo>=</mo><msub><mi mathvariant="bold">W</mi><mn>3</mn></msub><msub><mi mathvariant="bold">h</mi><mn>2</mn></msub><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>3</mn></msub></mrow></mtd></mtr></mtable></math>
 
@@ -164,7 +164,7 @@ Scale the inputs with the declared lower and upper bounds. Standardize each outp
 
 <math display="block" aria-label="Input scaling, output standardization, and inverse transformation"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>x̃</mi><mi>j</mi></msub><mo>=</mo><mn>2</mn><mfrac><mrow><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow><mrow><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow></mfrac><mo>−</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>z</mi><mi>j</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>y</mi><mi>j</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>j</mi></msub></mrow><msub><mi>s</mi><mi>j</mi></msub></mfrac><mo>,</mo><mspace width="1em"/><msub><mover><mi>y</mi><mo>^</mo></mover><mi>j</mi></msub><mo>=</mo><msub><mi>μ</mi><mi>j</mi></msub><mo>+</mo><msub><mi>s</mi><mi>j</mi></msub><msub><mover><mi>z</mi><mo>^</mo></mover><mi>j</mi></msub></mrow></mtd></mtr></mtable></math>
 
-The loss averages squared errors across samples and standardized output components:
+Loss: mean squared error across samples and standardized output components.
 
 <math display="block" aria-label="Mean squared error over samples and standardized output components"><mrow><mi>L</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>3</mn><mi>N</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></munderover><msup><mrow><mo>(</mo><msub><mover><mi>z</mi><mo>^</mo></mover><mrow><mi>n</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>z</mi><mrow><mi>n</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></math>
 
@@ -174,11 +174,11 @@ Thus a concentration error is measured relative to that component's training var
 
 ## 5. Backpropagation: one calculation
 
-Take a 3 → 2 → 3 network with zero biases and the following values. For this calculation, use L = ½‖ŷ − y‖² and learning rate 0.1.
+Calculation example: a 3 → 2 → 3 network with zero biases and the values below. Loss: L = ½‖ŷ − y‖². Learning rate: 0.1.
 
 <math display="block" aria-label="Weights and data for one backpropagation example"><mtable columnalign="left"><mtr><mtd><mrow><mi mathvariant="bold">x</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">y</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-The hidden pre-activation a, hidden activation h, prediction, and error are:
+Hidden pre-activation a, activation h, prediction, and error:
 
 <math display="block" aria-label="Forward computation in the small network"><mrow><mi mathvariant="bold">a</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">h</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">e</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
 
@@ -200,7 +200,7 @@ The bias gradients are δ₁ and δ₂. Update every weight and bias with parame
 
 <div markdown="1">
 
-Use Adam with learning rate 0.001, batches of 64, and up to 1400 epochs. After each epoch, evaluate validation loss and retain the weights at its minimum.
+Training: Adam, learning rate 0.001, batch size 64, up to 1400 epochs. Weight selection: minimum validation loss across epochs.
 
 ```python
 prediction = model(inputs)
@@ -288,7 +288,7 @@ Evaluate the trained predictor by component RMSE and concentration-sum residual.
 3. Compare scaled and unscaled outputs by each component’s RMSE.
 4. Inspect concentration-sum residual and minimum predicted concentration on held-out inputs.
 
-Submit the steady-state model, split/scaling details, checked gradient update, and component/consistency evaluation.
+Submission: steady-state model, split/scaling details, checked gradient update, and component/consistency evaluation.
 
 Original explanations: PyTorch [model construction](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), and [training](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 
@@ -339,14 +339,14 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 ## 정상상태 MLP를 학습하고 확인하기
 
 1. A·B·C의 정상상태 기준값을 유도합니다.
-2. 데이터 크기를 조정하고 순전파·역전파·파라미터 갱신을 한 번씩 계산합니다.
-3. MLP를 학습해 성분별 RMSE와 농도 합 residual을 비교합니다.
+2. 데이터 크기를 조정하고 순전파·역전파·파라미터 갱신을 한 번씩 계산
+3. MLP를 학습해 성분별 RMSE와 농도 합 residual을 비교
 
 <!-- lecture-page -->
 
 ## 1. CSTR의 연속반응 A → B → C
 
-완전혼합·일정 부피·일정 밀도·등온 CSTR에서 1차 연속반응 A → B → C를 다룹니다. 유입물에는 A가 포함되고 B·C의 유입 농도는 0이며, 온도는 운전 입력입니다. 농도 단위는 mol/L, 온도는 K, 시간은 min입니다.
+기준 공정: 완전혼합·일정 부피·일정 밀도·등온 CSTR의 1차 연속반응 A → B → C. 유입: A 포함, B·C 농도 0. 운전 입력: 온도. 단위: 농도 mol/L, 온도 K, 시간 min
 
 <math display="block" aria-label="Concentration balances for consecutive CSTR reactions"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>A</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mi>Af</mi></msub><mo>−</mo><msub><mi>C</mi><mi>A</mi></msub></mrow><mi>τ</mi></mfrac><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>B</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>B</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>C</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>C</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
 
@@ -354,7 +354,7 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 
 ## 속도상수와 운전 영역
 
-두 속도상수의 단위는 1/min이며, 온도에 따라 아래 식으로 계산합니다.
+두 속도상수의 단위는 1/min이며, 온도에 따라 아래 식으로 계산
 
 <math display="block" aria-label="Temperature-dependent first-order rate constants"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>k</mi><mn>1</mn></msub><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><mn>0.2</mn><mi>exp</mi><mo>[</mo><mn>6000</mn><mo>(</mo><mfrac><mn>1</mn><mn>330</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>)</mo><mo>]</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>k</mi><mn>2</mn></msub><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><mn>0.1</mn><mi>exp</mi><mo>[</mo><mn>5000</mn><mo>(</mo><mfrac><mn>1</mn><mn>330</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>)</mo><mo>]</mo></mrow></mtd></mtr></mtable></math>
 
@@ -385,7 +385,7 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 <math display="block" aria-label="Three-component steady-state mapping"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>C</mi><mi>A</mi></msub><mo>=</mo><mfrac><msub><mi>C</mi><mi>Af</mi></msub><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>C</mi><mi>B</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>Af</mi></msub></mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mo>)</mo><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi></mrow><mo>)</mo></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>C</mi><mi>C</mi></msub><mo>=</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
 
-330 K, τ = 5 min, 유입 농도 1.2 mol/L에서 농도는 [0.6, 0.4, 0.2] mol/L입니다. 합은 유입 농도와 같으며, 이 세 농도를 정상상태 MLP의 기준값으로 사용합니다.
+330 K, τ = 5 min, 유입 농도 1.2 mol/L에서 농도는 [0.6, 0.4, 0.2] mol/L. 합은 유입 농도와 같으며, 이 세 농도를 정상상태 MLP의 기준값으로 사용
 
 <!-- lecture-page -->
 
@@ -403,7 +403,7 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 <div markdown="1">
 
-330 K에서 τ*는 약 7.07 min입니다. 짧은 체류시간에서는 B 생성이 부족하고, 체류시간이 길어지면 더 많은 B가 C로 반응합니다.
+330 K에서 τ*는 약 7.07 min. 짧은 체류시간에서는 B 생성이 부족하고, 체류시간이 길어지면 더 많은 B가 C로 반응합니다.
 
 </div>
 
@@ -419,7 +419,7 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 ## 3. 학습 데이터 구성
 
-한 행의 입력은 [T, τ, C_Af], 출력은 [C_A, C_B, C_C]이며 두 배열의 크기는 모두 (N, 3)입니다. 표의 운전 영역에서 train 400개, validation 120개, test 160개를 생성하고 정상상태 식으로 기준값을 계산합니다.
+한 행의 입력은 [T, τ, C_Af], 출력은 [C_A, C_B, C_C]이며 두 배열의 크기는 모두 (N, 3). 표의 운전 영역에서 train 400개, validation 120개, test 160개를 생성하고 정상상태 식으로 기준값을 계산
 
 Train 데이터에서 세 농도의 표준편차는 약 [0.283, 0.110, 0.217] mol/L로, 단위가 같아도 변화 폭은 다릅니다.
 
@@ -427,9 +427,9 @@ Train 데이터에서 세 농도의 표준편차는 약 [0.283, 0.110, 0.217] mo
 
 ## 4. Forward 계산과 scaling
 
-3 → 32 → 32 → 3 MLP를 사용합니다. 은닉층에는 ReLU를 적용하고 출력층은 선형으로 둡니다.
+MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 
-각 은닉층은 입력의 가중합에 bias를 더한 뒤 ReLU(a) = max(0, a)를 적용합니다. 양수는 그대로 통과하고 음수는 0이 되며, 농도 데이터로 학습하는 파라미터는 가중치와 bias입니다.
+은닉층 계산: 가중합 + bias → ReLU(a) = max(0, a). 양수는 통과, 음수는 0. 농도 데이터로 학습하는 파라미터: 가중치와 bias
 
 <math display="block" aria-label="MLP forward computation"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">h</mi><mn>1</mn></msub><mo>=</mo><mtext>ReLU</mtext><mo>(</mo><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub><mi mathvariant="bold">x̃</mi><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>1</mn></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">h</mi><mn>2</mn></msub><mo>=</mo><mtext>ReLU</mtext><mo>(</mo><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><msub><mi mathvariant="bold">h</mi><mn>1</mn></msub><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>2</mn></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><mover><mi mathvariant="bold">z</mi><mo>^</mo></mover><mo>=</mo><msub><mi mathvariant="bold">W</mi><mn>3</mn></msub><msub><mi mathvariant="bold">h</mi><mn>2</mn></msub><mo>+</mo><msub><mi mathvariant="bold">b</mi><mn>3</mn></msub></mrow></mtd></mtr></mtable></math>
 
@@ -444,7 +444,7 @@ Train 데이터에서 세 농도의 표준편차는 약 [0.283, 0.110, 0.217] mo
 
 ## Scaling과 학습 loss
 
-입력은 명시한 하한·상한으로 크기를 조정합니다. 출력은 train 평균 μ와 표준편차 s로 표준화하고, 예측한 뒤 원래 단위로 복원합니다.
+입력은 명시한 하한·상한으로 크기를 조정합니다. 출력은 train 평균 μ와 표준편차 s로 표준화하고, 예측한 뒤 원래 단위로 복원
 
 <math display="block" aria-label="Input scaling, output standardization, and inverse transformation"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>x̃</mi><mi>j</mi></msub><mo>=</mo><mn>2</mn><mfrac><mrow><msub><mi>x</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow><mrow><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>l</mi><mi>j</mi></msub></mrow></mfrac><mo>−</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>z</mi><mi>j</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>y</mi><mi>j</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>j</mi></msub></mrow><msub><mi>s</mi><mi>j</mi></msub></mfrac><mo>,</mo><mspace width="1em"/><msub><mover><mi>y</mi><mo>^</mo></mover><mi>j</mi></msub><mo>=</mo><msub><mi>μ</mi><mi>j</mi></msub><mo>+</mo><msub><mi>s</mi><mi>j</mi></msub><msub><mover><mi>z</mi><mo>^</mo></mover><mi>j</mi></msub></mrow></mtd></mtr></mtable></math>
 
@@ -458,7 +458,7 @@ Train 데이터에서 세 농도의 표준편차는 약 [0.283, 0.110, 0.217] mo
 
 ## 5. Backpropagation 한 번 계산하기
 
-Bias가 모두 0인 3 → 2 → 3 신경망으로 계산합니다. 손실함수는 L = ½‖ŷ − y‖², 학습률은 0.1입니다.
+계산 예제: bias가 모두 0인 3 → 2 → 3 신경망. 손실함수: L = ½‖ŷ − y‖². 학습률: 0.1
 
 <math display="block" aria-label="Weights and data for one backpropagation example"><mtable columnalign="left"><mtr><mtd><mrow><mi mathvariant="bold">x</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">y</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr></mtable></math>
 
@@ -484,7 +484,7 @@ Bias gradient는 각각 δ₁, δ₂입니다. 모든 가중치와 bias를 param
 
 <div markdown="1">
 
-Adam을 학습률 0.001, batch 64, 최대 1400 epoch로 실행합니다. 매 epoch 뒤 validation loss를 계산해 가장 작은 값의 가중치를 저장합니다.
+학습 설정: Adam, 학습률 0.001, batch 64, 최대 1400 epoch. 가중치 선택: 매 epoch의 validation loss 중 최솟값
 
 ```python
 prediction = model(inputs)
@@ -523,7 +523,7 @@ optimizer.step()
 
 <math display="block" aria-label="Concentration-sum residual"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>B</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>C</mi></msub><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
-Test residual RMSE는 {{ result.steady_balance }} mol/L입니다. 성분별 오차로 예측 정확도를, 농도 합 residual로 해당 수지의 일관성을 평가합니다.
+Test residual RMSE는 {{ result.steady_balance }} mol/L. 성분별 오차로 예측 정확도를, 농도 합 residual로 해당 수지의 일관성을 평가
 
 수지를 만족하는 기준값으로 학습해도 세 선형 출력의 합이 유입 농도와 같도록 강제되지는 않습니다.
 
@@ -561,18 +561,18 @@ python -m pip install -r requirements.txt
 python week02_lab.py --mode steady --output-dir week02-results
 ```
 
-학습한 예측 모델의 성분별 RMSE와 농도 합 residual을 평가합니다.
+학습한 예측 모델의 성분별 RMSE와 농도 합 residual을 평가
 
 <!-- lecture-page -->
 
 ## 8. 필수 연습문제와 제출물
 
 1. C_A·C_B·C_C를 유도해 합을 확인하고, B 곡선이 단조롭지 않은 이유를 설명합니다.
-2. 정상상태 MLP의 파라미터 1283개와 손으로 계산한 gradient 갱신을 확인합니다.
-3. 출력 scaling 전후의 성분별 RMSE를 비교합니다.
+2. 정상상태 MLP의 파라미터 1283개와 손으로 계산한 gradient 갱신을 확인
+3. 출력 scaling 전후의 성분별 RMSE를 비교
 4. 독립 입력에서 농도 합 residual과 최소 예측 농도를 살펴봅니다.
 
-정상상태 모델, 데이터 분할·scaling 정보, 확인한 gradient 갱신과 성분별 오차·일관성 평가를 제출합니다.
+제출물: 정상상태 모델, 데이터 분할·scaling 정보, 확인한 gradient 갱신, 성분별 오차·일관성 평가
 
 구현 설명은 PyTorch의 [모델 구성](https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html), [autograd](https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html), [학습](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html)을 참고합니다.
 
@@ -580,6 +580,6 @@ python week02_lab.py --mode steady --output-dir week02-results
 
 ## 읽기자료
 
-[2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력의 관계식, 파라미터 수, scaling, gradient 갱신과 학습 과정을 계산하고 독립 평가를 확인합니다.
+[2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력의 관계식, 파라미터 수, scaling, gradient 갱신과 학습 과정을 계산하고 독립 평가를 확인
 
 KKT-hPINN 참고문헌: Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, 189, 108764.
