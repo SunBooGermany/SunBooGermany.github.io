@@ -6,7 +6,7 @@ description: "Bounds, scaling, OMLT, and solver interpretation with open-source 
 description_ko: "Bounds와 scaling을 조정하고 오픈소스 HiGHS로 신경망 기반 최적화를 풀어 결과를 해석합니다."
 material_label: "Week 6"
 material_label_ko: "6주차"
-updated: "2026-10-31"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-06/"
 pdf_en: "/assets/courses/surrogate-models/week-06-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-06-ko.pdf"
@@ -359,7 +359,7 @@ python week06_lab.py --output-dir my-results
 
 [HiGHS and its MIT license](https://highs.dev/) · [Pyomo HiGHS interface](https://pyomo.readthedocs.io/en/stable/api/pyomo.contrib.appsi.solvers.highs.Highs.html)
 
-Work through the companion derivations of the triangle relaxation, OBBT bound directions, scaling, and gaps. Strong multivariate and partition formulations are optional extensions.
+
 
 <!-- ko -->
 
@@ -703,5 +703,3 @@ python week06_lab.py --output-dir my-results
 [Anderson 등, Strong mixed-integer programming formulations for trained neural networks, Mathematical Programming, 2020](https://arxiv.org/abs/1811.01988)
 
 [HiGHS 공식 사이트와 MIT 라이선스 안내](https://highs.dev/) · [Pyomo의 HiGHS 인터페이스](https://pyomo.readthedocs.io/en/stable/api/pyomo.contrib.appsi.solvers.highs.Highs.html)
-
-읽기자료에서 삼각형 완화 유도, OBBT의 bound 방향, scaling과 gap 계산을 따라갑니다. Anderson 등의 다변수 강한 정식화와 partition formulation은 선택 심화

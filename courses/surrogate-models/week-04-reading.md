@@ -6,7 +6,7 @@ description: "Residual losses, KKT projection, scaling, and differentiable physi
 description_ko: "Residual loss, KKT 투영, scaling과 미분 가능한 물리 등식을 다룹니다."
 material_label: "Week 4 reading"
 material_label_ko: "4주차 읽기자료"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-04-reading/"
 pdf_en: "/assets/courses/surrogate-models/week-04-reading-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-04-reading-ko.pdf"
@@ -204,7 +204,7 @@ Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neura
 
 ## 17. Sources for mathematics and implementation
 
-Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [Official book](https://web.stanford.edu/~boyd/cvxbook/). Use Section 5.5.3 on KKT conditions and Section 10.1 on equality-constrained minimization to rederive companion pages 3-4.
+Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [Official book](https://web.stanford.edu/~boyd/cvxbook/). Sections 5.5.3 (KKT conditions) and 10.1 (equality-constrained minimization).
 
 PyTorch: [torch.linalg.solve](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html) solves a linear system without explicitly forming an inverse. [gradcheck](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html) compares automatic differentiation with finite differences; default tolerances assume double precision.
 
@@ -402,7 +402,7 @@ Raissi, M., Perdikaris, P., & Karniadakis, G. E. (2019). *Physics-informed neura
 
 ## 17. 수학과 구현을 확인할 원문
 
-Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [공식 교재](https://web.stanford.edu/~boyd/cvxbook/). 5.5.3절의 KKT 조건과 10.1절의 등식 제약 최소화를 사용해 읽기자료 3-4쪽을 다시 유도합니다.
+Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*. [공식 교재](https://web.stanford.edu/~boyd/cvxbook/). 5.5.3절: KKT 조건. 10.1절: 등식 제약 최소화.
 
 PyTorch: [torch.linalg.solve](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.solve.html)는 역행렬을 명시적으로 만들지 않고 선형계를 풉니다. [gradcheck](https://docs.pytorch.org/docs/2.9/generated/torch.autograd.gradcheck.gradcheck.html)는 자동미분과 유한차분을 대조하며 기본 tolerance는 double precision을 전제로 합니다.
 

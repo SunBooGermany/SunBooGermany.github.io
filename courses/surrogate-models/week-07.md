@@ -6,7 +6,7 @@ description: "Check ICNN/PICNN convexity conditions and build a ReLU epigraph LP
 description_ko: "ICNN·PICNN의 convexity 조건을 확인하고, ReLU epigraph로 유효한 LP와 동치성이 깨지는 반례를 계산합니다."
 material_label: "Week 7"
 material_label_ko: "7주차"
-updated: "2026-11-01"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-07/"
 pdf_en: "/assets/courses/surrogate-models/week-07-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-07-ko.pdf"
@@ -285,7 +285,7 @@ Companion: derivations and short answer checks.
 
 ## Companion and primary sources
 
-The [Week 7 companion](/courses/surrogate-models/week-07-reading/) works through epigraph equivalence, LP matrices, sign-constrained fitting, and counterexamples.
+[Week 7 companion](/courses/surrogate-models/week-07-reading/)
 
 [Amos, Xu and Kolter, Input Convex Neural Networks, ICML 2017, pp. 146-155](https://proceedings.mlr.press/v70/amos17b.html)
 
@@ -555,7 +555,7 @@ python week07_lab.py --output-dir my-results
 3. 학습 모델의 knot 간격을 0.1에서 0.05로 바꿔 예측 오차와 기준 비용 손실을 비교
 4. c를 고정해야 하는 이유와 현재 모델에 허용된 출력 사용 방식을 설명합니다.
 
-읽기자료에서 유도 과정과 짧은 답을 확인
+
 
 <!-- lecture-page -->
 

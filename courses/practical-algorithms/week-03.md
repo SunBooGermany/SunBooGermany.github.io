@@ -4,7 +4,7 @@ title: "Week 3: Binary search and linked lists"
 title_ko: "3주차: 이진 탐색과 연결 리스트"
 course_id: "practical-algorithms"
 permalink: "/courses/practical-algorithms/week-03/"
-updated: "2026-11-11"
+updated: "2026-11-12"
 material_label: "Week 3 lecture"
 material_label_ko: "3주차 강의"
 pdf_en: "/assets/courses/practical-algorithms/week-03-en.pdf"
@@ -22,9 +22,7 @@ A device stores sorted measurements in rows. When a new reading arrives, can we 
 
 This week uses candidate intervals for search and changes links to reverse or merge lists.
 
-<!-- lecture-page -->
-
-## Week 3 problems and learning outcomes
+### Learning outcomes
 
 Session 5: matrix and rotated-array search. Session 6: list reversal and sorted-list merge.
 
@@ -32,65 +30,44 @@ Session 5: matrix and rotated-array search. Session 6: list reversal and sorted-
 - Explain discarded candidates and preserved nodes.
 - Trace updates, prove termination, and analyze cost.
 
-Practice: LeetCode 74, 33, 206, 21. Examples and traces are original teaching examples.
+Practice: LeetCode 74, 33, 206, 21.
 
 <!-- lecture-page -->
 
-## Closed interval and Python indexing
+## Positions and node references
 
-- Candidate indices: `left` through `right`, both included
-- Initial bounds: `left=0`, `right=n-1`
-- Continue while `left <= right`
-- Exclude the checked midpoint with `mid+1` or `mid-1`
-- Row/column mapping: integer division `//` and remainder `%`
+An array directly accesses position i by index. A linked list follows next references from its head. Two nodes with the same value 2 can still be distinct objects.
 
-<!-- lecture-page -->
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val, self.next = val, next
+```
 
-## Search interval: preservation and progress
+![Save the successor before reversing the current link](/assets/courses/practical-algorithms/curriculum/reverse-links.svg)
 
-For sorted `[2,4,7,9]`, target `7`:
-
-| Bounds | Middle | Comparison | Next bounds |
-| --- | --- | --- | --- |
-| [0,3] | 1 | 4 < 7 | [2,3] |
-| [2,3] | 2 | 7 = 7 | found |
-
-Invariant: any target occurrence remains in `[left,right]`. Each unsuccessful comparison removes the midpoint and one side. Exit with `left > right`: no candidate remains.
+The diagram processes node 2. Preserve node 3 as following before changing 2’s next to node 1. A node’s value and its links are different data. `node = node.next` moves a local reference; `node.next = other` changes the structure.
 
 <!-- lecture-page -->
 
-## 74 · Problem and state
+## 74 · Idea and execution trace
 
 [LeetCode 74: Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) · Medium
 
 Return whether target occurs in the matrix.
 
-`matrix=[[1,4,7],[9,12,18]], target=12 → True`
+Each row is sorted and its first value exceeds the previous row’s last value. Reading rows consecutively therefore gives one sorted sequence. Search that virtual sequence without copying it; translate each position into a row and column.
 
-Keep a closed candidate interval [left,right]; read mid at row mid//C and column mid%C.
+`matrix=[[1,3,5],[7,9,11]], target=9`. Bounds are shown before each comparison.
 
-<!-- lecture-page -->
-
-## Flattening a matrix by index
-
-For three columns, flat index 4 corresponds to row `4 // 3 = 1` and column `4 % 3 = 1`. The matrix remains unchanged and no flattened list is created.
-
-The row order alone is insufficient: the first value of each row must exceed the final value of the preceding row.
+| left,right | mid | row,col | Value | Next action |
+| --- | --- | --- | --- | --- |
+| 0,5 | 2 | 0,2 | 5 | 5 < 9 → left=3 |
+| 3,5 | 4 | 1,1 | 9 | Return True |
 
 <!-- lecture-page -->
 
-## State trace
-
-| left,right | mid | value | target=12 next interval |
-| --- | --- | --- | --- |
-| 0,5 | 2 | 7 | [3,5] |
-| 3,5 | 4 | 12 | found |
-
-Explain the discarded candidates, preserved state, and next position at each row.
-
-<!-- lecture-page -->
-
-## Matrix search implementation
+## 74 · Turning the idea into code
 
 ```python
 def search_matrix(matrix, target):
@@ -108,37 +85,41 @@ def search_matrix(matrix, target):
     return False
 ```
 
+`mid // cols` counts complete rows before the position; `mid % cols` locates it within a row. Position 4 with three columns is row 1, column 1.
+
+If the value is too small, discard through mid; if too large, discard from mid onward. Excluding the tested position guarantees progress even with one candidate left.
+
 <!-- lecture-page -->
 
-## 74 · Correctness and cost
+## 74 · Why it works; time and memory
 
 The cross-row property makes the flattened order sorted. Comparisons eliminate an impossible half; every update shrinks the interval, and an empty interval means absence.
 
-R,C are row/column counts. O(log(RC)) time, O(1) auxiliary space; no flattened copy.
+For N=R·C elements, comparisons reduce the candidates roughly to N/2, N/4, and so on. N=8 needs at most four comparisons; time is O(log(N+1)). Index arithmetic and each list lookup cost O(1).
+
+No flattened list is built. Only a fixed number of indices and values are retained, so auxiliary space is O(1). Copying the matrix into a new sequence would change this space bound.
 
 <!-- lecture-page -->
 
-## 33 · Problem and state
+## 33 · Idea and execution trace
 
 [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
 
 Return target’s index in a rotated sorted array, or -1.
 
-`nums=[6,8,1,3,5], target=3 → 3`
+Although a rotated array is not globally sorted, with distinct values at least one half around mid is sorted. Identify that half, then test whether target lies within its value range to decide which half to discard.
 
-Identify a sorted half and retain it only when its value range contains target.
+`nums=[4,5,6,7,0,1,2], target=0`
 
-<!-- lecture-page -->
-
-## Rotated array: retain a sorted half
-
-In `[6,8,1,3,5]`, the midpoint is 1. The right half `[1,3,5]` is sorted and contains target 3, so discard the left half and the checked midpoint.
-
-When values are distinct, at least one half is sorted. Compare the target with that half's endpoints before choosing the remaining interval.
+| left,mid,right | Sorted half | Target test | Update |
+| --- | --- | --- | --- |
+| 0,3,6 | Left: 4..7 | 0 is outside | left=4 |
+| 4,5,6 | Left: 0..1 | 0 is inside | right=4 |
+| 4,4,4 | nums[4]=0 | Match | Return 4 |
 
 <!-- lecture-page -->
 
-## Rotated array implementation
+## 33 · Turning the idea into code
 
 ```python
 def search_rotated(nums, target):
@@ -160,87 +141,42 @@ def search_rotated(nums, target):
     return -1
 ```
 
+`nums[left] <= nums[mid]` identifies a sorted left half. Keep it only when `nums[left] <= target < nums[mid]`. Equality at mid was already tested, hence the strict inequality at that end.
+
+The sorted-right case is symmetric. Sorting again would change the original positions that the function must return.
+
 <!-- lecture-page -->
 
-## 33 · Correctness and cost
+## 33 · Why it works; time and memory
 
 Distinct values and one rotation ensure a sorted half. Range tests discard only an impossible half; mid±1 guarantees progress.
 
-n is length. O(log n) time, O(1) auxiliary space.
+Each iteration retains only one half, excluding mid. There are O(log(n+1)) iterations, each with a fixed number of comparisons and lookups.
+
+No new array or recursive call stack is created, so auxiliary space is O(1). With duplicates, an input such as `[1,1,1,0,1]` can have equal endpoints and midpoint, hiding which half is sorted. This code and bound depend on distinct values.
 
 <!-- lecture-page -->
 
-## Failure inputs and concept checks
-
-left=mid can stall on two candidates. [[1,9],[2,10]] has sorted rows but violates this contract.
-
-Does minimum-feasible search have the same exit meaning?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Session 6 · Node references and link updates
-
-Reorder queued record objects without recreating them. Reuse the existing nodes and change their next references. Trace the order: save the next reference, then reverse the current link.
-
-<!-- lecture-page -->
-
-## Node construction and references
-
-```python
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-```
-
-`ListNode(4)` creates a node. `self.val` stores its value; `self.next` refers to its successor. `None` marks the end.
-
-<!-- lecture-page -->
-
-## References and node identity
-
-A node stores a value and a reference to the next node. `a = b` gives two names for the same object; changing `a.next` changes that object's link.
-
-Equal values do not imply identical nodes. `None` marks the end of a singly linked list.
-
-<!-- lecture-page -->
-
-## 206 · Problem and state
+## 206 · Idea and execution trace
 
 [LeetCode 206: Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) · Easy
 
 Reverse a singly linked list and return its new head.
 
-`head=[4,6,9] → [9,6,4]`
+A linked list’s order is determined by next links. Reverse each link without allocating replacement nodes. Save the original successor before changing the link, or the unprocessed remainder becomes unreachable.
 
-Save following, redirect current.next to previous, then advance both references.
+Input: `1 → 2 → 3 → None`. Each row is the state after one loop body.
 
-<!-- lecture-page -->
-
-## Reversing one link
-
-For `4 → 6 → 9`, save `following = current.next` before setting `current.next = previous`. Then advance both references.
-
-`previous` starts at `None`; it becomes the new head when `current` reaches `None`. The algorithm reuses the original nodes.
-
-<!-- lecture-page -->
-
-## State trace
-
-| step | previous | current | saved following |
-| --- | --- | --- | --- |
-| start | None | 4→6→9 | unset |
-| 4 process | 4→None | 6→9 | 6 |
-| 6 process | 6→4 | 9 | 9 |
-| 9 process | 9→6→4 | None | None |
-
-Explain how each node moves from the unprocessed suffix to the reversed prefix.
+| Node processed | Chain at previous | Chain at current |
+| --- | --- | --- |
+| None yet | None | 1 → 2 → 3 |
+| 1 | 1 → None | 2 → 3 |
+| 2 | 2 → 1 → None | 3 |
+| 3 | 3 → 2 → 1 → None | None |
 
 <!-- lecture-page -->
 
-## List reversal implementation
+## 206 · Turning the idea into code
 
 ```python
 def reverse_list(head):
@@ -252,39 +188,47 @@ def reverse_list(head):
     return previous
 ```
 
+`following = current.next` preserves the successor. `current.next = previous` reverses one link. The final simultaneous assignment advances previous to the processed node and current to the saved successor.
+
+When current is None, no node remains to process and previous is the new head. An empty input skips the loop and returns None.
+
 <!-- lecture-page -->
 
-## 206 · Correctness and cost
+## 206 · Why it works; time and memory
 
 previous holds the reversed prefix and current the untouched suffix. Moving one node preserves all nodes; when current is None, previous is the full reversed list.
 
-n is node count. O(n) time, O(1) auxiliary space; nodes are reused.
+Each of n nodes is visited once, with a fixed number of reference assignments per visit, giving O(n) time. Reversing the first link does not reverse later links; every node must be processed.
+
+Only previous, current, and following are added. Existing nodes are reused, so auxiliary space is O(1) and no output nodes are allocated. The O(n) input structure is distinct from extra workspace. A recursive implementation would need O(n) call-stack space.
 
 <!-- lecture-page -->
 
-## 21 · Problem and state
+## 21 · Idea and execution trace
 
 [LeetCode 21: Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) · Easy
 
 Splice two sorted linked lists into one sorted list.
 
-`first=[1,5], second=[2,3] → [1,2,3,5]`
+The smallest remaining value must be at one of the two sorted-list heads. Attach the smaller head to the result tail and advance only that input. There is no need to search farther down either list.
 
-Maintain tail after a dummy node; link the smaller head, then attach the remaining suffix.
+A=`1 → 4`, B=`2 → 3`. Links beyond tail may still point into an input until the next assignment replaces them.
+
+| Choice | Finalized result prefix | A head | B head |
+| --- | --- | --- | --- |
+| Initial | Empty | 1 | 2 |
+| A: 1 | 1 | 4 | 2 |
+| B: 2 | 1 → 2 | 4 | 3 |
+| B: 3 | 1 → 2 → 3 | 4 | None |
+| Attach remaining A | 1 → 2 → 3 → 4 | 4 | None |
 
 <!-- lecture-page -->
 
-## Merging sorted lists
-
-For `1 → 5` and `2 → 3`, append the smaller head to the tail: choose 1, then 2, then 3, and attach the remaining 5.
-
-A dummy node makes the first insertion follow the same rule as later insertions. Return `dummy.next`; the dummy is not an input node.
-
-<!-- lecture-page -->
-
-## Sorted list merge implementation
+## 21 · Turning the idea into code
 
 ```python
+from structures import ListNode
+
 def merge_lists(first, second):
     dummy = tail = ListNode()
     while first and second:
@@ -297,48 +241,35 @@ def merge_lists(first, second):
     return dummy.next
 ```
 
+The dummy node makes the first attachment use the same operation as later attachments. Simultaneous assignment attaches the old first node and advances first to its original successor.
+
+Once either list is empty, the other remainder is already sorted. `tail.next = first or second` attaches that chain in one operation. The returned head excludes dummy.
+
 <!-- lecture-page -->
 
-## 21 · Correctness and cost
+## 21 · Why it works; time and memory
 
 The prefix through tail is sorted. The smaller head is minimal among all remaining nodes; the leftover suffix is already sorted.
 
-n,m are node counts. O(n+m) time, O(1) auxiliary space; input links change.
+For lengths n and m, each iteration finalizes one node. Alternating choices can require O(n+m) work. The final remainder attachment itself costs O(1).
+
+One dummy node and a fixed number of references give O(1) auxiliary space. The result has n+m nodes, but these are reused input nodes. Preserving both input chains would require a copying implementation with O(n+m) new-node space.
 
 <!-- lecture-page -->
 
-## Failure inputs and concept checks
+## Exercises and sources
 
-Overwriting without saving next loses the suffix. Two nodes with equal values are still different objects.
+[LeetCode · 74, 33, 206, 21](/courses/practical-algorithms/week-03-practice/) · [Worked solutions](/courses/practical-algorithms/week-03-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-03-code.zip)
 
-Are two equal-valued nodes one visited object?
+```text
+python demo_05.py
+python demo_06.py
+python verify.py
+```
 
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
+After implementing the student file, check it with `python verify.py --student`.
 
-<!-- lecture-page -->
-
-## Baseline methods and cost
-
-| Task | Baseline | Current method |
-| --- | --- | --- |
-| Matrix search | scan: O(RC) | indexed search: O(log(RC)) |
-| Rotated search | scan: O(n) | sorted-half search: O(log n) |
-| Reverse list | store nodes: O(n) extra space | relink: O(1) extra space |
-| Merge lists | collect/sort nodes: O(N log N) time | merge: O(N) time |
-
-Here N=n+m. Costs assume constant-time integer comparisons and reference operations. Input adapters and test checks allocate extra storage outside the algorithms.
-
-<!-- lecture-page -->
-
-## Independent practice and sources
-
-Implement `student_week_03.py` before reading the solutions. Submit state definitions, correctness arguments, cost analysis, and boundary inputs.
-
-[Exercises](/courses/practical-algorithms/week-03-practice/) · [Worked companion](/courses/practical-algorithms/week-03-reading/) · [Instructor guide](/courses/practical-algorithms/week-03-instructor/)
-
-[Week 3 code](/assets/courses/practical-algorithms/week-03-code.zip): run `python verify.py`; use `--student` to check your implementation.
-
-Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
 
 <!-- ko -->
 
@@ -348,9 +279,7 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 
 이번 주에는 후보 구간으로 값을 탐색하고 노드의 연결을 바꿔 리스트를 뒤집거나 병합합니다.
 
-<!-- lecture-page -->
-
-## 3주차 문제와 학습 목표
+### 학습 목표
 
 5차시: 행렬·회전 배열 탐색. 6차시: 리스트 뒤집기·정렬 리스트 병합.
 
@@ -358,65 +287,44 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 - 제거한 후보와 보존한 노드 설명
 - 갱신 추적·종료 근거·비용 분석
 
-실습: LeetCode 74, 33, 206, 21. 예시와 추적 표는 강의용으로 구성했습니다.
+실습: LeetCode 74, 33, 206, 21.
 
 <!-- lecture-page -->
 
-## 닫힌 구간과 Python 인덱스
+## 위치와 노드 참조
 
-- 후보 인덱스: `left`부터 `right`까지 양 끝 포함
-- 초기 경계: `left=0`, `right=n-1`
-- 반복 조건: `left <= right`
-- 검사한 중간점 제외: `mid+1` 또는 `mid-1`
-- 행·열 변환: 정수 나눗셈 `//`, 나머지 `%`
+배열의 i번째 원소는 인덱스로 직접 읽습니다. 연결 리스트는 노드가 다음 노드를 가리키므로 머리에서 next를 따라 이동합니다. 같은 값 2를 가진 노드 두 개도 서로 다른 객체일 수 있습니다.
 
-<!-- lecture-page -->
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val, self.next = val, next
+```
 
-## 탐색 구간의 보존과 축소
+![연결을 뒤집기 전에 다음 노드를 보존하는 과정](/assets/courses/practical-algorithms/curriculum/reverse-links.svg)
 
-정렬된 `[2,4,7,9]`, 목표값 `7`:
-
-| 구간 | 중간 인덱스 | 비교 | 다음 구간 |
-| --- | --- | --- | --- |
-| [0,3] | 1 | 4 < 7 | [2,3] |
-| [2,3] | 2 | 7 = 7 | 발견 |
-
-불변식: 목표값이 있다면 `[left,right]` 안에 존재. 비교가 실패할 때마다 중간점과 한쪽 구간을 제거합니다. `left > right`이면 남은 후보가 없습니다.
+그림은 2를 처리할 때입니다. following으로 3을 보존한 뒤 2의 next를 1로 바꿉니다. 노드의 값과 노드 사이 연결은 서로 다른 데이터입니다. `node = node.next`는 지역 참조만 옮기고 `node.next = other`는 연결을 바꿉니다.
 
 <!-- lecture-page -->
 
-## 74 · 문제와 상태
+## 74 · 풀이의 출발점과 실행 추적
 
 [LeetCode 74: Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) · Medium
 
 행렬에서 target의 존재 여부를 반환합니다.
 
-`matrix=[[1,4,7],[9,12,18]], target=12 → True`
+각 행이 정렬되어 있고 다음 행의 첫 값이 앞 행의 마지막 값보다 큽니다. 따라서 행을 이어 붙였다고 생각하면 하나의 정렬된 배열입니다. 실제로 복사할 필요 없이 가상의 위치를 행·열 번호로 바꿉니다.
 
-[left,right]를 닫힌 후보 구간으로 두고 mid//C, mid%C로 값을 읽습니다.
+`matrix=[[1,3,5],[7,9,11]], target=9`. 비교 직전의 범위와 갱신 결과입니다.
 
-<!-- lecture-page -->
-
-## 행렬의 평탄 인덱스
-
-열이 세 개인 행렬에서 평탄 인덱스 4는 행 `4 // 3 = 1`, 열 `4 % 3 = 1`에 해당합니다. 행렬은 그대로 두고 평탄 리스트를 생성하지 않습니다.
-
-각 행의 정렬만으로는 부족합니다. 각 행의 첫 값이 이전 행의 마지막 값보다 커야 전체 순서가 정렬됩니다.
+| left,right | mid | 행,열 | 값 | 다음 동작 |
+| --- | --- | --- | --- | --- |
+| 0,5 | 2 | 0,2 | 5 | 5 < 9 → left=3 |
+| 3,5 | 4 | 1,1 | 9 | True 반환 |
 
 <!-- lecture-page -->
 
-## 상태 추적
-
-| left,right | mid | 값 | target=12의 다음 범위 |
-| --- | --- | --- | --- |
-| 0,5 | 2 | 7 | [3,5] |
-| 3,5 | 4 | 12 | 발견 |
-
-각 행에서 사라진 후보, 보존한 상태, 다음에 읽을 위치를 설명합니다.
-
-<!-- lecture-page -->
-
-## 행렬 탐색 구현
+## 74 · 아이디어를 코드로 옮기기
 
 ```python
 def search_matrix(matrix, target):
@@ -434,37 +342,41 @@ def search_matrix(matrix, target):
     return False
 ```
 
+`mid // cols`는 앞에서 완전히 지난 행 수, `mid % cols`는 현재 행 안의 위치입니다. 예를 들어 4를 3으로 나누면 행 1, 열 1입니다.
+
+값이 작으면 mid까지, 크면 mid부터 제거합니다. 이미 비교한 mid를 다시 남기지 않으므로 원소 하나가 남아도 탐색이 끝납니다.
+
 <!-- lecture-page -->
 
-## 74 · 정당성과 비용
+## 74 · 정당성·시간·메모리의 근거
 
 행 사이 조건까지 있으므로 평탄 배열은 정렬되어 있습니다. mid가 target보다 작으면 mid 이하를 제거합니다. 매 반복 구간이 줄고, 종료하면 후보가 없습니다.
 
-R,C=행·열 수. O(log(RC)) 시간, O(1) 보조 공간. 평탄 복사하지 않습니다.
+원소 수를 N=R·C라 하면 비교 후 후보가 대략 N/2, N/4, …로 줄어듭니다. N=8이면 최대 4번 비교하며, 일반적으로 시간은 O(log(N+1))입니다. 각 비교의 행·열 계산과 리스트 접근은 O(1)입니다.
+
+행렬을 평탄화한 새 리스트를 만들지 않습니다. left, right, mid 등 고정 개수의 값만 추가하므로 보조 공간은 O(1)입니다. `sum(matrix, [])` 같은 복사는 이 공간 분석에 포함되지 않는 다른 구현입니다.
 
 <!-- lecture-page -->
 
-## 33 · 문제와 상태
+## 33 · 풀이의 출발점과 실행 추적
 
 [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
 
 회전된 정렬 배열에서 target의 위치를 반환하고 없으면 -1입니다.
 
-`nums=[6,8,1,3,5], target=3 → 3`
+회전된 배열 전체는 정렬되어 있지 않아도, 서로 다른 값이라는 조건에서는 mid를 기준으로 적어도 한쪽 절반이 정렬되어 있습니다. 먼저 정렬된 쪽을 찾고, target이 그 값 범위에 들어가는지 확인하면 버릴 절반을 결정할 수 있습니다.
 
-정렬된 절반을 식별하고 target이 그 범위에 있는지로 남길 절반을 정합니다.
+`nums=[4,5,6,7,0,1,2], target=0`
 
-<!-- lecture-page -->
-
-## 회전 배열의 정렬된 절반
-
-`[6,8,1,3,5]`의 중간값은 1입니다. 오른쪽 절반 `[1,3,5]`은 정렬되어 있고 목표값 3을 포함하므로 왼쪽 절반과 확인한 중간값을 제거합니다.
-
-서로 다른 값으로 구성된 회전 배열에서는 적어도 한쪽 절반이 정렬됩니다. 그 절반의 양 끝값과 목표값을 비교해 남길 구간을 정합니다.
+| left,mid,right | 정렬된 쪽 | target 검사 | 갱신 |
+| --- | --- | --- | --- |
+| 0,3,6 | 왼쪽: 4..7 | 0은 범위 밖 | left=4 |
+| 4,5,6 | 왼쪽: 0..1 | 0은 범위 안 | right=4 |
+| 4,4,4 | nums[4]=0 | 일치 | 4 반환 |
 
 <!-- lecture-page -->
 
-## 회전 배열 탐색 구현
+## 33 · 아이디어를 코드로 옮기기
 
 ```python
 def search_rotated(nums, target):
@@ -486,87 +398,42 @@ def search_rotated(nums, target):
     return -1
 ```
 
+`nums[left] <= nums[mid]`이면 왼쪽이 정렬되어 있습니다. `nums[left] <= target < nums[mid]`일 때만 그쪽을 남깁니다. mid는 앞의 일치 검사에서 처리했으므로 target 범위의 mid 쪽 끝은 엄격한 부등식입니다.
+
+오른쪽이 정렬된 경우도 같은 논리입니다. 위치를 반환하므로 정렬을 새로 하면 원래 위치 정보와 회전 구조가 바뀝니다.
+
 <!-- lecture-page -->
 
-## 33 · 정당성과 비용
+## 33 · 정당성·시간·메모리의 근거
 
 서로 다른 값의 한 번 회전 배열에서는 적어도 한 절반이 정렬되어 있습니다. 그 범위 안/밖 검사는 target을 포함할 수 없는 절반만 제거하며 mid±1로 진전합니다.
 
-n=길이. O(log n) 시간, O(1) 보조 공간.
+각 반복에서 mid를 제외한 한쪽 절반만 남깁니다. 비교 횟수는 입력을 몇 번 반으로 줄일 수 있는지에 따라 O(log(n+1))이고, 반복 안의 고정 개수 비교·접근은 O(1)입니다.
+
+새 배열이나 재귀 호출을 만들지 않아 보조 공간은 O(1)입니다. 중복을 허용하면 `[1,1,1,0,1]`처럼 양 끝과 mid가 같아 정렬된 쪽을 판별할 수 없는 경우가 생깁니다. 이 복잡도와 코드는 서로 다른 값 조건에 의존합니다.
 
 <!-- lecture-page -->
 
-## 실패 입력과 이해 확인
-
-left=mid는 길이 2 구간에서 정체할 수 있습니다. [[1,9],[2,10]]은 행만 정렬된 다른 문제입니다.
-
-최소 feasible 탐색도 같은 종료 의미인가요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 6차시 · 노드 참조와 연결 갱신
-
-대기열의 기록 객체를 새로 만들지 않고 순서를 바꿉니다. 기존 노드를 재사용하면서 next 참조를 바꿉니다. 다음 노드의 참조를 먼저 보관한 뒤 현재 연결을 뒤집는 순서를 추적합니다.
-
-<!-- lecture-page -->
-
-## 노드 생성과 참조
-
-```python
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-```
-
-`ListNode(4)`: 노드 생성. `self.val`: 저장한 값. `self.next`: 다음 노드 참조. `None`: 연결의 끝.
-
-<!-- lecture-page -->
-
-## 참조와 노드의 동일성
-
-노드는 값과 다음 노드를 가리키는 참조를 저장합니다. `a = b`는 같은 객체에 이름 두 개를 붙이므로 `a.next`를 바꾸면 그 객체의 연결이 바뀝니다.
-
-값이 같아도 서로 다른 노드일 수 있습니다. `None`은 단일 연결 리스트의 끝을 나타냅니다.
-
-<!-- lecture-page -->
-
-## 206 · 문제와 상태
+## 206 · 풀이의 출발점과 실행 추적
 
 [LeetCode 206: Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) · Easy
 
 단일 연결 리스트를 뒤집고 새 head를 반환합니다.
 
-`head=[4,6,9] → [9,6,4]`
+리스트의 순서는 값이 저장된 위치가 아니라 next 연결로 정해집니다. 새 노드를 만들지 않고 현재 노드의 next를 앞쪽으로 돌립니다. 다만 연결을 바꾸기 전에 원래 다음 노드를 저장해야 아직 처리하지 않은 부분을 잃지 않습니다.
 
-following에 다음 참조를 보존하고 current.next=previous로 뒤집은 뒤 두 참조를 전진합니다.
+입력 `1 → 2 → 3 → None`. 각 행은 while 본문을 한 번 끝낸 상태입니다.
 
-<!-- lecture-page -->
-
-## 연결 하나 뒤집기
-
-`4 → 6 → 9`에서 `current.next = previous`를 실행하기 전에 `following = current.next`로 다음 노드를 보관합니다. 이후 두 참조를 전진합니다.
-
-`previous`는 `None`에서 시작하며 `current`가 `None`에 도달하면 새 head가 됩니다. 기존 노드를 재사용합니다.
-
-<!-- lecture-page -->
-
-## 상태 추적
-
-| 단계 | previous | current | 보존한 following |
-| --- | --- | --- | --- |
-| 시작 | None | 4→6→9 | 미정 |
-| 4 처리 | 4→None | 6→9 | 6 |
-| 6 처리 | 6→4 | 9 | 9 |
-| 9 처리 | 9→6→4 | None | None |
-
-각 단계에서 노드가 미처리 접미부에서 역순 접두부로 이동하는 과정을 설명합니다.
+| 처리한 노드 | previous가 가리키는 부분 | current가 가리키는 부분 |
+| --- | --- | --- |
+| 없음 | None | 1 → 2 → 3 |
+| 1 | 1 → None | 2 → 3 |
+| 2 | 2 → 1 → None | 3 |
+| 3 | 3 → 2 → 1 → None | None |
 
 <!-- lecture-page -->
 
-## 리스트 역순 구현
+## 206 · 아이디어를 코드로 옮기기
 
 ```python
 def reverse_list(head):
@@ -578,39 +445,47 @@ def reverse_list(head):
     return previous
 ```
 
+`following = current.next`: 원래 다음 노드를 보존합니다. `current.next = previous`: 현재 연결 하나를 뒤집습니다. 마지막 동시 대입은 previous를 방금 처리한 노드로, current를 보존한 다음 노드로 옮깁니다.
+
+current가 None이면 미처리 노드가 없습니다. 새 머리는 previous입니다. 빈 입력에서는 반복을 한 번도 실행하지 않고 None을 반환합니다.
+
 <!-- lecture-page -->
 
-## 206 · 정당성과 비용
+## 206 · 정당성·시간·메모리의 근거
 
 반복 시작 때 previous는 처리한 접두부의 역순, current는 미처리 접미부입니다. 한 노드를 옮겨도 둘의 합은 원래 노드 전체입니다. current가 None이면 previous가 완성된 역순입니다.
 
-n=노드 수. O(n) 시간, O(1) 보조 공간. 노드를 재사용합니다.
+노드 n개를 각각 한 번 방문하고, 방문마다 고정 개수의 참조 대입을 하므로 시간은 O(n)입니다. 첫 노드를 바꾸었다고 뒤 노드의 연결까지 자동으로 바뀌지는 않아 모든 노드를 처리해야 합니다.
+
+previous, current, following의 세 참조만 추가합니다. 입력 노드를 재사용하므로 보조 공간은 O(1), 새 출력 노드 수는 0입니다. 노드의 개수 O(n)과 추가로 사용한 공간 O(1)을 구분합니다. 재귀 구현은 호출 스택 O(n)이 필요합니다.
 
 <!-- lecture-page -->
 
-## 21 · 문제와 상태
+## 21 · 풀이의 출발점과 실행 추적
 
 [LeetCode 21: Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) · Easy
 
 정렬된 두 연결 리스트의 노드를 이어 하나의 정렬 리스트로 반환합니다.
 
-`first=[1,5], second=[2,3] → [1,2,3,5]`
+두 정렬된 리스트에서 가장 작은 남은 값은 두 머리 중 하나입니다. 작은 머리를 결과의 꼬리에 연결한 뒤 그 리스트만 한 칸 전진합니다. 뒤쪽 노드를 매번 다시 검색할 필요가 없습니다.
 
-dummy 뒤 tail을 유지하고 작은 head를 연결합니다. 한 리스트가 끝나면 나머지를 붙입니다.
+입력 A=`1 → 4`, B=`2 → 3`. tail 뒤에 아직 붙어 있는 입력 연결은 다음 대입에서 바뀔 수 있습니다.
+
+| 선택 | 확정된 결과 접두부 | A 머리 | B 머리 |
+| --- | --- | --- | --- |
+| 시작 | 없음 | 1 | 2 |
+| A의 1 | 1 | 4 | 2 |
+| B의 2 | 1 → 2 | 4 | 3 |
+| B의 3 | 1 → 2 → 3 | 4 | None |
+| 남은 A 연결 | 1 → 2 → 3 → 4 | 4 | None |
 
 <!-- lecture-page -->
 
-## 정렬된 리스트 병합
-
-`1 → 5`와 `2 → 3`의 head 중 작은 노드를 tail에 연결합니다. 1, 2, 3 순서로 선택한 뒤 남은 5를 붙입니다.
-
-dummy 노드를 사용하면 첫 연결과 이후 연결에 같은 규칙을 적용합니다. 입력 노드가 아닌 dummy 대신 `dummy.next`를 반환합니다.
-
-<!-- lecture-page -->
-
-## 정렬 리스트 병합 구현
+## 21 · 아이디어를 코드로 옮기기
 
 ```python
+from structures import ListNode
+
 def merge_lists(first, second):
     dummy = tail = ListNode()
     while first and second:
@@ -623,45 +498,32 @@ def merge_lists(first, second):
     return dummy.next
 ```
 
+dummy는 첫 삽입도 나머지 삽입과 같게 처리하는 임시 머리입니다. `tail.next, first = first, first.next`는 갱신 전 first를 연결하고 원래 다음 노드로 first를 옮깁니다.
+
+한쪽이 비면 다른 쪽은 이미 정렬되어 있으므로 `tail.next = first or second`로 나머지 사슬 전체를 연결합니다. 반환할 때 dummy는 제외합니다.
+
 <!-- lecture-page -->
 
-## 21 · 정당성과 비용
+## 21 · 정당성·시간·메모리의 근거
 
 tail까지는 정렬된 병합 접두부입니다. 두 head 중 작은 것은 남은 모든 값 중 최소이므로 다음 노드로 안전합니다. 남은 접미부도 정렬되어 있습니다.
 
-n,m=두 노드 수. O(n+m) 시간, O(1) 보조 공간. 입력 연결을 변경합니다.
+길이가 n, m이면 반복 한 번마다 한 노드가 확정됩니다. 두 리스트가 번갈아 선택되는 경우 O(n+m)번의 작업이 필요합니다. 남은 사슬을 연결하는 마지막 대입은 O(1)입니다.
+
+dummy 한 개와 고정 개수의 참조만 추가하므로 보조 공간은 O(1)입니다. 결과에 n+m개 노드가 있어도 기존 입력 노드를 다시 연결한 것이므로 새 노드 n+m개를 저장하지 않습니다. 입력 연결을 보존해야 한다면 복사 구현과 O(n+m) 공간이 필요합니다.
 
 <!-- lecture-page -->
 
-## 실패 입력과 이해 확인
+## 실습과 참고자료
 
-다음 참조를 먼저 저장하지 않으면 나머지 연결을 잃습니다. 같은 값의 두 노드도 서로 다른 객체입니다.
+[LeetCode · 74, 33, 206, 21](/courses/practical-algorithms/week-03-practice/) · [풀이](/courses/practical-algorithms/week-03-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-03-code.zip)
 
-같은 값의 노드 두 개는 같은 방문 기록인가요?
+```text
+python demo_05.py
+python demo_06.py
+python verify.py
+```
 
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
+학생 파일을 구현한 뒤 `python verify.py --student`로 검사합니다.
 
-<!-- lecture-page -->
-
-## 기준 풀이와 비용 비교
-
-| 문제 | 기준 풀이 | 이번 풀이 |
-| --- | --- | --- |
-| 행렬 탐색 | 전체 순회: O(RC) | 인덱스 탐색: O(log(RC)) |
-| 회전 배열 탐색 | 전체 순회: O(n) | 정렬 절반 탐색: O(log n) |
-| 리스트 뒤집기 | 노드 저장: O(n) 추가 공간 | 연결 변경: O(1) 추가 공간 |
-| 리스트 병합 | 노드 수집·정렬: O(N log N) 시간 | 병합: O(N) 시간 |
-
-N=n+m. 정수 비교와 참조 연산은 상수 비용으로 가정합니다. 입력 변환·테스트의 저장 공간은 알고리즘 보조 공간과 별도로 계산합니다.
-
-<!-- lecture-page -->
-
-## 독립 실습과 참고자료
-
-해설을 읽기 전에 `student_week_03.py`를 구현합니다. 상태 정의·정당성·비용 분석·경계 입력을 함께 제출합니다.
-
-[학생 실습](/courses/practical-algorithms/week-03-practice/) · [풀이 읽기자료](/courses/practical-algorithms/week-03-reading/) · [교사용 진행안](/courses/practical-algorithms/week-03-instructor/)
-
-[3주차 코드](/assets/courses/practical-algorithms/week-03-code.zip): `python verify.py` 실행. 직접 구현한 코드는 `--student` 옵션으로 확인합니다.
-
-Erik Demaine·Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).

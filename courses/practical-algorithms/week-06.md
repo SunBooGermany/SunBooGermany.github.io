@@ -22,9 +22,7 @@ A pipeline stops when its jobs wait on each other. Find a feasible execution ord
 
 Use remaining prerequisites to schedule jobs. Choose, recurse, and restore to keep one search branch from changing the next.
 
-<!-- lecture-page -->
-
-## Week 6 learning outcomes
+### Learning outcomes
 
 Sessions 11 and 12: Indegree, cycles, choice paths, and restoration
 
@@ -32,79 +30,86 @@ Sessions 11 and 12: Indegree, cycles, choice paths, and restoration
 - Trace state and implement in Python.
 - Explain correctness, time, auxiliary space, and output space.
 
-Opening scenarios, traces, and checks are additional teaching examples.
+<!-- lecture-page -->
+
+## Edge direction and adjacency lists
+
+`[after,before]` means before must finish before after can begin. Store the edge before → after. indegree counts unfinished prerequisites.
+
+![Tasks 1 and 2 follow 0, and both precede task 3](/assets/courses/practical-algorithms/curriculum/dependency-dag.svg)
+
+| Stored item | Value in this graph | Meaning |
+| --- | --- | --- |
+| graph | [[1,2],[3],[3],[]] | Tasks affected when each task finishes |
+| indegree | [0,1,1,2] | Remaining prerequisite counts |
+| Initial queue | [0] | Tasks ready now |
+
+The graph stores E edge entries. Unlike a V-by-V matrix, an adjacency list uses storage proportional to V+E.
 
 <!-- lecture-page -->
 
-## Session 11 · Directed cycles and topological order
-
-Order pipeline jobs while respecting prerequisites. Detect circular waiting and check disconnected components as well.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-A comprehension creates independent adjacency lists. Convert [after,before] to before→after. DFS states 0/1/2 mean unseen/active/completed.
-
-<!-- lecture-page -->
-
-## Prerequisites and indegree
-
-Input `[after,before]` represents edge `before→after`.
-
-- `graph[before]`: neighbors released by completion
-- `indegree[after]`: number of remaining prerequisites
-- Indegree zero: a job that can run now
-- Queue exhausted with fewer than V processed: cycle
-
-Include independent jobs in the initial queue.
-
-<!-- lecture-page -->
-
-## 207 · Problem and state
+## 207 · Idea and execution trace
 
 [LeetCode 207: Course Schedule](https://leetcode.com/problems/course-schedule/) · Medium
 
 Decide whether all courses can be completed under prerequisite constraints.
 
-`n=3, prerequisites=[[1,0],[2,1]] → True`
+If no remaining course can start, look for circular waiting. Repeatedly remove zero-prerequisite courses and check whether all courses were removed. Any nonempty remainder contains a directed cycle.
 
-Direct edges before→after, remove zero-indegree nodes, and compare the removed count with V.
+`n=3, prerequisites=[[1,0],[2,1],[1,2]]`: 0 → 1, 1 → 2, 2 → 1
+
+| Stage | indegree | queue | Processed |
+| --- | --- | --- | --- |
+| Initial | [0,2,1] | [0] | [] |
+| Complete 0 | [0,1,1] | [] | [0] |
+| Stop | 1 and 2 wait on each other | [] | 1 course < 3 |
+
+`course_order` returns [] rather than a partial order; `can_finish` returns False.
 
 <!-- lecture-page -->
 
-## 207 · Implementation
+## 207 · Turning the idea into code
 
 ```python
 def can_finish(n, prerequisites):
     return len(course_order(n, prerequisites)) == n
 ```
 
+The one-line call in `can_finish` executes the entire `course_order` traversal below. A function call written on one line does not imply one unit of work.
+
+On a cycle, every course retains an unfinished prerequisite. Every nonempty finite acyclic directed graph has a zero-indegree vertex, so removal can continue until nothing remains.
+
+The called routine processes V vertices and E edges at most once, taking O(V+E) time. Only len and the final comparison are O(1); the earlier traversal still counts.
+
+Adjacency storage costs O(V+E), while indegrees, queue, and order cost O(V). The returned bool occupies O(1), but peak auxiliary space during execution is O(V+E). Output size alone does not determine workspace.
+
 <!-- lecture-page -->
 
-## 207 · Correctness and cost
-
-Each removed node has no remaining prerequisite. Every nonempty DAG has a zero-indegree node, so an unprocessed remainder must contain a cycle.
-
-V is courses, E constraints. O(V+E) time and auxiliary space including the graph.
-
-<!-- lecture-page -->
-
-## 210 · Problem and state
+## 210 · Idea and execution trace
 
 [LeetCode 210: Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) · Medium
 
 Return any prerequisite-respecting order, or an empty list if impossible.
 
-`n=4, prerequisites=[[2,0],[2,1],[3,2]] → [0,1,2,3]`
+Instead of rechecking every prerequisite repeatedly, store each task’s remaining prerequisite count. A count of zero means it can run now. Completing a task decrements only the counts of tasks that depend on it.
 
-Record Kahn queue removals and require V nodes at the end.
+`n=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]`. Edges point before → after.
+
+| Completed node | indegree (0,1,2,3) | queue | order |
+| --- | --- | --- | --- |
+| Initial | [0,1,1,2] | [0] | [] |
+| 0 | [0,0,0,2] | [1,2] | [0] |
+| 1 | [0,0,0,1] | [2] | [0,1] |
+| 2 | [0,0,0,0] | [3] | [0,1,2] |
+| 3 | [0,0,0,0] | [] | [0,1,2,3] |
 
 <!-- lecture-page -->
 
-## 210 · Implementation
+## 210 · Turning the idea into code
 
 ```python
+from collections import deque
+
 def course_order(n, prerequisites):
     graph, indegree = [[] for _ in range(n)], [0] * n
     for after, before in prerequisites:
@@ -122,65 +127,45 @@ def course_order(n, prerequisites):
     return order if len(order) == n else []
 ```
 
+For `[after,before]`, append after to `graph[before]`. When removing a node, decrement its neighbors’ indegrees and enqueue a neighbor exactly when its count reaches zero.
+
+Problem 207 asks whether all tasks can be included; problem 210 returns the order itself. Choosing any currently available task preserves prerequisite validity.
+
 <!-- lecture-page -->
 
-## 210 · Correctness and cost
+## 210 · Why it works; time and memory
 
 A course enters only after all prerequisites were removed, so every before precedes after in the result. A short result cannot be a complete order.
 
-V is courses, E edges. O(V+E) time and total graph/queue/indegree/output space.
+Initialization stores V vertices and E edges in O(V+E) work. Each vertex enters the queue once; each edge is read once when its source is processed. Degrees vary, but their sum is E, giving total O(V+E) time.
+
+There are V adjacency lists with E entries, plus up to V entries in indegree, queue, and order. Total extra space is O(V+E), including O(V) output order. Although 207 returns only a bool, this implementation calls the same order routine and uses O(V+E) space.
 
 <!-- lecture-page -->
 
-## State trace
-
-| remove | indegree(0,1,2,3) | queue next |
-| --- | --- | --- |
-| start | 0,0,2,1 | 0,1 |
-| 0 | 0,0,1,1 | 1 |
-| 1 | 0,0,0,1 | 2 |
-| 2 | 0,0,0,0 | 3 |
-| 3 | 0,0,0,0 | empty queue |
-
-A neighbor enters the queue exactly when its remaining indegree becomes zero.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-[[1,0],[0,1]] is cyclic. A vertex in state 1 lies on the current search path. An edge back to it identifies a cycle. A vertex in state 2 has completed its search, so its result can be reused.
-
-What fails if revisiting a completed node counts as a cycle?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Session 12 · Choose, recurse, restore
-
-Generate combinations without counting reordered copies. Restore shared choices so one branch does not contaminate the next.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-Append, recurse, then pop the final choice. path.copy() stores a snapshot. pop() removes the most recent choice in O(1). remove(x) searches from the front and deletes the first equal value, taking O(n) in the worst case.
-
-<!-- lecture-page -->
-
-## 78 · Problem and state
+## 78 · Idea and execution trace
 
 [LeetCode 78: Subsets](https://leetcode.com/problems/subsets/) · Medium
 
 Return every subset of an array of distinct values.
 
-`nums=[2,5] → [[],[2],[2,5],[5]]`
+Restrict each next selection to a later index. This generates [2,5] once rather than also generating [5,2]. Every current path is itself a subset, so record it starting with the empty path.
 
-Choose an index at least start, recurse from the next index, pop, and store path.copy() at each call.
+`nums=[2,5]`. A snapshot is stored immediately on entering visit.
+
+| Execution | path | Snapshot stored |
+| --- | --- | --- |
+| visit(0) | [] | [] |
+| append(2), visit(1) | [2] | [2] |
+| append(5), visit(2) | [2,5] | [2,5] |
+| pop(), pop() | [] | None |
+| append(5), visit(2) | [5] | [5] |
+
+Output order: `[[],[2],[2,5],[5]]`.
 
 <!-- lecture-page -->
 
-## 78 · Implementation
+## 78 · Turning the idea into code
 
 ```python
 def subsets(nums):
@@ -197,29 +182,45 @@ def subsets(nums):
     return result
 ```
 
+Append one choice, then explore from `index+1`. On return, pop that choice so another branch starts from the same parent path.
+
+`path.copy()` stores an independent snapshot. Appending path itself would make outputs refer to one mutable list and change together after later pops. Input elements are distinct.
+
 <!-- lecture-page -->
 
-## 78 · Correctness and cost
+## 78 · Why it works; time and memory
 
 Every subset has one increasing index sequence. start permits exactly that sequence, and restoration returns the parent path to its prior state.
 
-n is length. O(n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math>) time/output including snapshots; O(n) path and call stack.
+Each element can be included or excluded, giving <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math> subsets. For n>=1, each element occurs in half of them, so snapshots copy n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math> elements in total. Materializing the output takes O(n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math>) time and output space.
+
+The current path and recursion depth are each at most n, so auxiliary space excluding output is O(n). Time counts all work; space counts paths and calls alive at the same moment, not every call ever made.
 
 <!-- lecture-page -->
 
-## 39 · Problem and state
+## 39 · Idea and execution trace
 
 [LeetCode 39: Combination Sum](https://leetcode.com/problems/combination-sum/) · Medium
 
 Return unique combinations reaching target with unlimited candidate reuse.
 
-`candidates=[2,5], target=7 → [[2,5]]`
+Choose positive candidates to decrease the remaining sum. Reuse is allowed, so recurse from the selected index again. Never return to earlier indices; this avoids permutation duplicates such as [2,3] and [3,2].
 
-Sort candidates, recurse from the same index to permit reuse, and stop at values exceeding remaining.
+`candidates=[2,3], target=5`. remaining is the sum still required.
+
+| path | remaining | Next action |
+| --- | --- | --- |
+| [] | 5 | Choose 2 |
+| [2] | 3 | Reuse 2 |
+| [2,2] | 1 | 2 > 1 → return |
+| [2,3] | 0 | Save snapshot; return |
+| [3] | 2 | 3 > 2 → stop |
+
+Output: `[[2,3]]`.
 
 <!-- lecture-page -->
 
-## 39 · Implementation
+## 39 · Turning the idea into code
 
 ```python
 def combinations(candidates, target):
@@ -241,48 +242,19 @@ def combinations(candidates, target):
     return result
 ```
 
+After sorting, if `value > remaining`, every later candidate is also too large. This permits break rather than continue. Save a snapshot only when remaining becomes zero.
+
+`visit(index, ...)` allows reuse; the subsets routine uses `index+1` to forbid it. Positivity ensures remaining decreases and recursion terminates.
+
 <!-- lecture-page -->
 
-## 39 · Correctness and cost
+## 39 · Why it works; time and memory
 
 Positive choices decrease remaining and ensure termination. Nondecreasing indices avoid permutations while representing every combination.
 
-m candidates,T target,c minimum,L=floor(T/c),B visited calls,S output elements. Time O(m log m+mB+S), auxiliary O(m+L), output O(S); conservatively B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>).
+With m candidates, target T, and smallest candidate c, path length is at most L=floor(T/c). Let B be visited calls and S the total output elements. Sorting costs O(m log m), each call checks at most m choices, and copying costs O(S): total O(m log m+mB+S). B depends strongly on the input; this is not a linear scan.
 
-<!-- lecture-page -->
-
-## State trace
-
-| action | path | start | saved result |
-| --- | --- | --- | --- |
-| visit(0) | [] | 0 | [] |
-| choose 2 | [2] | 1 | [2] |
-| choose 5 | [2,5] | 2 | [2,5] |
-| pop 5, pop 2 | [] | 0 | snapshot retained |
-| choose 5 | [5] | 2 | [5] |
-
-Saved paths are independent copies; popping restores the parent path.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-result.append(path) stores one shared object; later pops can turn multiple results into empty lists.
-
-Does returning from recursion terminate the parent for loop?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Two recursive index rules
-
-| Problem | Next start | Reason |
-| --- | --- | --- |
-| Subsets | index+1 | use each element at most once |
-| Combination sum | index | permit candidate reuse |
-
-Neither problem moves backward in index, preventing reordered duplicates. Combination sum requires distinct positive candidates. Allowing zero can produce recursion that never decreases remaining.
+A conservative bound is B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>). The sorted candidates plus the path and call stack use O(m+L) auxiliary space. Output uses O(S); the full search tree is not stored simultaneously.
 
 <!-- lecture-page -->
 
@@ -293,36 +265,19 @@ Neither problem moves backward in index, preventing reordered duplicates. Combin
 3. How many subsets does `[2,5]` have, including the empty subset?
 4. For candidates `[2]` and target 4, which index should the recursive call reuse?
 
-<!-- lecture-page -->
+### Exercises and sources
 
-## Independent practice and connections
-
-[Student exercises](/courses/practical-algorithms/week-06-practice/)
-
-[Hints and solutions](/courses/practical-algorithms/week-06-reading/)
-
-[Instructor guide](/courses/practical-algorithms/week-06-instructor/)
-
-[Download Week 6 code](/assets/courses/practical-algorithms/week-06-code.zip)
-
-Submit code, state definition, correctness argument, complexity, and boundary inputs. Week 8 includes a mixed assessment without pattern labels.
-
-<!-- lecture-page -->
-
-## Execution and sources
-
-Run in the `code` folder of the [weekly code archive](/assets/courses/practical-algorithms/week-06-code.zip).
+[LeetCode · 207, 210, 78, 39](/courses/practical-algorithms/week-06-practice/) · [Worked solutions](/courses/practical-algorithms/week-06-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-06-code.zip)
 
 ```text
 python demo_11.py
 python demo_12.py
 python verify.py
-python verify.py --student
 ```
 
-Use the last command after implementing the student file.
+After implementing the student file, check it with `python verify.py --student`.
 
-Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
 
 <!-- ko -->
 
@@ -332,9 +287,7 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 
 남은 선행 조건으로 실행 순서를 정하고, 선택·재귀·복원으로 분기 간 상태를 분리합니다.
 
-<!-- lecture-page -->
-
-## 6주차 학습 목표
+### 학습 목표
 
 11·12차시: 진입차수·사이클·선택 경로·복원
 
@@ -342,79 +295,86 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 - 상태 추적과 Python 구현
 - 정당성·시간·보조 공간·출력 공간 설명
 
-도입 상황, 표와 점검 문제는 강의용 추가 예시입니다.
+<!-- lecture-page -->
+
+## 의존관계의 방향과 인접 리스트
+
+`[after,before]`는 before가 끝나야 after를 시작할 수 있다는 뜻입니다. before → after 방향으로 간선을 저장합니다. 진입차수 indegree는 아직 끝나지 않은 선행 작업의 수입니다.
+
+![작업 0 뒤에 1과 2, 두 작업 뒤에 3을 수행하는 그래프](/assets/courses/practical-algorithms/curriculum/dependency-dag.svg)
+
+| 저장 항목 | 이 그림의 값 | 의미 |
+| --- | --- | --- |
+| graph | [[1,2],[3],[3],[]] | 각 작업 완료 시 영향을 받는 작업 |
+| indegree | [0,1,1,2] | 남은 선행 작업 수 |
+| 초기 queue | [0] | 지금 바로 할 수 있는 작업 |
+
+graph는 간선 E개를 저장합니다. 정점마다 전체 V개를 넣는 행렬과 달리 인접 리스트의 전체 항목 수는 V+E에 비례합니다.
 
 <!-- lecture-page -->
 
-## 11차시 · 유향 사이클과 위상순서
-
-분석 파이프라인 작업의 선행 조건을 만족하는 실행 순서를 구합니다. 작업이 서로를 기다리는 순환을 발견하고 여러 독립 성분도 검사합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-graph=[[] for _ in range(V)]는 독립 목록을 만듭니다. 쌍 [after,before]를 before→after로 바꿉니다. DFS 상태 0/1/2는 미방문/진행 중/완료입니다.
-
-<!-- lecture-page -->
-
-## 선행 조건과 진입차수
-
-입력 `[after,before]`는 `before→after` 간선입니다.
-
-- `graph[before]`: 완료 후 조건을 줄일 이웃
-- `indegree[after]`: 아직 남은 선수 조건 수
-- 진입차수 0: 지금 실행 가능한 작업
-- 큐가 빈 뒤 처리 수 < V: 사이클 존재
-
-독립된 작업도 초기 큐에 포함합니다.
-
-<!-- lecture-page -->
-
-## 207 · 문제와 상태
+## 207 · 풀이의 출발점과 실행 추적
 
 [LeetCode 207: Course Schedule](https://leetcode.com/problems/course-schedule/) · Medium
 
 선수 과목 조건을 모두 만족하며 전체 과목을 끝낼 수 있는지 반환합니다.
 
-`n=3, prerequisites=[[1,0],[2,1]] → True`
+어떤 과목도 시작할 수 없다면 서로 기다리는 고리가 있는지 의심해야 합니다. 선행 과목 수가 0인 과목을 반복해서 제거한 뒤 모든 과목을 제거했는지가 판정 기준입니다. 남은 과목이 있다면 그 안에 유향 사이클이 있습니다.
 
-before→after로 간선을 만들고 진입차수 0부터 제거합니다. 제거 수가 V이면 True입니다.
+`n=3, prerequisites=[[1,0],[2,1],[1,2]]`: 0 → 1, 1 → 2, 2 → 1
+
+| 단계 | indegree | queue | 처리한 과목 |
+| --- | --- | --- | --- |
+| 시작 | [0,2,1] | [0] | [] |
+| 0 완료 | [0,1,1] | [] | [0] |
+| 종료 | 1과 2가 서로 대기 | [] | 1개 < 3개 |
+
+`course_order`는 미완료 순서 대신 []를 반환하고, `can_finish`는 False입니다.
 
 <!-- lecture-page -->
 
-## 207 · 구현
+## 207 · 아이디어를 코드로 옮기기
 
 ```python
 def can_finish(n, prerequisites):
     return len(course_order(n, prerequisites)) == n
 ```
 
+`can_finish`의 한 줄은 뒤의 `course_order` 전체 탐색을 실행합니다. 함수 호출을 한 줄로 썼다고 계산이 한 번으로 끝나는 것은 아닙니다.
+
+사이클이 있으면 그 위의 모든 과목이 적어도 하나의 미완료 선행 과목을 유지합니다. 사이클이 없는 유한 유향 그래프에는 진입차수 0인 정점이 하나 이상 있으므로 계속 제거할 수 있습니다.
+
+호출한 `course_order`가 모든 정점 V개와 간선 E개를 최대 한 번씩 처리하므로 O(V+E) 시간입니다. 반환된 리스트의 len 조회와 n 비교만 O(1)이며, 그 전에 수행한 탐색 비용을 빼면 안 됩니다.
+
+인접 리스트 O(V+E), 진입차수·큐·순서 O(V)를 생성합니다. 반환값 False나 True는 O(1)이어도 실행 중 최대 보조 공간은 O(V+E)입니다. 공간은 최종 출력 크기만으로 정하지 않습니다.
+
 <!-- lecture-page -->
 
-## 207 · 정당성과 비용
-
-제거 시 남은 선수 조건이 없으므로 선택은 안전합니다. 남은 유향 비순환 그래프에는 진입차수 0 노드가 있어야 합니다. V개를 제거하지 못하면 남은 부분에 사이클이 있습니다.
-
-V=과목 수,E=조건 수. O(V+E) 시간, 인접 리스트 포함 O(V+E) 보조 공간.
-
-<!-- lecture-page -->
-
-## 210 · 문제와 상태
+## 210 · 풀이의 출발점과 실행 추적
 
 [LeetCode 210: Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) · Medium
 
 선수 조건을 만족하는 순서 하나를 반환합니다. 불가능하면 빈 목록입니다.
 
-`n=4, prerequisites=[[2,0],[2,1],[3,2]] → [0,1,2,3]`
+의존관계를 매번 전부 확인하는 대신 아직 끝나지 않은 선행 작업 수를 각 작업에 저장합니다. 이 수가 0이면 지금 실행할 수 있습니다. 하나를 끝낼 때 그 작업을 기다리던 이웃들의 수만 1씩 줄입니다.
 
-진입차수 0 큐에서 꺼낸 순서를 저장하고 마지막에 V개인지 확인합니다.
+`n=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]`. 간선은 before → after입니다.
+
+| 완료한 node | indegree (0,1,2,3) | queue | order |
+| --- | --- | --- | --- |
+| 시작 | [0,1,1,2] | [0] | [] |
+| 0 | [0,0,0,2] | [1,2] | [0] |
+| 1 | [0,0,0,1] | [2] | [0,1] |
+| 2 | [0,0,0,0] | [3] | [0,1,2] |
+| 3 | [0,0,0,0] | [] | [0,1,2,3] |
 
 <!-- lecture-page -->
 
-## 210 · 구현
+## 210 · 아이디어를 코드로 옮기기
 
 ```python
+from collections import deque
+
 def course_order(n, prerequisites):
     graph, indegree = [[] for _ in range(n)], [0] * n
     for after, before in prerequisites:
@@ -432,65 +392,45 @@ def course_order(n, prerequisites):
     return order if len(order) == n else []
 ```
 
+`[after,before]`를 읽어 `graph[before]`에 after를 추가합니다. node를 꺼내면 그 이웃의 indegree를 줄이고, 정확히 0이 되는 순간에만 넣습니다.
+
+207번은 이 순서에 모든 작업이 포함되는지만 반환합니다. 210번은 순서 자체를 반환합니다. 큐에서 가능한 작업 중 어느 것을 먼저 택해도 선행 조건을 지킨 순서가 됩니다.
+
 <!-- lecture-page -->
 
-## 210 · 정당성과 비용
+## 210 · 정당성·시간·메모리의 근거
 
 각 과목은 모든 선수가 제거된 뒤에만 큐에 들어갑니다. 따라서 반환 순서에서 모든 before의 위치가 after보다 앞섭니다. 수가 부족하면 전체 순서가 아닙니다.
 
-V=과목 수,E=간선 수. O(V+E) 시간, graph·indegree·queue·출력 합 O(V+E).
+정점 V개와 간선 E개를 저장하는 초기 작업이 O(V+E)입니다. 각 정점은 한 번 큐에 들어가고 각 간선은 출발 정점 처리 때 한 번만 읽습니다. 이웃 수가 정점마다 달라도 그 합은 E이므로 전체 시간은 O(V+E)입니다.
+
+인접 리스트의 빈 목록 V개와 간선 항목 E개, indegree·queue·order의 최대 V개 항목이 필요합니다. 총 추가 공간은 O(V+E), 그중 반환 순서는 O(V)입니다. 207번의 반환값은 bool이지만 이 구현은 같은 순서 함수를 호출하므로 공간도 O(V+E)입니다.
 
 <!-- lecture-page -->
 
-## 상태 추적
-
-| 제거 | indegree(0,1,2,3) | queue 다음 |
-| --- | --- | --- |
-| 시작 | 0,0,2,1 | 0,1 |
-| 0 | 0,0,1,1 | 1 |
-| 1 | 0,0,0,1 | 2 |
-| 2 | 0,0,0,0 | 3 |
-| 3 | 0,0,0,0 | 빈 큐 |
-
-남은 진입차수가 0이 되는 순간 이웃을 큐에 넣습니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-[[1,0],[0,1]]은 사이클입니다. 상태 1인 정점은 현재 탐색 경로에 있습니다. 그 정점으로 돌아가는 간선을 만나면 사이클입니다. 상태 2인 정점은 탐색이 끝났으므로 결과를 재사용합니다.
-
-완료 정점 재방문을 사이클로 보면 어떤 문제가 있나요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 12차시 · 선택·재귀·복원
-
-가능한 조합을 모두 생성하되 순서만 다른 중복은 제거합니다. 한 경로의 선택이 다음 경로에 남지 않도록 공유 상태를 복원합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-path.append(x) 뒤 재귀, 다음 path.pop()으로 마지막 선택만 되돌립니다. result.append(path.copy())는 snapshot입니다. pop()은 마지막에 추가한 선택을 O(1)에 제거합니다. remove(x)는 앞에서부터 같은 값을 찾아 첫 항목을 지우며 최악 O(n)이 듭니다.
-
-<!-- lecture-page -->
-
-## 78 · 문제와 상태
+## 78 · 풀이의 출발점과 실행 추적
 
 [LeetCode 78: Subsets](https://leetcode.com/problems/subsets/) · Medium
 
 서로 다른 값으로 이루어진 배열의 모든 부분집합을 반환합니다.
 
-`nums=[2,5] → [[],[2],[2,5],[5]]`
+부분집합을 만들 때는 다음에 고를 위치를 현재 위치보다 뒤로 제한합니다. 그러면 [2,5]와 [5,2]를 따로 만들지 않습니다. 현재 경로 자체도 하나의 부분집합이므로 빈 경로부터 결과에 넣습니다.
 
-start 이상에서 하나를 선택하고 다음 인덱스부터 재귀한 뒤 pop합니다. 매 호출에서 path.copy()를 저장합니다.
+`nums=[2,5]`. 결과 저장은 visit에 들어간 직후입니다.
+
+| 실행 | path | 저장되는 복사본 |
+| --- | --- | --- |
+| visit(0) | [] | [] |
+| append(2), visit(1) | [2] | [2] |
+| append(5), visit(2) | [2,5] | [2,5] |
+| pop(), pop() | [] | 없음 |
+| append(5), visit(2) | [5] | [5] |
+
+결과 순서는 `[[],[2],[2,5],[5]]`입니다.
 
 <!-- lecture-page -->
 
-## 78 · 구현
+## 78 · 아이디어를 코드로 옮기기
 
 ```python
 def subsets(nums):
@@ -507,29 +447,45 @@ def subsets(nums):
     return result
 ```
 
+append로 한 선택을 한 뒤 `visit(index+1)`로 다음 위치부터 탐색합니다. 재귀가 돌아오면 pop으로 그 선택만 취소해야 같은 부모에서 다른 선택을 시험할 수 있습니다.
+
+`path.copy()`는 현재 내용을 따로 저장합니다. path 자체를 넣으면 모든 결과가 같은 리스트를 가리켜 나중의 pop에 함께 바뀝니다. 입력 원소는 서로 다릅니다.
+
 <!-- lecture-page -->
 
-## 78 · 정당성과 비용
+## 78 · 정당성·시간·메모리의 근거
 
 부분집합마다 오름차순 인덱스 열이 하나 있습니다. start가 그 열만 허용하므로 모든 부분집합을 정확히 한 번 만듭니다. 복원 후 부모의 path는 호출 전과 같습니다.
 
-n=길이. snapshot 포함 O(n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math>) 시간·출력 공간, path와 호출 스택 O(n).
+원소마다 포함·제외 두 가능성이 있어 부분집합은 <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math>개입니다. n>=1일 때 각 원소는 정확히 절반의 부분집합에 들어가므로 복사하는 원소 수의 합은 n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math>입니다. 결과를 실제 리스트로 만드는 시간과 출력 공간은 O(n·<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mi>n</mi></msup></math>)입니다.
+
+현재 path 길이와 재귀 깊이는 각각 최대 n이므로 출력을 제외한 보조 공간은 O(n)입니다. 시간은 전체 탐색량, 공간은 동시에 살아 있는 경로와 호출을 셉니다. 호출 총수를 전부 동시에 저장한다고 계산하지 않습니다.
 
 <!-- lecture-page -->
 
-## 39 · 문제와 상태
+## 39 · 풀이의 출발점과 실행 추적
 
 [LeetCode 39: Combination Sum](https://leetcode.com/problems/combination-sum/) · Medium
 
 후보를 반복 사용해 target 합을 만드는 중복 없는 조합을 반환합니다.
 
-`candidates=[2,5], target=7 → [[2,5]]`
+양수 후보를 골라 남은 합을 줄입니다. 같은 후보를 여러 번 사용할 수 있으므로 고른 위치부터 다시 탐색합니다. 대신 앞 위치로 돌아가지 않아 [2,3]과 [3,2] 같은 순열 중복을 만들지 않습니다.
 
-정렬한 후보에서 같은 index로 재귀해 재사용을 허용하고, remaining보다 큰 후보부터는 중단합니다.
+`candidates=[2,3], target=5`. remaining은 아직 채워야 할 합입니다.
+
+| path | remaining | 다음 동작 |
+| --- | --- | --- |
+| [] | 5 | 2 선택 |
+| [2] | 3 | 2 재사용 |
+| [2,2] | 1 | 2 > 1 → 복귀 |
+| [2,3] | 0 | 복사 저장 후 복귀 |
+| [3] | 2 | 3 > 2 → 종료 |
+
+결과는 `[[2,3]]`입니다.
 
 <!-- lecture-page -->
 
-## 39 · 구현
+## 39 · 아이디어를 코드로 옮기기
 
 ```python
 def combinations(candidates, target):
@@ -551,48 +507,19 @@ def combinations(candidates, target):
     return result
 ```
 
+정렬했기 때문에 `value > remaining`이면 뒤 후보도 전부 너무 큽니다. 그래서 continue가 아니라 break할 수 있습니다. remaining이 0일 때만 복사본을 저장합니다.
+
+`visit(index, ...)`는 재사용, 부분집합의 `visit(index+1)`은 해당 원소 재사용 금지입니다. 양수 조건이 있어야 매 호출에서 remaining이 줄고 탐색이 종료합니다.
+
 <!-- lecture-page -->
 
-## 39 · 정당성과 비용
+## 39 · 정당성·시간·메모리의 근거
 
 양수 선택마다 remaining이 감소해 종료합니다. 비내림차순 인덱스만 선택하므로 순서만 다른 중복을 피하고 모든 가능한 조합을 표현합니다.
 
-m=후보 수,T=target,c=최소 후보,L=floor(T/c),B=방문 호출 수,S=출력 원소 합. 시간 O(m log m + mB + S), 보조 O(m+L), 출력 O(S). B는 보수적으로 O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>).
+후보 수 m, 목표 T, 최소 후보 c라 하면 경로 길이는 L=floor(T/c) 이하입니다. 방문 호출 수 B, 출력 원소 수의 합 S를 쓰면 정렬 O(m log m), 호출당 최대 m개 검사, 복사 O(S)이므로 O(m log m+mB+S) 시간입니다. B는 입력에 따라 크게 달라져 이를 단순 O(n)이라 할 수 없습니다.
 
-<!-- lecture-page -->
-
-## 상태 추적
-
-| 동작 | path | start | 저장 결과 |
-| --- | --- | --- | --- |
-| visit(0) | [] | 0 | [] |
-| 선택 2 | [2] | 1 | [2] |
-| 선택 5 | [2,5] | 2 | [2,5] |
-| pop 5, pop 2 | [] | 0 | snapshot 유지 |
-| 선택 5 | [5] | 2 | [5] |
-
-저장한 경로는 독립 복사본이며 pop은 부모 경로를 복원합니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-result.append(path)는 같은 객체를 보관합니다. 마지막 pop 뒤 여러 결과가 빈 목록으로 바뀔 수 있습니다.
-
-재귀에서 return하면 부모 for도 끝나나요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 두 재귀 인덱스의 차이
-
-| 문제 | 다음 start | 이유 |
-| --- | --- | --- |
-| 부분집합 | index+1 | 각 원소를 한 번만 사용 |
-| 조합 합 | index | 같은 후보 재사용 허용 |
-
-두 문제 모두 인덱스를 뒤로 돌리지 않아 순서만 다른 중복을 막습니다. 조합 합은 서로 다른 양수 후보가 전제입니다. 0을 허용하면 remaining이 줄지 않는 재귀가 생깁니다.
+보수적으로 B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>)입니다. 정렬한 후보 m개와 길이 L의 path·호출 스택이 있어 보조 공간 O(m+L), 출력은 O(S)입니다. 전체 탐색 트리를 한 번에 저장하지는 않습니다.
 
 <!-- lecture-page -->
 
@@ -603,33 +530,16 @@ result.append(path)는 같은 객체를 보관합니다. 마지막 pop 뒤 여�
 3. `[2,5]`의 부분집합 수와 빈 부분집합은?
 4. 후보 `[2]`, 목표 4에서 다음 재귀 인덱스는?
 
-<!-- lecture-page -->
+### 실습과 참고자료
 
-## 독립 실습과 다음 연결
-
-[학생 실습](/courses/practical-algorithms/week-06-practice/)
-
-[힌트·해설](/courses/practical-algorithms/week-06-reading/)
-
-[교사용 진행안](/courses/practical-algorithms/week-06-instructor/)
-
-[6주차 코드 내려받기](/assets/courses/practical-algorithms/week-06-code.zip)
-
-코드·상태 정의·정당성·복잡도·경계 입력을 함께 제출합니다. 8주차에는 주제를 숨긴 혼합 평가가 있습니다.
-
-<!-- lecture-page -->
-
-## 실행과 참고자료
-
-[주차별 코드](/assets/courses/practical-algorithms/week-06-code.zip)의 `code` 폴더에서 실행합니다.
+[LeetCode · 207, 210, 78, 39](/courses/practical-algorithms/week-06-practice/) · [풀이](/courses/practical-algorithms/week-06-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-06-code.zip)
 
 ```text
 python demo_11.py
 python demo_12.py
 python verify.py
-python verify.py --student
 ```
 
-마지막 명령은 학생 파일을 구현한 뒤 실행합니다.
+학생 파일을 구현한 뒤 `python verify.py --student`로 검사합니다.
 
-Erik Demaine·Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).

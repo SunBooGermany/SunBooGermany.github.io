@@ -6,7 +6,7 @@ description: "Frozen ReLU models, valid bounds, and verified optimization formul
 description_ko: "고정 ReLU 모델, 유효한 bounds와 최적화 정식화를 다룹니다."
 material_label: "Week 5"
 material_label_ko: "5주차"
-updated: "2026-10-25"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-05/"
 pdf_en: "/assets/courses/surrogate-models/week-05-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-05-ko.pdf"
@@ -297,7 +297,7 @@ python week05_lab.py --output-dir my-results
 3. Translate one row of `milp_matrix.csv` back into an equation.
 4. Change the B lower bound from 0.40 to 0.41 and explain whether feasibility remains.
 
-The [reading companion](/courses/surrogate-models/week-05-reading/) contains derivations, the weight table, and exercise checks. Download and run the [lab bundle](/assets/courses/surrogate-models/week-05/week05-lab.zip).
+[reading companion](/courses/surrogate-models/week-05-reading/) · [lab bundle](/assets/courses/surrogate-models/week-05/week05-lab.zip)
 
 <!-- lecture-page -->
 
@@ -590,7 +590,7 @@ python week05_lab.py --output-dir my-results
 3. `milp_matrix.csv`의 행 하나를 수식으로 되돌려 적습니다.
 4. B 하한을 0.40에서 0.41로 바꾸고 가능해가 남는지 설명
 
-[읽기자료](/courses/surrogate-models/week-05-reading/)에는 유도, 가중치 표와 연습문제 풀이가 있습니다. [실습 묶음](/assets/courses/surrogate-models/week-05/week05-lab.zip)을 내려받아 실행합니다.
+[읽기자료](/courses/surrogate-models/week-05-reading/) · [실습 묶음](/assets/courses/surrogate-models/week-05/week05-lab.zip)
 
 <!-- lecture-page -->
 

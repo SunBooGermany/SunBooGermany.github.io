@@ -22,9 +22,7 @@ Maintain the top k measurements as values arrive, and merge overlapping maintena
 
 Full ordering, partial ranking, and connectivity need different state. Track a heap boundary, the end of a sorted interval, and traversal visits.
 
-<!-- lecture-page -->
-
-## Week 5 learning outcomes
+### Learning outcomes
 
 Sessions 9 and 10: Heap boundaries, interval unions, visited sets, and BFS levels
 
@@ -32,48 +30,49 @@ Sessions 9 and 10: Heap boundaries, interval unions, visited sets, and BFS level
 - Trace state and implement in Python.
 - Explain correctness, time, auxiliary space, and output space.
 
-Opening scenarios, traces, and checks are additional teaching examples.
+<!-- lecture-page -->
+
+## What counts as one step on a grid?
+
+Treat cells as vertices and four-directional adjacencies as edges. Islands ask for connected components; propagation asks for distance from the nearest source.
+
+![Island connectivity and first arrival times during simultaneous spread](/assets/courses/practical-algorithms/curriculum/grid-traversal.svg)
+
+Diagonal land cells on the left belong to separate islands. Numbers on the right are first infection times for `[[2,1,1],[0,1,1]]`; `-` marks an empty cell.
+
+| Goal | Processing order | Retained information |
+| --- | --- | --- |
+| Find all connected land | Stack: depth first | Visited coordinates and pending neighbors |
+| Spread simultaneously by minute | Queue: breadth first | Current sources and remaining fresh cells |
+
+Mark cells when discovered so different neighbors cannot enqueue or push the same cell repeatedly.
 
 <!-- lecture-page -->
 
-## Session 9 · Sorting, heaps, and intervals
-
-Maintain top-k measurements and merge maintenance intervals. Separate questions requiring a full order from those requiring one priority boundary.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-sorted(...,key=lambda item:item[0]) sorts by first coordinate. heapq is a min-heap: heapify O(n), push/pop O(log n). Equal tuple priorities compare later fields; add a counter before nonorderable payloads.
-
-<!-- lecture-page -->
-
-## Full sorting and partial ranking
-
-- Full sort: O(n log n) time, all ranks available
-- Size-k min-heap: retain only the top k
-- New value ≤ root: keep the existing top k
-- New value > root: replace the root and restore the heap
-
-Import `heapq`. Heapify costs O(k), replacement O(log(k+1)); k=1 is supported.
-
-<!-- lecture-page -->
-
-## 215 · Problem and state
+## 215 · Idea and execution trace
 
 [LeetCode 215: Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) · Medium
 
 Return the kth value in descending order, counting duplicates.
 
-`nums=[8,3,8,2,5], k=2 → 8`
+Sorting everything finds the kth value, but only the largest k values need to be retained. In a min-heap containing those values, the root is their minimum and hence the current kth largest. Replace it only when a larger value arrives.
 
-Heapify the first k values; replace the root only when a later value is larger.
+`nums=[3,1,5,2,4], k=2`. The table shows the actual heap list, not a fully sorted sequence.
+
+| Operation | heap | Current kth value |
+| --- | --- | --- |
+| Heapify first two | [1,3] | 1 |
+| 5 > 1: replace | [3,5] | 3 |
+| 2 <= 3: retain | [3,5] | 3 |
+| 4 > 3: replace | [4,5] | 4 |
 
 <!-- lecture-page -->
 
-## 215 · Implementation
+## 215 · Turning the idea into code
 
 ```python
+import heapq
+
 def kth_largest(nums, k):
     heap = nums[:k]
     heapq.heapify(heap)
@@ -84,29 +83,42 @@ def kth_largest(nums, k):
     return heap[0]
 ```
 
+`nums[:k]` copies k entries before heapify. A min-heap is a complete binary tree whose parents are no larger than their children. Capacity doubles per level, giving O(log k) height; heapreplace may descend that height. Simply reading the root `heap[0]` costs O(1).
+
+A value no larger than the root cannot improve the retained k values. Duplicates remain separate entries: the second largest in `[5,5,1]` is 5.
+
 <!-- lecture-page -->
 
-## 215 · Correctness and cost
+## 215 · Why it works; time and memory
 
 The heap retains the largest k values seen. A new value at most its minimum cannot improve that set; a larger one replaces the minimum. The final root is kth largest.
 
-n is length. O(n log(k+1)) time, O(k) space; heapify O(k). A full negated heap takes O(n+k log n) time and O(n) space.
+Copying and heapify cost O(k). Each of the remaining n-k values requires one root comparison and, only on replacement, a path of height O(log k). Time is O(k+(n-k)(1+log k)), commonly O(n log k) for k>=2. For k=1 it is O(n), like tracking a maximum.
+
+The heap always has k entries, so auxiliary space is O(k); the result is one value. Heapify is linear because most nodes are near the bottom and have only short downward paths.
 
 <!-- lecture-page -->
 
-## 56 · Problem and state
+## 56 · Idea and execution trace
 
 [LeetCode 56: Merge Intervals](https://leetcode.com/problems/merge-intervals/) · Medium
 
 Return disjoint closed intervals covering the input union.
 
-`intervals=[[5,7],[1,3],[3,6]] → [[1,7]]`
+After sorting by start, the next interval begins no earlier than processed intervals. It can therefore overlap only the last merged interval. Extend that interval’s end on overlap, or begin a new result interval when there is a gap.
 
-Sort by start; extend the last result end by max when intervals overlap.
+Input: `[[1,4],[2,3],[4,6],[8,9]]`. Each row shows result after processing that interval.
+
+| Interval | Test | result |
+| --- | --- | --- |
+| [1,4] | First interval | [[1,4]] |
+| [2,3] | 2 <= 4 | [[1,4]] |
+| [4,6] | 4 <= 4 | [[1,6]] |
+| [8,9] | 8 > 6 | [[1,6],[8,9]] |
 
 <!-- lecture-page -->
 
-## 56 · Implementation
+## 56 · Turning the idea into code
 
 ```python
 def merge_intervals(intervals):
@@ -119,64 +131,43 @@ def merge_intervals(intervals):
     return result
 ```
 
+The equality in `start <= result[-1][1]` merges closed intervals touching at an endpoint. Update with max so a nested `[2,3]` cannot shorten `[1,4]`.
+
+Create each result interval as `[start,end]` rather than modifying an input interval’s list.
+
 <!-- lecture-page -->
 
-## 56 · Correctness and cost
+## 56 · Why it works; time and memory
 
 result equals the union of the processed prefix. Increasing starts mean a new interval can overlap only the last result; a gap makes a new disjoint component.
 
-n is interval count. O(n log n) sorting plus O(n) scan; O(n) sorting workspace and output. Input order is preserved.
+Sorting n intervals costs O(n log n). The subsequent scan runs n times and compares only one last result interval each time, so it costs O(n). Sorting dominates the total O(n log n).
+
+`sorted` creates a list of n references and uses sorting workspace, giving O(n) auxiliary space. If z merged intervals remain, output space is O(z), with z<=n. Each output interval stores its own two endpoints.
 
 <!-- lecture-page -->
 
-## State trace
-
-| incoming value(k=2) | retained multiset | root |
-| --- | --- | --- |
-| 8,3 | {3,8} | 3 |
-| 8 | {8,8} | 8 |
-| 2 | {8,8} | 8 |
-| 5 | {8,8} | 8 |
-
-Each row retains the largest two values seen, including duplicates.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-In a min-heap, each parent is no greater than its children, and the root holds a global minimum. Deduplicating changes the example’s answer.
-
-Does insertion into a sorted list also cost log n?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Session 10 · Graph representations and simultaneous spread
-
-Count connected sensor regions and propagation time from multiple failures. Use DFS or BFS to find connected regions, and use BFS levels to compute earliest arrival when all edges have equal propagation time.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-Represent a grid by coordinates, an adjacency list by vertex-to-neighbors, or an object graph by node.neighbors. Coordinate tuples are hashable; copy grid rows independently.
-
-<!-- lecture-page -->
-
-## 200 · Problem and state
+## 200 · Idea and execution trace
 
 [LeetCode 200: Number of Islands](https://leetcode.com/problems/number-of-islands/) · Medium
 
 Count land components connected horizontally or vertically in a character grid.
 
-`grid=[["1","0","1"],["1","0","0"]] → 2`
+Starting from one land cell and following all four-directional connections reaches its whole island. Start a traversal and increase the count only at unvisited land, preventing duplicate counting. Diagonals do not connect cells.
 
-Start a stack traversal at each unseen land cell and mark its whole component.
+Grid: `[["1","1","0"],["0","1","0"],["1","0","1"]]`. Coordinates start at zero; stack top is on the right.
+
+| Action | stack | Newly added to seen | count |
+| --- | --- | --- | --- |
+| Start (0,0) | [(0,0)] | (0,0) | 1 |
+| Pop (0,0) | [(0,1)] | (0,1) | 1 |
+| Pop (0,1) | [(1,1)] | (1,1) | 1 |
+| Pop (1,1) | [] | None | 1 |
+| Traverse (2,0), (2,2) separately | [] | (2,0), (2,2) | 3 |
 
 <!-- lecture-page -->
 
-## 200 · Implementation
+## 200 · Turning the idea into code
 
 ```python
 def islands(grid):
@@ -199,29 +190,44 @@ def islands(grid):
     return count
 ```
 
+The outer loops locate traversal starts; the inner while finishes one connected island. Mark a cell in seen just before pushing it, preventing another neighbor from pushing it again.
+
+Cells contain strings "1" and "0". Check coordinate bounds before reading a cell. The input grid remains unchanged.
+
 <!-- lecture-page -->
 
-## 200 · Correctness and cost
+## 200 · Why it works; time and memory
 
 A traversal reaches exactly its starting component. Marked components cannot restart; the number of starts equals the component count.
 
-R,C are dimensions. O(RC) time and space; general adjacency lists take O(V+E) time.
+The outer scan reads R·C cells. Each land cell is pushed and popped once because of seen, and each pop checks four neighbors. Four is independent of input size, giving expected O(RC) time under expected hash-set costs. The inner traversal is not restarted fully for every cell.
+
+Both seen and the pending stack can hold up to RC coordinates, so auxiliary space is O(RC). Marking the grid itself could replace seen, but would mutate the input and would not eliminate stack storage.
 
 <!-- lecture-page -->
 
-## 994 · Problem and state
+## 994 · Idea and execution trace
 
 [LeetCode 994: Rotting Oranges](https://leetcode.com/problems/rotting-oranges/) · Medium
 
 Return the minimum minutes for all fresh cells to change under simultaneous spread, or -1.
 
-`grid=[[2,1,1],[0,1,0]] → 2`
+All initially rotten cells are sources at time zero. Put them all in one queue and expand by levels. The first infection time of a cell is its distance from the nearest source. Processing sources sequentially would misrepresent simultaneous spread.
 
-Enqueue all sources together, process levels, and mark a discovered cell as 2 immediately.
+Input: `[[2,1,1],[0,1,1]]`. Each queue contains cells newly rotten at that time, awaiting processing.
+
+| Time minutes | queue | fresh |
+| --- | --- | --- |
+| 0 | [(0,0)] | 4 |
+| 1 | [(0,1)] | 3 |
+| 2 | [(1,1),(0,2)] | 1 |
+| 3 | [(1,2)] | 0 |
+
+Once fresh is zero, return 3 without processing the final queue.
 
 <!-- lecture-page -->
 
-## 994 · Implementation
+## 994 · Turning the idea into code
 
 ```python
 def rot_minutes(grid):
@@ -245,47 +251,19 @@ def rot_minutes(grid):
     return minutes if fresh == 0 else -1
 ```
 
+`range(len(queue))` freezes the source count for the current time. Mark newly infected cells as 2 immediately to avoid duplicate infection, but append them for processing in the next while round.
+
+An empty queue with fresh cells remaining means unreachable cells and returns -1. If fresh is initially zero, no time step is needed and the result is 0.
+
 <!-- lecture-page -->
 
-## 994 · Correctness and cost
+## 994 · Why it works; time and memory
 
 BFS levels are minimum edge distances from any source. Equal edge durations make first discovery earliest; remaining fresh cells after exhaustion are unreachable.
 
-R,C are dimensions. O(RC) time and O(RC) board-copy/queue space.
+Copying and the initial scan each cost O(RC). Every cell enters the queue once and checks four neighbors when removed, so propagation also costs O(RC). Adding these stages gives O(RC); do not multiply by the number of minutes again.
 
-<!-- lecture-page -->
-
-## State trace
-
-| minute | current frontier | newly marked |
-| --- | --- | --- |
-| 0 | (0,0) | (0,1) |
-| 1 | (0,1) | (0,2),(1,1) |
-| 2 | (0,2),(1,1) | none |
-
-The newly marked cells belong to time t+1, not time t.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-Use == for values; is tests identity. Diagonal land in a 2x2 grid forms two components.
-
-Does BFS guarantee minimum cost with weighted edges?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Time boundaries in simultaneous spread
-
-| Time | Newly rotten at that time | Fresh cells left |
-| --- | --- | --- |
-| 0 | (0,0), initial source | 3 |
-| 1 | (0,1) | 2 |
-| 2 | (0,2), (1,1) | 0 |
-
-Grid: `[[2,1,1],[0,1,0]]`. One iteration over a fixed queue length advances one minute. Mark cells when enqueuing them.
+The board copy stores RC cells to preserve the input. The queue may also hold O(RC) cells, giving O(RC) auxiliary space. Constant-size fresh and minutes counters do not make the whole algorithm constant-space.
 
 <!-- lecture-page -->
 
@@ -296,36 +274,19 @@ Grid: `[[2,1,1],[0,1,0]]`. One iteration over a fixed queue length advances one 
 3. Count components in `[["1","0"],["0","1"]]`.
 4. Find spread times for `[[2,0,1]]` and `[[0,2]]`.
 
-<!-- lecture-page -->
+### Exercises and sources
 
-## Independent practice and connections
-
-[Student exercises](/courses/practical-algorithms/week-05-practice/)
-
-[Hints and solutions](/courses/practical-algorithms/week-05-reading/)
-
-[Instructor guide](/courses/practical-algorithms/week-05-instructor/)
-
-[Download Week 5 code](/assets/courses/practical-algorithms/week-05-code.zip)
-
-Submit code, state definition, correctness argument, complexity, and boundary inputs. Week 8 includes a mixed assessment without pattern labels.
-
-<!-- lecture-page -->
-
-## Execution and sources
-
-Run in the `code` folder of the [weekly code archive](/assets/courses/practical-algorithms/week-05-code.zip).
+[LeetCode · 215, 56, 200, 994](/courses/practical-algorithms/week-05-practice/) · [Worked solutions](/courses/practical-algorithms/week-05-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-05-code.zip)
 
 ```text
 python demo_09.py
 python demo_10.py
 python verify.py
-python verify.py --student
 ```
 
-Use the last command after implementing the student file.
+After implementing the student file, check it with `python verify.py --student`.
 
-Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
 
 <!-- ko -->
 
@@ -335,9 +296,7 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 
 전체 정렬·부분 순위·연결 관계는 서로 다른 상태가 필요합니다. 힙의 경계, 정렬된 구간의 끝, 탐색의 방문 기록을 추적합니다.
 
-<!-- lecture-page -->
-
-## 5주차 학습 목표
+### 학습 목표
 
 9·10차시: 힙 경계·구간 합집합·방문 집합·BFS 레벨
 
@@ -345,48 +304,49 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 - 상태 추적과 Python 구현
 - 정당성·시간·보조 공간·출력 공간 설명
 
-도입 상황, 표와 점검 문제는 강의용 추가 예시입니다.
+<!-- lecture-page -->
+
+## 격자에서 무엇을 한 단계로 셀 것인가
+
+격자 한 칸을 정점으로 보고 상하좌우 이웃 사이에 간선이 있다고 생각합니다. 섬 문제는 연결된 덩어리의 수를, 전파 문제는 가장 가까운 출발점에서의 거리를 묻습니다.
+
+![섬의 연결과 동시 전파의 도착 시각](/assets/courses/practical-algorithms/curriculum/grid-traversal.svg)
+
+왼쪽에서 대각선으로 닿은 육지는 별도 섬입니다. 오른쪽 숫자는 `[[2,1,1],[0,1,1]]`에서 처음 썩는 시각이며 `-`는 빈칸입니다.
+
+| 목표 | 다음 처리 순서 | 보관할 정보 |
+| --- | --- | --- |
+| 연결된 육지 전부 찾기 | 스택으로 깊이 우선 | 방문한 좌표·미처리 이웃 |
+| 한 분마다 동시에 확산 | 큐로 너비 우선 | 현재 시각의 전파원·남은 fresh |
+
+둘 다 방문 표시를 넣는 시점이 중요합니다. 발견할 때 표시하면 여러 이웃이 같은 칸을 중복 삽입하지 않습니다.
 
 <!-- lecture-page -->
 
-## 9차시 · 정렬·힙·구간
-
-계속 들어오는 수치의 상위 k개와 겹치는 정비 구간을 관리합니다. 모든 값을 완전 정렬해야 하는 질문과 최소 경계 하나만 필요한 질문을 구분합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-sorted(items,key=lambda item:item[0])는 첫 좌표로 정렬합니다. heapq는 최소 힙입니다. heapify는 O(n), push/pop은 O(log n)입니다. tuple 우선순위가 같으면 다음 원소도 비교하므로 비교 불가 객체 앞에 고유 카운터를 둡니다.
-
-<!-- lecture-page -->
-
-## 완전 정렬과 부분 순위
-
-- 전체 정렬: O(n log n) 시간, 모든 순위 확인
-- 크기 k 최소 힙: 상위 k개만 저장
-- 새 값 ≤ 루트: 기존 상위 k개 유지
-- 새 값 > 루트: 루트 교체 후 힙 복구
-
-`heapq`를 가져옵니다. heapify는 O(k), 교체는 O(log(k+1))이며 k=1도 처리합니다.
-
-<!-- lecture-page -->
-
-## 215 · 문제와 상태
+## 215 · 풀이의 출발점과 실행 추적
 
 [LeetCode 215: Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) · Medium
 
 정렬했을 때 큰 순서로 k번째 값을 반환합니다. 중복도 개수에 포함합니다.
 
-`nums=[8,3,8,2,5], k=2 → 8`
+전체를 정렬하면 k번째 값을 찾을 수 있지만, 필요한 것은 큰 값 k개뿐입니다. 지금까지 본 큰 값 k개를 최소 힙에 보관하면 그중 가장 작은 루트가 현재 k번째 값입니다. 새 값이 루트보다 클 때만 교체합니다.
 
-처음 k개를 heapify하고 이후 값이 root보다 크면 heapreplace합니다.
+`nums=[3,1,5,2,4], k=2`. 표는 실제 heap 리스트이며 전체 정렬 결과는 아닙니다.
+
+| 처리 | heap | 현재 k번째 값 |
+| --- | --- | --- |
+| 첫 두 값 heapify | [1,3] | 1 |
+| 5 > 1, 교체 | [3,5] | 3 |
+| 2 <= 3, 유지 | [3,5] | 3 |
+| 4 > 3, 교체 | [4,5] | 4 |
 
 <!-- lecture-page -->
 
-## 215 · 구현
+## 215 · 아이디어를 코드로 옮기기
 
 ```python
+import heapq
+
 def kth_largest(nums, k):
     heap = nums[:k]
     heapq.heapify(heap)
@@ -397,29 +357,42 @@ def kth_largest(nums, k):
     return heap[0]
 ```
 
+`nums[:k]`로 k개를 복사하고 heapify합니다. 최소 힙은 부모가 자식보다 크지 않은 완전 이진 트리입니다. 층마다 최대 노드 수가 두 배라 높이는 O(log k)이며, `heapreplace`는 그 높이만큼 내려갈 수 있습니다. 루트 `heap[0]`를 읽기만 하면 O(1)입니다.
+
+루트 이하인 값은 이미 가진 k개보다 유리하지 않습니다. 중복은 별개 원소로 유지하므로 `[5,5,1]`의 두 번째 큰 값도 5입니다.
+
 <!-- lecture-page -->
 
-## 215 · 정당성과 비용
+## 215 · 정당성·시간·메모리의 근거
 
 힙은 지금까지 본 값 중 큰 k개입니다. root 이하의 새 값은 상위 k개를 바꾸지 못하고, 큰 새 값은 가장 작은 보관 값을 대체해야 합니다. 마지막 root가 k번째입니다.
 
-n=길이. O(n log(k+1)) 시간, O(k) 보조 공간. 초기 heapify O(k). 전체 음수 힙 대안은 O(n+k log n) 시간·O(n) 공간.
+복사와 heapify는 O(k)입니다. 나머지 n-k개는 루트를 한 번 비교하고, 교체할 때만 높이 O(log k)의 경로를 따라갑니다. 따라서 O(k+(n-k)(1+log k)), k>=2이면 보통 O(n log k)로 씁니다. k=1은 최댓값을 추적하는 O(n)입니다.
+
+힙 크기는 항상 k라서 보조 공간은 O(k), 반환 값은 한 개입니다. heapify의 O(k)는 원소마다 O(log k)를 단순 곱한 비용보다 작습니다. 아래쪽에 있는 많은 노드는 내려갈 높이가 짧기 때문입니다.
 
 <!-- lecture-page -->
 
-## 56 · 문제와 상태
+## 56 · 풀이의 출발점과 실행 추적
 
 [LeetCode 56: Merge Intervals](https://leetcode.com/problems/merge-intervals/) · Medium
 
 닫힌 구간들의 합집합을 겹치지 않는 구간으로 반환합니다.
 
-`intervals=[[5,7],[1,3],[3,6]] → [[1,7]]`
+구간을 시작점순으로 정렬하면 다음 구간은 지금까지 처리한 구간보다 뒤에서 시작합니다. 따라서 결과의 마지막 구간과 겹치는지만 보면 됩니다. 겹치면 끝점을 더 멀리 늘리고, 떨어져 있으면 새 구간을 시작합니다.
 
-시작점으로 정렬하고 마지막 결과 구간과 겹치면 끝을 max로 늘립니다.
+입력 `[[1,4],[2,3],[4,6],[8,9]]`. 각 행은 현재 구간 처리 후의 result입니다.
+
+| 구간 | 검사 | result |
+| --- | --- | --- |
+| [1,4] | 첫 구간 | [[1,4]] |
+| [2,3] | 2 <= 4 | [[1,4]] |
+| [4,6] | 4 <= 4 | [[1,6]] |
+| [8,9] | 8 > 6 | [[1,6],[8,9]] |
 
 <!-- lecture-page -->
 
-## 56 · 구현
+## 56 · 아이디어를 코드로 옮기기
 
 ```python
 def merge_intervals(intervals):
@@ -432,64 +405,43 @@ def merge_intervals(intervals):
     return result
 ```
 
+`start <= result[-1][1]`에서 등호는 닫힌 구간의 끝점이 닿는 경우도 병합한다는 뜻입니다. 끝점은 `max`로 갱신해야 안쪽에 포함된 `[2,3]` 때문에 `[1,4]`가 짧아지지 않습니다.
+
+새 결과 구간은 `[start,end]`로 만들어 입력의 내부 리스트를 직접 수정하지 않습니다.
+
 <!-- lecture-page -->
 
-## 56 · 정당성과 비용
+## 56 · 정당성·시간·메모리의 근거
 
 처리한 접두부의 합집합은 result와 같습니다. 시작점이 증가하므로 새 구간은 마지막 결과와만 겹칠 수 있습니다. 분리되면 이후에도 앞 결과와 겹치지 않습니다.
 
-n=구간 수. 정렬 O(n log n), 스캔 O(n); 정렬 보조 O(n), 출력 O(n). 입력을 복사 정렬합니다.
+n개 구간 정렬이 O(n log n), 정렬 뒤 스캔은 n번입니다. 각 스캔에서 마지막 구간 한 개만 비교하므로 O(n), 전체는 O(n log n)입니다. 앞의 모든 결과 구간을 매번 훑는 방식과 차이가 납니다.
+
+`sorted`가 입력 참조 n개의 새 리스트를 만들고 정렬 작업 공간도 사용하므로 보조 공간은 O(n)입니다. 병합 결과가 z개라면 출력 공간은 O(z), z<=n입니다. 구간을 입력 그대로 공유하지 않는 비용도 결과의 두 끝점에 포함됩니다.
 
 <!-- lecture-page -->
 
-## 상태 추적
-
-| 입력 값(k=2) | 보관 값(중복 포함) | root |
-| --- | --- | --- |
-| 8,3 | {3,8} | 3 |
-| 8 | {8,8} | 8 |
-| 2 | {8,8} | 8 |
-| 5 | {8,8} | 8 |
-
-각 행은 지금까지 본 값 중 큰 두 개를 중복 포함해 유지합니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-최소 힙에서는 각 부모의 값이 자식 이하이고, root에 전체 최솟값이 놓입니다. 중복을 set으로 없애면 예시의 답이 달라집니다.
-
-정렬된 배열에 반복 삽입하는 비용도 log n인가요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 10차시 · 그래프 표현과 동시 전파
-
-센서 격자의 연결된 영역을 세고 여러 시작점에서 번지는 장애 시간을 구합니다. 연결된 영역은 DFS나 BFS로 찾고, 간선별 전파 시간이 같을 때의 최소 도착 시간은 BFS의 레벨로 계산합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-격자는 (row,col), 인접 리스트는 정점→이웃 목록, 객체 그래프는 node.neighbors로 표현합니다. 좌표 tuple은 set에 넣을 수 있습니다. 복사 지도는 [row[:] for row in grid]로 만듭니다.
-
-<!-- lecture-page -->
-
-## 200 · 문제와 상태
+## 200 · 풀이의 출발점과 실행 추적
 
 [LeetCode 200: Number of Islands](https://leetcode.com/problems/number-of-islands/) · Medium
 
 문자 격자의 상하좌우로 연결된 육지 덩어리 수를 반환합니다.
 
-`grid=[["1","0","1"],["1","0","0"]] → 2`
+육지 한 칸에서 상하좌우 연결을 모두 따라가면 그 섬 전체를 찾습니다. 아직 방문하지 않은 육지를 만날 때만 섬 수를 늘리고 탐색을 시작하면 같은 섬을 여러 번 세지 않습니다. 대각선은 연결에 포함되지 않습니다.
 
-미방문 육지에서 count를 늘리고 연결된 육지를 스택으로 모두 표시합니다.
+격자 `[["1","1","0"],["0","1","0"],["1","0","1"]]`. 스택 오른쪽이 top이며 좌표는 0부터 셉니다.
+
+| 동작 | stack | seen에 새로 추가 | count |
+| --- | --- | --- | --- |
+| (0,0) 시작 | [(0,0)] | (0,0) | 1 |
+| (0,0) pop | [(0,1)] | (0,1) | 1 |
+| (0,1) pop | [(1,1)] | (1,1) | 1 |
+| (1,1) pop | [] | 없음 | 1 |
+| (2,0), (2,2) 각각 탐색 | [] | (2,0), (2,2) | 3 |
 
 <!-- lecture-page -->
 
-## 200 · 구현
+## 200 · 아이디어를 코드로 옮기기
 
 ```python
 def islands(grid):
@@ -512,29 +464,44 @@ def islands(grid):
     return count
 ```
 
+바깥 두 for는 탐색 시작점을 찾습니다. 안쪽 while은 그 시작점과 연결된 섬 하나를 끝냅니다. `seen.add`를 push 직전에 실행하므로 다른 이웃이 같은 칸을 다시 넣을 수 없습니다.
+
+입력은 문자열 "1"·"0"입니다. 좌표 범위를 확인한 다음 값을 읽으며, 원본 격자는 변경하지 않습니다.
+
 <!-- lecture-page -->
 
-## 200 · 정당성과 비용
+## 200 · 정당성·시간·메모리의 근거
 
 한 번 시작한 탐색은 연결 경로를 따라 그 성분의 모든 노드와 그 노드만 방문합니다. 이미 표시한 성분은 다시 시작하지 않으므로 시작 횟수가 성분 수입니다.
 
-R,C=행·열 수. O(RC) 시간·O(RC) 보조 공간. 일반 인접 리스트에서는 O(V+E) 시간입니다.
+R·C칸을 한 번 훑습니다. 육지 칸은 seen 때문에 한 번만 push·pop되고, 꺼낼 때 이웃 네 개만 검사합니다. 네 방향은 입력 크기와 무관한 상수라서 해시 연산의 기대 비용을 적용한 시간은 O(RC)입니다. 루프가 중첩되어 보여도 섬 탐색 전체가 매 칸에서 반복되는 것은 아닙니다.
+
+seen에는 최대 RC개 좌표, stack에도 최대 RC개 좌표가 남을 수 있어 보조 공간은 O(RC)입니다. 격자를 직접 표시하면 seen을 없앨 수 있지만, 입력 변경과 탐색 스택의 비용은 여전히 따져야 합니다.
 
 <!-- lecture-page -->
 
-## 994 · 문제와 상태
+## 994 · 풀이의 출발점과 실행 추적
 
 [LeetCode 994: Rotting Oranges](https://leetcode.com/problems/rotting-oranges/) · Medium
 
 동시에 퍼지는 변화를 적용해 모든 신선한 셀이 바뀌는 최소 분을 반환합니다. 불가능하면 -1입니다.
 
-`grid=[[2,1,1],[0,1,0]] → 2`
+모든 썩은 칸은 같은 시각 0에서 출발하는 전파원입니다. 이들을 모두 큐에 넣고 한 층씩 확산하면 각 칸이 처음 썩는 시각이 가장 가까운 전파원까지의 거리입니다. 한 원점씩 따로 전파하면 동시에 일어나는 일을 잘못 셀 수 있습니다.
 
-모든 시작점을 같은 큐에 넣고 레벨별로 처리합니다. 새 셀은 enqueue할 때 즉시 2로 바꿉니다.
+입력 `[[2,1,1],[0,1,1]]`. 아래 queue는 해당 시각에 새로 썩어 다음에 처리될 칸입니다.
+
+| 시각 minutes | queue | fresh |
+| --- | --- | --- |
+| 0 | [(0,0)] | 4 |
+| 1 | [(0,1)] | 3 |
+| 2 | [(1,1),(0,2)] | 1 |
+| 3 | [(1,2)] | 0 |
+
+fresh가 0이므로 마지막 큐를 더 처리하지 않고 3을 반환합니다.
 
 <!-- lecture-page -->
 
-## 994 · 구현
+## 994 · 아이디어를 코드로 옮기기
 
 ```python
 def rot_minutes(grid):
@@ -558,47 +525,19 @@ def rot_minutes(grid):
     return minutes if fresh == 0 else -1
 ```
 
+`range(len(queue))`가 현재 시각의 전파원 수를 고정합니다. 새로 썩은 칸을 즉시 2로 표시하고 큐 뒤에 넣어 중복 감염을 막되, 그 칸의 이웃 처리는 다음 while로 미룹니다.
+
+큐가 비었는데 fresh가 남으면 도달 불가능하여 -1입니다. 처음부터 fresh가 0이면 시간이 흐를 필요 없이 0입니다.
+
 <!-- lecture-page -->
 
-## 994 · 정당성과 비용
+## 994 · 정당성·시간·메모리의 근거
 
 큐의 레벨은 어떤 시작점에서든 그 셀까지의 최소 간선 수입니다. 모든 간선의 전파 시간이 같으므로 먼저 발견한 시간이 최소입니다. 큐가 비어도 fresh가 남으면 경로가 없습니다.
 
-R,C=행·열 수. O(RC) 시간, 복사 board와 큐 O(RC) 보조 공간.
+격자 복사와 초기 스캔이 각각 O(RC)입니다. 각 칸은 한 번만 큐에 들어가고 나올 때 네 이웃을 검사하므로 전파도 O(RC)입니다. 세 단계의 합은 O(RC)이며 분 수를 RC에 다시 곱하지 않습니다.
 
-<!-- lecture-page -->
-
-## 상태 추적
-
-| 분 | 처리 frontier | 새로 표시 |
-| --- | --- | --- |
-| 0 | (0,0) | (0,1) |
-| 1 | (0,1) | (0,2),(1,1) |
-| 2 | (0,2),(1,1) | 없음 |
-
-새로 표시한 셀의 시점은 t가 아니라 t+1입니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-값 비교는 ==입니다. is는 객체 동일성입니다. [["1","0"],["0","1"]]은 대각선을 연결하지 않아 두 성분입니다.
-
-BFS가 가중 간선에서도 최소 비용을 보장하나요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 동시 전파의 시간 경계
-
-| 시간 | 그 시점에 새로 썩은 셀 | 남은 신선한 셀 |
-| --- | --- | --- |
-| 0 | (0,0), 초기 시작점 | 3 |
-| 1 | (0,1) | 2 |
-| 2 | (0,2), (1,1) | 0 |
-
-격자 `[[2,1,1],[0,1,0]]`. 큐 길이를 고정한 한 번의 반복이 1분입니다. 새 셀은 큐에 넣을 때 표시합니다.
+board는 원본을 보존하려고 만든 RC칸 복사본입니다. 큐도 최대 RC칸을 담으므로 보조 공간은 O(RC)입니다. fresh와 minutes가 O(1) 변수여도 큰 board·queue가 존재하므로 전체 공간을 O(1)이라고 할 수 없습니다.
 
 <!-- lecture-page -->
 
@@ -609,33 +548,16 @@ BFS가 가중 간선에서도 최소 비용을 보장하나요?
 3. `[["1","0"],["0","1"]]`의 연결 성분 수는?
 4. `[[2,0,1]]`과 `[[0,2]]`의 전파 시간은?
 
-<!-- lecture-page -->
+### 실습과 참고자료
 
-## 독립 실습과 다음 연결
-
-[학생 실습](/courses/practical-algorithms/week-05-practice/)
-
-[힌트·해설](/courses/practical-algorithms/week-05-reading/)
-
-[교사용 진행안](/courses/practical-algorithms/week-05-instructor/)
-
-[5주차 코드 내려받기](/assets/courses/practical-algorithms/week-05-code.zip)
-
-코드·상태 정의·정당성·복잡도·경계 입력을 함께 제출합니다. 8주차에는 주제를 숨긴 혼합 평가가 있습니다.
-
-<!-- lecture-page -->
-
-## 실행과 참고자료
-
-[주차별 코드](/assets/courses/practical-algorithms/week-05-code.zip)의 `code` 폴더에서 실행합니다.
+[LeetCode · 215, 56, 200, 994](/courses/practical-algorithms/week-05-practice/) · [풀이](/courses/practical-algorithms/week-05-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-05-code.zip)
 
 ```text
 python demo_09.py
 python demo_10.py
 python verify.py
-python verify.py --student
 ```
 
-마지막 명령은 학생 파일을 구현한 뒤 실행합니다.
+학생 파일을 구현한 뒤 `python verify.py --student`로 검사합니다.
 
-Erik Demaine·Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
