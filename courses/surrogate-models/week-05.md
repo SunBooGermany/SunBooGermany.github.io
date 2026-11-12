@@ -34,9 +34,7 @@ Longer residence converts A to B, but also converts B to C. Maximizing B and min
 
 This week: decision formulation and frozen ReLU computation using linear constraints and binary variables.
 
-<!-- lecture-page -->
-
-## Learning objectives for optimization formulation
+### Learning objectives for optimization formulation
 
 1. Decisions, fixed context, predicted outputs, objective, and constraints
 2. Big-M equivalence for one ReLU: proof by branch
@@ -59,6 +57,8 @@ Submission: formulation, verification results, and solution interpretation.
 
 Here τ is a design variable selecting volume at fixed flow. Choosing temperature as well requires a model with temperature as an input and bounds over that domain.
 
+Choosing residence time fixes the required volume through V=Qτ at fixed flow. Changing residence time in an existing vessel instead requires changing flow or another condition, which changes the variables and costs of the design problem.
+
 <!-- lecture-page -->
 
 ## An optimization problem in symbols
@@ -69,6 +69,8 @@ Notation: decisions u, fixed context d, model outputs y. Fitted weights θ: fixe
 
 Feasible point: satisfies network equations and process constraints. Optimum: feasible point with the smallest objective.
 
+Prediction supplies u and computes y. Optimization treats both as unknowns and links them with y=fθ(u). Encoding that relation prevents the solver from changing y independently just to satisfy specifications.
+
 <!-- lecture-page -->
 
 ## CSTR design optimization problem
@@ -78,6 +80,8 @@ Feasible point: satisfies network equations and process constraints. Optimum: fe
 With Q = 1 L/min, minimizing τ also minimizes V. Outputs are in mol/L and must be converted to those units before checking specifications.
 
 B ≥ 0.40 is a concentration specification. Purity or production-rate requirements need constraints written from their own definitions.
+
+τ=2 gives a small volume but may lack sufficient B. Increasing τ until B reaches its lower bound identifies a boundary below which volume is smaller but B fails. The C upper limit must also hold at that boundary before it is a minimum feasible design.
 
 <!-- lecture-page -->
 
@@ -99,6 +103,8 @@ ReLU: componentwise in each hidden layer. Optimization variables: inputs, interm
 
 Making weights variable introduces products of W and h, so the MILP derived here would no longer apply.
 
+Intermediate network values become optimization variables, but they are not free choices. Each affine equality and ReLU constraint ties one layer to the preceding layer. This converts the forward calculation into relations that must hold simultaneously.
+
 <!-- lecture-page -->
 
 ## Equality representation of input scaling
@@ -109,6 +115,8 @@ The lab maps τ to dimensionless input x. Optimization uses exactly the offset a
 
 If outputs were standardized as well, include y = μ + Ds. This inverse transformation is linear when μ and D are fixed.
 
+For example, τ=6 gives x=(6−2)/8=0.5. Feeding 6 directly to the network leaves its 0–1 input domain. Check the coordinates entering each equation rather than relying only on variable names.
+
 <!-- lecture-page -->
 
 ## Piecewise-linear structure of ReLU
@@ -117,6 +125,8 @@ If outputs were standardized as well, include y = μ + Ds. This inverse transfor
 
 <figure><img src="/assets/courses/surrogate-models/week-05/relu-en.svg" alt="ReLU graph and the region admitted by the binary relaxation" /></figure>
 The blue line is the exact graph. The shaded region includes points admitted when the binary variable is relaxed.
+
+For a<0, h=0 is horizontal; for a>0, h=a is a line of slope one. Binary z selects the branch. Relaxing z to a continuous value also admits points between the branches, allowing outputs above the actual ReLU.
 
 <!-- lecture-page -->
 
@@ -138,6 +148,8 @@ Assume valid finite bounds L ≤ a ≤ U with L < 0 < U.
 
 Branches: inactive at z = 0; active at z = 1. L and U: bounds on this neuron’s pre-activation.
 
+h≤Uz pins h to zero when z=0. h≤a−L(1−z) pins h to a when z=1. Valid L and U make the unused upper inequality permissive enough to retain every correct point on the selected branch.
+
 <!-- lecture-page -->
 
 ## Equivalence of the inactive branch (z = 0)
@@ -158,6 +170,28 @@ At a = 0, z can be either 0 or 1, and the output h is fixed at 0.
 
 <!-- lecture-page -->
 
+## Substituting numbers into one ReLU formulation
+
+For a=2x−1 and x∈[0,1], L=−1,U=1. The inequalities are h≥0, h≥a, h≤a+1−z, and h≤z.
+
+| Input and branch | Lower bound | Upper bound | Output |
+| --- | --- | --- | --- |
+| x=0.2, a=−0.6, z=0 | h≥0 | h≤0; h≤0.4 | h=0 |
+| x=0.8, a=0.6, z=1 | h≥0.6 | h≤0.6; h≤1 | h=0.6 |
+| Wrong z=0 at x=0.8 | h≥0.6 | h≤0 | Impossible |
+
+```python
+a = 2 * x - 1
+h = max(0., a)
+z = int(a >= 0.)
+assert h >= 0 and h >= a
+assert h <= a + 1 - z and h <= z
+```
+
+The binary selects a branch compatible with a; it does not create an arbitrary output. At a=0, either z is possible but both give h=0.
+
+<!-- lecture-page -->
+
 ## Linear representations of stable active and inactive neurons
 
 | Valid range | Replacement | Binary variable |
@@ -167,6 +201,8 @@ At a = 0, z can be either 0 or 1, and the output h is fixed at 0.
 | L < 0 < U | Four Big-M inequalities | One |
 
 Allowing inputs outside the bounded domain invalidates this simplification. Recheck bounds and classifications when changing the domain.
+
+An interval [−2,−0.1] never activates, so replace the neuron by h=0. On [0.2,1.3], h=a everywhere. Only a possible sign change needs branch selection; bounds therefore determine which neurons require binaries.
 
 <!-- lecture-page -->
 
@@ -185,6 +221,8 @@ Interval arithmetic gives valid bounds, but ignoring correlations between inputs
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>a</mi><mo>=</mo><mn>2</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mn>3</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.5</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><mo>−</mo><mn>1</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>2</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>L</mi><mo>=</mo><mo>−</mo><mn>5.5</mn><mo>,</mo><mtext>  </mtext><mi>U</mi><mo>=</mo><mn>5.5</mn></mrow></mtd></mtr></mtable></math>
 
 The minimum occurs at (x₁, x₂) = (0, 2), and the maximum at (1, −1). Do this calculation before choosing an arbitrary large constant.
+
+For the lower bound, use x₁=0 with positive coefficient 2 and x₂=2 with negative coefficient −3: 0−6+0.5=−5.5. Reverse those endpoints for the upper bound: 2−3×(−1)+0.5=5.5. A negative coefficient reverses the direction of an extreme.
 
 <!-- lecture-page -->
 
@@ -206,6 +244,8 @@ Linearly interpolate reference concentrations at τ = 2, 4, 6, 8, 10 min. Fix th
 
 j = 0, 1, 2, 3 and output k is A, B, or C. This lab constructs the model by interpolation rather than gradient training.
 
+Apply the first segment slope from the start. At each later knot, an activating ReLU adds the difference between the new and old slopes. The active slope changes therefore sum to the slope of the current segment.
+
 <!-- lecture-page -->
 
 ## Neuron bounds in the lab model
@@ -221,6 +261,23 @@ There are three binary variables. Substituting the affine pre-activations leaves
 
 <!-- lecture-page -->
 
+## Hidden values and B concentration at τ=5 min
+
+Subtract thresholds [0,0.25,0.50,0.75] from x=(5−2)/8=0.375.
+
+| j | aⱼ=x−tⱼ | hⱼ | Contribution WⱼB·hⱼ |
+| --- | --- | --- | --- |
+| 0 | 0.375 | 0.375 | 0.380952381×0.375=0.142857143 |
+| 1 | 0.125 | 0.125 | −0.268398268×0.125=−0.033549784 |
+| 2 | −0.125 | 0 | 0 |
+| 3 | −0.375 | 0 | 0 |
+
+Adding bias 0.285714286 gives B≈0.395021645 mol/L. Taking the midpoint of the 4-min and 6-min values also gives (0.380952381+0.409090909)/2=0.395021645.
+
+The ReLU sum and segment interpolation express the same calculation. They differ from reference-process B=0.4 at 5 min, so this prediction falls slightly below the B≥0.40 specification.
+
+<!-- lecture-page -->
+
 ## Matrix representation of Big-M constraints
 
 For neuron 1, a₁ = x − 0.25, L₁ = −0.25, and U₁ = 0.75.
@@ -228,6 +285,8 @@ For neuron 1, a₁ = x − 0.25, L₁ = −0.25, and U₁ = 0.75.
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>≥</mo><mo>−</mo><mn>.25</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>+</mo><mn>.25</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mn>.75</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr></mtable></math>
 
 Set h₁ ≥ 0 and 0 ≤ z₁ ≤ 1 as variable bounds, and declare z₁ integer. The lab assembles the full matrix in the same way.
+
+The second row collects h₁≤x−0.25+0.25(1−z₁)=x−0.25z₁ on the left. At x=0.5,z₁=1 it gives h₁≤0.25; the first row gives h₁≥0.25, fixing h₁=0.25.
 
 <!-- lecture-page -->
 
@@ -249,6 +308,8 @@ Fix one residence time, remove product specifications, and solve the network equ
 
 This tests the formulation implementation. Process prediction error requires comparison with separate reference values.
 
+Once the input is fixed, the original network output is determined. A different solver output points to weight ordering, scaling, signs, or bounds. Product specifications are separate from evaluating the network at that point, so remove them during this check.
+
 <!-- lecture-page -->
 
 ## CSTR design optimization results
@@ -262,6 +323,24 @@ This tests the formulation implementation. Process prediction error requires com
 | Termination | optimal, status = 0 |
 
 The B lower bound is active, while the C upper bound has slack. Independent segmentwise linear calculations give the same residence time.
+
+B slack is 0.400000−0.40=0; C slack is 0.25−0.215385=0.034615 mol/L. A small decrease in τ makes B insufficient first. This active constraint prevents a further volume reduction.
+
+<!-- lecture-page -->
+
+## Interpolation fraction at the product lower bound
+
+Across 4–6 min, B increases from 0.380952381 to 0.409090909. Divide the required increase by the full segment increase.
+
+| Calculation | Value |
+| --- | --- |
+| Required B increase | 0.40−0.380952381=0.019047619 |
+| Full segment increase | 0.409090909−0.380952381=0.028138528 |
+| Segment fraction α | 0.019047619/0.028138528≈0.676923077 |
+| Residence time | 4+2α≈5.353846154 min |
+| C at the same α | 0.152380952+α(0.245454545−0.152380952)≈0.215384615 |
+
+B is below 0.40 on all earlier segments. At this first crossing, C≤0.25 and nonnegativity also hold, giving the minimum volume. Comparing interpolated B with C at a different τ would not check specifications for the same design.
 
 <!-- lecture-page -->
 
@@ -282,6 +361,8 @@ Relaxing z to [0, 1] gives a lower bound on the MILP optimum for minimization. I
 With L = −1, U = 2, a = 0, the relaxed point z = 1/3, h = 2/3 is feasible, although the ReLU output is 0.
 
 The LP and MILP objective values coincide in this CSTR example. Equality of objectives in one instance does not establish general graph equivalence.
+
+Enlarging a minimization feasible set retains the original optimum, so the new optimal value cannot be larger. This makes the LP value a lower bound. Its outputs may leave the network graph, so an LP solution is not automatically an acceptable design.
 
 <!-- lecture-page -->
 
@@ -327,9 +408,7 @@ python week05_lab.py --output-dir my-results
 
 이번 주에는 이 선택을 최적화 문제로 적고, 고정된 ReLU 모델의 계산을 선형식과 이진변수로 표현해봅니다.
 
-<!-- lecture-page -->
-
-## 최적화 정식화의 학습 목표
+### 최적화 정식화의 학습 목표
 
 1. 조작변수·고정 조건·예측 출력을 구분하고 목적함수와 제약을 적습니다.
 2. ReLU 한 개의 Big-M 식을 두 분기로 증명합니다.
@@ -352,6 +431,8 @@ python week05_lab.py --output-dir my-results
 
 여기서 τ는 고정 유량에서 부피를 선택하는 설계변수. 온도까지 선택하려면 온도를 입력으로 받는 모델과 그 영역의 bounds가 필요합니다.
 
+체류시간을 선택하면 고정 유량 Q에서 필요한 부피 V=Qτ도 정해집니다. 이미 부피가 정해진 장치에서 체류시간을 바꾸려면 유량 등을 바꾸어야 하므로 이 설계 문제와 변수·비용이 달라집니다.
+
 <!-- lecture-page -->
 
 ## 최적화 문제의 기본 구성
@@ -362,6 +443,8 @@ u는 설계·운전 변수, d는 고정 조건, y는 모델 출력입니다. 학
 
 가능해: 신경망 등식과 공정 제약을 모두 만족하는 점. 최적해: 가능해 중 목적함수가 가장 작은 점
 
+예측에서는 u를 주고 y를 계산했습니다. 최적화에서는 u와 y를 함께 미지수로 놓고, y=fθ(u)가 두 값을 묶습니다. solver가 y를 마음대로 낮추거나 높여 규격을 맞추지 못하도록 예측 관계 자체를 제약으로 넣습니다.
+
 <!-- lecture-page -->
 
 ## CSTR 설계 최적화 문제
@@ -371,6 +454,8 @@ u는 설계·운전 변수, d는 고정 조건, y는 모델 출력입니다. 학
 Q = 1 L/min이므로 τ를 줄이면 V도 줄어듭니다. y의 농도 단위는 mol/L이며, 모델의 출력은 이 단위로 복원한 뒤 규격과 비교합니다.
 
 농도 규격: B ≥ 0.40. 순도나 생산량을 요구한다면 해당 정의로 제약을 다시 적어야 합니다.
+
+τ=2는 부피가 작아 목적값은 좋지만 B가 부족할 수 있습니다. τ를 늘려 B 하한에 도달하면 더 작은 부피는 그 제약을 위반합니다. 다만 C 상한도 같은 지점에서 만족하는지 확인해야 최소 가능 설계가 됩니다.
 
 <!-- lecture-page -->
 
@@ -392,6 +477,8 @@ ReLU: 각 은닉층에서 성분별 적용. 최적화 변수: 입력·중간값�
 
 가중치까지 변수로 두면 W와 h의 곱이 생기므로 여기서 유도하는 MILP가 성립하지 않습니다.
 
+신경망 내부 숫자도 최적화 변수가 되지만 자유롭게 선택되지는 않습니다. 각 층의 가중합 등식과 ReLU 제약이 앞 층 값으로 뒷 층 값을 결정합니다. 원래 순전파를 동시에 만족해야 하는 연립 관계로 옮기는 것입니다.
+
 <!-- lecture-page -->
 
 ## 입력 scaling의 등식 표현
@@ -402,6 +489,8 @@ ReLU: 각 은닉층에서 성분별 적용. 최적화 변수: 입력·중간값�
 
 출력까지 표준화했다면 y = μ + Ds를 추가합니다. μ와 D가 고정이면 이 복원식은 선형입니다.
 
+예를 들어 τ=6이면 x=(6−2)/8=0.5입니다. 신경망에 τ=6을 그대로 넣으면 학습 때의 0~1 입력 범위를 벗어납니다. solver 변수의 이름보다 실제로 어떤 좌표가 각 식에 들어가는지 확인합니다.
+
 <!-- lecture-page -->
 
 ## ReLU 함수의 구간별 선형 구조
@@ -410,6 +499,8 @@ ReLU: 각 은닉층에서 성분별 적용. 최적화 변수: 입력·중간값�
 
 <figure><img src="/assets/courses/surrogate-models/week-05/relu-ko.svg" alt="ReLU 그래프와 이진변수를 완화했을 때 허용되는 영역" /></figure>
 파란 선이 정확한 그래프입니다. 색칠한 영역은 이진변수를 연속으로 풀었을 때 허용되는 점을 포함합니다.
+
+a<0 구간은 수평선 h=0, a>0 구간은 직선 h=a입니다. 두 선분 중 어느 쪽을 사용할지 이진변수 z가 선택합니다. z를 연속값으로 풀면 두 선분 사이의 점도 허용되어 출력이 실제 ReLU보다 커질 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -431,6 +522,8 @@ a = −0.2일 때 h = 0.4도 이 두 식을 만족하지만 ReLU 출력은 0입�
 
 분기: z = 0은 비활성, z = 1은 활성. L·U: 해당 뉴런의 pre-activation 하한·상한
 
+h≤Uz는 z=0일 때 h를 0에 고정합니다. h≤a−L(1−z)는 z=1일 때 h를 a에 고정합니다. 선택되지 않은 상한은 유효한 L,U 덕분에 해당 가지의 올바른 점을 잘라내지 않습니다.
+
 <!-- lecture-page -->
 
 ## 비활성 분기(z = 0)의 동치성
@@ -451,6 +544,28 @@ a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 
 <!-- lecture-page -->
 
+## 하나의 ReLU 제약에 수치 대입
+
+a=2x−1, x∈[0,1]이면 L=−1,U=1입니다. 네 식은 h≥0, h≥a, h≤a+1−z, h≤z입니다.
+
+| 입력과 가지 | 하한 | 상한 | 결정된 출력 |
+| --- | --- | --- | --- |
+| x=0.2, a=−0.6, z=0 | h≥0 | h≤0; h≤0.4 | h=0 |
+| x=0.8, a=0.6, z=1 | h≥0.6 | h≤0.6; h≤1 | h=0.6 |
+| x=0.8에서 잘못된 z=0 | h≥0.6 | h≤0 | 불가능 |
+
+```python
+a = 2 * x - 1
+h = max(0., a)
+z = int(a >= 0.)
+assert h >= 0 and h >= a
+assert h <= a + 1 - z and h <= z
+```
+
+이진변수가 임의의 출력을 만드는 것이 아니라, 주어진 a와 양립하는 가지를 선택합니다. a=0에서는 두 z가 가능하지만 h는 모두 0입니다.
+
+<!-- lecture-page -->
+
 ## 활성·비활성 뉴런의 선형 표현
 
 | 유효한 범위 | 대체 식 | 이진변수 |
@@ -460,6 +575,8 @@ a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 | L < 0 < U | Big-M 네 부등식 | 1개 |
 
 범위를 벗어나는 입력까지 허용하면 이 단순화의 근거가 사라집니다. 입력 영역을 바꾸면 bounds와 분류도 다시 확인합니다.
+
+범위가 [−2,−0.1]이면 어떤 입력에도 켜지지 않아 h=0으로 대체합니다. [0.2,1.3]이면 항상 h=a입니다. 부호가 바뀔 가능성이 있는 뉴런에만 가지 선택이 필요하므로 bounds가 이진변수 수를 결정합니다.
 
 <!-- lecture-page -->
 
@@ -478,6 +595,8 @@ a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>a</mi><mo>=</mo><mn>2</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mn>3</mn><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>+</mo><mn>.5</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><mo>−</mo><mn>1</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>2</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>L</mi><mo>=</mo><mo>−</mo><mn>5.5</mn><mo>,</mo><mtext>  </mtext><mi>U</mi><mo>=</mo><mn>5.5</mn></mrow></mtd></mtr></mtable></math>
 
 최솟값은 (x₁, x₂) = (0, 2), 최댓값은 (1, −1)에서 나옵니다. 임의의 큰 숫자를 고르기 전에 이 계산부터 합니다.
+
+하한은 양수 계수 2에 x₁의 하한 0을, 음수 계수 −3에 x₂의 상한 2를 넣어 0−6+0.5=−5.5입니다. 상한은 반대로 2−3×(−1)+0.5=5.5입니다. 음수 계수가 곱해질 때 극값 방향이 뒤집힙니다.
 
 <!-- lecture-page -->
 
@@ -499,6 +618,8 @@ a = 0에서는 z가 0 또는 1이어도 출력 h는 0으로 정해집니다.
 
 j = 0, 1, 2, 3이며 출력 k는 A, B, C입니다. 이 실습의 모델 구성은 보간이고, 경사하강 학습은 사용하지 않습니다.
 
+첫 구간의 기울기는 처음부터 적용합니다. 이후 절점에서 ReLU가 켜질 때마다 새 기울기와 이전 기울기의 차이를 더합니다. 그러면 현재 켜진 기울기 변화량의 합이 그 구간의 기울기가 됩니다.
+
 <!-- lecture-page -->
 
 ## 실습 모델의 뉴런별 bounds
@@ -514,6 +635,23 @@ j = 0, 1, 2, 3이며 출력 k는 A, B, C입니다. 이 실습의 모델 구성�
 
 <!-- lecture-page -->
 
+## τ=5 min에서 은닉값과 B 농도
+
+x=(5−2)/8=0.375를 네 절점 [0,0.25,0.50,0.75]에서 뺍니다.
+
+| j | aⱼ=x−tⱼ | hⱼ | B에 더해지는 값 WⱼB·hⱼ |
+| --- | --- | --- | --- |
+| 0 | 0.375 | 0.375 | 0.380952381×0.375=0.142857143 |
+| 1 | 0.125 | 0.125 | −0.268398268×0.125=−0.033549784 |
+| 2 | −0.125 | 0 | 0 |
+| 3 | −0.375 | 0 | 0 |
+
+편향 0.285714286을 더하면 B≈0.395021645 mol/L입니다. 4분과 6분의 농도를 반씩 섞어도 (0.380952381+0.409090909)/2=0.395021645가 됩니다.
+
+ReLU 가중합과 구간 보간이 같은 계산을 다른 표현으로 수행합니다. 기준 공정의 5분 B=0.4와는 차이가 있어, 이 예측은 B≥0.40 규격에 조금 못 미칩니다.
+
+<!-- lecture-page -->
+
 ## Big-M 제약의 행렬 표현
 
 뉴런 1에서 a₁ = x − 0.25, L₁ = −0.25, U₁ = 0.75
@@ -521,6 +659,8 @@ j = 0, 1, 2, 3이며 출력 k는 A, B, C입니다. 이 실습의 모델 구성�
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>≥</mo><mo>−</mo><mn>.25</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mi>x</mi><mo>+</mo><mn>.25</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><mn>.75</mn><msub><mrow><mi>z</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>≤</mo><mn>0</mn></mrow></mtd></mtr></mtable></math>
 
 h₁ ≥ 0과 0 ≤ z₁ ≤ 1은 변수 bounds에 적고, z₁을 정수로 지정합니다. 실습은 같은 방식으로 전체 행렬을 직접 조립합니다.
+
+두 번째 행은 h₁≤x−0.25+0.25(1−z₁)=x−0.25z₁을 왼쪽으로 모은 식입니다. x=0.5,z₁=1이면 h₁≤0.25이고, 첫 행이 h₁≥0.25를 주므로 h₁=0.25로 정해집니다.
 
 <!-- lecture-page -->
 
@@ -542,6 +682,8 @@ h₁ ≥ 0과 0 ≤ z₁ ≤ 1은 변수 bounds에 적고, z₁을 정수로 지
 
 이 대조는 정식화 구현을 검사합니다. 공정 예측 오차는 별도의 기준값과 비교해야 합니다.
 
+입력을 고정하면 원래 신경망의 출력은 이미 정해져 있습니다. 이때 solver가 다른 출력을 주면 가중치 배치, scaling, 부호 또는 bounds 구현을 의심할 수 있습니다. 제품 규격은 이 점의 신경망 계산과 별개의 제약이라 검사 중에는 제거합니다.
+
 <!-- lecture-page -->
 
 ## CSTR 설계 최적화 결과
@@ -555,6 +697,24 @@ h₁ ≥ 0과 0 ≤ z₁ ≤ 1은 변수 bounds에 적고, z₁을 정수로 지
 | 종료 상태 | optimal, status = 0 |
 
 B의 하한이 활성이고 C의 상한에는 여유가 있습니다. 독립적인 구간별 선형 계산에서도 같은 체류시간을 얻었습니다.
+
+B의 여유는 0.400000−0.40=0이고 C의 여유는 0.25−0.215385=0.034615 mol/L입니다. τ를 조금 줄이면 B가 먼저 부족해집니다. 이 활성 제약이 부피를 더 줄이지 못하게 합니다.
+
+<!-- lecture-page -->
+
+## 제품 하한에 도달하는 보간 비율
+
+4~6분 구간에서 B는 0.380952381에서 0.409090909로 증가합니다. 필요한 증가량을 구간 전체 증가량으로 나눕니다.
+
+| 계산 | 값 |
+| --- | --- |
+| 필요한 B 증가량 | 0.40−0.380952381=0.019047619 |
+| 구간 전체 증가량 | 0.409090909−0.380952381=0.028138528 |
+| 구간 비율 α | 0.019047619/0.028138528≈0.676923077 |
+| 체류시간 | 4+2α≈5.353846154 min |
+| 같은 α의 C | 0.152380952+α(0.245454545−0.152380952)≈0.215384615 |
+
+이전 구간의 B는 모두 0.40보다 작습니다. 이 첫 교점에서 C≤0.25와 비음수 조건도 만족하므로 최소 부피를 얻습니다. B만 따로 보간한 뒤 다른 τ의 C와 비교하면 같은 설계의 규격 검사가 되지 않습니다.
 
 <!-- lecture-page -->
 
@@ -575,6 +735,8 @@ z ∈ [0, 1]로 완화하면 최소화 문제의 목적값은 MILP 최적값의 
 L = −1, U = 2, a = 0에서 z = 1/3, h = 2/3은 완화식을 만족하지만 실제 ReLU 출력은 0입니다.
 
 이번 CSTR 예제에서는 LP와 MILP의 목적값이 같았습니다. 한 사례의 목적값 일치로 일반적인 그래프 동치가 성립하지는 않습니다.
+
+최소화 문제에서 허용 집합을 넓히면 기존 최적점도 여전히 허용되므로 최적값이 더 커질 수 없습니다. 그래서 LP 값은 하한입니다. 다만 LP의 출력은 신경망 그래프 위에 없을 수 있어 그 입력을 그대로 설계안으로 채택하지 않습니다.
 
 <!-- lecture-page -->
 

@@ -32,9 +32,7 @@ The next separator calculates its load from incoming component amounts. A total-
 
 This week: residual penalties in the loss, output projection onto specified linear equalities, and component errors before and after correction.
 
-<!-- lecture-page -->
-
-## Comparisons for learning with physical constraints
+### Comparisons for learning with physical constraints
 
 1. MLP, soft sum penalty, and hard sum projection on the same data
 2. Nearest-point projection from KKT conditions; rank assumptions
@@ -63,6 +61,8 @@ Let r_A, r_B, and r_C denote the right sides of the steady-state species balance
 
 At steady state each residual is zero, giving S = C_A + C_B + C_C = C_Af. This concentration-sum equality depends on the stated stoichiometry and flow assumptions. Other reactions require the appropriate elemental or mass balance and units.
 
+Each amount converted from A to B appears once negatively in A and once positively in B. Conversion from B to C cancels in the same way. Only external inflow and outflow remain in the sum balance; this cancellation justifies the total-concentration constraint.
+
 <!-- lecture-page -->
 
 ## Componentwise prediction error and concentration-sum error
@@ -84,6 +84,8 @@ The sum residual is r_sum = C_A + C_B + C_C − C_Af, in mol/L. Known kinetics a
 
 Units for these three residuals: mol/(L·min). Training: sum residual only. Separate evaluation: species residuals.
 
+For [0.7,0.3,0.2] at 330 K and τ=5, species residuals are [−0.04,0.05,−0.01] mol/(L·min). They sum to zero although individual steady balances fail. One sum constraint does not replace three species equations.
+
 <!-- lecture-page -->
 
 ## Data-error and constraint-violation terms in a soft penalty
@@ -93,6 +95,8 @@ Units for these three residuals: mol/(L·min). Training: sum residual only. Sepa
 Both terms are dimensionless with <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L. The lab uses λ = 10; its meaning includes the averaging conventions for one sum residual and three component errors.
 
 Changing λ changes the objective and gradient magnitudes. A finite penalty and a completed training run do not guarantee zero residual at every input.
+
+One gradient moves predictions toward data; another moves the sum toward the constraint. When those directions conflict, a finite λ can produce a compromise. Compare the averaging conventions of both terms, not only the numerical λ.
 
 <!-- lecture-page -->
 
@@ -124,6 +128,8 @@ x ∈ ℝᵖ, y ∈ ℝⁿ, A ∈ ℝᵐˣᵖ, B ∈ ℝᵐˣⁿ, and b ∈ ℝ�
 
 For the CSTR, x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], and b = 0. Thus d(x) = C_Af.
 
+Fixing x also fixes d(x). The sum constraint fixes one combination of three outputs rather than all three values. It leaves freedom to exchange A and B while preserving the sum.
+
 <!-- lecture-page -->
 
 ## Nearest-point projection onto a linear equality set
@@ -133,6 +139,8 @@ For the CSTR, x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], and b = 0. Thu
 Fixed quantities: x and raw prediction ŷ. Adjusted variable: output z. Metric: Euclidean distance in physical concentration coordinates.
 
 The objective is strictly convex, so a nonempty feasible set has a unique projected output. KKT conditions give a closed form for this equality-only QP.
+
+The aim is to satisfy the sum while disturbing a nearby prediction as little as possible. Equal units and weights lead to minimizing the squared correction norm. Protecting selected components more strongly requires an explicitly weighted distance.
 
 <!-- lecture-page -->
 
@@ -146,6 +154,8 @@ Enforce stationarity and primal feasibility together.
 
 There are no inequalities, hence no complementary slackness or multiplier sign restriction. For a strictly convex objective with affine equalities, an output satisfying these conditions is the global minimizer.
 
+Stationarity says that the correction lies along the constraint normals Bᵀ. Motion tangent to the equality set does not repair the residual but increases distance, so it is absent from the nearest-point correction.
+
 <!-- lecture-page -->
 
 ## Eliminate the multiplier to obtain the projection
@@ -155,6 +165,8 @@ Stationarity gives z = ŷ − Bᵀλ. Substitute into Bz = d.
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>G</mi><mo>=</mo><mi>B</mi><msup><mrow><mi>B</mi></mrow><mrow><mi>T</mi></mrow></msup><mo>,</mo><mtext>  </mtext><mi>G</mi><mi>λ</mi><mo>=</mo><mi>B</mi><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><mi>d</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><msup><mrow><mi>B</mi></mrow><mrow><mi>T</mi></mrow></msup><msup><mrow><mi>G</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo>(</mo><mi>B</mi><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><mi>d</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 If rank(B) = m, then G = BBᵀ is positive definite. The formula uses an inverse for notation; implementation solves Gλ = Bŷ − d. A fixed B allows reuse of a factorization or fixed projection coefficients.
+
+There are m multiplier unknowns, one per equality. Compute the original residual Bŷ−d, solve the system with G, then multiply by Bᵀ to turn constraint-space coefficients into a correction across n outputs.
 
 <!-- lecture-page -->
 
@@ -192,6 +204,22 @@ Displayed values are rounded. Keep full precision during calculation and check t
 
 <!-- lecture-page -->
 
+## From the sum residual to projected output
+
+The raw output is [0.70,0.45,0.25] and the target total is 1.20 mol/L. Equal corrections Δ give 1.40−3Δ=1.20, hence Δ=0.20/3.
+
+| Step | Value |
+| --- | --- |
+| Bŷ−d | 1.40−1.20=0.20 |
+| G=BBᵀ | 1²+1²+1²=3 |
+| Solve Gλ=residual | λ=0.0666667 |
+| Component corrections | [−0.0666667,−0.0666667,−0.0666667] |
+| Projected output | [0.6333333,0.3833333,0.1833333] |
+
+Equal correction has squared distance 3×(0.20/3)²=0.013333. Subtracting 0.20 only from A also repairs the sum but has squared distance 0.04. This explains equal correction under an equally weighted Euclidean metric.
+
+<!-- lecture-page -->
+
 ## Post-projection and training through projection
 
 | Method | Output used in the training loss |
@@ -201,6 +229,8 @@ Displayed values are rounded. Keep full precision during calculation and check t
 
 <figure><img src="/assets/courses/surrogate-models/week-04/flow-en.svg" alt="MLP output, fixed projection, data loss, and backward path" /></figure>
 Both can satisfy the same equality, but their training gradients differ and generally produce different parameters.
+
+Post-projection repairs the sum after training. During projected training, loss sees the corrected output. Directions that projection removes, such as adding the same amount to every raw component under a sum constraint, contribute no gradient from that output loss.
 
 <!-- lecture-page -->
 
@@ -222,6 +252,8 @@ An upstream gradient [1, 0, 0] at the projected output becomes [2/3, −1/3, −
 
 Additional checks: analytic Jacobian and double-precision gradcheck for two independent equalities.
 
+The mean of gradient [1,0,0] is 1/3. Subtracting it gives [2/3,−1/3,−1/3]. Raising all components equally changes the sum and is removed; directions that redistribute concentration while preserving the sum remain.
+
 <!-- lecture-page -->
 
 ## Constraint-matrix transformation under output standardization
@@ -231,6 +263,27 @@ Additional checks: analytic Jacobian and double-precision gradcheck for two inde
 Compute μ and positive scales s_j from training data only. A projection in standardized coordinates z must use BD and right side d − Bμ.
 
 Projection in standardized coordinates minimizes a distance in physical coordinates that weights each squared component correction by 1/s_j². Specify the correction metric and scales.
+
+<!-- lecture-page -->
+
+## Projection metric and component corrections
+
+Minimizing distance in standardized coordinates with scales [0.2,0.5,0.1] allocates physical corrections in proportion to squared scales. Split the residual 0.20 in the ratio 0.04:0.25:0.01.
+
+| Component | Squared-scale fraction | Subtracted concentration | Result |
+| --- | --- | --- | --- |
+| A | 0.04/0.30 | 0.026667 | 0.673333 |
+| B | 0.25/0.30 | 0.166667 | 0.283333 |
+| C | 0.01/0.30 | 0.006667 | 0.243333 |
+
+```python
+scales = np.array([0.2, 0.5, 0.1])
+raw = np.array([0.70, 0.45, 0.25])
+weights = scales**2 / np.sum(scales**2)
+projected = raw - (raw.sum() - 1.2) * weights
+```
+
+B has the largest scale, making a physical correction less costly in standardized distance. It therefore changes more. Checking only the final sum 1.20 hides the difference between these metrics.
 
 <!-- lecture-page -->
 
@@ -260,6 +313,8 @@ optimizer.step()
 
 Projection adds no trainable parameters.
 
+keepdim=True retains residual shape (batch,1), broadcasting the same correction across the three components of each row. Summing the whole batch into one number would incorrectly share corrections across operating conditions.
+
 <!-- lecture-page -->
 
 ## Concentration-sum constraints and nonnegativity
@@ -272,6 +327,23 @@ To require both nonnegativity and the sum, use a method including those inequali
 
 <!-- lecture-page -->
 
+## Recomputing projection with nonnegativity
+
+Subtracting the sum residual 0.22 equally from [0.02,0.90,0.50] makes A negative. Requiring both the sum and nonnegativity leads to recomputation on the boundary A=0.
+
+| Step | Calculation |
+| --- | --- |
+| Fix A at zero | B+C=1.20 |
+| Remaining raw sum | 0.90+0.50=1.40 |
+| Correction to each free component | (1.40−1.20)/2=0.10 |
+| Result | [0,0.80,0.40] mol/L |
+
+Subtract 0.10 from each positive component while A stops at zero. This is the simplex projection of the raw output. Clipping only the negative entry does not readjust B and C, so it does not restore the sum.
+
+As raw values change, the active constraint changes when A becomes positive again. The derivative is therefore not one fixed matrix over the entire domain, unlike fixed linear-equality projection.
+
+<!-- lecture-page -->
+
 ## Conditions for error reduction by projection
 
 If reference <math><msup><mrow><mi>y</mi></mrow><mrow><mo>∗</mo></mrow></msup></math> lies in the same affine set, orthogonality gives:
@@ -281,6 +353,8 @@ If reference <math><msup><mrow><mi>y</mi></mrow><mrow><mo>∗</mo></mrow></msup>
 Thus physical-space projection of the same raw prediction cannot increase total squared Euclidean error. An individual component error can increase.
 
 If noisy labels lie outside the set, or projection uses another weighted metric, this physical Euclidean comparison does not directly apply. The identity also does not rank two separately trained models.
+
+Raw error separates into a normal component violating the sum and a tangent component distributing concentrations incorrectly. Projection removes only the normal part. Orthogonality makes their squared norms add, so total squared error cannot increase for the same feasible reference and metric.
 
 <!-- lecture-page -->
 
@@ -328,6 +402,8 @@ The minimum covers every component and test row. Record the evaluation tolerance
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="Pooled RMSE and maximum concentration-sum violation by model" /></figure>
 The hard model satisfies the concentration-sum equality, while its component reaction/outlet relations retain a residual RMS of 0.002225 mol/(L·min).
+
+Zero sum residual corresponds to the species residuals summing to zero. Positive and negative species residuals can cancel, leaving nonzero species RMS. The figure tests these additional relations that were not enforced in training.
 
 <!-- lecture-page -->
 
@@ -400,9 +476,7 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 이번 주의 주제: loss의 위반 벌점, 지정한 선형 등식으로의 출력 투영, 보정 전후의 성분 오차
 
-<!-- lecture-page -->
-
-## 물리 제약 학습의 비교 항목
+### 물리 제약 학습의 비교 항목
 
 1. 같은 데이터로 MLP·soft sum penalty·hard sum projection을 비교
 2. 최소 거리 투영을 KKT 조건으로 유도하고 rank 가정을 확인합니다.
@@ -431,6 +505,8 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 정상상태에서는 각 residual이 0이므로 S = C_A + C_B + C_C = C_Af입니다. 이 농도 합 보존은 위 화학양론과 유량 가정에 의존합니다. 일반 반응에서는 원소수지나 질량수지를 해당 단위로 다시 구성해야 합니다.
 
+A가 B로 반응한 양은 A 수지에서 음수, B 수지에서 양수로 한 번씩 나타납니다. B에서 C로 넘어간 양도 상쇄됩니다. 그래서 합 수지에는 외부 유입과 유출만 남으며, 이 상쇄가 농도 합 제약의 근거입니다.
+
 <!-- lecture-page -->
 
 ## 성분별 예측 오차와 농도 합 오차
@@ -452,6 +528,8 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 
 세 residual의 단위: mol/(L·min). 학습 대상: 합 residual. 별도 평가: 성분수지 residual
 
+총농도가 맞는 [0.7,0.3,0.2]를 330 K, τ=5에 넣으면 종별 잔차는 [−0.04,0.05,−0.01] mol/(L·min)입니다. 합은 0이지만 각 종의 정상상태 수지는 맞지 않습니다. 하나의 합 제약이 세 종별 식을 대체하지 못합니다.
+
 <!-- lecture-page -->
 
 ## Soft penalty의 데이터 오차항과 제약 위반항
@@ -461,6 +539,8 @@ Official PyTorch documentation: [linear solves](https://docs.pytorch.org/docs/2.
 두 항은 <math><msub><mrow><mi>c</mi></mrow><mrow><mo>∗</mo></mrow></msub></math> = 1 mol/L로 무차원화합니다. 실습의 λ = 10은 합 residual 한 개와 성분 오차 세 개의 평균 정의까지 포함한 선택
 
 λ를 바꾸면 학습 목표와 gradient 크기가 달라집니다. 유한한 λ와 학습 종료만으로 모든 입력의 residual이 0이라고 보장할 수는 없습니다.
+
+예측을 데이터 쪽으로 움직이는 기울기와 합을 맞추는 기울기가 동시에 작용합니다. 두 요구가 다른 방향을 가리키면 유한한 λ에서는 절충점이 생깁니다. λ의 숫자만 비교하지 말고 각 항을 몇 개의 값으로 평균했는지도 맞춥니다.
 
 <!-- lecture-page -->
 
@@ -492,6 +572,8 @@ x ∈ ℝᵖ, y ∈ ℝⁿ, A ∈ ℝᵐˣᵖ, B ∈ ℝᵐˣⁿ, b ∈ ℝᵐ. 
 
 CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다. 따라서 d(x) = C_Af입니다.
 
+입력 x를 고정하면 d(x)도 숫자로 정해집니다. 합 제약의 경우 출력 세 개를 모두 정하지 않고 합 하나만 정하므로, 합을 유지하면서 A와 B를 서로 바꾸는 자유가 남습니다.
+
 <!-- lecture-page -->
 
 ## 선형 등식 집합으로의 최소 거리 투영
@@ -501,6 +583,8 @@ CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다
 고정값: 입력 x와 raw 예측 ŷ. 조정 대상: 출력 z. 거리 기준: 물리 농도 좌표의 Euclidean 거리
 
 목적함수는 strictly convex입니다. 가능한 집합이 비어 있지 않으면 투영 출력은 유일합니다. 등식만 있는 이 작은 QP는 KKT 조건으로 닫힌 형태를 구할 수 있습니다.
+
+이미 가까운 예측을 크게 바꾸지 않으면서 합을 맞추려는 선택입니다. 세 농도를 같은 단위와 가중치로 비교하면 수정량 제곱합을 최소화합니다. 오차가 작은 성분을 더 보호하려면 별도의 가중 거리 정의가 필요합니다.
 
 <!-- lecture-page -->
 
@@ -514,6 +598,8 @@ CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다
 
 부등식이 없으므로 complementary slackness나 multiplier의 부호 제약은 없습니다. Strictly convex 목적함수와 affine 등식에서는 이 조건을 만족하는 출력이 전역 최소점입니다.
 
+정상성 식은 수정 벡터가 제약면의 법선 Bᵀ 방향이라는 뜻입니다. 제약면을 따라 움직이는 성분은 합을 고치지 못하면서 거리만 늘리므로 최소 거리 해에는 남지 않습니다.
+
 <!-- lecture-page -->
 
 ## Multiplier를 제거해 투영식 얻기
@@ -523,6 +609,8 @@ CSTR에서는 x = [T, τ, C_Af], A = [0, 0, −1], B = [1, 1, 1], b = 0입니다
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>G</mi><mo>=</mo><mi>B</mi><msup><mrow><mi>B</mi></mrow><mrow><mi>T</mi></mrow></msup><mo>,</mo><mtext>  </mtext><mi>G</mi><mi>λ</mi><mo>=</mo><mi>B</mi><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><mi>d</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow></msub><mo>=</mo><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><msup><mrow><mi>B</mi></mrow><mrow><mi>T</mi></mrow></msup><msup><mrow><mi>G</mi></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo>(</mo><mi>B</mi><mover><mi>y</mi><mo>^</mo></mover><mo>−</mo><mi>d</mi><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬로 표현하지만 구현은 Gλ = Bŷ − d를 풉니다. 고정 B라면 분해나 고정 투영 계수를 재사용할 수 있습니다.
+
+미지수 λ는 제약 개수 m만큼입니다. 먼저 원래 잔차 Bŷ−d를 구하고, G에 대한 선형계를 풀어 잔차를 지울 수정량을 계산합니다. Bᵀ를 곱하면 제약 공간의 보정 계수가 출력 n개에 대한 수정 벡터가 됩니다.
 
 <!-- lecture-page -->
 
@@ -560,6 +648,22 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <!-- lecture-page -->
 
+## 합 잔차에서 투영된 출력까지
+
+원시 출력은 [0.70,0.45,0.25], 목표 합은 1.20 mol/L입니다. 세 수정량을 Δ로 같게 두면 1.40−3Δ=1.20이므로 Δ=0.20/3입니다.
+
+| 단계 | 값 |
+| --- | --- |
+| Bŷ−d | 1.40−1.20=0.20 |
+| G=BBᵀ | 1²+1²+1²=3 |
+| Gλ=잔차 | λ=0.0666667 |
+| 출력별 수정 | [−0.0666667,−0.0666667,−0.0666667] |
+| 보정 출력 | [0.6333333,0.3833333,0.1833333] |
+
+균등 보정의 거리 제곱은 3×(0.20/3)²=0.013333입니다. A에서만 0.20을 빼도 합은 맞지만 거리 제곱은 0.04로 더 큽니다. 같은 가중치의 Euclidean 거리에서 균등 보정이 선택되는 이유입니다.
+
+<!-- lecture-page -->
+
 ## 학습 후 보정과 투영층을 포함한 학습
 
 | 방법 | 학습 loss에 들어가는 출력 |
@@ -569,6 +673,8 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <figure><img src="/assets/courses/surrogate-models/week-04/flow-ko.svg" alt="MLP 출력, 고정 투영, 데이터 loss와 역전파 경로" /></figure>
 두 방법은 같은 등식을 만족시킬 수 있지만, gradient가 달라 학습된 파라미터는 일반적으로 다릅니다.
+
+사후 투영은 학습이 끝난 출력의 합을 고칩니다. 학습 중 투영에서는 손실이 이미 보정된 출력을 보므로, 원시 출력 전체를 같은 만큼 늘리는 방향처럼 투영에서 지워질 방향은 출력 손실의 기울기에 기여하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -590,6 +696,8 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 투영 행렬 P�
 
 실습은 두 개의 독립 등식에서도 analytic Jacobian과 double-precision gradcheck를 확인
 
+기울기 [1,0,0]의 평균은 1/3입니다. 각 성분에서 이 평균을 빼면 [2/3,−1/3,−1/3]이 됩니다. 세 성분을 같은 만큼 올리는 방향은 합을 바꾸므로 투영층이 제거하고, 합을 유지하는 성분 간 조정 방향만 남깁니다.
+
 <!-- lecture-page -->
 
 ## 출력 표준화에 따른 제약 행렬 변환
@@ -599,6 +707,27 @@ P는 대칭인 orthogonal projector이므로 Pᵀ = P입니다. 투영 행렬 P�
 μ와 양의 scale s_j는 train 데이터로만 계산합니다. 표준화 좌표 z에서 투영하려면 B 대신 BD, 우변 대신 d − Bμ를 사용해야 합니다.
 
 표준화 공간에서 투영하면 물리 공간에서 성분별 제곱 보정량에 1/s_j²의 가중치를 적용한 거리를 최소화합니다. 보정에 사용할 metric과 scale을 명시합니다.
+
+<!-- lecture-page -->
+
+## 투영 거리와 성분별 수정량
+
+scale=[0.2,0.5,0.1]인 표준화 좌표에서 거리를 최소화하면 물리 단위 수정량은 scale의 제곱에 비례합니다. 총 잔차 0.20을 0.04:0.25:0.01로 나눕니다.
+
+| 성분 | scale² / 합 | 빼는 농도 | 보정 결과 |
+| --- | --- | --- | --- |
+| A | 0.04/0.30 | 0.026667 | 0.673333 |
+| B | 0.25/0.30 | 0.166667 | 0.283333 |
+| C | 0.01/0.30 | 0.006667 | 0.243333 |
+
+```python
+scales = np.array([0.2, 0.5, 0.1])
+raw = np.array([0.70, 0.45, 0.25])
+weights = scales**2 / np.sum(scales**2)
+projected = raw - (raw.sum() - 1.2) * weights
+```
+
+B는 표준편차가 커 같은 농도 수정이 표준화 거리에서 덜 비쌉니다. 따라서 더 많이 바뀝니다. 합 1.20만 확인하면 두 거리 정의의 차이가 보이지 않습니다.
 
 <!-- lecture-page -->
 
@@ -628,6 +757,8 @@ optimizer.step()
 
 투영에는 학습 파라미터가 추가되지 않습니다.
 
+keepdim=True가 잔차를 (batch,1)로 남겨 각 행의 세 성분에 같은 보정량을 빼게 합니다. batch 전체의 합을 하나로 계산하면 서로 다른 운전 조건끼리 보정량을 공유하는 오류가 됩니다.
+
 <!-- lecture-page -->
 
 ## 농도 합 제약과 비음수성
@@ -640,6 +771,23 @@ Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [�
 
 <!-- lecture-page -->
 
+## 음수 성분을 포함한 투영의 재계산
+
+원시 [0.02,0.90,0.50]에서 합 잔차 0.22를 균등하게 빼면 A가 음수가 됩니다. 합과 비음수 조건을 함께 요구하면 A=0인 경계에서 다시 계산합니다.
+
+| 단계 | 계산 |
+| --- | --- |
+| A를 0으로 고정 | B+C=1.20 |
+| 남은 원시 합 | 0.90+0.50=1.40 |
+| 두 성분의 보정 | (1.40−1.20)/2=0.10 |
+| 결과 | [0,0.80,0.40] mol/L |
+
+두 양의 성분에는 같은 0.10을 빼고, A는 0에서 멈춥니다. 이 결과는 원시 출력에 대한 simplex 투영입니다. 먼저 음수만 0으로 자르는 방식은 B와 C를 재조정하지 않아 합을 맞추지 못합니다.
+
+원시 값이 변해 A가 다시 양수가 되는 경계에서는 활성 제약이 바뀝니다. 따라서 이 변환의 미분은 고정 선형 등식 투영처럼 전 구간에서 같은 행렬이 아닙니다.
+
+<!-- lecture-page -->
+
 ## 투영의 오차 감소 조건
 
 기준 <math><msup><mrow><mi>y</mi></mrow><mrow><mo>∗</mo></mrow></msup></math>가 같은 affine 집합에 있으면 Euclidean 투영의 직교성으로:
@@ -649,6 +797,8 @@ Raw [0.02, 0.90, 0.50] mol/L의 합은 1.42입니다. 1.20으로 투영하면 [�
 따라서 같은 raw 예측을 물리 공간에서 투영하면 전체 제곱오차는 증가하지 않습니다. 성분 하나의 오차는 커질 수 있습니다.
 
 측정 잡음으로 기준값이 집합 밖에 있거나 다른 가중 metric을 사용하면 이 물리 Euclidean 비교를 그대로 적용할 수 없습니다. 별도로 학습한 두 모델의 우열도 이 식에서 나오지 않습니다.
+
+원시 오차는 제약면에 수직인 합 오차와 제약면 안의 성분 분배 오차로 나뉩니다. 투영은 첫 부분만 제거합니다. 직교하는 두 부분의 제곱합이 원래 오차이므로, 같은 기준값과 같은 거리에서 전체 제곱 오차가 늘지 않습니다.
 
 <!-- lecture-page -->
 
@@ -696,6 +846,8 @@ Train/validation/test = 900/300/300행, seed = 404, 잡음 없는 analytic label
 
 <figure><img src="/assets/courses/surrogate-models/week-04/comparison.png" alt="모델별 pooled RMSE와 최대 농도 합 위반 비교" /></figure>
 Hard 모델은 농도 합 등식을 만족하며, 성분별 반응·유출 관계에는 residual RMS 0.002225 mol/(L·min)가 남았습니다.
+
+합 잔차 0은 세 종별 잔차의 합이 0이라는 조건과 연결됩니다. 양수와 음수 종별 잔차가 서로 지워질 수 있으므로 종별 RMS는 0이 아닐 수 있습니다. 그림은 학습에 넣지 않은 이 추가 조건을 검사합니다.
 
 <!-- lecture-page -->
 

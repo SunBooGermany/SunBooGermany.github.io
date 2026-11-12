@@ -79,6 +79,23 @@ Full-precision coefficients are stored in `frozen_network.json`. Reconstructing 
 
 <!-- lecture-page -->
 
+## Hidden values and B concentration at τ=5 min
+
+Subtract thresholds [0,0.25,0.50,0.75] from x=(5−2)/8=0.375.
+
+| j | aⱼ=x−tⱼ | hⱼ | Contribution WⱼB·hⱼ |
+| --- | --- | --- | --- |
+| 0 | 0.375 | 0.375 | 0.380952381×0.375=0.142857143 |
+| 1 | 0.125 | 0.125 | −0.268398268×0.125=−0.033549784 |
+| 2 | −0.125 | 0 | 0 |
+| 3 | −0.375 | 0 | 0 |
+
+Adding bias 0.285714286 gives B≈0.395021645 mol/L. Taking the midpoint of the 4-min and 6-min values also gives (0.380952381+0.409090909)/2=0.395021645.
+
+The ReLU sum and segment interpolation express the same calculation. They differ from reference-process B=0.4 at 5 min, so this prediction falls slightly below the B≥0.40 specification.
+
+<!-- lecture-page -->
+
 ## Both directions of Big-M equivalence
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mtext>  </mtext><mi>h</mi><mo>≥</mo><mi>a</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>a</mi><mo>−</mo><mi>L</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>z</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>U</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>z</mi><mo>∈</mo><mo>{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>}</mo></mrow></mtd></mtr></mtable></math>
@@ -86,6 +103,28 @@ Full-precision coefficients are stored in `frozen_network.json`. Reconstructing 
 A feasible formulation point with z = 0 has h = 0 and a ≤ 0; with z = 1 it has h = a ≥ 0. Either branch gives h = max(0, a).
 
 Conversely, choose any point on the ReLU graph. Set z = 0 if a ≤ 0 and z = 1 if a ≥ 0; all four inequalities hold. Valid bounds L ≤ a ≤ U are needed in this direction too.
+
+<!-- lecture-page -->
+
+## Substituting numbers into one ReLU formulation
+
+For a=2x−1 and x∈[0,1], L=−1,U=1. The inequalities are h≥0, h≥a, h≤a+1−z, and h≤z.
+
+| Input and branch | Lower bound | Upper bound | Output |
+| --- | --- | --- | --- |
+| x=0.2, a=−0.6, z=0 | h≥0 | h≤0; h≤0.4 | h=0 |
+| x=0.8, a=0.6, z=1 | h≥0.6 | h≤0.6; h≤1 | h=0.6 |
+| Wrong z=0 at x=0.8 | h≥0.6 | h≤0 | Impossible |
+
+```python
+a = 2 * x - 1
+h = max(0., a)
+z = int(a >= 0.)
+assert h >= 0 and h >= a
+assert h <= a + 1 - z and h <= z
+```
+
+The binary selects a branch compatible with a; it does not create an arbitrary output. At a=0, either z is possible but both give h=0.
 
 <!-- lecture-page -->
 
@@ -126,6 +165,22 @@ B stays below 0.40 throughout 2-4 min. It increases over 4-6 min, so compute the
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>τ</mi><mo>=</mo><mn>4</mn><mo>+</mo><mn>2</mn><mfrac><mrow><mn>.40</mn><mo>−</mo><mn>.380952380952</mn></mrow><mrow><mn>.409090909091</mn><mo>−</mo><mn>.380952380952</mn></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><mi>τ</mi><mo>≈</mo><mn>5.353846</mn><mtext> min</mtext></mrow></mtd></mtr></mtable></math>
 
 The same interpolation fraction gives [A, B, C] = [0.584615, 0.400000, 0.215385] mol/L. This satisfies C ≤ 0.25 and nonnegativity, so it is the minimum feasible residence time.
+
+<!-- lecture-page -->
+
+## Interpolation fraction at the product lower bound
+
+Across 4–6 min, B increases from 0.380952381 to 0.409090909. Divide the required increase by the full segment increase.
+
+| Calculation | Value |
+| --- | --- |
+| Required B increase | 0.40−0.380952381=0.019047619 |
+| Full segment increase | 0.409090909−0.380952381=0.028138528 |
+| Segment fraction α | 0.019047619/0.028138528≈0.676923077 |
+| Residence time | 4+2α≈5.353846154 min |
+| C at the same α | 0.152380952+α(0.245454545−0.152380952)≈0.215384615 |
+
+B is below 0.40 on all earlier segments. At this first crossing, C≤0.25 and nonnegativity also hold, giving the minimum volume. Comparing interpolated B with C at a different τ would not check specifications for the same design.
 
 <!-- lecture-page -->
 
@@ -260,6 +315,23 @@ b = [0.857142857, 0.285714286, 0.057142857] mol/L입니다. W의 단위도 mol/L
 
 <!-- lecture-page -->
 
+## τ=5 min에서 은닉값과 B 농도
+
+x=(5−2)/8=0.375를 네 절점 [0,0.25,0.50,0.75]에서 뺍니다.
+
+| j | aⱼ=x−tⱼ | hⱼ | B에 더해지는 값 WⱼB·hⱼ |
+| --- | --- | --- | --- |
+| 0 | 0.375 | 0.375 | 0.380952381×0.375=0.142857143 |
+| 1 | 0.125 | 0.125 | −0.268398268×0.125=−0.033549784 |
+| 2 | −0.125 | 0 | 0 |
+| 3 | −0.375 | 0 | 0 |
+
+편향 0.285714286을 더하면 B≈0.395021645 mol/L입니다. 4분과 6분의 농도를 반씩 섞어도 (0.380952381+0.409090909)/2=0.395021645가 됩니다.
+
+ReLU 가중합과 구간 보간이 같은 계산을 다른 표현으로 수행합니다. 기준 공정의 5분 B=0.4와는 차이가 있어, 이 예측은 B≥0.40 규격에 조금 못 미칩니다.
+
+<!-- lecture-page -->
+
 ## Big-M의 양방향 동치
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mtext>  </mtext><mi>h</mi><mo>≥</mo><mi>a</mi></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>a</mi><mo>−</mo><mi>L</mi><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>z</mi><mo>)</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>h</mi><mo>≤</mo><mi>U</mi><mi>z</mi><mo>,</mo><mtext>  </mtext><mi>z</mi><mo>∈</mo><mo>{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>}</mo></mrow></mtd></mtr></mtable></math>
@@ -267,6 +339,28 @@ b = [0.857142857, 0.285714286, 0.057142857] mol/L입니다. W의 단위도 mol/L
 정식화의 가능점에서 z = 0이면 h = 0, a ≤ 0이고, z = 1이면 h = a ≥ 0입니다. 어느 분기에서도 h = max(0, a)입니다.
 
 역으로 ReLU 그래프의 점을 택합니다. a ≤ 0이면 z = 0, a ≥ 0이면 z = 1로 두면 네 부등식이 모두 성립합니다. L ≤ a ≤ U의 유효성이 이 역방향에도 필요합니다.
+
+<!-- lecture-page -->
+
+## 하나의 ReLU 제약에 수치 대입
+
+a=2x−1, x∈[0,1]이면 L=−1,U=1입니다. 네 식은 h≥0, h≥a, h≤a+1−z, h≤z입니다.
+
+| 입력과 가지 | 하한 | 상한 | 결정된 출력 |
+| --- | --- | --- | --- |
+| x=0.2, a=−0.6, z=0 | h≥0 | h≤0; h≤0.4 | h=0 |
+| x=0.8, a=0.6, z=1 | h≥0.6 | h≤0.6; h≤1 | h=0.6 |
+| x=0.8에서 잘못된 z=0 | h≥0.6 | h≤0 | 불가능 |
+
+```python
+a = 2 * x - 1
+h = max(0., a)
+z = int(a >= 0.)
+assert h >= 0 and h >= a
+assert h <= a + 1 - z and h <= z
+```
+
+이진변수가 임의의 출력을 만드는 것이 아니라, 주어진 a와 양립하는 가지를 선택합니다. a=0에서는 두 z가 가능하지만 h는 모두 0입니다.
 
 <!-- lecture-page -->
 
@@ -307,6 +401,22 @@ V = 2 + 8x에서 상수 2는 최적해에 영향을 주지 않으므로 solver�
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>τ</mi><mo>=</mo><mn>4</mn><mo>+</mo><mn>2</mn><mfrac><mrow><mn>.40</mn><mo>−</mo><mn>.380952380952</mn></mrow><mrow><mn>.409090909091</mn><mo>−</mo><mn>.380952380952</mn></mrow></mfrac></mrow></mtd></mtr><mtr><mtd><mrow><mi>τ</mi><mo>≈</mo><mn>5.353846</mn><mtext> min</mtext></mrow></mtd></mtr></mtable></math>
 
 같은 보간 비율로 [A, B, C] = [0.584615, 0.400000, 0.215385] mol/L를 얻습니다. C ≤ 0.25와 비음수성을 만족하므로 이 점이 최소 체류시간입니다.
+
+<!-- lecture-page -->
+
+## 제품 하한에 도달하는 보간 비율
+
+4~6분 구간에서 B는 0.380952381에서 0.409090909로 증가합니다. 필요한 증가량을 구간 전체 증가량으로 나눕니다.
+
+| 계산 | 값 |
+| --- | --- |
+| 필요한 B 증가량 | 0.40−0.380952381=0.019047619 |
+| 구간 전체 증가량 | 0.409090909−0.380952381=0.028138528 |
+| 구간 비율 α | 0.019047619/0.028138528≈0.676923077 |
+| 체류시간 | 4+2α≈5.353846154 min |
+| 같은 α의 C | 0.152380952+α(0.245454545−0.152380952)≈0.215384615 |
+
+이전 구간의 B는 모두 0.40보다 작습니다. 이 첫 교점에서 C≤0.25와 비음수 조건도 만족하므로 최소 부피를 얻습니다. B만 따로 보간한 뒤 다른 τ의 C와 비교하면 같은 설계의 규격 검사가 되지 않습니다.
 
 <!-- lecture-page -->
 

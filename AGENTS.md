@@ -101,6 +101,15 @@ append/resizing, copying/slicing, stack and queue operations, deque, dict, and
 set. Connect these operation costs to the later algorithms. Maintain both
 languages and regenerate matching PDFs and material archives after revisions.
 
+For Surrogate Modeling Weeks 1–8, explain why each model or formulation is
+chosen, how its equations follow from the assumptions, and how the code
+implements the calculation. Include worked numerical substitutions and
+intermediate values, then interpret the result in physical units. Distinguish
+prediction accuracy, enforced physical relations, optimization correctness,
+and reference-process feasibility. Keep these explanations in both the slides
+and reading companions, in both languages and their downloadable PDFs. The
+user requested this extension on 2026-11-12.
+
 ## Research Blog Posts
 
 Research Blog posts live in `_posts/` and use `layout: post`.

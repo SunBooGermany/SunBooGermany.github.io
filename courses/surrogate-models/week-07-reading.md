@@ -67,6 +67,22 @@ Solving f ≤ 0.25 on each interval leaves u ≥ 0.25 and u ≤ 0.625. The third
 
 <!-- lecture-page -->
 
+## Cost and feasibility between two knots
+
+Keep only active ReLUs in each interval to simplify the cost.
+
+| u interval | Active terms | Cost | Condition for f(u)≤0.25 |
+| --- | --- | --- | --- |
+| 0–0.4 | None | 0.4−0.6u | u≥0.25 |
+| 0.4–0.7 | u−0.4 | 0.4u | u≤0.625 |
+| 0.7–1 | Both | 0.9u−0.35 | u≤2/3, outside this interval |
+
+The feasible interval is [0.25,0.625]. At minimum u=0.4, both ReLUs are zero and f=0.4−0.6×0.4=0.16.
+
+For example, u=0.6 gives h₁=0.2,h₂=0 and f=0.4−0.36+0.2=0.24. This matches 0.4u=0.24 in the middle interval, checking the piecewise expression against the original network.
+
+<!-- lecture-page -->
+
 ## LP matrices passed to SciPy
 
 The variable order is [u, h₁, h₂]. Add the objective constant 0.4 after solving.
@@ -82,6 +98,23 @@ value = result.fun + 0.4
 ```
 
 The first matrix row is u − h₁ ≤ 0.4. Check the returned status before using result.x.
+
+<!-- lecture-page -->
+
+## LP matrix columns and inequalities
+
+Fix variable order [u,h₁,h₂]. Each row of linprog's A_ub is dotted with the variable vector and bounded above by the matching b_ub entry.
+
+| Code value | Expression | Role |
+| --- | --- | --- |
+| Objective [−0.6,1,0.5] | −0.6u+h₁+0.5h₂ | Cost without constant 0.4 |
+| Row [1,−1,0], rhs 0.4 | u−h₁≤0.4 | h₁≥u−0.4 |
+| Row [1,0,−1], rhs 0.7 | u−h₂≤0.7 | h₂≥u−0.7 |
+| h bounds (0,None) | h₁,h₂≥0 | Other ReLU lower bounds |
+
+At solution [0.4,0,0], row values [0.4,0.4] satisfy their upper bounds. Add constant 0.4 to solver objective −0.24 to report 0.16. The original forward cost must also be 0.16.
+
+Positive h coefficients make this objective minimize h. Changing their signs requires rechecking the recovery argument.
 
 <!-- lecture-page -->
 
@@ -112,6 +145,22 @@ If knots or deep-layer weights are also learned, Φ depends on the parameters an
 Near a flat minimum, a small prediction error can shift the selected input. Input error 0.05 and cost loss 0.0025 are distinct metrics.
 
 The fitted slope on [0.5, 0.6] is approximately 0.0000233, nearly flat. Check solver tolerances alongside the selected point.
+
+<!-- lecture-page -->
+
+## Prediction error and loss from the selected input
+
+Complete the square in q(u)=(u−0.6)²+0.1u+0.2 to obtain q(u)=(u−0.55)²+0.2575. Squared distance from the minimizer equals the cost increase.
+
+| Input | Reference calculation | Cost |
+| --- | --- | --- |
+| Reference minimum u=0.55 | 0²+0.2575 | 0.2575 |
+| Model choice u=0.50 | (−0.05)²+0.2575 | 0.2600 |
+| Difference | 0.2600−0.2575 | 0.0025 |
+
+The difference 0.001563 between predicted cost 0.258437 and reference cost 0.260000 is prediction error at the selected point. Difference 0.0025 from the reference minimum is cost lost because of the selection.
+
+These comparisons use different baselines. State the quantities subtracted in both accuracy reports and decision evaluations.
 
 <!-- lecture-page -->
 
@@ -217,6 +266,22 @@ f ≤ 0.25를 각 구간에서 풀면 u ≥ 0.25와 u ≤ 0.625가 남습니다.
 
 <!-- lecture-page -->
 
+## 두 절점 사이의 비용과 가능 구간
+
+각 구간에서 켜진 ReLU만 남겨 비용식을 정리합니다.
+
+| u 구간 | 켜진 항 | 비용식 | f(u)≤0.25의 조건 |
+| --- | --- | --- | --- |
+| 0~0.4 | 없음 | 0.4−0.6u | u≥0.25 |
+| 0.4~0.7 | u−0.4 | 0.4u | u≤0.625 |
+| 0.7~1 | 두 항 모두 | 0.9u−0.35 | u≤2/3, 해당 구간에 없음 |
+
+가능 구간은 [0.25,0.625]입니다. 최소점 u=0.4에서 두 ReLU가 0이므로 f=0.4−0.6×0.4=0.16입니다.
+
+예를 들어 u=0.6이면 h₁=0.2,h₂=0이고 f=0.4−0.36+0.2=0.24입니다. 중간 구간의 0.4u=0.24와 일치하므로 구간식과 원래 신경망을 서로 확인할 수 있습니다.
+
+<!-- lecture-page -->
+
 ## SciPy에 전달하는 LP 행렬
 
 변수 순서는 [u, h₁, h₂]이고 목적함수 상수 0.4는 풀이 뒤 더합니다.
@@ -232,6 +297,23 @@ value = result.fun + 0.4
 ```
 
 행렬의 첫 행은 u − h₁ ≤ 0.4입니다. 반환된 status를 확인한 뒤 result.x를 사용합니다.
+
+<!-- lecture-page -->
+
+## LP 행렬의 열과 부등식
+
+변수 순서를 [u,h₁,h₂]로 고정합니다. linprog의 A_ub는 각 행과 변수 벡터를 내적한 값이 b_ub 이하가 되도록 해석합니다.
+
+| 코드의 값 | 해당 수식 | 역할 |
+| --- | --- | --- |
+| 목적 계수 [−0.6,1,0.5] | −0.6u+h₁+0.5h₂ | 상수 0.4를 뺀 비용 |
+| 행 [1,−1,0], 우변 0.4 | u−h₁≤0.4 | h₁≥u−0.4 |
+| 행 [1,0,−1], 우변 0.7 | u−h₂≤0.7 | h₂≥u−0.7 |
+| h의 bounds (0,None) | h₁,h₂≥0 | ReLU의 다른 하한 |
+
+해 [0.4,0,0]을 대입하면 행 값은 [0.4,0.4]로 우변 이하입니다. solver 목적값 −0.24에 상수 0.4를 더해 0.16을 보고합니다. 원래 forward에서 계산한 비용도 0.16이어야 합니다.
+
+양의 h 계수 때문에 이 목적식은 h를 가능한 작게 만듭니다. 목적 계수의 부호를 바꾸면 이 복원 논리를 다시 검사해야 합니다.
 
 <!-- lecture-page -->
 
@@ -262,6 +344,22 @@ Knot 위치나 깊은 층의 가중치도 함께 학습하면 Φ가 매개변수
 최소점 부근에서 비용 곡선이 완만하면 작은 예측 오차가 입력 위치를 바꿀 수 있습니다. 입력 오차 0.05와 비용 손실 0.0025는 서로 다른 평가량입니다.
 
 학습한 기울기 중 [0.5, 0.6] 구간은 약 0.0000233으로 거의 평평합니다. solver 허용오차를 함께 확인합니다.
+
+<!-- lecture-page -->
+
+## 예측 오차와 선택한 입력의 손실
+
+기준 비용 q(u)=(u−0.6)²+0.1u+0.2를 완전제곱으로 정리하면 q(u)=(u−0.55)²+0.2575입니다. 최소점에서 벗어난 거리의 제곱이 비용 증가량입니다.
+
+| 입력 | 기준 비용 계산 | 비용 |
+| --- | --- | --- |
+| 기준 최소 u=0.55 | 0²+0.2575 | 0.2575 |
+| 모델 선택 u=0.50 | (−0.05)²+0.2575 | 0.2600 |
+| 차이 | 0.2600−0.2575 | 0.0025 |
+
+모델이 선택한 점의 예측 비용 0.258437과 기준 비용 0.260000의 차이 0.001563은 그 점의 예측 오차입니다. 기준 최소값과의 차이 0.0025는 선택 때문에 생긴 비용 손실입니다.
+
+같은 숫자를 비교하는 기준이 다릅니다. 정확도 표와 의사결정 평가 표에서 각각 무엇을 빼는지 명시합니다.
 
 <!-- lecture-page -->
 

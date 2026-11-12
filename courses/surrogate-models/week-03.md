@@ -56,6 +56,8 @@ Week 3: current composition + interval input + context → composition one inter
 
 Repeatedly applying this map produces a trajectory. A feedforward MLP can model a dynamic transition when its inputs contain the state needed for that transition.
 
+An equilibrium predictor cannot account for how much A and B remain in the tank now. A transition model includes that current state, so the same temperature can produce different next states from different starting compositions.
+
 <!-- lecture-page -->
 
 ## State, future input, and fixed context
@@ -89,6 +91,8 @@ For each interval [t_k, t_k + Δt), hold T_k constant. Integrate the balances ov
 
 The learned map predicts a 0.2 min transition. Increasing the number of applications extends the horizon; it does not change the sampling interval.
 
+The state just before the temperature change at 10 min initializes the next interval. Even with an instantaneous prescribed temperature change, concentrations are not replaced by their new equilibrium values. Compute their evolution over the next 0.2 min using the new rates.
+
 <!-- lecture-page -->
 
 ## Interval response of the reference model
@@ -101,6 +105,25 @@ The lab generates labels at the selected Δt from this analytic solution.
 
 At c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L: c₁ ≈ [1.153870, 0.045672, 0.000458] mol/L.
 
+Subtracting equilibrium removes the constant feed term, leaving deviations. The matrix exponential describes both their decay and transfer from A into B and C. At a changed input, recompute equilibrium and the matrix while retaining the current state.
+
+<!-- lecture-page -->
+
+## Concentration changes over the first 0.2 min
+
+At [1.2,0,0], A inflow minus outflow is zero and its reaction consumption is 0.24 mol/(L·min). B forms at that rate; C initially has zero production rate because no B is yet present.
+
+| Quantity | Calculation | mol/L |
+| --- | --- | --- |
+| Euler A | 1.2−0.2×0.24 | 1.152000 |
+| Exact A | 0.6+0.6 exp(−0.08) | 1.153870 |
+| B equilibrium-deviation term | 0.4−0.4 exp(−0.06) | 0.023294 |
+| Transfer from A into B | 0.12[exp(−0.08)−exp(−0.06)]/(−0.1) | 0.022378 |
+| Exact B | 0.023294+0.022378 | 0.045672 |
+| Exact C | 1.2−1.153870−0.045672 | 0.000458 |
+
+Euler uses the initial rate throughout the interval. During the actual interval, A decreases, B forms, and C production begins. These changing rates explain its difference from the exact interval solution.
+
 <!-- lecture-page -->
 
 ## Trajectory generation and transition-pair construction
@@ -112,6 +135,8 @@ Input ranges: 300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L. Random temperature
 | Train | 60 | 9000 |
 | Validation | 15 | 2250 |
 | Test | 20 | 3000 |
+
+Adjacent transition rows share states from the same trajectory. Random row splitting can put nearly the same trajectory in training and test. Splitting whole trajectories first preserves evaluation on unseen temperature plans and initial states.
 
 <!-- lecture-page -->
 
@@ -128,6 +153,8 @@ Input ranges: 300-360 K, τ = 1-10 min, feed = 0.8-1.5 mol/L. Random temperature
 
 Target: concentration increment in mol/L
 
+The first row is [1.2,0,0,330,5,1.2], with target increment approximately [−0.046130,0.045672,0.000458] mol/L. Learning an increment focuses on the local change; adding it to the current state is still required to obtain the next state.
+
 <!-- lecture-page -->
 
 ## The transition MLP and its scaling
@@ -137,6 +164,8 @@ Architecture: 6 → 32 → 32 → 3; ReLU hidden layers and a linear output. Par
 Compute input and increment means/standard deviations from train rows. Apply those same statistics to validation, test, and rollout states.
 
 MLP output: standardized increments. Restore each increment to mol/L before adding it to the current state.
+
+Training means and scales define the coordinates in which the model interprets inputs. Recomputing them from predicted rollout states would map the same physical state to different numbers and change the learned input convention.
 
 <!-- lecture-page -->
 
@@ -153,6 +182,8 @@ Training: Adam, learning rate 0.001, batch size 512, up to 800 epochs. Weight se
 ## Training history
 
 <figure><img src="/assets/courses/surrogate-models/week-03/dynamic-training.png" alt="Train and validation scaled increment loss" /></figure>
+
+The horizontal axis counts epochs; the vertical axis is loss on standardized increments. Select weights at the minimum validation loss. A low value does not establish accurate recursive predictions, because this loss uses reference current states; the next evaluation tests rollout separately.
 
 <!-- lecture-page -->
 
@@ -172,6 +203,8 @@ One-step evaluation receives a new reference state at every time, so it uses mor
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-en.svg" alt="One-step uses reference states; rollout feeds predictions back" /></figure>
 
+Both paths start from the same initial state. At the second transition, one-step uses reference c₁ while rollout uses its first prediction ĉ₁. The feedback arrow marks where the first error enters the next input.
+
 <!-- lecture-page -->
 
 ## Iterative computation of multistep rollout
@@ -187,6 +220,8 @@ for k, control in enumerate(controls):
 
 No reference state enters this loop after initialization. Evaluate all 150 predicted states.
 
+pred[k:k+1] retains shape (1,3), and control[None,:] creates one control row. Index [0] extracts the returned state row. Reading pred[k] and writing pred[k+1] carries the previous prediction into the next iteration.
+
 <!-- lecture-page -->
 
 ## Propagation of one-step prediction error
@@ -196,6 +231,8 @@ Let e_k = ĉ_k − c_k. Add and subtract the prediction at the reference state:
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 The first difference transports the existing state error through the learned map. δ_k is the local prediction error at the reference state. Even a small δ_k enters each successive prediction.
+
+First compare the model at predicted and reference states to isolate the effect of input-state error. The remaining difference between model and process at the reference state is the new local error δ. Adding the two differences recovers the next-state error.
 
 <!-- lecture-page -->
 
@@ -209,11 +246,35 @@ One-step bias is 0.001; at 10 recursive steps the error is about 0.00651. A cont
 
 <!-- lecture-page -->
 
+## Intermediate states in the two evaluation protocols
+
+Use reference F(c)=0.9c, model f(c)=0.9c+0.001, and c₀=1. Values below are calculated from these scalar functions.
+
+| Step | Reference c | One-step prediction | Rollout prediction | Rollout error |
+| --- | --- | --- | --- | --- |
+| 0 | 1 | Initial state | 1 | 0 |
+| 1 | 0.9 | 0.901 | 0.901 | 0.001 |
+| 2 | 0.81 | 0.811 | 0.8119 | 0.0019 |
+| 3 | 0.729 | 0.730 | 0.73171 | 0.00271 |
+
+```python
+state = 1.0
+for step in range(3):
+    state = 0.9 * state + 0.001
+    print(step + 1, state)
+```
+
+The second rollout computes 0.9×0.901+0.001. One-step receives reference 0.9 again and computes 0.9×0.9+0.001, so it does not inherit the previous error.
+
+<!-- lecture-page -->
+
 ## State sensitivity and error propagation
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="Error recurrence for sensitivities 0.9, 1 and 1.02" /></figure>
 
 Actual rollout errors can increase, level off, or change sign.
+
+A sensitivity of 0.9 carries 90% of existing error into the next step. At 1, previous error remains and new bias keeps adding; above 1 it can be amplified. In a multivariable model, sensitivity depends on direction and state.
 
 <!-- lecture-page -->
 
@@ -233,6 +294,8 @@ Compare reference trajectories and the MLP rollout under exactly the same plans.
 ## A, B, and C over the full trajectory
 
 <figure class="tall-figure"><img src="/assets/courses/surrogate-models/week-03/dynamic-rollout.png" alt="Temperature plans and concentration trajectories" /></figure>
+
+Concentrations evolve continuously after the temperature change. Read A depletion, B formation, and conversion of B to C together. At the same time, the vertical difference between reference and predicted trajectories is that component’s rollout error.
 
 <!-- lecture-page -->
 
@@ -255,6 +318,8 @@ Here n indexes test trajectories, h the number of transitions, and j the compone
 
 <figure><img src="/assets/courses/surrogate-models/week-03/dynamic-errors.png" alt="Component RMSE and sum residual over the horizon" /></figure>
 
+h=1 measures the first prediction from the initial state; h=150 measures the forecast after 30 min. Averaging the 20 test trajectories separately at each h reveals accumulation with horizon. A single RMSE over all times hides this shape.
+
 <!-- lecture-page -->
 
 ## Physical checks along the trajectory
@@ -267,6 +332,26 @@ With S₀ = C_Af and fixed feed, the reference sum stays equal to feed. The lear
 | --- | --- | --- |
 | Sum-residual RMSE | 0.000051 | 0.002014 |
 | Minimum prediction | -0.001152 | -0.005166 |
+
+<!-- lecture-page -->
+
+## Restoring increments and checking total concentration
+
+Take state [0.6,0.4,0.2] mol/L, increment mean [0,0,0], scales [0.02,0.01,0.01] mol/L, and model output [−0.5,0.6,0.4].
+
+| Step | Value |
+| --- | --- |
+| Standardized output | [−0.5,0.6,0.4] |
+| Multiply by scales | [−0.010,0.006,0.004] mol/L |
+| Add to current state | [0.590,0.406,0.204] mol/L |
+| Total concentration | 0.590+0.406+0.204=1.200 mol/L |
+
+```python
+increment = d_mean + d_scale * standardized_increment
+next_state = state + increment
+```
+
+These example increments sum to zero. A general MLP does not enforce that property, so check the sum and negative entries at each predicted state. When the initial total differs from feed, compare against the exact total-concentration transition rather than a fixed 1.2.
 
 <!-- lecture-page -->
 
@@ -371,6 +456,8 @@ Read Sutskever, Vinyals & Le (2014), Sections 1-2, for the sequence-to-sequence 
 
 이 관계식을 반복 적용하면 궤적을 얻습니다. 전이에 필요한 상태를 입력에 포함하면 feedforward MLP로도 동적 상태전이를 학습할 수 있습니다.
 
+평형 농도만 예측하는 모델에는 탱크에 지금 얼마나 A와 B가 남았는지 전달할 수 없습니다. 전이 모델은 그 현재 상태를 입력에 포함하므로 같은 온도에서도 출발 조성에 따라 다른 다음 상태를 계산합니다.
+
 <!-- lecture-page -->
 
 ## 상태·미래 입력·고정 context
@@ -404,6 +491,8 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]�
 
 학습한 관계식은 0.2분 전이를 예측. 반복 횟수를 늘리면 예측 거리가 길어지고 표본 간격은 그대로 유지됩니다.
 
+온도 변경 시각 10 min 직전의 상태가 변경 직후 계산의 시작점입니다. 온도는 즉시 바뀐다고 가정해도 농도를 새 평형값으로 덮어쓰지 않습니다. 이후 0.2 min 동안 새 반응속도로 이동한 양을 계산합니다.
+
 <!-- lecture-page -->
 
 ## 기준 모델의 구간 응답
@@ -416,6 +505,25 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]�
 
 c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.153870, 0.045672, 0.000458] mol/L입니다.
 
+평형값을 빼면 일정한 유입 항이 사라져 편차만 남습니다. 행렬 지수는 각 편차가 줄고 A의 편차가 B와 C로 전달되는 효과를 함께 계산합니다. 입력이 바뀌면 평형점과 행렬을 새로 계산하되 현재 상태는 이어받습니다.
+
+<!-- lecture-page -->
+
+## 첫 0.2 min의 농도 변화
+
+초기 조성 [1.2,0,0]에서 A의 유입·유출 차이는 0이고 반응 소모는 0.24 mol/(L·min)입니다. B는 같은 속도로 생기며 C는 아직 B가 없어 순간 생성속도가 0입니다.
+
+| 항목 | 계산 | mol/L |
+| --- | --- | --- |
+| Euler의 A | 1.2−0.2×0.24 | 1.152000 |
+| 정확한 A | 0.6+0.6 exp(−0.08) | 1.153870 |
+| B의 평형 편차 항 | 0.4−0.4 exp(−0.06) | 0.023294 |
+| A에서 B로 전달 | 0.12[exp(−0.08)−exp(−0.06)]/(−0.1) | 0.022378 |
+| 정확한 B | 0.023294+0.022378 | 0.045672 |
+| 정확한 C | 1.2−1.153870−0.045672 | 0.000458 |
+
+Euler는 시작 순간의 속도를 구간 전체에 사용합니다. 실제 구간 안에서는 A가 줄고 B가 생겨 C 생성도 시작되므로 정확한 구간 해와 차이가 납니다.
+
 <!-- lecture-page -->
 
 ## 궤적 생성과 상태전이 데이터 구성
@@ -427,6 +535,8 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 | Train | 60 | 9000 |
 | Validation | 15 | 2250 |
 | Test | 20 | 3000 |
+
+인접한 두 전이 행은 같은 궤적의 상태를 공유합니다. 행을 무작위로 나누면 거의 같은 궤적 일부가 학습과 시험에 동시에 들어갑니다. 궤적 단위로 먼저 분할하면 새 온도 계획과 초기 상태에 대한 평가를 유지할 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -443,6 +553,8 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 학습 대상: mol/L 단위의 농도 변화량
 
+첫 행은 [1.2,0,0,330,5,1.2]이고 정답 증가량은 약 [−0.046130,0.045672,0.000458] mol/L입니다. 상태 전체 대신 작은 변화량을 학습하지만, 복원할 때 현재 상태에 더해야 다음 상태가 됩니다.
+
 <!-- lecture-page -->
 
 ## 상태전이 MLP와 scaling
@@ -452,6 +564,8 @@ MLP 구조: 6 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층. 파라미
 입력과 변화량의 평균·표준편차는 train 행으로 계산하며, 같은 통계량을 validation·test·rollout 상태에 적용
 
 MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더합니다.
+
+훈련 평균과 표준편차는 모델이 입력을 해석하는 좌표계입니다. rollout에서 예측 상태의 통계로 다시 계산하면 같은 물리 상태가 다른 숫자로 변환되어 학습한 함수와 입력 좌표가 어긋납니다.
 
 <!-- lecture-page -->
 
@@ -468,6 +582,8 @@ MLP가 예측한 표준화 변화량을 mol/L로 복원해 현재 상태에 더�
 ## 학습 곡선
 
 <figure><img src="/assets/courses/surrogate-models/week-03/dynamic-training.png" alt="Train·validation의 표준화된 변화량 loss" /></figure>
+
+가로축은 학습 epoch, 세로축은 표준화 증가량의 손실입니다. 검증 손실이 가장 작은 가중치를 선택합니다. 이 곡선이 낮아져도 예측 상태를 반복 입력하는 rollout 오차가 작다는 결론은 나오지 않으므로 다음 평가에서 별도로 확인합니다.
 
 <!-- lecture-page -->
 
@@ -487,6 +603,8 @@ One-step은 매 시각 기준 상태를 다시 받으므로, 초기 상태에서
 
 <figure><img src="/assets/courses/surrogate-models/week-03/evaluation-flow-ko.svg" alt="One-step은 기준 상태를, rollout은 앞선 예측 상태를 입력으로 쓴다" /></figure>
 
+두 경로의 첫 계산은 같은 초기 상태를 사용합니다. 두 번째부터 one-step은 실제 c₁을, rollout은 첫 예측 ĉ₁을 사용합니다. 그림의 피드백 화살표는 첫 오차가 다음 입력에 들어가는 지점을 나타냅니다.
+
 <!-- lecture-page -->
 
 ## 다단계 rollout의 반복 계산
@@ -502,6 +620,8 @@ for k, control in enumerate(controls):
 
 초기화 후에는 기준 상태를 반복문에 넣지 않고 예측 상태 150개를 평가합니다.
 
+pred[k:k+1]은 (1,3) 행렬을 유지하고 control[None,:]도 행 하나를 만듭니다. dynamic_step 결과의 첫 행 [0]을 다음 상태 칸에 넣습니다. pred[k]를 읽고 pred[k+1]에 쓰므로 이전 예측이 다음 반복의 입력으로 이어집니다.
+
 <!-- lecture-page -->
 
 ## 한 단계 오차의 전달식
@@ -511,6 +631,8 @@ e_k = ĉ_k − c_k로 정의하고, 기준 상태에서 계산한 예측값을 �
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 첫 번째 차이는 기존 상태 오차가 학습된 관계식을 거쳐 전달되는 부분. δ_k는 기준 상태에서의 한 단계 예측 오차로, 작더라도 매번 다음 예측에 더해집니다.
+
+예측 상태에서의 모델값과 기준 상태에서의 모델값을 먼저 비교하면 입력 오차의 영향을 분리할 수 있습니다. 기준 상태에서 모델과 공정을 비교한 나머지가 새로 생기는 국소 오차 δ입니다. 두 차이를 더하면 원래 다음 상태 오차가 됩니다.
 
 <!-- lecture-page -->
 
@@ -524,11 +646,35 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651. 수축하
 
 <!-- lecture-page -->
 
+## 두 평가 방식의 중간 상태
+
+기준 F(c)=0.9c, 모델 f(c)=0.9c+0.001, 초기값 c₀=1을 사용합니다. 수치는 이 스칼라 식의 계산값입니다.
+
+| 단계 | 기준 c | one-step 예측 | rollout 예측 | rollout 오차 |
+| --- | --- | --- | --- | --- |
+| 0 | 1 | 초기 상태 | 1 | 0 |
+| 1 | 0.9 | 0.901 | 0.901 | 0.001 |
+| 2 | 0.81 | 0.811 | 0.8119 | 0.0019 |
+| 3 | 0.729 | 0.730 | 0.73171 | 0.00271 |
+
+```python
+state = 1.0
+for step in range(3):
+    state = 0.9 * state + 0.001
+    print(step + 1, state)
+```
+
+두 번째 rollout은 0.9×0.901+0.001을 계산합니다. one-step은 기준 0.9를 다시 받아 0.9×0.9+0.001을 계산하므로 이전 오차를 물려받지 않습니다.
+
+<!-- lecture-page -->
+
 ## 상태 민감도와 오차 전파
 
 <figure><img src="/assets/courses/surrogate-models/week-03/error-recurrence.png" alt="민감도 0.9, 1, 1.02에서의 오차 전달" /></figure>
 
 실제 rollout 오차는 증가하거나 완만해지거나 부호가 바뀔 수 있습니다.
+
+한 단계의 민감도가 0.9이면 기존 오차의 90%가 다음 단계로 넘어옵니다. 1이면 기존 오차가 그대로 남고 새 편향이 계속 더해집니다. 1보다 크면 오차가 증폭될 수 있습니다. 실제 다변수 모델에서는 방향과 상태에 따라 민감도가 달라집니다.
 
 <!-- lecture-page -->
 
@@ -548,6 +694,8 @@ One-step bias는 0.001이지만 10번 반복한 오차는 약 0.00651. 수축하
 ## 전체 시간에 걸친 A·B·C 농도
 
 <figure class="tall-figure"><img src="/assets/courses/surrogate-models/week-03/dynamic-rollout.png" alt="온도 계획과 세 성분 농도 궤적" /></figure>
+
+온도 변경 뒤의 농도는 연속적으로 이동합니다. A가 줄고 B가 생기는 속도와 B가 C로 넘어가는 속도를 함께 봅니다. 동일한 시간에서 기준 궤적과 예측 궤적의 수직 차이가 해당 성분의 rollout 오차입니다.
 
 <!-- lecture-page -->
 
@@ -570,6 +718,8 @@ n은 test 궤적, h는 상태전이 횟수, j는 성분을 뜻합니다.
 
 <figure><img src="/assets/courses/surrogate-models/week-03/dynamic-errors.png" alt="Horizon별 성분 RMSE와 농도 합 residual" /></figure>
 
+h=1은 초기 상태에서 한 번 예측한 오차입니다. h=150은 30 min까지 반복한 오차입니다. 각 h에서 시험 궤적 20개를 평균하므로 시간에 따른 오차 축적을 볼 수 있습니다. 모든 시점을 한 번에 평균한 RMSE에는 이 모양이 사라집니다.
+
 <!-- lecture-page -->
 
 ## 궤적을 따라 물리적 일관성 확인하기
@@ -582,6 +732,26 @@ S₀ = C_Af이고 유입 농도가 고정이면 기준 농도 합은 유입 농�
 | --- | --- | --- |
 | 농도 합 residual RMSE | 0.000051 | 0.002014 |
 | 최소 예측 농도 | -0.001152 | -0.005166 |
+
+<!-- lecture-page -->
+
+## 증가량의 복원과 총농도 검사
+
+현재 상태가 [0.6,0.4,0.2] mol/L이고, 증가량 평균 [0,0,0], scale=[0.02,0.01,0.01] mol/L, 모델 출력 [−0.5,0.6,0.4]라고 둡니다.
+
+| 순서 | 값 |
+| --- | --- |
+| 표준화 출력 | [−0.5,0.6,0.4] |
+| scale 곱한 증가량 | [−0.010,0.006,0.004] mol/L |
+| 현재 상태에 더하기 | [0.590,0.406,0.204] mol/L |
+| 총농도 | 0.590+0.406+0.204=1.200 mol/L |
+
+```python
+increment = d_mean + d_scale * standardized_increment
+next_state = state + increment
+```
+
+이 계산 예의 증가량 합은 0입니다. 일반 MLP에는 그 조건을 강제하지 않았으므로 실제 예측마다 합과 음수 성분을 검사합니다. 초기 총농도가 유입 농도와 다르면 비교 대상은 고정 1.2가 아니라 정확한 총농도 전이식입니다.
 
 <!-- lecture-page -->
 
