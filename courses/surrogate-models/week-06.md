@@ -141,6 +141,22 @@ After incorporating the equality, the second triangle has upper bound h₂≤x�
 
 <!-- lecture-page -->
 
+## Branching and termination in the two-neuron example
+
+After enforcing h₁=0, only h₂'s binary z₂ remains. Its bounds are L=−1,U=1 and a₂=2x₁−1. Adding the root LP rows h₂≤z₂ and h₂≤2x₁−z₂ gives h₂≤x₁. Since h₂≥0.4, x₁≥0.4 is a lower bound.
+
+| Problem | Calculation | Conclusion |
+| --- | --- | --- |
+| Root LP, 0≤z₂≤1 | x₁=0.4,h₂=0.4,z₂=0.4 is feasible | lower bound 0.4; not integer |
+| Child z₂=0 | h₂=0 contradicts h₂≥0.4 | infeasible; close |
+| Child z₂=1 | h₂=2x₁−1≥0.4 | minimum attained at x₁=0.7 |
+
+The children cover both possible binary values. One is infeasible and the other has minimum 0.7, establishing a global lower bound of 0.7. It matches feasible cost 0.7, so the gap is zero.
+
+With several open nodes, the smallest node lower bound identifies a branch that may still improve the incumbent. A branch whose bound reaches the incumbent cannot improve it and can be closed. A real solver may use different branching and cuts.
+
+<!-- lecture-page -->
+
 ## The domain over which bounds are valid
 
 Bounds must hold at every allowed input. Training-sample extrema alone do not guarantee coverage of the full input domain.
@@ -172,6 +188,8 @@ Let P be an LP relaxation containing the network MILP feasible set. Minimize and
 This is optimization-based bound tightening, or OBBT. The lab solves 54 LPs over the full input domain without product specifications, then rebuilds the MILP with the resulting bounds.
 
 The lower-bound problem asks how small this neuron can become over every allowed input. The upper-bound problem maximizes the same expression. Solving over a relaxation containing every original network point produces bounds that do not exclude those points.
+
+Suppose minimizing a stops with feasible value −0.2 and valid lower bound −0.6. Its true minimum lies in [−0.6,−0.2]. Use −0.6 as the neuron's lower bound: using −0.2 could cut off a valid point with a=−0.4. For a maximum, use a valid upper bound instead.
 
 <!-- lecture-page -->
 
@@ -252,7 +270,7 @@ model.obj = pyo.Objective(
     expr=model.nn.inputs[1] + .02*(model.nn.inputs[0]-310))
 ```
 
-Complete construction: lab function `make_omlt`.
+
 
 outputs[1] is B and outputs[2] is C. inputs[0] is temperature in K; inputs[1] is residence time in min. OMLT scaling equalities connect physical inputs to network coordinates; the objective must use the intended physical quantities.
 
@@ -352,6 +370,8 @@ Remove product specifications, fix the input, and solve only the network represe
 Across 32 checks, the maximum absolute output difference is 7.77e-16 mol/L. Recompute the forward pass at the selected optimum too.
 
 Check constraint and integrality residuals. Finite samples help detect implementation errors; equivalence over the entire domain follows from the formulation conditions developed in Week 5.
+
+Define inequality violations to be zero when satisfied: max(0,0.38−B) for B≥0.38 and max(0,C−0.25) for C≤0.25. For binary value z=0.999999, the integrality residual is its distance 0.000001 to the nearest integer 1; compare it with the solver tolerance.
 
 <!-- lecture-page -->
 
@@ -553,6 +573,22 @@ x₁≤0.5이면 두 번째 ReLU도 0이어서 출력 하한 0.4를 채울 수 �
 
 <!-- lecture-page -->
 
+## 두 뉴런 예제의 분기와 탐색 종료
+
+h₁=0을 반영한 문제에서 h₂의 이진변수 z₂만 남깁니다. L=−1,U=1이고 a₂=2x₁−1입니다. 루트 LP의 h₂≤z₂, h₂≤2x₁−z₂를 더하면 h₂≤x₁입니다. h₂≥0.4이므로 x₁≥0.4가 하한입니다.
+
+| 문제 | 계산 | 결론 |
+| --- | --- | --- |
+| 루트 LP, 0≤z₂≤1 | x₁=0.4,h₂=0.4,z₂=0.4 가능 | 하한 0.4, 정수해 아님 |
+| z₂=0인 자식 | h₂=0과 h₂≥0.4 충돌 | 불가능, 종료 |
+| z₂=1인 자식 | h₂=2x₁−1≥0.4 | x₁=0.7에서 최소 달성 |
+
+두 자식은 가능한 이진값을 모두 덮습니다. 한쪽은 불가능하고 다른 쪽은 최소 0.7이므로 전역 하한도 0.7입니다. 가능해 비용 0.7과 같아져 gap=0으로 종료합니다.
+
+여러 열린 노드가 남으면 그중 가장 작은 하한이 아직 더 좋은 해를 허용하는 가지를 나타냅니다. 하한이 incumbent 이상인 가지는 개선할 수 없어 제외합니다. 실제 solver의 분기 순서와 cut은 다를 수 있습니다.
+
+<!-- lecture-page -->
+
 ## Bounds의 유효한 범위
 
 Bounds는 허용한 모든 입력에서 성립해야 합니다. 학습 데이터의 최솟값·최댓값만으로는 입력 영역 전체를 덮는다고 보장할 수 없습니다.
@@ -584,6 +620,8 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 이 방식은 optimization-based bound tightening(OBBT). 실습은 제품 규격을 제외한 입력 영역 전체에서 LP 54개를 풀고, bounds를 적용한 MILP를 새로 만듭니다.
 
 하한 계산은 “가능한 모든 입력에서 이 뉴런이 얼마나 작아질 수 있는가”라는 별도 최적화입니다. 상한은 같은 식을 최대화합니다. 원래 신경망의 모든 점을 포함한 완화 집합에서 풀어야 원래 점을 자르지 않는 bounds가 됩니다.
+
+예를 들어 a의 최소값을 구하다가 가능점 a=−0.2와 유효 하한 −0.6에서 멈췄다면 실제 최소는 [−0.6,−0.2]에 있습니다. 뉴런의 하한에는 −0.6을 사용합니다. −0.2를 사용하면 실제 a=−0.4인 점을 잘라낼 수 있습니다. 최대값 계산에서는 반대로 유효 상한을 사용합니다.
 
 <!-- lecture-page -->
 
@@ -664,7 +702,7 @@ model.obj = pyo.Objective(
     expr=model.nn.inputs[1] + .02*(model.nn.inputs[0]-310))
 ```
 
-완전한 구성 코드는 실습의 `make_omlt` 함수에 있습니다.
+
 
 outputs[1]은 B, outputs[2]는 C입니다. inputs[0]은 K 단위 온도이고 inputs[1]은 min 단위 체류시간입니다. OMLT의 scaling 등식이 physical input을 신경망 좌표로 연결하므로 목적식에 scaled input을 잘못 사용하지 않습니다.
 
@@ -764,6 +802,8 @@ HiGHS는 설정한 수치 허용오차 안에서 이 surrogate MILP의 최적성
 32회 검사에서 출력의 최대 절대 차이는 7.77e-16 mol/L였습니다. 선택된 최적 조건에서도 forward 출력을 다시 계산합니다.
 
 제약 잔차와 이진변수의 정수성 잔차도 확인합니다. 표본 검사는 구현 오류를 찾는 데 사용합니다. 영역 전체의 수학적 동치는 5주차의 정식화 조건이 성립해야 보장됩니다.
+
+부등식 잔차는 만족할 때 0이 되도록 계산합니다. 예를 들어 B≥0.38의 위반량은 max(0,0.38−B), C≤0.25는 max(0,C−0.25)입니다. 이진값 z=0.999999의 정수성 잔차는 가까운 정수 1과의 거리 0.000001이며, solver 허용오차와 비교합니다.
 
 <!-- lecture-page -->
 

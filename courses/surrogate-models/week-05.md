@@ -248,6 +248,23 @@ Apply the first segment slope from the start. At each later knot, an activating 
 
 <!-- lecture-page -->
 
+## From interpolation slopes to ReLU weights
+
+The first three B knot values at τ=2,4,6 are 0.285714286,0.380952381,0.409090909. Since x=(τ−2)/8, adjacent knots are 2/8=0.25 apart in x.
+
+| Calculation | Result |
+| --- | --- |
+| First slope in x | (0.380952381−0.285714286)/0.25=0.380952381 |
+| Second slope in x | (0.409090909−0.380952381)/0.25=0.112554113 |
+| First ReLU weight W₀B | first slope: 0.380952381 |
+| Weight W₁B at knot 0.25 | new minus previous slope: −0.268398268 |
+
+For 0.25<x<0.5, only the first two ReLUs have derivative 1, so the total slope is 0.380952381 − 0.268398268 = 0.112554113. The new hinge is zero at its knot, preserving continuity.
+
+Slopes computed with respect to τ must be multiplied by 8 to obtain weights for x: the same concentration change occurs over an x interval eight times shorter. Construct the A and C columns in the same way.
+
+<!-- lecture-page -->
+
 ## Neuron bounds in the lab model
 
 | Neuron | aⱼ | Lⱼ | Uⱼ | Treatment |
@@ -287,6 +304,28 @@ For neuron 1, a₁ = x − 0.25, L₁ = −0.25, and U₁ = 0.75.
 Set h₁ ≥ 0 and 0 ≤ z₁ ≤ 1 as variable bounds, and declare z₁ integer. The lab assembles the full matrix in the same way.
 
 The second row collects h₁≤x−0.25+0.25(1−z₁)=x−0.25z₁ on the left. At x=0.5,z₁=1 it gives h₁≤0.25; the first row gives h₁≥0.25, fixing h₁=0.25.
+
+<!-- lecture-page -->
+
+## Storing one constraint as a solver row
+
+Use variable order [x,h₀,h₁,h₂,h₃,y_A,y_B,y_C,z₁,z₂,z₃]. Only three columns are nonzero for h₁−x+0.25z₁≤0.
+
+```python
+import numpy as np
+row = [-1, 0, 1, 0, 0, 0, 0, 0, 0.25, 0, 0]
+row_lower = -np.inf
+row_upper = 0.0
+```
+
+| Substitution | Row dot product | Check |
+| --- | --- | --- |
+| x=0.5,h₁=0.25,z₁=1 | −0.5+0.25+0.25=0 | satisfies upper bound 0 |
+| x=0.5,h₁=0.30,z₁=1 | −0.5+0.30+0.25=0.05 | violates upper bound |
+
+For output equality y_B−∑WⱼB hⱼ=b_B, set both row bounds to b_B. Mark the z₁ column as integer and also give it bounds [0,1]. A coefficient row alone does not make a variable binary.
+
+[SciPy LinearConstraint](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.LinearConstraint.html) interprets each row as `lb <= A @ v <= ub`. Check variable order and coefficient signs against the same equation.
 
 <!-- lecture-page -->
 
@@ -622,6 +661,23 @@ j = 0, 1, 2, 3이며 출력 k는 A, B, C입니다. 이 실습의 모델 구성�
 
 <!-- lecture-page -->
 
+## 보간 기울기에서 ReLU 가중치로
+
+B의 첫 세 절점 값은 τ=2,4,6에서 0.285714286,0.380952381,0.409090909입니다. x=(τ−2)/8이므로 절점의 x 간격은 2/8=0.25입니다.
+
+| 계산 | 결과 |
+| --- | --- |
+| 첫 구간의 x 기울기 | (0.380952381−0.285714286)/0.25=0.380952381 |
+| 두 번째 구간의 x 기울기 | (0.409090909−0.380952381)/0.25=0.112554113 |
+| 첫 ReLU 가중치 W₀B | 첫 기울기 0.380952381 |
+| 절점 0.25의 가중치 W₁B | 새 기울기−이전 기울기=−0.268398268 |
+
+0.25<x<0.5에서는 첫 두 ReLU만 미분이 1이므로 전체 기울기는 0.380952381 − 0.268398268 = 0.112554113입니다. 새 항은 절점에서 0이므로 값의 연속성도 유지됩니다.
+
+τ 기준 기울기를 사용했다면 x 기준 가중치로 옮길 때 8을 곱해야 합니다. 같은 농도 변화가 x에서는 8배 짧은 간격에 걸쳐 일어나기 때문입니다. A와 C 열도 같은 방법으로 구합니다.
+
+<!-- lecture-page -->
+
 ## 실습 모델의 뉴런별 bounds
 
 | 뉴런 | aⱼ | Lⱼ | Uⱼ | 처리 |
@@ -661,6 +717,28 @@ ReLU 가중합과 구간 보간이 같은 계산을 다른 표현으로 수행�
 h₁ ≥ 0과 0 ≤ z₁ ≤ 1은 변수 bounds에 적고, z₁을 정수로 지정합니다. 실습은 같은 방식으로 전체 행렬을 직접 조립합니다.
 
 두 번째 행은 h₁≤x−0.25+0.25(1−z₁)=x−0.25z₁을 왼쪽으로 모은 식입니다. x=0.5,z₁=1이면 h₁≤0.25이고, 첫 행이 h₁≥0.25를 주므로 h₁=0.25로 정해집니다.
+
+<!-- lecture-page -->
+
+## 제약식 한 줄을 solver 행으로 저장하기
+
+전체 변수 순서는 [x,h₀,h₁,h₂,h₃,y_A,y_B,y_C,z₁,z₂,z₃]입니다. h₁−x+0.25z₁≤0의 계수는 해당 세 열에만 들어갑니다.
+
+```python
+import numpy as np
+row = [-1, 0, 1, 0, 0, 0, 0, 0, 0.25, 0, 0]
+row_lower = -np.inf
+row_upper = 0.0
+```
+
+| 대입 | 행 내적 | 판정 |
+| --- | --- | --- |
+| x=0.5,h₁=0.25,z₁=1 | −0.5+0.25+0.25=0 | 상한 0 만족 |
+| x=0.5,h₁=0.30,z₁=1 | −0.5+0.30+0.25=0.05 | 상한 위반 |
+
+출력 등식 y_B−∑WⱼB hⱼ=b_B는 해당 행의 하한과 상한을 모두 b_B로 둡니다. z₁ 열은 정수 표시와 [0,1] bounds를 함께 설정합니다. 계수 배열만 만들고 이 두 설정을 빼면 이진변수가 되지 않습니다.
+
+[SciPy LinearConstraint](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.LinearConstraint.html)는 각 행을 `lb <= A @ v <= ub`로 해석합니다. 따라서 변수 순서와 계수의 부호를 같은 행에서 대조합니다.
 
 <!-- lecture-page -->
 

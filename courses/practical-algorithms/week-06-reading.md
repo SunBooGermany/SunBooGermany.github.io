@@ -136,6 +136,8 @@ Reading [[1,0]] as 1→0 reverses the dependency. Validate edges instead of comp
 
 `n=4, prerequisites=[[2,0],[2,1],[3,2]] → [0,1,2,3]`
 
+`[[] for _ in range(n)]` creates a separate neighbor list per vertex. `[[]]*n` shares one list, so `graph[0].append(1)` would add 1 to every vertex's neighbors. An indegree reaches zero only once, which prevents duplicate queue insertion on valid inputs.
+
 <!-- lecture-page -->
 
 ## 78 · Idea and execution trace
@@ -219,6 +221,23 @@ Output: `[[2,3]]`.
 
 <!-- lecture-page -->
 
+## Returning to the parent's next choice
+
+For candidates [2,3] and target 5, each call owns its start and remaining variables; only path is shared. Returning from a child resumes the parent's loop at the next statement.
+
+| Execution point | Shared path | This call's remaining |
+| --- | --- | --- |
+| Parent visit(0,3), append 2 | [2,2] | 3 |
+| Child visit(0,1), stop because 2>1 | [2,2] | 1 |
+| Resume parent, path.pop() | [2] | still 3 |
+| Parent's next index=1, append 3 | [2,3] | 3 |
+| Child visit(1,0), save a copy and return | [2,3] | 0 |
+| Resume parent, path.pop() | [2] | 3 |
+
+The parent in the first row has already selected the first 2. pop undoes the last shared path choice. The parent's remaining was never changed, so it needs no addition to restore it. An implementation that mutates a global remaining would have to restore that value too.
+
+<!-- lecture-page -->
+
 ## 39 · Turning the idea into code
 
 ```python
@@ -258,6 +277,8 @@ A conservative bound is B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><ms
 Recursing at index+1 misses [2,2] for [2], target=4. Zero is outside the contract and breaks termination.
 
 `candidates=[2,5], target=7 → [[2,5]]`
+
+For m=2,T=5,c=2, depth is at most L=2. The loose bound of at most m children per call gives at most 1+m+m²=7 calls. Ordering and sum pruning reduce the actual count; copying the S output elements is counted separately.
 
 <!-- lecture-page -->
 
@@ -415,6 +436,8 @@ def course_order(n, prerequisites):
 
 `n=4, prerequisites=[[2,0],[2,1],[3,2]] → [0,1,2,3]`
 
+`[[] for _ in range(n)]`는 정점마다 새 이웃 목록을 만듭니다. `[[]]*n`은 같은 목록을 공유하므로 `graph[0].append(1)`이 모든 정점의 이웃에 1을 넣는 오류가 됩니다. 진입차수가 0이 되는 순간은 한 번뿐이라 정상 입력에서는 한 정점을 큐에 중복 삽입하지 않습니다.
+
 <!-- lecture-page -->
 
 ## 78 · 풀이의 출발점과 실행 추적
@@ -498,6 +521,23 @@ result.append(path)는 같은 객체를 보관합니다. 마지막 pop 뒤 여�
 
 <!-- lecture-page -->
 
+## 재귀 복귀와 부모의 다음 선택
+
+후보 [2,3], 목표 5에서 각 호출의 start와 remaining은 독립된 지역 변수이고 path만 공유합니다. 자식이 return해도 부모의 for는 그 다음 줄부터 계속됩니다.
+
+| 실행 위치 | 공유 path | 해당 호출의 remaining |
+| --- | --- | --- |
+| 부모 visit(0,3), 2 추가 | [2,2] | 3 |
+| 자식 visit(0,1), 2>1로 종료 | [2,2] | 1 |
+| 부모로 복귀, path.pop() | [2] | 여전히 3 |
+| 부모의 다음 index=1, 3 추가 | [2,3] | 3 |
+| 자식 visit(1,0), 복사 저장 후 return | [2,3] | 0 |
+| 부모로 복귀, path.pop() | [2] | 3 |
+
+첫 행의 부모는 이미 첫 2를 고른 호출입니다. pop은 공유 경로의 마지막 선택을 취소합니다. remaining은 부모 값이 바뀐 적이 없어 별도로 더해 복원하지 않습니다. 반대로 전역 remaining을 직접 줄이는 구현이라면 그 값도 복원해야 합니다.
+
+<!-- lecture-page -->
+
 ## 39 · 아이디어를 코드로 옮기기
 
 ```python
@@ -537,6 +577,8 @@ def combinations(candidates, target):
 index+1로 재귀하면 [2], target=4의 [2,2]를 놓칩니다. 후보 0은 공식 범위 밖이며 종료 논리를 깨뜨립니다.
 
 `candidates=[2,5], target=7 → [[2,5]]`
+
+예를 들어 m=2,T=5,c=2이면 깊이는 L=2 이하입니다. 모든 호출이 최대 m개 자식을 가진다는 느슨한 계산으로 호출 수는 1+m+m²=7 이하입니다. 실제로는 순서 제한과 합 초과 가지치기로 더 적으며, 저장된 답을 복사하는 S의 비용은 별도로 더합니다.
 
 <!-- lecture-page -->
 

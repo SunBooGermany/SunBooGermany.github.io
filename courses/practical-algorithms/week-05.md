@@ -89,6 +89,24 @@ A value no larger than the root cannot improve the retained k values. Duplicates
 
 <!-- lecture-page -->
 
+## Heap positions and root replacement
+
+In min-heap `[2,4,3,8,6,5,7]`, the children of position i are 2i+1 and 2i+2. Root 2 has children 4 and 3. Siblings need not be sorted; each parent must be no larger than its children.
+
+Replace the root with 9 and trace a repair path that promotes the smaller child.
+
+| Step | Array | Next comparison |
+| --- | --- | --- |
+| Replace root | [9,4,3,8,6,5,7] | choose 3 over 4 |
+| Promote 3 | [3,4,9,8,6,5,7] | choose 5 over 7 |
+| Promote 5 | [3,4,5,8,6,9,7] | 9 is a leaf; stop |
+
+Reading root 3 takes O(1); repair follows a path of at most the tree height. heapify repairs parents from the bottom. With seven nodes, four leaves have height 0, two parents have height 1, and the root has height 2. This allows 2×1+1×2=4 downward levels in total. In general, the number of tall subtrees decreases geometrically, giving O(k) total work.
+
+[Python heapq representation and operations](https://docs.python.org/3/library/heapq.html)
+
+<!-- lecture-page -->
+
 ## 215 · Why it works; time and memory
 
 The heap retains the largest k values seen. A new value at most its minimum cannot improve that set; a larger one replaces the minimum. The final root is kth largest.
@@ -230,6 +248,7 @@ Once fresh is zero, return 3 without processing the final queue.
 ## 994 · Turning the idea into code
 
 ```python
+from collections import deque
 def rot_minutes(grid):
     rows, cols = len(grid), len(grid[0])
     board = [row[:] for row in grid]
@@ -253,7 +272,7 @@ def rot_minutes(grid):
 
 `range(len(queue))` freezes the source count for the current time. Mark newly infected cells as 2 immediately to avoid duplicate infection, but append them for processing in the next while round.
 
-An empty queue with fresh cells remaining means unreachable cells and returns -1. If fresh is initially zero, no time step is needed and the result is 0.
+
 
 <!-- lecture-page -->
 
@@ -264,6 +283,10 @@ BFS levels are minimum edge distances from any source. Equal edge durations make
 Copying and the initial scan each cost O(RC). Every cell enters the queue once and checks four neighbors when removed, so propagation also costs O(RC). Adding these stages gives O(RC); do not multiply by the number of minutes again.
 
 The board copy stores RC cells to preserve the input. The queue may also hold O(RC) cells, giving O(RC) auxiliary space. Constant-size fresh and minutes counters do not make the whole algorithm constant-space.
+
+`board=[row[:] for row in grid]` copies each row as well, preserving the original cell values. `fresh += board[r][c] == 1` adds 1 for True and 0 for False. Scanning [2,1,1] therefore makes fresh go 0→1→2.
+
+An empty queue with fresh cells remaining means unreachable cells and returns -1. If fresh is initially zero, no time step is needed and the result is 0.
 
 <!-- lecture-page -->
 
@@ -360,6 +383,24 @@ def kth_largest(nums, k):
 `nums[:k]`로 k개를 복사하고 heapify합니다. 최소 힙은 부모가 자식보다 크지 않은 완전 이진 트리입니다. 층마다 최대 노드 수가 두 배라 높이는 O(log k)이며, `heapreplace`는 그 높이만큼 내려갈 수 있습니다. 루트 `heap[0]`를 읽기만 하면 O(1)입니다.
 
 루트 이하인 값은 이미 가진 k개보다 유리하지 않습니다. 중복은 별개 원소로 유지하므로 `[5,5,1]`의 두 번째 큰 값도 5입니다.
+
+<!-- lecture-page -->
+
+## 힙의 배열 위치와 루트 교체
+
+최소 힙 `[2,4,3,8,6,5,7]`의 부모 i와 자식은 2i+1,2i+2에 있습니다. 루트 2의 자식은 4와 3입니다. 형제끼리는 정렬되어 있지 않아도 부모≤자식 조건을 만족합니다.
+
+루트에 새 값 9를 넣었을 때 작은 자식을 위로 올리며 조건을 복구하는 경로를 추적합니다.
+
+| 단계 | 배열 | 다음 비교 |
+| --- | --- | --- |
+| 루트 교체 | [9,4,3,8,6,5,7] | 4와 3 중 작은 3 |
+| 3을 위로 | [3,4,9,8,6,5,7] | 5와 7 중 작은 5 |
+| 5를 위로 | [3,4,5,8,6,9,7] | 9는 잎, 종료 |
+
+새 루트 3은 O(1)로 읽지만 복구는 높이만큼 작업합니다. heapify는 아래 부모부터 복구합니다. 노드가 7개인 트리에서는 잎 4개의 이동 높이는 0, 부모 2개는 최대 1, 루트는 최대 2입니다. 전체는 2×1+1×2=4단계 정도의 하향 이동이며, 일반적으로 높이가 큰 노드 수가 기하급수적으로 줄어 전체 O(k)입니다.
+
+[Python heapq의 배열 규칙과 연산](https://docs.python.org/3/library/heapq.html)
 
 <!-- lecture-page -->
 
@@ -504,6 +545,7 @@ fresh가 0이므로 마지막 큐를 더 처리하지 않고 3을 반환합니�
 ## 994 · 아이디어를 코드로 옮기기
 
 ```python
+from collections import deque
 def rot_minutes(grid):
     rows, cols = len(grid), len(grid[0])
     board = [row[:] for row in grid]
@@ -527,7 +569,7 @@ def rot_minutes(grid):
 
 `range(len(queue))`가 현재 시각의 전파원 수를 고정합니다. 새로 썩은 칸을 즉시 2로 표시하고 큐 뒤에 넣어 중복 감염을 막되, 그 칸의 이웃 처리는 다음 while로 미룹니다.
 
-큐가 비었는데 fresh가 남으면 도달 불가능하여 -1입니다. 처음부터 fresh가 0이면 시간이 흐를 필요 없이 0입니다.
+
 
 <!-- lecture-page -->
 
@@ -538,6 +580,10 @@ def rot_minutes(grid):
 격자 복사와 초기 스캔이 각각 O(RC)입니다. 각 칸은 한 번만 큐에 들어가고 나올 때 네 이웃을 검사하므로 전파도 O(RC)입니다. 세 단계의 합은 O(RC)이며 분 수를 RC에 다시 곱하지 않습니다.
 
 board는 원본을 보존하려고 만든 RC칸 복사본입니다. 큐도 최대 RC칸을 담으므로 보조 공간은 O(RC)입니다. fresh와 minutes가 O(1) 변수여도 큰 board·queue가 존재하므로 전체 공간을 O(1)이라고 할 수 없습니다.
+
+`board=[row[:] for row in grid]`는 각 행도 복사해 원본의 값을 보존합니다. `fresh += board[r][c] == 1`은 비교 결과 True를 1, False를 0으로 더합니다. 예를 들어 [2,1,1]을 읽으면 fresh는 0→1→2가 됩니다.
+
+큐가 비었는데 fresh가 남으면 도달 불가능하여 -1입니다. 처음부터 fresh가 0이면 시간이 흐를 필요 없이 0입니다.
 
 <!-- lecture-page -->
 

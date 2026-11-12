@@ -36,6 +36,8 @@ Exercise: set a = 1.4 and b = 1.2; compute the solution and residual for λ = 1 
 
 Answer check: solutions are 1.30 and 1.22; residuals are 0.10 and 0.02. A finite penalty can leave a residual even at its exact minimizer.
 
+Collecting the derivative terms gives (1+λ)z=a+λb. With a=1.4,b=1.2,λ=9, this is 10z=12.2, hence z=1.22. The data derivative −0.18 cancels the penalty derivative 9×0.02=+0.18, although the equality residual remains 0.02.
+
 <!-- lecture-page -->
 
 ## 3. Equality QP and its KKT derivation
@@ -88,6 +90,25 @@ Equal correction has squared distance 3×(0.20/3)²=0.013333. Subtracting 0.20 o
 
 <!-- lecture-page -->
 
+## Projecting onto two independent equalities
+
+Consider a linear example requiring both total concentration 1.2 and A−B=0.2. The rows of constraint matrix B are [1,1,1] and [1,−1,0], with right side [1.2,0.2]. Project raw output [0.70,0.45,0.25].
+
+| Step | Calculation |
+| --- | --- |
+| Residuals Bŷ−d | [0.20,0.05] |
+| Diagonal entries of G=BBᵀ | row squared norms: 3 and 2 |
+| Off-diagonal entry | 1×1+1×(−1)+1×0=0 |
+| Solve Gλ=residual | λ=[0.20/3,0.05/2] |
+| Bᵀλ | [0.091667,0.041667,0.066667] |
+| Projected output | [0.608333,0.408333,0.183333] |
+
+The sum is 1.2 and A−B=0.2. Independence allows the two residuals to be removed separately. If the second row were twice the first, G would have no inverse.
+
+Here B names the constraint matrix, distinct from product species B. The additional A−B equality is a condition of this linear calculation example.
+
+<!-- lecture-page -->
+
 ## 6. Chain rule for parameters and inputs
 
 Let J_f,θ be the raw-output parameter Jacobian. For fixed A, B, b:
@@ -130,6 +151,8 @@ projected = raw - (raw.sum() - 1.2) * weights
 ```
 
 B has the largest scale, making a physical correction less costly in standardized distance. It therefore changes more. Checking only the final sum 1.20 hides the difference between these metrics.
+
+Let Δⱼ be the correction. Minimize ½∑Δⱼ²/sⱼ² subject to ∑Δⱼ=−0.20. Stationarity gives Δⱼ/sⱼ²+λ=0, hence Δⱼ=−λsⱼ². Substituting into the sum constraint gives λ=0.20/∑sⱼ², which explains the squared-scale proportions.
 
 <!-- lecture-page -->
 
@@ -226,6 +249,8 @@ assert torch.autograd.gradcheck(
 
 Create checked raw and rhs tensors with requires_grad=True. The lab’s --check-only checks feasibility, idempotence, Jacobians, scaling, and counterexamples.
 
+The first residual has shape (batch,m). Transpose it to (m,batch) so solve handles all right-hand sides, then transpose back. Finally lam @ B has shape (batch,n), the output correction. gradcheck compares automatic derivatives with central differences from perturbing an input component by +ε and −ε and dividing the output difference by 2ε.
+
 <!-- lecture-page -->
 
 ## 14. Define the comparison metrics
@@ -288,6 +313,8 @@ J(z) = ½(z − a)² + ½λ(z − b)², λ ≥ 0에서 dJ/dz = (z − a) + λ(z 
 
 답 확인: 해는 1.30, 1.22이고 residual은 0.10, 0.02입니다. 학습이 정확히 최소점에 도달해도 유한한 penalty가 등식을 정확히 맞추지 않는 예입니다.
 
+미분식을 모으면 (1+λ)z=a+λb입니다. a=1.4,b=1.2,λ=9에서는 10z=12.2로 z=1.22를 얻습니다. 데이터 방향 미분은 −0.18, 벌점 방향 미분은 9×0.02=+0.18로 서로 상쇄되지만 등식 residual 0.02는 남습니다.
+
 <!-- lecture-page -->
 
 ## 3. Equality QP와 KKT 유도
@@ -340,6 +367,25 @@ P = I − Bᵀ(BBᵀ)⁻¹B는 Pᵀ = P, P² = P, BP = 0을 만족합니다. P�
 
 <!-- lecture-page -->
 
+## 독립 등식 두 개의 투영 계산
+
+출력 합 1.2에 더해 A−B=0.2를 요구하는 선형 예제입니다. B의 행을 [1,1,1]과 [1,−1,0], 우변을 [1.2,0.2]로 두고 원시 출력 [0.70,0.45,0.25]를 보정합니다.
+
+| 단계 | 계산 결과 |
+| --- | --- |
+| 두 잔차 Bŷ−d | [0.20,0.05] |
+| G=BBᵀ의 대각 원소 | 첫 행 제곱합 3, 둘째 행 제곱합 2 |
+| G의 비대각 원소 | 1×1+1×(−1)+1×0=0 |
+| Gλ=잔차 | λ=[0.20/3,0.05/2] |
+| Bᵀλ | [0.091667,0.041667,0.066667] |
+| 보정 출력 | [0.608333,0.408333,0.183333] |
+
+합은 1.2이고 A−B=0.2입니다. 두 등식이 독립이어서 두 종류의 잔차를 따로 제거합니다. 두 번째 행이 첫 행의 두 배이면 G의 역행렬이 없어 같은 계산을 할 수 없습니다.
+
+여기서 B는 제약 행렬의 이름이며 제품 성분 B와 구별합니다. 추가한 A−B 등식은 이 선형 계산 예제의 조건입니다.
+
+<!-- lecture-page -->
+
 ## 6. 파라미터와 입력에 대한 chain rule
 
 J_f,θ는 raw 출력의 파라미터 Jacobian입니다. A·B·b가 고정이면:
@@ -382,6 +428,8 @@ projected = raw - (raw.sum() - 1.2) * weights
 ```
 
 B는 표준편차가 커 같은 농도 수정이 표준화 거리에서 덜 비쌉니다. 따라서 더 많이 바뀝니다. 합 1.20만 확인하면 두 거리 정의의 차이가 보이지 않습니다.
+
+수정량을 Δⱼ라 두면 최소화할 거리는 ½∑Δⱼ²/sⱼ²이고 ∑Δⱼ=−0.20입니다. 정지조건 Δⱼ/sⱼ²+λ=0에서 Δⱼ=−λsⱼ²를 얻고, 합 조건에 넣으면 λ=0.20/∑sⱼ²입니다. 따라서 각 수정량이 sⱼ²에 비례합니다.
 
 <!-- lecture-page -->
 
@@ -477,6 +525,8 @@ assert torch.autograd.gradcheck(
 ```
 
 검사할 raw와 rhs는 requires_grad=True로 만듭니다. 실습의 --check-only가 가능성·멱등성·Jacobian·표준화·반례까지 확인합니다.
+
+첫 줄의 residual은 (batch,m)입니다. solve에는 우변을 (m,batch)로 전치해 여러 우변을 한꺼번에 풀고, 다시 (batch,m)으로 돌립니다. 마지막 lam @ B는 (batch,n)의 출력 수정량입니다. gradcheck는 입력 한 성분을 +ε와 −ε만큼 바꾼 두 출력의 차이를 2ε으로 나눈 중앙차분과 자동 미분값을 비교합니다.
 
 <!-- lecture-page -->
 

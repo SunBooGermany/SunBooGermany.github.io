@@ -109,6 +109,20 @@ Subtracting equilibrium removes the constant feed term, leaving deviations. The 
 
 <!-- lecture-page -->
 
+## Connecting the balance matrix to exponential response
+
+At 330 K and τ=5, M has rows [−0.4,0,0], [0.2,−0.3,0], [0,0.1,−0.2], and b=[0.24,0,0]. Its second row gives the original B balance, 0.2<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−0.3<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>.
+
+Subtracting equilibrium <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math> gives dz/dt=Mz. The scalar solution of dz/dt=−0.4z is exp(−0.4t)z(0); exp(Mt)z(0) extends this to coupled components.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>M</mi><mi>t</mi></mrow></msup><mo>=</mo><mi>I</mi><mo>+</mo><mi>M</mi><mi>t</mi><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>2</mn></msup><mn>2!</mn></mfrac><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>3</mn></msup><mn>3!</mn></mfrac><mo>+</mo><mo>⋯</mo></mrow></math></div>
+
+M² is a matrix product, not an elementwise power. Likewise, exp(Mt) is not an array of elementwise exponentials. Mt is dimensionless. Keeping only I+Mt gives one Euler step; later terms account for changing concentrations feeding back into reaction rates within the interval.
+
+For z(0)=[0.6,−0.4,−0.2], Mz=[−0.24,0.24,0]. Thus <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>+(I+0.2M)z=[1.152,0.048,0], recovering the Euler calculation.
+
+<!-- lecture-page -->
+
 ## Concentration changes over the first 0.2 min
 
 At [1.2,0,0], A inflow minus outflow is zero and its reaction consumption is 0.24 mol/(L·min). B forms at that rate; C initially has zero production rate because no B is yet present.
@@ -123,6 +137,20 @@ At [1.2,0,0], A inflow minus outflow is zero and its reaction consumption is 0.2
 | Exact C | 1.2−1.153870−0.045672 | 0.000458 |
 
 Euler uses the initial rate throughout the interval. During the actual interval, A decreases, B forms, and C production begins. These changing rates explain its difference from the exact interval solution.
+
+<!-- lecture-page -->
+
+## Integrating the effect of A on B
+
+Write deviations <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>A</mi><mo>∗</mo></msubsup></math> and <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>B</mi><mo>∗</mo></msubsup></math>, with a=1/τ+k₁ and b=1/τ+k₂. Then <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(t)=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at).
+
+Multiply <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>′+b<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at) by exp(bt). The left side becomes the derivative of a product. Integrating from 0 to t gives:
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>b</mi><mi>t</mi></mrow></msup><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>z</mi><mi>A</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mfrac><mrow><msup><mi>e</mi><mrow><mo stretchy="false">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false">)</mo><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div>
+
+Multiplying by exp(−bt) gives the transfer term k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)[exp(−at)−exp(−bt)]/(b−a). In the numerical calculation, 0.12 is k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)=0.2×0.6, and −0.1 is b−a=0.3−0.4.
+
+If a=b, the integrand is 1 and its integral is t. Use k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)t exp(−at) rather than evaluating 0/0.
 
 <!-- lecture-page -->
 
@@ -404,6 +432,8 @@ An RNN updates a learned hidden state. An LSTM adds gated memory updates. Compar
 
 Implementation: PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html) and [LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html).
 
+For a scalar RNN with φ=tanh, W_x=1,W_h=0.5,b=0 and h₀=0, observation x₁=1 gives h₁=tanh(1)≈0.762. Even when x₂=0, h₂=tanh(0.5×0.762)≈0.363 retains information from the past. An LSTM uses learned gates to control retention, addition and exposure of memory.
+
 <!-- lecture-page -->
 
 ## Optional: an encoder and a trajectory decoder
@@ -509,6 +539,20 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 
 <!-- lecture-page -->
 
+## 수지 행렬과 지수 응답의 연결
+
+330 K, τ=5에서 M의 첫 행은 [−0.4,0,0], 둘째는 [0.2,−0.3,0], 셋째는 [0,0.1,−0.2]이고 b=[0.24,0,0]입니다. 예를 들어 B의 변화율은 0.2<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−0.3<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>로 원래 수지와 같습니다.
+
+평형 <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>를 뺀 편차 z는 dz/dt=Mz를 만족합니다. 스칼라 dz/dt=−0.4z의 해 z(t)=exp(−0.4t)z(0)를 행렬로 확장한 것이 exp(Mt)z(0)입니다.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>M</mi><mi>t</mi></mrow></msup><mo>=</mo><mi>I</mi><mo>+</mo><mi>M</mi><mi>t</mi><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>2</mn></msup><mn>2!</mn></mfrac><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>3</mn></msup><mn>3!</mn></mfrac><mo>+</mo><mo>⋯</mo></mrow></math></div>
+
+M²은 행렬곱입니다. 각 원소를 따로 지수화한 배열이 아닙니다. Mt는 무차원이고, I+Mt까지만 남기면 시작 시점 기울기를 사용하는 Euler 한 단계가 됩니다. 뒤 항들은 구간 안에서 변하는 농도가 반응속도에 다시 미치는 영향을 반영합니다.
+
+첫 단계에서 z(0)=[0.6,−0.4,−0.2]이며 Mz=[−0.24,0.24,0]입니다. <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>+(I+0.2M)z=[1.152,0.048,0]으로 Euler 계산을 다시 얻습니다.
+
+<!-- lecture-page -->
+
 ## 첫 0.2 min의 농도 변화
 
 초기 조성 [1.2,0,0]에서 A의 유입·유출 차이는 0이고 반응 소모는 0.24 mol/(L·min)입니다. B는 같은 속도로 생기며 C는 아직 B가 없어 순간 생성속도가 0입니다.
@@ -523,6 +567,20 @@ c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.15
 | 정확한 C | 1.2−1.153870−0.045672 | 0.000458 |
 
 Euler는 시작 순간의 속도를 구간 전체에 사용합니다. 실제 구간 안에서는 A가 줄고 B가 생겨 C 생성도 시작되므로 정확한 구간 해와 차이가 납니다.
+
+<!-- lecture-page -->
+
+## A의 변화가 B로 전달되는 적분
+
+편차를 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>A</mi><mo>∗</mo></msubsup></math>, <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>B</mi><mo>∗</mo></msubsup></math>로 두고 a=1/τ+k₁, b=1/τ+k₂로 씁니다. A의 편차는 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(t)=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at)입니다.
+
+B의 식 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>′+b<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at)에 exp(bt)를 곱하면 왼쪽은 곱의 미분이 됩니다. 0부터 t까지 적분하면:
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>b</mi><mi>t</mi></mrow></msup><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>z</mi><mi>A</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mfrac><mrow><msup><mi>e</mi><mrow><mo stretchy="false">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false">)</mo><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div>
+
+양변에 exp(−bt)를 곱하면 A에서 전달되는 항이 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)[exp(−at)−exp(−bt)]/(b−a)가 됩니다. 앞 계산의 0.12는 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)=0.2×0.6, −0.1은 b−a=0.3−0.4입니다.
+
+a=b이면 적분 안 지수항이 1이므로 적분값은 t입니다. 따라서 0/0을 계산하지 않고 전달항 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)t exp(−at)를 사용합니다.
 
 <!-- lecture-page -->
 
@@ -803,6 +861,8 @@ python week03_lab.py --train --output-dir week03-retrained
 RNN은 학습된 은닉 상태를 갱신하고 LSTM은 gate를 사용한 메모리 갱신을 추가합니다. 비교할 때는 궤적 분할과 예측에 제공하는 미래 정보를 같게 둡니다.
 
 구현은 PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html)·[LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html)을 참고합니다.
+
+스칼라 RNN의 φ를 tanh로 두고 W_x=1,W_h=0.5,b=0,h₀=0이라 합시다. 관측 x₁=1이면 h₁=tanh(1)≈0.762이고, 다음 관측 x₂=0이어도 h₂=tanh(0.5×0.762)≈0.363으로 이전 정보가 남습니다. LSTM은 이 메모리의 유지·추가·출력 비율을 학습한 gate로 조절합니다.
 
 <!-- lecture-page -->
 

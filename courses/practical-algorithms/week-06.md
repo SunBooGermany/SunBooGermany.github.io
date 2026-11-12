@@ -141,6 +141,8 @@ Initialization stores V vertices and E edges in O(V+E) work. Each vertex enters 
 
 There are V adjacency lists with E entries, plus up to V entries in indegree, queue, and order. Total extra space is O(V+E), including O(V) output order. Although 207 returns only a bool, this implementation calls the same order routine and uses O(V+E) space.
 
+`[[] for _ in range(n)]` creates a separate neighbor list per vertex. `[[]]*n` shares one list, so `graph[0].append(1)` would add 1 to every vertex's neighbors. An indegree reaches zero only once, which prevents duplicate queue insertion on valid inputs.
+
 <!-- lecture-page -->
 
 ## 78 · Idea and execution trace
@@ -220,6 +222,23 @@ Output: `[[2,3]]`.
 
 <!-- lecture-page -->
 
+## Returning to the parent's next choice
+
+For candidates [2,3] and target 5, each call owns its start and remaining variables; only path is shared. Returning from a child resumes the parent's loop at the next statement.
+
+| Execution point | Shared path | This call's remaining |
+| --- | --- | --- |
+| Parent visit(0,3), append 2 | [2,2] | 3 |
+| Child visit(0,1), stop because 2>1 | [2,2] | 1 |
+| Resume parent, path.pop() | [2] | still 3 |
+| Parent's next index=1, append 3 | [2,3] | 3 |
+| Child visit(1,0), save a copy and return | [2,3] | 0 |
+| Resume parent, path.pop() | [2] | 3 |
+
+The parent in the first row has already selected the first 2. pop undoes the last shared path choice. The parent's remaining was never changed, so it needs no addition to restore it. An implementation that mutates a global remaining would have to restore that value too.
+
+<!-- lecture-page -->
+
 ## 39 · Turning the idea into code
 
 ```python
@@ -255,6 +274,8 @@ Positive choices decrease remaining and ensure termination. Nondecreasing indice
 With m candidates, target T, and smallest candidate c, path length is at most L=floor(T/c). Let B be visited calls and S the total output elements. Sorting costs O(m log m), each call checks at most m choices, and copying costs O(S): total O(m log m+mB+S). B depends strongly on the input; this is not a linear scan.
 
 A conservative bound is B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>). The sorted candidates plus the path and call stack use O(m+L) auxiliary space. Output uses O(S); the full search tree is not stored simultaneously.
+
+For m=2,T=5,c=2, depth is at most L=2. The loose bound of at most m children per call gives at most 1+m+m²=7 calls. Ordering and sum pruning reduce the actual count; copying the S output elements is counted separately.
 
 <!-- lecture-page -->
 
@@ -406,6 +427,8 @@ def course_order(n, prerequisites):
 
 인접 리스트의 빈 목록 V개와 간선 항목 E개, indegree·queue·order의 최대 V개 항목이 필요합니다. 총 추가 공간은 O(V+E), 그중 반환 순서는 O(V)입니다. 207번의 반환값은 bool이지만 이 구현은 같은 순서 함수를 호출하므로 공간도 O(V+E)입니다.
 
+`[[] for _ in range(n)]`는 정점마다 새 이웃 목록을 만듭니다. `[[]]*n`은 같은 목록을 공유하므로 `graph[0].append(1)`이 모든 정점의 이웃에 1을 넣는 오류가 됩니다. 진입차수가 0이 되는 순간은 한 번뿐이라 정상 입력에서는 한 정점을 큐에 중복 삽입하지 않습니다.
+
 <!-- lecture-page -->
 
 ## 78 · 풀이의 출발점과 실행 추적
@@ -485,6 +508,23 @@ append로 한 선택을 한 뒤 `visit(index+1)`로 다음 위치부터 탐색�
 
 <!-- lecture-page -->
 
+## 재귀 복귀와 부모의 다음 선택
+
+후보 [2,3], 목표 5에서 각 호출의 start와 remaining은 독립된 지역 변수이고 path만 공유합니다. 자식이 return해도 부모의 for는 그 다음 줄부터 계속됩니다.
+
+| 실행 위치 | 공유 path | 해당 호출의 remaining |
+| --- | --- | --- |
+| 부모 visit(0,3), 2 추가 | [2,2] | 3 |
+| 자식 visit(0,1), 2>1로 종료 | [2,2] | 1 |
+| 부모로 복귀, path.pop() | [2] | 여전히 3 |
+| 부모의 다음 index=1, 3 추가 | [2,3] | 3 |
+| 자식 visit(1,0), 복사 저장 후 return | [2,3] | 0 |
+| 부모로 복귀, path.pop() | [2] | 3 |
+
+첫 행의 부모는 이미 첫 2를 고른 호출입니다. pop은 공유 경로의 마지막 선택을 취소합니다. remaining은 부모 값이 바뀐 적이 없어 별도로 더해 복원하지 않습니다. 반대로 전역 remaining을 직접 줄이는 구현이라면 그 값도 복원해야 합니다.
+
+<!-- lecture-page -->
+
 ## 39 · 아이디어를 코드로 옮기기
 
 ```python
@@ -520,6 +560,8 @@ def combinations(candidates, target):
 후보 수 m, 목표 T, 최소 후보 c라 하면 경로 길이는 L=floor(T/c) 이하입니다. 방문 호출 수 B, 출력 원소 수의 합 S를 쓰면 정렬 O(m log m), 호출당 최대 m개 검사, 복사 O(S)이므로 O(m log m+mB+S) 시간입니다. B는 입력에 따라 크게 달라져 이를 단순 O(n)이라 할 수 없습니다.
 
 보수적으로 B=O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mrow><mo>(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>L</mi><mo>+</mo><mn>1</mn></mrow></msup></math>)입니다. 정렬한 후보 m개와 길이 L의 path·호출 스택이 있어 보조 공간 O(m+L), 출력은 O(S)입니다. 전체 탐색 트리를 한 번에 저장하지는 않습니다.
+
+예를 들어 m=2,T=5,c=2이면 깊이는 L=2 이하입니다. 모든 호출이 최대 m개 자식을 가진다는 느슨한 계산으로 호출 수는 1+m+m²=7 이하입니다. 실제로는 순서 제한과 합 초과 가지치기로 더 적으며, 저장된 답을 복사하는 S의 비용은 별도로 더합니다.
 
 <!-- lecture-page -->
 

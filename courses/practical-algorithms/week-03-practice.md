@@ -8,15 +8,11 @@ course_id: "practical-algorithms"
 
 ## [LeetCode 74: Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) · Medium
 
-New exercise
-
 Return whether target occurs in the matrix.
 
 1 <= R,C <= 100; values/target -10^4..10^4; sorted rows, each next row starts above the previous end.
 
 ## [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
-
-New extension
 
 Return target’s index in a rotated sorted array, or -1.
 
@@ -24,15 +20,11 @@ Return target’s index in a rotated sorted array, or -1.
 
 ## [LeetCode 206: Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) · Easy
 
-New exercise
-
 Reverse a singly linked list and return its new head.
 
 0..5000 nodes; values -5000..5000.
 
 ## [LeetCode 21: Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) · Easy
-
-New exercise
 
 Splice two sorted linked lists into one sorted list.
 
@@ -48,15 +40,11 @@ When a hint is needed, open [Hints and solutions](/courses/practical-algorithms/
 
 ## [LeetCode 74: Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) · Medium
 
-신규 연습
-
 행렬에서 target의 존재 여부를 반환합니다.
 
 1 <= R,C <= 100; 값·target -10^4..10^4; 행은 정렬되고 다음 행 첫 값은 앞 행 끝보다 큼.
 
 ## [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
-
-보강·신규 연습
 
 회전된 정렬 배열에서 target의 위치를 반환하고 없으면 -1입니다.
 
@@ -64,15 +52,11 @@ When a hint is needed, open [Hints and solutions](/courses/practical-algorithms/
 
 ## [LeetCode 206: Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) · Easy
 
-신규 연습
-
 단일 연결 리스트를 뒤집고 새 head를 반환합니다.
 
 노드 0..5000개; 값 -5000..5000.
 
 ## [LeetCode 21: Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) · Easy
-
-신규 연습
 
 정렬된 두 연결 리스트의 노드를 이어 하나의 정렬 리스트로 반환합니다.
 

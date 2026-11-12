@@ -183,6 +183,30 @@ Squares and cross-products represent curvature and interactions in the response 
 
 <!-- lecture-page -->
 
+## Fitting least-squares coefficients to three points
+
+Use dimensionless data x=[−1,0,1], y=[1,2,2] and model b+ax. No line passes through all three points, so choose coefficients that minimize the sum of squared errors.
+
+For errors eᵢ=b+axᵢ−yᵢ, differentiation gives 2∑eᵢ=0 for b and 2∑xᵢeᵢ=0 for a. Substituting ∑xᵢ=0, ∑xᵢ²=2, ∑yᵢ=5 and ∑xᵢyᵢ=1 gives 3b=5 and 2a=1.
+
+| x | Target y | Prediction 5/3+x/2 | Error |
+| --- | --- | --- | --- |
+| −1 | 1 | 7/6 | 1/6 |
+| 0 | 2 | 5/3 | −1/3 |
+| 1 | 2 | 13/6 | 1/6 |
+
+```python
+import numpy as np
+x = np.array([-1., 0., 1.])
+phi = np.column_stack((np.ones(3), x))
+coef = np.linalg.lstsq(phi, [1., 2., 2.], rcond=None)[0]
+prediction = phi @ coef  # [7/6, 5/3, 13/6]
+```
+
+coef=[b,a] and the squared-error sum is 1/6. The CSTR fit extends the feature matrix to ten columns and applies the same calculation to each output column. `lstsq` solves the least-squares problem without explicitly forming an inverse.
+
+<!-- lecture-page -->
+
 ## From one input row to ten features
 
 Scaling [330, 5, 1.2] with the declared bounds gives [a,b,c]=[0,−1/9,1/7]. Inputs with different units and magnitudes move to the same −1 to 1 interval.
@@ -201,6 +225,8 @@ prediction = phi @ coef
 ```
 
 Shapes are (1,10), (10,2), and (1,2) for phi, coef, and prediction. Matrix multiplication weights and sums feature columns separately for each output. Preserve the training feature order at new inputs.
+
+The residence-time column is 2×(5−1)/(10−1)−1=−1/9; the feed column is 2×(1.2−0.8)/(1.5−0.8)−1=1/7. Squared features square these transformed values, not the physical values 5 and 1.2.
 
 <!-- lecture-page -->
 
@@ -469,6 +495,30 @@ Seed 42로 명시한 영역 안에서 train 400개, validation 120개, test 160�
 
 <!-- lecture-page -->
 
+## 세 데이터에서 최소제곱 계수 구하기
+
+계수 학습을 작은 무차원 데이터 x=[−1,0,1], y=[1,2,2]로 계산합니다. 모델은 b+ax이며, 세 점을 모두 지나는 직선이 없으므로 오차 제곱합을 가장 작게 만듭니다.
+
+오차 eᵢ=b+axᵢ−yᵢ에 대해 b로 미분하면 2∑eᵢ=0, a로 미분하면 2∑xᵢeᵢ=0입니다. ∑xᵢ=0, ∑xᵢ²=2, ∑yᵢ=5, ∑xᵢyᵢ=1을 넣으면 3b=5, 2a=1입니다.
+
+| x | 기준 y | 예측 5/3+x/2 | 오차 |
+| --- | --- | --- | --- |
+| −1 | 1 | 7/6 | 1/6 |
+| 0 | 2 | 5/3 | −1/3 |
+| 1 | 2 | 13/6 | 1/6 |
+
+```python
+import numpy as np
+x = np.array([-1., 0., 1.])
+phi = np.column_stack((np.ones(3), x))
+coef = np.linalg.lstsq(phi, [1., 2., 2.], rcond=None)[0]
+prediction = phi @ coef  # [7/6, 5/3, 13/6]
+```
+
+coef=[b,a]이고 오차 제곱합은 1/6입니다. CSTR에서는 특성 열을 10개로 늘리고 출력 두 열에 같은 계산을 적용합니다. `lstsq`는 역행렬을 직접 만들지 않고 최소제곱 문제를 풉니다.
+
+<!-- lecture-page -->
+
 ## 입력 한 행에서 열 개의 특성으로
 
 [330, 5, 1.2]를 정해진 범위로 변환하면 [a,b,c]=[0,−1/9,1/7]입니다. 단위와 크기가 다른 입력을 같은 −1~1 범위로 옮깁니다.
@@ -487,6 +537,8 @@ prediction = phi @ coef
 ```
 
 phi는 (1,10), coef는 (10,2), prediction은 (1,2)입니다. 행렬곱은 특성 열마다 계수를 곱해 두 출력별로 합산합니다. 새 입력에서도 학습 때 사용한 특성 순서를 유지합니다.
+
+체류시간 열은 2×(5−1)/(10−1)−1=−1/9, 유입 농도 열은 2×(1.2−0.8)/(1.5−0.8)−1=1/7입니다. 제곱 열은 이 변환값을 제곱하며 원래 단위의 5나 1.2를 제곱하지 않습니다.
 
 <!-- lecture-page -->
 

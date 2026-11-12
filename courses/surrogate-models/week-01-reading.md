@@ -92,6 +92,32 @@ The feature row contains 1 constant + 3 inputs + 3 squares + 3 pairwise products
 
 `np.linalg.lstsq` fits B. Keep B fixed when predicting new input rows.
 
+[NumPy least squares](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html) fits a coefficient vector for each output column of Y. The notation ‖ΦB−Y‖²_F means summing squared errors over all rows and columns, rather than requiring an exact fit to all 400 rows.
+
+<!-- lecture-page -->
+
+## Fitting least-squares coefficients to three points
+
+Use dimensionless data x=[−1,0,1], y=[1,2,2] and model b+ax. No line passes through all three points, so choose coefficients that minimize the sum of squared errors.
+
+For errors eᵢ=b+axᵢ−yᵢ, differentiation gives 2∑eᵢ=0 for b and 2∑xᵢeᵢ=0 for a. Substituting ∑xᵢ=0, ∑xᵢ²=2, ∑yᵢ=5 and ∑xᵢyᵢ=1 gives 3b=5 and 2a=1.
+
+| x | Target y | Prediction 5/3+x/2 | Error |
+| --- | --- | --- | --- |
+| −1 | 1 | 7/6 | 1/6 |
+| 0 | 2 | 5/3 | −1/3 |
+| 1 | 2 | 13/6 | 1/6 |
+
+```python
+import numpy as np
+x = np.array([-1., 0., 1.])
+phi = np.column_stack((np.ones(3), x))
+coef = np.linalg.lstsq(phi, [1., 2., 2.], rcond=None)[0]
+prediction = phi @ coef  # [7/6, 5/3, 13/6]
+```
+
+coef=[b,a] and the squared-error sum is 1/6. The CSTR fit extends the feature matrix to ten columns and applies the same calculation to each output column. `lstsq` solves the least-squares problem without explicitly forming an inverse.
+
 <!-- lecture-page -->
 
 ## From one input row to ten features
@@ -112,6 +138,8 @@ prediction = phi @ coef
 ```
 
 Shapes are (1,10), (10,2), and (1,2) for phi, coef, and prediction. Matrix multiplication weights and sums feature columns separately for each output. Preserve the training feature order at new inputs.
+
+The residence-time column is 2×(5−1)/(10−1)−1=−1/9; the feed column is 2×(1.2−0.8)/(1.5−0.8)−1=1/7. Squared features square these transformed values, not the physical values 5 and 1.2.
 
 <!-- lecture-page -->
 
@@ -237,6 +265,32 @@ Surrogate는 명시한 영역에서 입력에 대응하는 출력을 예측하�
 
 `np.linalg.lstsq`로 B를 학습한 뒤 새 입력을 예측할 때는 고정합니다.
 
+[NumPy 최소제곱 함수](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html)는 Y가 여러 열이면 각 출력 열의 계수를 구합니다. 표기 ‖ΦB−Y‖²_F는 행·열의 모든 오차 제곱을 더한다는 뜻입니다. 400개 행을 정확히 맞춘다는 조건은 아닙니다.
+
+<!-- lecture-page -->
+
+## 세 데이터에서 최소제곱 계수 구하기
+
+계수 학습을 작은 무차원 데이터 x=[−1,0,1], y=[1,2,2]로 계산합니다. 모델은 b+ax이며, 세 점을 모두 지나는 직선이 없으므로 오차 제곱합을 가장 작게 만듭니다.
+
+오차 eᵢ=b+axᵢ−yᵢ에 대해 b로 미분하면 2∑eᵢ=0, a로 미분하면 2∑xᵢeᵢ=0입니다. ∑xᵢ=0, ∑xᵢ²=2, ∑yᵢ=5, ∑xᵢyᵢ=1을 넣으면 3b=5, 2a=1입니다.
+
+| x | 기준 y | 예측 5/3+x/2 | 오차 |
+| --- | --- | --- | --- |
+| −1 | 1 | 7/6 | 1/6 |
+| 0 | 2 | 5/3 | −1/3 |
+| 1 | 2 | 13/6 | 1/6 |
+
+```python
+import numpy as np
+x = np.array([-1., 0., 1.])
+phi = np.column_stack((np.ones(3), x))
+coef = np.linalg.lstsq(phi, [1., 2., 2.], rcond=None)[0]
+prediction = phi @ coef  # [7/6, 5/3, 13/6]
+```
+
+coef=[b,a]이고 오차 제곱합은 1/6입니다. CSTR에서는 특성 열을 10개로 늘리고 출력 두 열에 같은 계산을 적용합니다. `lstsq`는 역행렬을 직접 만들지 않고 최소제곱 문제를 풉니다.
+
 <!-- lecture-page -->
 
 ## 입력 한 행에서 열 개의 특성으로
@@ -257,6 +311,8 @@ prediction = phi @ coef
 ```
 
 phi는 (1,10), coef는 (10,2), prediction은 (1,2)입니다. 행렬곱은 특성 열마다 계수를 곱해 두 출력별로 합산합니다. 새 입력에서도 학습 때 사용한 특성 순서를 유지합니다.
+
+체류시간 열은 2×(5−1)/(10−1)−1=−1/9, 유입 농도 열은 2×(1.2−0.8)/(1.5−0.8)−1=1/7입니다. 제곱 열은 이 변환값을 제곱하며 원래 단위의 5나 1.2를 제곱하지 않습니다.
 
 <!-- lecture-page -->
 

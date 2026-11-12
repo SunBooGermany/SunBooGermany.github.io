@@ -101,6 +101,22 @@ No flattened list is built. Only a fixed number of indices and values are retain
 
 <!-- lecture-page -->
 
+## Termination when the target is absent
+
+Search for target=8 in `[[1,3,5],[7,9,11]]`. The interval `[left,right]` includes both remaining endpoints.
+
+| Interval before comparison | mid and value | Reason for removal | Next interval |
+| --- | --- | --- | --- |
+| [0,5] | 2, value 5 | All positions at or below 2 have values below 8 | [3,5] |
+| [3,5] | 4, value 9 | All positions at or above 4 have values above 8 | [3,3] |
+| [3,3] | 3, value 7 | The last candidate also fails | [4,3] |
+
+left>right means no candidate remains, so return False. left==right still requires one comparison. Updating left=mid can repeat mid=3 forever on `[3,4]`.
+
+Halving N candidates takes about log₂N reductions to reach one. Including its comparison, the worst count is floor(log₂N)+1 for N≥1.
+
+<!-- lecture-page -->
+
 ## 33 · Idea and execution trace
 
 [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
@@ -191,6 +207,8 @@ def reverse_list(head):
 `following = current.next` preserves the successor. `current.next = previous` reverses one link. The final simultaneous assignment advances previous to the processed node and current to the saved successor.
 
 When current is None, no node remains to process and previous is the new head. An empty input skips the loop and returns None.
+
+While processing node 2, previous points to 1, current to 2, and following to 3. After reversing next, the simultaneous assignment first evaluates its right side `(current,following)` as `(2,3)`. previous therefore becomes 2 and current becomes 3. Advancing through `current.next` would follow the reversed edge back to 1, which is why the saved following is used.
 
 <!-- lecture-page -->
 
@@ -358,6 +376,22 @@ def search_matrix(matrix, target):
 
 <!-- lecture-page -->
 
+## 없는 값을 찾을 때의 종료
+
+같은 행렬 `[[1,3,5],[7,9,11]]`에서 target=8을 찾습니다. `[left,right]`는 양 끝을 포함한 아직 남은 위치입니다.
+
+| 비교 전 범위 | mid와 값 | 제거 근거 | 다음 범위 |
+| --- | --- | --- | --- |
+| [0,5] | 2, 값 5 | 2 이하 값은 모두 8보다 작음 | [3,5] |
+| [3,5] | 4, 값 9 | 4 이상 값은 모두 8보다 큼 | [3,3] |
+| [3,3] | 3, 값 7 | 마지막 후보도 불일치 | [4,3] |
+
+left>right이면 후보가 0개라 False입니다. left==right는 후보가 한 개 남은 상태이므로 검사해야 합니다. 첫 행의 갱신을 left=mid로 쓰면 `[3,4]`에서 mid=3을 반복할 수 있습니다.
+
+범위 크기를 반씩 줄여 1개가 되려면 약 log₂N번이 필요하고, 마지막 한 개의 검사까지 더해 최악 비교 횟수는 floor(log₂N)+1입니다(N≥1).
+
+<!-- lecture-page -->
+
 ## 33 · 풀이의 출발점과 실행 추적
 
 [LeetCode 33: Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) · Medium
@@ -448,6 +482,8 @@ def reverse_list(head):
 `following = current.next`: 원래 다음 노드를 보존합니다. `current.next = previous`: 현재 연결 하나를 뒤집습니다. 마지막 동시 대입은 previous를 방금 처리한 노드로, current를 보존한 다음 노드로 옮깁니다.
 
 current가 None이면 미처리 노드가 없습니다. 새 머리는 previous입니다. 빈 입력에서는 반복을 한 번도 실행하지 않고 None을 반환합니다.
+
+2를 처리하는 순간 previous는 1, current는 2, following은 3을 가리킵니다. next 변경 뒤 동시 대입의 오른쪽 `(current,following)`은 먼저 `(2,3)`으로 평가됩니다. 그러므로 previous는 2, current는 3이 됩니다. `current=current.next`로 전진하면 이미 뒤집힌 연결을 따라 1로 되돌아가므로 저장한 following을 사용합니다.
 
 <!-- lecture-page -->
 

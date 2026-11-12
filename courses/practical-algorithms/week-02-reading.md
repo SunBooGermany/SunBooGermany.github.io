@@ -28,13 +28,13 @@ Distinguish pointer movements, set operations, and list resizing when counting w
 
 ## 3 · Staged hints
 
+Return the longest substring length without repeats; spaces count, empty input gives 0.
+
 [LeetCode 3: Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) · Medium
 
-H1. Are all characters in the current interval distinct?
-
-H2. How many left moves are needed to remove a duplicate?
-
-H3. Remove leftmost characters until the incoming character is absent, then add it.
+- H1. Are all characters in the current interval distinct?
+- H2. How many left moves are needed to remove a duplicate?
+- H3. Remove leftmost characters until the incoming character is absent, then add it.
 
 `text="abba c"`
 
@@ -85,13 +85,13 @@ Remove the character at the old left boundary and advance left until the duplica
 
 ## 209 · Staged hints
 
+Return the minimum length of a contiguous subarray of positive numbers with sum at least positive target. Return zero if none exists.
+
 [LeetCode 209: Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) · Medium
 
-H1. Must every interval be summed again?
-
-H2. How does removing the left value change the sum?
-
-H3. Extend right, then record and shrink while the sum qualifies.
+- H1. Must every interval be summed again?
+- H2. How does removing the left value change the sum?
+- H3. Extend right, then record and shrink while the sum qualifies.
 
 `target=6, nums=[1,2,4,2]`
 
@@ -142,13 +142,13 @@ Add the incoming value first. While the target is met, record the current length
 
 ## 155 · Staged hints
 
+push adds a value and pop removes the top. top returns the top value; getMin returns the minimum of all retained values. Queries and removals are called only on nonempty stacks.
+
 [LeetCode 155: Min Stack](https://leetcode.com/problems/min-stack/) · Medium
 
-H1. How can the previous minimum be restored after a pop?
-
-H2. What happens when the minimum occurs twice?
-
-H3. Store (value, minimum through this depth) per entry. Create entries separately for each instance.
+- H1. How can the previous minimum be restored after a pop?
+- H2. What happens when the minimum occurs twice?
+- H3. Store (value, minimum through this depth) per entry. Create entries separately for each instance.
 
 `push(2), push(2), push(5), pop(), pop()`
 
@@ -201,17 +201,19 @@ class MinStack:
 
 Each tuple stores `(current value, minimum through this depth)`. Removing the last tuple reveals the previous depth’s minimum. getMin reads one slot in the last tuple instead of scanning all values with min.
 
+In `entries[-1][1]`, −1 selects the last tuple and 1 selects its second field. For `[(4,4),(7,4)]`, top is 7 and getMin is 4. On an empty list the conditional expression evaluates only its else branch, val, so it never reads a nonexistent last entry.
+
 <!-- lecture-page -->
 
 ## 150 · Staged hints
 
+Evaluate valid postfix string tokens. Integer division truncates toward zero; inputs never divide by zero.
+
 [LeetCode 150: Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) · Medium
 
-H1. Is the first popped value the left or right operand?
-
-H2. Which way should -5/2 be truncated?
-
-H3. Push numbers; pop right then left for an operator and push its result. Divide absolute integers and restore the sign.
+- H1. Is the first popped value the left or right operand?
+- H2. Which way should -5/2 be truncated?
+- H3. Push numbers; pop right then left for an operator and push its result. Divide absolute integers and restore the sign.
 
 `tokens=["9","4","-","-2","/"]`
 
@@ -236,6 +238,8 @@ Each of t tokens performs at most two pops, one append, and one arithmetic opera
 5//-2 is -3, but truncation toward zero gives -2. Reversing operands changes subtraction.
 
 `tokens=["9","4","-","-2","/"] → -2`
+
+`(left < 0) != (right < 0)` tests whether the signs differ. For 5 and −2, False != True gives a negative result, −2. For −5 and −2, True != True is False, giving +2. Operator token `"-"` and numeric token `"-2"` are different strings, so the latter is converted with int.
 
 <!-- lecture-page -->
 
@@ -317,15 +321,13 @@ Erik Demaine and Srini Devadas, [Introduction to Algorithms, MIT 6.006](https://
 
 ## 3 · 단계별 힌트
 
+중복 없는 최장 연속 부분문자열의 길이를 반환합니다. 공백도 세며 빈 입력은 0입니다.
+
 [LeetCode 3: Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) · Medium
 
-신규 연습
-
-H1. 현재 구간의 모든 문자가 서로 다른가요?
-
-H2. 중복 한 개를 없애려면 왼쪽을 몇 번 옮겨야 하나요?
-
-H3. 중복 문자가 구간에서 사라질 때까지 왼쪽 문자를 제거하고 새 문자를 추가합니다.
+- H1. 현재 구간의 모든 문자가 서로 다른가요?
+- H2. 중복 한 개를 없애려면 왼쪽을 몇 번 옮겨야 하나요?
+- H3. 중복 문자가 구간에서 사라질 때까지 왼쪽 문자를 제거하고 새 문자를 추가합니다.
 
 `text="abba c"`
 
@@ -376,15 +378,13 @@ def longest_unique(text):
 
 ## 209 · 단계별 힌트
 
+양수 배열에서 합이 양수 target 이상인 연속 구간의 최소 길이를 반환합니다. 그런 구간이 없으면 0입니다.
+
 [LeetCode 209: Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) · Medium
 
-신규 연습
-
-H1. 합을 유지하면 매 구간을 다시 더할 필요가 있나요?
-
-H2. 왼쪽 값을 제거하면 합은 어느 방향으로 변하나요?
-
-H3. 오른쪽 값을 합에 넣고 조건을 만족하는 동안 길이를 기록하며 왼쪽을 줄입니다.
+- H1. 합을 유지하면 매 구간을 다시 더할 필요가 있나요?
+- H2. 왼쪽 값을 제거하면 합은 어느 방향으로 변하나요?
+- H3. 오른쪽 값을 합에 넣고 조건을 만족하는 동안 길이를 기록하며 왼쪽을 줄입니다.
 
 `target=6, nums=[1,2,4,2]`
 
@@ -435,15 +435,13 @@ right의 값을 먼저 더합니다. 목표 합을 만족하는 동안 현재 �
 
 ## 155 · 단계별 힌트
 
+push는 값을 넣고 pop은 맨 위 값을 제거합니다. top은 맨 위 값, getMin은 남은 전체 값의 최소를 반환하며, 빈 스택에는 조회·제거를 호출하지 않습니다.
+
 [LeetCode 155: Min Stack](https://leetcode.com/problems/min-stack/) · Medium
 
-신규 연습
-
-H1. 값을 제거한 뒤 이전 최소를 어떻게 복원하나요?
-
-H2. 최소가 중복되면 한 개를 지워도 되나요?
-
-H3. 각 깊이에 (값, 그 깊이까지의 최소)를 저장합니다. self.entries는 인스턴스마다 따로 생성합니다.
+- H1. 값을 제거한 뒤 이전 최소를 어떻게 복원하나요?
+- H2. 최소가 중복되면 한 개를 지워도 되나요?
+- H3. 각 깊이에 (값, 그 깊이까지의 최소)를 저장합니다. self.entries는 인스턴스마다 따로 생성합니다.
 
 `push(2), push(2), push(5), pop(), pop()`
 
@@ -496,19 +494,19 @@ class MinStack:
 
 각 튜플은 `(현재 값, 이 깊이까지의 최솟값)`입니다. pop은 마지막 튜플만 없애 이전 깊이의 최솟값을 다시 드러냅니다. getMin은 전체를 훑는 min 연산 없이 마지막 튜플의 두 번째 칸만 읽습니다.
 
+`entries[-1][1]`에서 −1은 마지막 튜플, 1은 그 튜플의 두 번째 값입니다. 예를 들어 `[(4,4),(7,4)]`이면 top은 7, getMin은 4입니다. 빈 리스트에서는 조건식의 else 쪽 val만 평가하므로 없는 마지막 항목을 읽지 않습니다.
+
 <!-- lecture-page -->
 
 ## 150 · 단계별 힌트
 
+유효한 후위 표기 문자열 토큰을 계산합니다. 나눗셈은 0 방향으로 절삭하며, 0으로 나누는 입력은 없습니다.
+
 [LeetCode 150: Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) · Medium
 
-신규 연습
-
-H1. 먼저 꺼낸 값은 왼쪽인가요, 오른쪽인가요?
-
-H2. -5/2의 절삭 방향은 무엇인가요?
-
-H3. 숫자는 push, 연산자는 right와 left를 순서대로 pop한 뒤 결과를 push합니다. 나눗셈은 절댓값 정수 몫에 부호를 붙입니다.
+- H1. 먼저 꺼낸 값은 왼쪽인가요, 오른쪽인가요?
+- H2. -5/2의 절삭 방향은 무엇인가요?
+- H3. 숫자는 push, 연산자는 right와 left를 순서대로 pop한 뒤 결과를 push합니다. 나눗셈은 절댓값 정수 몫에 부호를 붙입니다.
 
 `tokens=["9","4","-","-2","/"]`
 
@@ -533,6 +531,8 @@ t개 토큰 각각에서 최대 두 번 pop, 한 번 append, 산술 연산 한 �
 5//-2는 -3이지만 0 방향 절삭은 -2입니다. left-right를 right-left로 바꾸면 뺄셈이 달라집니다.
 
 `tokens=["9","4","-","-2","/"] → -2`
+
+`(left < 0) != (right < 0)`는 두 부호가 다른지 검사합니다. 5와 −2에서는 False != True가 True여서 −2, −5와 −2에서는 True != True가 False여서 +2입니다. 연산자 토큰 `"-"`와 숫자 토큰 `"-2"`는 서로 다른 문자열이므로 후자는 int로 변환됩니다.
 
 <!-- lecture-page -->
 

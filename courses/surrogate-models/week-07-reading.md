@@ -47,6 +47,23 @@ Projection onto (u, t) is exactly the epigraph. This proof does not require ever
 
 <!-- lecture-page -->
 
+## Restoring two auxiliary layers to forward values
+
+Consider h₁=ReLU(u−0.4), h₂=ReLU(2h₁−0.1), and f=0.2−u+3h₂. Hidden weight 2 and output weight 3 are positive. Fix u=0.6.
+
+| State | h₁ | h₂ | Output expression |
+| --- | --- | --- | --- |
+| Actual forward | 0.2 | 0.3 | 0.5 |
+| Loose epigraph point | 0.4 | 0.7 | 1.7 |
+| Restore first layer only | 0.2 | 0.7 | 1.7 |
+| Restore second layer | 0.2 | 0.3 | 0.5 |
+
+Lowering h₁ lowers 2h₁−0.1, so the existing h₂ still satisfies its lower bound. Lowering h₂ then decreases the objective because its output coefficient is positive. This is the layer-by-layer restoration argument.
+
+With output coefficient −3, raising h₂ would improve the objective and the argument would fail. An external requirement h₂≥0.7 would also prevent restoration to 0.3. Both weight signs and external constraints matter.
+
+<!-- lecture-page -->
+
 ## Objective monotonicity and auxiliary recovery
 
 If the objective is nondecreasing in t and all other constraints permit reducing t and h to forward values, recovery preserves the optimal value.
@@ -136,6 +153,8 @@ b and a are free; only w is nonnegative. At fixed Φ, the Hessian 2ΦᵀΦ is po
 
 If knots or deep-layer weights are also learned, Φ depends on the parameters and this argument no longer applies directly.
 
+At u=0.25, the feature row is [1,0.25,0.15,0.05,0,0,0,0,0,0,0]. Only knots 0.1 and 0.2 have been crossed. Fit least squares with b and a unrestricted and lower bounds of zero on the remaining nine weights.
+
 <!-- lecture-page -->
 
 ## Reference minimizer and decision loss
@@ -171,6 +190,8 @@ Suppose a context path r(c) produces a gate s(c) ≥ 0. At fixed c, nonnegative 
 A gate multiplying u is a fixed number and can be absorbed into an affine input connection with unrestricted sign.
 
 The lab uses &#124;u − c&#124; − 0.1c² to check the fixed-context LP and a counterexample to joint convexity. It does not train the paper’s full PICNN architecture.
+
+For fixed c=0.2, represent <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>u</mi><mo>−</mo><mn>0.2</mn><mo stretchy="false">&#x7C;</mo></mrow></math> with t≥u−0.2 and t≥0.2−u, and minimize t−0.004. The minimum is −0.004 at u=0.2,t=0. If c becomes a variable, −0.1c² is no longer a constant, so this LP no longer applies unchanged.
 
 <!-- lecture-page -->
 
@@ -243,6 +264,23 @@ Affine 항 Au + b에는 등식이 성립합니다. 두 항을 더한 뒤 convex�
 따라서 모든 확장 feasible point에서 t ≥ f(u)입니다. 반대로 t ≥ f(u)인 임의의 (u, t)에 h = <math><msup><mi>h</mi><mrow><mo>*</mo></mrow></msup></math>를 붙이면 확장 제약을 만족합니다.
 
 즉, 보조변수를 제거한 (u, t) 집합은 정확히 epigraph입니다. 이 증명은 모든 최적 보조변수가 반드시 tight하다고 요구하지 않습니다.
+
+<!-- lecture-page -->
+
+## 두 층의 보조변수를 forward로 복원하기
+
+h₁=ReLU(u−0.4), h₂=ReLU(2h₁−0.1), f=0.2−u+3h₂인 ICNN을 봅니다. 은닉 연결 2와 출력 연결 3이 양수입니다. 입력 u=0.6을 고정합니다.
+
+| 상태 | h₁ | h₂ | 출력식의 값 |
+| --- | --- | --- | --- |
+| 실제 forward | 0.2 | 0.3 | 0.5 |
+| 느슨한 epigraph 가능점 | 0.4 | 0.7 | 1.7 |
+| 첫 층만 실제값으로 내림 | 0.2 | 0.7 | 1.7 |
+| 둘째 층도 실제값으로 내림 | 0.2 | 0.3 | 0.5 |
+
+h₁을 낮추면 2h₁−0.1도 낮아져 기존 h₂의 하한 제약을 깨뜨리지 않습니다. 이어 h₂를 낮추면 양의 출력 계수 때문에 목적값도 내려갑니다. 이 순서가 층별 복원 논증입니다.
+
+출력 계수가 −3이면 h₂를 높일수록 목적값이 낮아져 이 논리가 성립하지 않습니다. 외부에서 h₂≥0.7을 요구해도 실제값 0.3으로 복원할 수 없으므로, 부호와 외부 제약을 함께 확인합니다.
 
 <!-- lecture-page -->
 
@@ -335,6 +373,8 @@ b와 a는 자유롭고 w만 비음수입니다. Φ를 고정하면 목적함수�
 
 Knot 위치나 깊은 층의 가중치도 함께 학습하면 Φ가 매개변수에 의존해 이 논증을 그대로 적용할 수 없습니다.
 
+예를 들어 u=0.25의 특성 행은 [1,0.25,0.15,0.05,0,0,0,0,0,0,0]입니다. 절점 0.1과 0.2만 지났으므로 두 hinge만 양수입니다. b,a 두 계수는 음수도 허용하고 나머지 9개에는 하한 0을 주어 최소제곱을 풉니다.
+
 <!-- lecture-page -->
 
 ## 기준 최소점과 결정 손실
@@ -370,6 +410,8 @@ Context 경로 r(c)가 gate s(c) ≥ 0을 계산한다고 합시다. 고정된 c
 u에 곱하는 gate는 고정된 수이므로 부호가 자유로운 affine 입력 연결에 포함할 수 있습니다.
 
 실습에서는 &#124;u − c&#124; − 0.1c²로 고정 context에서의 LP와 공동 convexity 반례를 확인합니다. 원 논문의 전체 PICNN 구조를 학습하는 실험은 포함하지 않습니다.
+
+고정 c=0.2에서는 <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>u</mi><mo>−</mo><mn>0.2</mn><mo stretchy="false">&#x7C;</mo></mrow></math>를 보조변수 t의 두 하한 t≥u−0.2, t≥0.2−u로 표현하고 t−0.004를 최소화합니다. u=0.2,t=0에서 최솟값 −0.004입니다. c가 변수가 되면 목적식의 −0.1c²가 상수가 아니므로 이 LP를 그대로 사용할 수 없습니다.
 
 <!-- lecture-page -->
 

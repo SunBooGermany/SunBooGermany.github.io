@@ -75,6 +75,23 @@ Selecting or skipping the current position covers every possible solution. On `[
 
 <!-- lecture-page -->
 
+## A recurrence table and its two variables
+
+Let D[i] be the maximum sum from the first i values. For [3,1,4,2], the empty prefix has D[0]=0.
+
+| i and current value | Skip current | Take current | D[i] |
+| --- | --- | --- | --- |
+| 1, value 3 | 0 | 0+3 | 3 |
+| 2, value 1 | D[1]=3 | D[0]+1=1 | 3 |
+| 3, value 4 | D[2]=3 | D[1]+4=7 | 7 |
+| 4, value 2 | D[3]=7 | D[2]+2=5 | 7 |
+
+Before processing 4, previous_two=D[1] and previous_one=D[2]. After the update they become D[2] and D[3], preserving their roles for the next iteration. Taking the current value with D[i−1] could also take its neighbor, violating the constraint.
+
+The branch taking 4 adds it to the already computed prefix optimum 3. Reusing that optimum rather than solving the prefix again is the DP step.
+
+<!-- lecture-page -->
+
 ## 198 · Why it works; time and memory
 
 Every optimum either selects the current item or skips it. Each case leaves an optimal prefix, so the recurrence covers all optima.
@@ -126,6 +143,8 @@ def coin_change(coins, amount):
 Set dp[0]=0 and all other entries to inf, meaning unreachable so far. Positive c makes total-c smaller than total and therefore already computed. The `+1` counts the chosen last coin.
 
 Adding one to inf remains inf, so unreachable states cannot produce a false minimum. Return -1 if the target stays infinite; amount 3 with coins `[2]` is unreachable.
+
+With coins [2] and amount=3, dp starts as `[0,∞,∞,∞]`. total=1 has no usable coin; total=2 gets dp[0]+1=1; total=3 gets dp[1]+1=∞. The final `[0,∞,1,∞]` therefore returns −1.
 
 <!-- lecture-page -->
 
@@ -248,6 +267,8 @@ A subsequence preserves character order while allowing characters to be skipped.
 
 `first="abca", second="aca" → 3`
 
+When both final characters are c, an optimal subsequence can be chosen to match those final positions. A subsequence using neither final position can be extended by c; a match using an earlier c can move to the final c without changing order. This is why the matching case needs only the diagonal optimum plus one.
+
 <!-- lecture-page -->
 
 ## Checkpoint answers and reasoning
@@ -343,6 +364,23 @@ def rob(nums):
 
 <!-- lecture-page -->
 
+## 점화식의 표와 두 변수의 대응
+
+D[i]를 앞의 i개 값에서 얻는 최대 합으로 정의합니다. [3,1,4,2]에서 빈 접두부 D[0]=0입니다.
+
+| i와 현재 값 | 현재 값 제외 | 현재 값 포함 | D[i] |
+| --- | --- | --- | --- |
+| 1, 값 3 | 0 | 0+3 | 3 |
+| 2, 값 1 | D[1]=3 | D[0]+1=1 | 3 |
+| 3, 값 4 | D[2]=3 | D[1]+4=7 | 7 |
+| 4, 값 2 | D[3]=7 | D[2]+2=5 | 7 |
+
+값 4를 처리하기 직전 previous_two=D[1], previous_one=D[2]입니다. 계산 후에는 각각 D[2],D[3]이 되어 다음 반복의 의미를 유지합니다. 포함 경로에서 D[i−1]을 더하면 바로 앞 값을 함께 고를 수 있어 인접 금지 조건을 깨뜨립니다.
+
+4를 포함하는 경우 이미 고른 앞부분의 최적값 3에 4를 더합니다. 최적값 3을 매번 처음부터 다시 구하지 않는 것이 DP의 재사용입니다.
+
+<!-- lecture-page -->
+
 ## 198 · 정당성·시간·메모리의 근거
 
 최적 선택은 현재 위치를 선택하거나 선택하지 않는 두 경우로 나뉩니다. 두 경우 모두 남은 접두부를 최적으로 풀어야 하므로 점화식이 모든 최적해를 포함합니다.
@@ -394,6 +432,8 @@ def coin_change(coins, amount):
 dp[0]=0이고 나머지는 아직 불가능하다는 뜻의 inf입니다. 동전 c가 양수이므로 total-c는 total보다 작아 이미 계산된 상태입니다. `+1`은 마지막에 놓은 동전 한 개를 셉니다.
 
 inf에 1을 더해도 inf이므로 불가능한 상태가 거짓 최솟값을 만들지 않습니다. 끝까지 inf이면 -1을 반환합니다. `[2]`로 금액 3은 불가능합니다.
+
+동전 [2], amount=3에서는 dp가 `[0,∞,∞,∞]`에서 시작합니다. total=1은 사용할 동전이 없어 그대로, total=2는 dp[0]+1=1, total=3은 dp[1]+1=∞이므로 최종 `[0,∞,1,∞]`에서 −1을 반환합니다.
 
 <!-- lecture-page -->
 
@@ -515,6 +555,8 @@ dp[r][c]는 길이 r, c인 접두부의 답입니다. 마지막 문자의 인덱
 부분수열은 문자의 순서를 유지하면서 중간 문자를 건너뛸 수 있습니다. "abc"에서 b를 건너뛰면 "ac"가 되므로 공통 부분수열의 길이는 2입니다.
 
 `first="abca", second="aca" → 3`
+
+끝 문자가 모두 c라면 어떤 최적 부분수열도 마지막 c들을 짝지은 형태로 바꿀 수 있습니다. c를 사용하지 않는 더 짧은 양쪽 접두부의 해에는 c를 붙일 수 있고, 한쪽의 더 이른 c를 사용했다면 그 짝을 마지막 c로 옮겨도 순서가 유지됩니다. 그래서 일치할 때는 대각선 답+1만으로 충분합니다.
 
 <!-- lecture-page -->
 

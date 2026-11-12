@@ -8,15 +8,11 @@ course_id: "practical-algorithms"
 
 ## [LeetCode 3: Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) · Medium
 
-New exercise
-
 Return the maximum length of a contiguous substring without repeated characters.
 
 0 <= n <= 10^5; letters, digits, symbols, and spaces.
 
 ## [LeetCode 209: Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) · Medium
-
-New exercise
 
 Return the shortest contiguous interval reaching target, or zero if none exists.
 
@@ -24,15 +20,11 @@ Return the shortest contiguous interval reaching target, or zero if none exists.
 
 ## [LeetCode 155: Min Stack](https://leetcode.com/problems/min-stack/) · Medium
 
-New exercise
-
 Implement push, pop, top, and current minimum with constant-time stack operations; explain the amortized cost of Python list updates.
 
 Signed 32-bit values; at most 30000 calls; pop/top/getMin on nonempty stacks.
 
 ## [LeetCode 150: Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) · Medium
-
-New exercise
 
 Evaluate an integer expression in postfix notation, truncating division toward zero.
 
@@ -50,15 +42,11 @@ When a hint is needed, open [Hints and solutions](/courses/practical-algorithms/
 
 ## [LeetCode 3: Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) · Medium
 
-신규 연습
-
 중복 문자가 없는 연속 부분문자열의 최대 길이를 반환합니다.
 
 0 <= n <= 10^5; 영문자·숫자·기호·공백.
 
 ## [LeetCode 209: Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) · Medium
-
-신규 연습
 
 합이 target 이상인 연속 구간의 최소 길이를 반환하고, 없으면 0을 반환합니다.
 
@@ -66,15 +54,11 @@ When a hint is needed, open [Hints and solutions](/courses/practical-algorithms/
 
 ## [LeetCode 155: Min Stack](https://leetcode.com/problems/min-stack/) · Medium
 
-신규 연습
-
 삽입·제거·맨 위 값·현재 최솟값을 상수 시간 스택 연산으로 지원합니다. Python 리스트 갱신의 상각 비용도 설명합니다.
 
 값은 signed 32-bit; 최대 30000회 호출; pop/top/getMin은 비어 있지 않을 때만 호출.
 
 ## [LeetCode 150: Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) · Medium
-
-신규 연습
 
 후위 표기 정수 식을 계산하며 나눗셈은 0 방향으로 절삭합니다.
 
