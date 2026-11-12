@@ -1,8 +1,14 @@
 """Verify the published Week 1 package against independent small-input baselines."""
 import itertools
 import random
-from solutions import two_sum, nearby_duplicate, two_sum_sorted, three_sum
+import sys
+import solutions
+import student_week_01
 from week01_walkthrough import verify_examples
+
+impl = student_week_01 if '--student' in sys.argv else solutions
+two_sum, nearby_duplicate = impl.two_sum, impl.nearby_duplicate
+two_sum_sorted, three_sum = impl.two_sum_sorted, impl.three_sum
 
 
 def run():
@@ -18,7 +24,7 @@ def run():
         target=rng.randrange(-8,9)
         pairs=[(i,j) for i in range(len(values)) for j in range(i+1,len(values)) if values[i]+values[j]==target]
         if len(pairs)==1:
-            assert tuple(two_sum(values,target))==pairs[0]
+            assert tuple(sorted(two_sum(values,target)))==pairs[0]
             ordered=sorted(values)
             left,right=two_sum_sorted(ordered,target)
             assert left<right and ordered[left-1]+ordered[right-1]==target

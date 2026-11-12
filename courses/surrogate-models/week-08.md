@@ -17,6 +17,7 @@ lab_bundle: "/assets/courses/surrogate-models/week-08/week08-lab.zip"
 reading_note: "/courses/surrogate-models/week-08-reading/"
 reading_pdf_en: "/assets/courses/surrogate-models/week-08-reading-en.pdf"
 reading_pdf_ko: "/assets/courses/surrogate-models/week-08-reading-ko.pdf"
+practice_note: "/courses/surrogate-models/week-08-practice/"
 ---
 
 ## Product specifications and revalidation of an optimum
