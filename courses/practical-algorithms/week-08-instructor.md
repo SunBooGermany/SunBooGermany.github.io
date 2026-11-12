@@ -13,7 +13,7 @@ Ask learners to predict the lecture traces before running demos. In session 15, 
 
 A successful example does not prove a greedy rule. Every position in the current reachable range must be considered before fixing the next level’s boundary.
 
-Record performance on a familiar problem separately from performance under changed conditions. In the mixed assessment, select a method using the contract, state, and correctness argument.
+
 
 ## Checkpoint answers
 
@@ -26,7 +26,7 @@ Record performance on a familiar problem separately from performance under chang
 
 Check contract, state meaning, correctness, time, auxiliary/output space, and boundary inputs separately. Accept alternative correct methods with their own cost analysis. Local tests do not replace a correctness argument.
 
-## Additional transfer task: instructor key
+## Job-selection problem: instructor key
 
 Sort jobs by end time. Let dp[i] be the best reward using the first i jobs. An optimum either skips job i or takes it after the compatible prefix. Earlier jobs ending no later than the current start form a prefix, so these cases cover every valid selection. Empty selection gives dp[0]=0. The linear predecessor scan gives O(n²) time and O(n) space, including the sorted copy; input rows are unchanged.
 
@@ -56,7 +56,7 @@ For `[[0,2,3],[2,4,3],[0,4,10]]`, the best reward is 10, rather than 6 from the 
 
 예제 성공은 그리디 규칙의 증명이 아닙니다. 현재 도달 범위의 모든 위치를 확인해야 다음 레벨의 최대 범위를 확정할 수 있습니다.
 
-익숙한 문제를 다시 푼 결과와 바뀐 조건의 문제를 푼 결과는 따로 기록합니다. 혼합 평가에서는 주제 이름보다 입력 계약·상태·정당성에 근거해 풀이를 선택합니다.
+
 
 ## 중간 점검 답
 
@@ -69,7 +69,7 @@ For `[[0,2,3],[2,4,3],[0,4,10]]`, the best reward is 10, rather than 6 from the 
 
 입력 계약·상태 의미·정당성·시간·보조 공간·출력 공간·경계 입력을 나누어 확인합니다. 다른 올바른 풀이도 해당 비용 분석과 함께 인정합니다. 로컬 검사는 정당성 설명을 대신하지 않습니다.
 
-## 추가 전이 문제: 교사용 답
+## 작업 선택 문제: 교사용 답
 
 끝 시간으로 정렬하고 dp[i]를 앞 i개 작업에서 얻을 수 있는 최대 보상으로 정의합니다. 최적해는 현재 작업을 건너뛰거나, 호환되는 접두부의 최적해 뒤에 현재 작업을 선택합니다. 현재 시작 시간 이하에 끝나는 이전 작업은 접두부를 이루므로 두 경우가 모든 선택을 포함합니다. 빈 선택의 초기값은 dp[0]=0입니다. 호환 작업을 선형 탐색하므로 O(n²) 시간이며, 정렬 복사를 포함해 O(n) 공간입니다. 입력 행은 바꾸지 않습니다.
 

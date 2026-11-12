@@ -22,9 +22,7 @@ What information is needed to maximize inspection value when adjacent items cann
 
 Store and reuse previously computed optima or counts. The meaning of the state determines whether to add, minimize, or maximize.
 
-<!-- lecture-page -->
-
-## Week 7 learning outcomes
+### Learning outcomes
 
 Sessions 13 and 14: State meaning, base cases, recurrences, and evaluation order
 
@@ -32,46 +30,45 @@ Sessions 13 and 14: State meaning, base cases, recurrences, and evaluation order
 - Trace state and implement in Python.
 - Explain correctness, time, auxiliary space, and output space.
 
-Opening scenarios, traces, and checks are additional teaching examples.
+<!-- lecture-page -->
+
+## DP state meaning and evaluation order
+
+Dynamic programming stores and reuses answers to repeated subproblems. Define what one table entry means before choosing base cases and transitions.
+
+![Dependency directions in path-count and common-subsequence tables](/assets/courses/practical-algorithms/curriculum/dp-dependencies.svg)
+
+| Problem | Meaning of a state | Combination |
+| --- | --- | --- |
+| Maximum nonadjacent sum | Best value for a prefix | max(select,skip) |
+| Coins | Minimum count for an amount | min over final coins |
+| Grid paths | Number of paths reaching a cell | top+left |
+| Common subsequence | Best length for two prefixes | diagonal+1 on match; otherwise max |
+
+Time counts states times work per state. Space counts states retained simultaneously. The nonadjacent-sum problem needs only two prior states, but a table implementation is not automatically constant-space.
 
 <!-- lecture-page -->
 
-## Session 13 · Optimal subproblems and one-dimensional DP
-
-Replace repeated prefix or amount computations with states. Define the optimization objective before assigning meanings to table entries.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-`float("inf")` represents unreachable minimization states. Tuple assignment evaluates the right side using old values; preserve both predecessor states.
-
-<!-- lecture-page -->
-
-## Before allocating a DP table
-
-- State: which answer for which part of the input?
-- Base cases: empty input, amount zero, first row/column
-- Recurrence: split cases by the final choice
-- Evaluation order: compute dependencies first
-
-Filling coin amounts downward reads smaller states before computing them. Positive coins permit increasing-amount evaluation.
-
-<!-- lecture-page -->
-
-## 198 · Problem and state
+## 198 · Idea and execution trace
 
 [LeetCode 198: House Robber](https://leetcode.com/problems/house-robber/) · Medium
 
 Maximize selected value without selecting adjacent positions.
 
-`nums=[3,1,4,2] → 7`
+Selecting the current value excludes its immediate predecessor. The best prefix value is therefore the larger of skipping the current value or adding it to the best prefix ending two positions earlier. Only those two prior results are needed for the next decision.
 
-D[i] is the best prefix of length i. D[0]=0, D[1]=nums[0]; for i>=2, D[i]=max(D[i-1],D[i-2]+nums[i-1]). The code starts both rolling states at zero and applies the update from the first value.
+`nums=[3,1,4,2]`. Evaluate the entire right-hand side using old values before assignment.
+
+| value | Old previous_two | Old previous_one | New previous_one |
+| --- | --- | --- | --- |
+| 3 | 0 | 0 | max(0,0+3)=3 |
+| 1 | 0 | 3 | max(3,0+1)=3 |
+| 4 | 3 | 3 | max(3,3+4)=7 |
+| 2 | 3 | 7 | max(7,3+2)=7 |
 
 <!-- lecture-page -->
 
-## 198 · Implementation
+## 198 · Turning the idea into code
 
 ```python
 def rob(nums):
@@ -81,29 +78,44 @@ def rob(nums):
     return previous_one
 ```
 
+The initial zeros represent selecting nothing. Simultaneous assignment evaluates both right-hand expressions using the old state, so an early overwrite cannot destroy a needed predecessor.
+
+Selecting or skipping the current position covers every possible solution. On `[2,1,1,2]`, the optimum 4 uses both ends and is missed by comparing only even-position and odd-position sums.
+
 <!-- lecture-page -->
 
-## 198 · Correctness and cost
+## 198 · Why it works; time and memory
 
 Every optimum either selects the current item or skips it. Each case leaves an optimal prefix, so the recurrence covers all optima.
 
-n is length. O(n) time, O(1) auxiliary space. Reconstructing selected indices needs additional state.
+For each of n values, perform one addition, one max comparison, and a fixed number of assignments. With constant-cost arithmetic for the input range, time is O(n). Prior prefix optima are already computed rather than searched again.
+
+Only two optima and the current value are retained, independent of n, giving O(1) auxiliary space. A full prefix table would use O(n); this implementation retains only the two dependencies. Reconstructing selected positions requires additional information.
 
 <!-- lecture-page -->
 
-## 322 · Problem and state
+## 322 · Idea and execution trace
 
 [LeetCode 322: Coin Change](https://leetcode.com/problems/coin-change/) · Medium
 
 Return the minimum coin count for amount, or -1 if impossible.
 
-`coins=[1,3,4], amount=6 → 2`
+If the last coin for amount a is c, the preceding coins must form an optimum for a-c. Compare every possible final coin. Choosing the largest coin first fails for amount 6 with `[1,3,4]`: 4+1+1 uses more coins than 3+3.
 
-Set dp[0]=0 and other states to infinity; fill increasing amounts using min(dp[a-c]+1).
+`coins=[1,3,4], amount=6`. Values are finalized after checking every coin for that total.
+
+| total | Candidates dp[total-coin]+1 | Final dp[total] |
+| --- | --- | --- |
+| 0 | No coins needed | 0 |
+| 1,2 | 0+1 / 1+1 | 1,2 |
+| 3 | 2+1, 0+1 | 1 |
+| 4 | 1+1, 1+1, 0+1 | 1 |
+| 5 | 1+1, 2+1, 1+1 | 2 |
+| 6 | 2+1, 1+1, 2+1 | 2 |
 
 <!-- lecture-page -->
 
-## 322 · Implementation
+## 322 · Turning the idea into code
 
 ```python
 def coin_change(coins, amount):
@@ -116,61 +128,43 @@ def coin_change(coins, amount):
     return -1 if dp[amount] == float("inf") else dp[amount]
 ```
 
+Set dp[0]=0 and all other entries to inf, meaning unreachable so far. Positive c makes total-c smaller than total and therefore already computed. The `+1` counts the chosen last coin.
+
+Adding one to inf remains inf, so unreachable states cannot produce a false minimum. Return -1 if the target stays infinite; amount 3 with coins `[2]` is unreachable.
+
 <!-- lecture-page -->
 
-## 322 · Correctness and cost
+## 322 · Why it works; time and memory
 
 Removing the last coin c from an optimum leaves an optimum for a-c. Comparing all final coins finds the minimum; positive values ensure dependencies were filled earlier.
 
-A is amount,m coin types. O(Am) time,O(A) space; pseudopolynomial in the bit length of A.
+Each of A amount states checks m coins, giving at most A·m transitions. Each uses constant-time indexing, addition, and comparison, so time is O(Am). The outer bound is the numeric target A, not the number of coins.
+
+The table has A+1 entries and other variables are constant-size, giving O(A) auxiliary space. Since A takes only O(log A) input bits, this is pseudopolynomial time in that bit length. The input coin list is not counted again as workspace.
 
 <!-- lecture-page -->
 
-## State trace
-
-| a | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| dp[a],coins=1,3,4 | 0 | 1 | 2 | 1 | 1 | 2 | 2 |
-
-Each amount uses already-computed smaller amounts.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-Summing only even or only odd positions misses optimum 4 for [2,1,1,2].
-
-Why add one to dp[a-c]?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Session 14 · Grid and prefix-string DP
-
-Count grid paths and compare event sequences. A table shape does not determine whether transitions should sum or maximize.
-
-<!-- lecture-page -->
-
-## Prerequisites and Python semantics
-
-Allocate independent rows with a comprehension. A prefix of length i ends at first[i-1]; reserve row/column zero for empty prefixes.
-
-<!-- lecture-page -->
-
-## 62 · Problem and state
+## 62 · Idea and execution trace
 
 [LeetCode 62: Unique Paths](https://leetcode.com/problems/unique-paths/) · Medium
 
 Count grid paths using only right and down moves.
 
-`rows=2, cols=4 → 4`
+With only right and down moves, the last move into a cell comes either from above or from the left. These cases have different last moves and are disjoint, so add their path counts rather than taking a maximum.
 
-Initialize first row/column to 1, add top and left counts, and allocate each row independently.
+rows=3, cols=3. The first row and column have one possible route.
+
+| Cell processed | Calculation | Current dp rows |
+| --- | --- | --- |
+| Initialize | Boundary values 1 | [1,1,1] / [1,1,1] / [1,1,1] |
+| (1,1) | 1+1=2 | [1,1,1] / [1,2,1] / [1,1,1] |
+| (1,2) | 1+2=3 | [1,1,1] / [1,2,3] / [1,1,1] |
+| (2,1) | 2+1=3 | [1,1,1] / [1,2,3] / [1,3,1] |
+| (2,2) | 3+3=6 | [1,1,1] / [1,2,3] / [1,3,6] |
 
 <!-- lecture-page -->
 
-## 62 · Implementation
+## 62 · Turning the idea into code
 
 ```python
 def unique_paths(rows, cols):
@@ -181,29 +175,44 @@ def unique_paths(rows, cols):
     return dp[-1][-1]
 ```
 
+Row-major order computes both `dp[r-1][c]` and `dp[r][c-1]` before they are used. Initial ones in interior cells are placeholders that are overwritten before serving as dependencies.
+
+Create each row independently with a comprehension. `[[1]*cols]*rows` aliases one row, so one cell update can appear in multiple rows.
+
 <!-- lecture-page -->
 
-## 62 · Correctness and cost
+## 62 · Why it works; time and memory
 
 Every path arrives from top or left. These disjoint classes cover all paths, so counts add; row order respects dependencies.
 
-R,C are dimensions. O(RC) time/space under the bounded-answer model; arbitrary-size integer bit costs are separate.
+Initialization touches R·C cells; transitions fill (R-1)(C-1) cells. Two lookups and one addition per cell give O(RC) time. Paths are counted rather than enumerated, so runtime is not proportional to the number of paths.
+
+Keeping the whole dp table uses O(RC) auxiliary space. This implementation is not the one-row O(C) optimization. Arithmetic is treated as constant within the official bounded-answer contract; unrestricted large grids would add large-integer bit costs.
 
 <!-- lecture-page -->
 
-## 1143 · Problem and state
+## 1143 · Idea and execution trace
 
 [LeetCode 1143: Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/) · Medium
 
 Return the length of a longest common subsequence preserving order.
 
-`first="abca", second="aca" → 3`
+Store answers for pairs of prefixes. If their final characters match, pair them and add one to the shorter-prefix answer. Otherwise they cannot be paired with each other, so take the better result from omitting either final character.
 
-Equal final characters give diagonal+1; otherwise take max(top,left); empty prefixes give zero.
+`first="abc", second="ac"`. Rows and columns are prefixes of the two strings.
+
+| Completed row | Empty prefix | a | ac |
+| --- | --- | --- | --- |
+| Empty prefix | 0 | 0 | 0 |
+| a | 0 | 1 (=0+1) | 1 (=max(0,1)) |
+| ab | 0 | 1 (=max(1,0)) | 1 (=max(1,1)) |
+| abc | 0 | 1 (=max(1,0)) | 2 (=1+1) |
+
+The answer 2 is the length of `ac`. Skipping b distinguishes a subsequence from a contiguous substring.
 
 <!-- lecture-page -->
 
-## 1143 · Implementation
+## 1143 · Turning the idea into code
 
 ```python
 def lcs(first, second):
@@ -218,48 +227,19 @@ def lcs(first, second):
     return dp[rows][cols]
 ```
 
+dp[r][c] refers to prefixes of lengths r and c; their final-character indices are r-1 and c-1. Row and column zero represent an empty string, whose common-subsequence length is zero.
+
+On a match use diagonal+1; otherwise use max(top,left). The two alternatives can include the same subsequence, so do not add them. This code returns length only.
+
 <!-- lecture-page -->
 
-## 1143 · Correctness and cost
+## 1143 · Why it works; time and memory
 
 Equal final characters can be paired in an optimum. Unequal ends cannot both be the final match, so at least one is skipped; maximize over both cases.
 
-n,m are string lengths. O(nm) time/space; this returns length, not a reconstructed sequence.
+For lengths n and m, there are (n+1)(m+1) prefix pairs. Each interior cell uses one character comparison and an addition or max, giving O(nm) time. It becomes O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>) only when the two lengths have the same scale.
 
-<!-- lecture-page -->
-
-## State trace
-
-| LCS("ab","ac") | empty prefix | a | c |
-| --- | --- | --- | --- |
-| empty prefix | 0 | 0 | 0 |
-| a | 0 | 1 | 1 |
-| ab | 0 | 1 | 1 |
-
-Rows and columns denote prefix lengths, including zero.
-
-<!-- lecture-page -->
-
-## Failure inputs and concept checks
-
-`[[1]*C]*R` aliases rows; use a comprehension creating each row.
-
-Why add rather than maximize when counting paths?
-
-The instructor answer is in the separate guide. Compare the reasoning line by line with the companion implementation.
-
-<!-- lecture-page -->
-
-## Preserving two previous optima
-
-| Current value | Old prev_two | Old prev_one | New optimum |
-| --- | --- | --- | --- |
-| 3 | 0 | 0 | 3 |
-| 1 | 0 | 3 | 3 |
-| 4 | 3 | 3 | 7 |
-| 2 | 3 | 7 | 7 |
-
-Every right-hand expression uses the old state. Selecting the current value skips the immediately preceding position.
+The full table uses O(nm) auxiliary space, while the returned length occupies O(1). Reconstructing an actual common subsequence would require traceback and output-character storage.
 
 <!-- lecture-page -->
 
@@ -270,36 +250,19 @@ Every right-hand expression uses the old state. Selecting the current value skip
 3. Count paths in 1×4 and 2×4 grids.
 4. Find the LCS length of `abc` and `ac`. Must the characters be contiguous?
 
-<!-- lecture-page -->
+### Exercises and sources
 
-## Independent practice and connections
-
-[Student exercises](/courses/practical-algorithms/week-07-practice/)
-
-[Hints and solutions](/courses/practical-algorithms/week-07-reading/)
-
-[Instructor guide](/courses/practical-algorithms/week-07-instructor/)
-
-[Download Week 7 code](/assets/courses/practical-algorithms/week-07-code.zip)
-
-Submit code, state definition, correctness argument, complexity, and boundary inputs. Week 8 includes a mixed assessment without pattern labels.
-
-<!-- lecture-page -->
-
-## Execution and sources
-
-Run in the `code` folder of the [weekly code archive](/assets/courses/practical-algorithms/week-07-code.zip).
+[LeetCode · 198, 322, 62, 1143](/courses/practical-algorithms/week-07-practice/) · [Worked solutions](/courses/practical-algorithms/week-07-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-07-code.zip)
 
 ```text
 python demo_13.py
 python demo_14.py
 python verify.py
-python verify.py --student
 ```
 
-Use the last command after implementing the student file.
+After implementing the student file, check it with `python verify.py --student`.
 
-Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
 
 <!-- ko -->
 
@@ -309,9 +272,7 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 
 앞에서 계산한 최적값이나 개수를 저장하고 재사용합니다. 상태의 의미에 따라 합·최소·최대 중 연산을 결정합니다.
 
-<!-- lecture-page -->
-
-## 7주차 학습 목표
+### 학습 목표
 
 13·14차시: 상태 의미·초기값·점화식·계산 순서
 
@@ -319,46 +280,45 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 - 상태 추적과 Python 구현
 - 정당성·시간·보조 공간·출력 공간 설명
 
-도입 상황, 표와 점검 문제는 강의용 추가 예시입니다.
+<!-- lecture-page -->
+
+## DP 상태의 뜻과 계산 순서
+
+동적 계획법은 같은 부분 문제의 답을 저장해 재사용합니다. 먼저 “표 한 칸이 무엇의 답인가”를 정해야 초기값과 전이를 결정할 수 있습니다.
+
+![경로 수와 공통 부분수열 표의 의존 방향](/assets/courses/practical-algorithms/curriculum/dp-dependencies.svg)
+
+| 문제 | 상태의 뜻 | 결합 연산 |
+| --- | --- | --- |
+| 인접하지 않은 최대 합 | 접두부에서 얻을 수 있는 최대 합 | 선택·건너뛰기의 max |
+| 동전 | 금액을 만드는 최소 개수 | 마지막 동전별 min |
+| 격자 경로 | 이 칸까지의 경로 수 | 위+왼쪽 |
+| 공통 부분수열 | 두 접두부의 최대 공통 길이 | 일치 시 대각선+1, 아니면 max |
+
+시간은 상태 수 × 상태 하나의 계산량으로 셉니다. 공간은 동시에 보관하는 상태 수입니다. 이전 두 상태만 필요한 최대 합은 표를 없앨 수 있지만, 모든 표 구현이 자동으로 O(1) 공간인 것은 아닙니다.
 
 <!-- lecture-page -->
 
-## 13차시 · 최적 부분 문제와 1차원 DP
-
-같은 접두부·금액을 반복 계산하는 탐색을 상태 표로 바꿉니다. 무엇을 최대화하거나 최소화하는지 먼저 적어 값의 의미를 고정합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-`float("inf")`는 불가능한 최소화 상태를 나타냅니다. tuple 동시 대입은 오른쪽을 이전 값으로 계산합니다. 덮어쓰기 전에 필요한 이전 두 상태를 보존합니다.
-
-<!-- lecture-page -->
-
-## DP 표를 만들기 전의 정의
-
-- 상태: 어떤 입력 범위의 어떤 답인가?
-- 초기값: 빈 입력·금액 0·첫 행과 열
-- 점화식: 마지막 선택으로 경우 분할
-- 계산 순서: 필요한 이전 상태부터
-
-동전 금액을 큰 값부터 계산하면 아직 구하지 않은 작은 금액을 읽게 됩니다. 양수 동전은 작은 금액부터의 계산을 가능하게 합니다.
-
-<!-- lecture-page -->
-
-## 198 · 문제와 상태
+## 198 · 풀이의 출발점과 실행 추적
 
 [LeetCode 198: House Robber](https://leetcode.com/problems/house-robber/) · Medium
 
 인접한 위치를 함께 고르지 않고 값의 합을 최대화합니다.
 
-`nums=[3,1,4,2] → 7`
+현재 값을 고르면 바로 앞 값은 고를 수 없습니다. 따라서 현재 값까지의 최댓값은 “직전까지의 최댓값을 유지”하거나 “두 칸 전까지의 최댓값에 현재 값을 더함” 중 큰 값입니다. 다음 결정에는 이 두 과거 결과만 필요합니다.
 
-D[i]는 앞 i개 최댓값입니다. D[0]=0, D[1]=nums[0]이며 i>=2에서 D[i]=max(D[i-1],D[i-2]+nums[i-1])입니다. 코드에서는 이전 두 상태를 0으로 시작해 첫 값부터 같은 갱신을 적용합니다.
+`nums=[3,1,4,2]`. old 값으로 오른쪽 식을 모두 계산한 뒤 갱신합니다.
+
+| value | old previous_two | old previous_one | 새 previous_one |
+| --- | --- | --- | --- |
+| 3 | 0 | 0 | max(0,0+3)=3 |
+| 1 | 0 | 3 | max(3,0+1)=3 |
+| 4 | 3 | 3 | max(3,3+4)=7 |
+| 2 | 3 | 7 | max(7,3+2)=7 |
 
 <!-- lecture-page -->
 
-## 198 · 구현
+## 198 · 아이디어를 코드로 옮기기
 
 ```python
 def rob(nums):
@@ -368,29 +328,44 @@ def rob(nums):
     return previous_one
 ```
 
+처음의 두 0은 아무 원소도 고르지 않은 합입니다. 동시 대입 오른쪽은 모두 이전 값을 사용하므로, previous_two를 먼저 덮어써 필요한 값을 잃지 않습니다.
+
+현재 위치를 선택하거나 건너뛰는 두 경우가 모든 가능한 선택을 포함합니다. `[2,1,1,2]`의 답 4는 양 끝을 골라 얻으며 짝수 위치 합·홀수 위치 합만 비교하면 놓칩니다.
+
 <!-- lecture-page -->
 
-## 198 · 정당성과 비용
+## 198 · 정당성·시간·메모리의 근거
 
 최적 선택은 현재 위치를 선택하거나 선택하지 않는 두 경우로 나뉩니다. 두 경우 모두 남은 접두부를 최적으로 풀어야 하므로 점화식이 모든 최적해를 포함합니다.
 
-n=길이. O(n) 시간, O(1) 보조 공간. 선택 위치 복원은 별도 상태가 필요합니다.
+n개 값마다 덧셈 한 번, max 비교 한 번, 고정 개수 대입을 수행합니다. 숫자 연산을 O(1)로 보는 입력 범위에서 전체 시간은 O(n)입니다. 과거 최댓값은 이미 계산되어 있으므로 같은 접두부를 다시 탐색하지 않습니다.
+
+입력이 커져도 두 최댓값과 현재 값만 보관하므로 보조 공간은 O(1)입니다. 모든 접두부 최댓값을 dp 리스트에 저장하면 O(n) 공간이지만 이 코드는 다음 단계에 필요한 두 값만 남깁니다. 실제 선택 위치 복원에는 추가 기록이 필요합니다.
 
 <!-- lecture-page -->
 
-## 322 · 문제와 상태
+## 322 · 풀이의 출발점과 실행 추적
 
 [LeetCode 322: Coin Change](https://leetcode.com/problems/coin-change/) · Medium
 
 amount를 만드는 최소 동전 수를 반환하고 불가능하면 -1입니다.
 
-`coins=[1,3,4], amount=6 → 2`
+금액 a를 만드는 마지막 동전이 c라고 정하면, 그 앞에는 a-c를 만드는 최선의 방법이 있어야 합니다. 각 동전을 마지막에 놓는 경우를 모두 비교합니다. 큰 동전부터 고르는 규칙은 `[1,3,4]`로 6을 만들 때 4+1+1을 골라 3+3을 놓칩니다.
 
-dp[0]=0, 나머지는 inf입니다. 작은 금액부터 dp[a-c]+1 중 최소를 취합니다.
+`coins=[1,3,4], amount=6`. 표의 값은 해당 total의 모든 coin을 검사한 뒤입니다.
+
+| total | 후보 dp[total-coin]+1 | 확정 dp[total] |
+| --- | --- | --- |
+| 0 | 동전 없이 가능 | 0 |
+| 1,2 | 0+1 / 1+1 | 1,2 |
+| 3 | 2+1, 0+1 | 1 |
+| 4 | 1+1, 1+1, 0+1 | 1 |
+| 5 | 1+1, 2+1, 1+1 | 2 |
+| 6 | 2+1, 1+1, 2+1 | 2 |
 
 <!-- lecture-page -->
 
-## 322 · 구현
+## 322 · 아이디어를 코드로 옮기기
 
 ```python
 def coin_change(coins, amount):
@@ -403,61 +378,43 @@ def coin_change(coins, amount):
     return -1 if dp[amount] == float("inf") else dp[amount]
 ```
 
+dp[0]=0이고 나머지는 아직 불가능하다는 뜻의 inf입니다. 동전 c가 양수이므로 total-c는 total보다 작아 이미 계산된 상태입니다. `+1`은 마지막에 놓은 동전 한 개를 셉니다.
+
+inf에 1을 더해도 inf이므로 불가능한 상태가 거짓 최솟값을 만들지 않습니다. 끝까지 inf이면 -1을 반환합니다. `[2]`로 금액 3은 불가능합니다.
+
 <!-- lecture-page -->
 
-## 322 · 정당성과 비용
+## 322 · 정당성·시간·메모리의 근거
 
 최적해의 마지막 동전 c를 제거하면 a-c의 최적해가 남아야 합니다. 모든 가능한 마지막 동전을 비교하므로 최소를 놓치지 않습니다. 양수 동전이라 필요한 상태가 먼저 계산됩니다.
 
-A=amount,m=종류 수. O(Am) 시간·O(A) 보조 공간. A의 비트 길이에 대해서는 의사다항 시간입니다.
+금액 상태 A개마다 동전 m개를 검사하므로 최대 A·m번의 전이가 있습니다. 각 전이는 리스트 접근·덧셈·비교이므로 O(1), 전체 시간은 O(Am)입니다. 바깥 범위가 동전 수가 아니라 목표 금액의 값 A라는 점에 주의합니다.
+
+dp는 0부터 A까지 A+1칸이고 나머지 변수는 고정 개수라서 보조 공간 O(A)입니다. A를 입력에 쓰는 비트 수는 log A이므로 O(Am)은 그 비트 길이에 대해서는 의사다항 시간입니다. 입력 동전 목록은 보조 공간에 다시 세지 않습니다.
 
 <!-- lecture-page -->
 
-## 상태 추적
-
-| a | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| dp[a],coins=1,3,4 | 0 | 1 | 2 | 1 | 1 | 2 | 2 |
-
-각 금액은 먼저 계산한 작은 금액의 상태를 사용합니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-[2,1,1,2]에서 짝수 위치만 또는 홀수 위치만 합하면 최적 4를 놓칩니다.
-
-dp[a-c]에 왜 1을 더하나요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 14차시 · 격자와 접두 문자열 DP
-
-격자 경로의 개수와 두 이벤트 문자열의 공통 순서를 구합니다. 같은 표 형태라도 합산과 최댓값의 의미를 구분해 점화식을 설계합니다.
-
-<!-- lecture-page -->
-
-## 선수 지식과 Python 문법
-
-[[0]*(m+1) for _ in range(n+1)]는 독립 행입니다. 길이 i인 접두부의 마지막 문자는 first[i-1]입니다. 빈 접두부를 위한 0행·0열을 둡니다.
-
-<!-- lecture-page -->
-
-## 62 · 문제와 상태
+## 62 · 풀이의 출발점과 실행 추적
 
 [LeetCode 62: Unique Paths](https://leetcode.com/problems/unique-paths/) · Medium
 
 격자에서 오른쪽·아래로만 이동하는 경로 수를 반환합니다.
 
-`rows=2, cols=4 → 4`
+오른쪽·아래로만 이동할 때 현재 칸에 도착하는 마지막 이동은 위에서 내려오거나 왼쪽에서 오는 경우뿐입니다. 두 경우는 마지막 이동이 달라 서로 겹치지 않으므로 경로 수를 더합니다. 최댓값을 고르는 문제가 아닙니다.
 
-첫 행·열은 1이고 내부는 위쪽 수+왼쪽 수입니다. 행마다 새 list를 만듭니다.
+rows=3, cols=3. 첫 행·열은 한 방향으로만 올 수 있어 1입니다.
+
+| 처리한 칸 | 계산 | 현재 dp의 행들 |
+| --- | --- | --- |
+| 초기화 | 경계값 1 | [1,1,1] / [1,1,1] / [1,1,1] |
+| (1,1) | 1+1=2 | [1,1,1] / [1,2,1] / [1,1,1] |
+| (1,2) | 1+2=3 | [1,1,1] / [1,2,3] / [1,1,1] |
+| (2,1) | 2+1=3 | [1,1,1] / [1,2,3] / [1,3,1] |
+| (2,2) | 3+3=6 | [1,1,1] / [1,2,3] / [1,3,6] |
 
 <!-- lecture-page -->
 
-## 62 · 구현
+## 62 · 아이디어를 코드로 옮기기
 
 ```python
 def unique_paths(rows, cols):
@@ -468,29 +425,44 @@ def unique_paths(rows, cols):
     return dp[-1][-1]
 ```
 
+행 우선 순서로 채우면 `dp[r-1][c]`와 `dp[r][c-1]`이 모두 계산된 뒤입니다. 아직 갱신하지 않은 내부 칸의 초기 1은 임시 값이며, 그 칸을 사용할 때는 전이가 이미 끝나 있습니다.
+
+행마다 새 리스트를 만드는 comprehension을 사용합니다. `[[1]*cols]*rows`는 같은 행을 공유하므로 한 칸 수정이 여러 행에 나타납니다.
+
 <!-- lecture-page -->
 
-## 62 · 정당성과 비용
+## 62 · 정당성·시간·메모리의 근거
 
 각 경로의 마지막 이동은 아래 또는 오른쪽 하나입니다. 두 집합은 겹치지 않고 전체 경로를 덮으므로 수를 더합니다. 행 순서로 필요한 선행 상태가 준비됩니다.
 
-R,C=행·열 수. O(RC) 시간·O(RC) 보조 공간. 큰 정수의 비트 비용은 별도이며 공식 답 범위에서는 작습니다.
+초기화에 R·C칸, 전이에 (R-1)(C-1)칸을 처리합니다. 각 칸에서 두 값 조회와 덧셈 한 번을 수행하므로 시간 O(RC)입니다. 경로를 직접 하나씩 나열하지 않아 답의 개수만큼 반복하지 않습니다.
+
+전체 dp 표를 보관하므로 보조 공간 O(RC)입니다. 이 구현의 공간을 한 행만 저장하는 최적화의 O(C)와 혼동하면 안 됩니다. 공식 입력의 답 범위에서는 정수 연산을 상수 비용으로 보며, 제한 없는 큰 격자에서는 큰 정수의 비트 비용도 증가합니다.
 
 <!-- lecture-page -->
 
-## 1143 · 문제와 상태
+## 1143 · 풀이의 출발점과 실행 추적
 
 [LeetCode 1143: Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/) · Medium
 
 두 문자열에서 순서를 보존하는 공통 부분수열의 최대 길이를 반환합니다.
 
-`first="abca", second="aca" → 3`
+두 문자열의 앞부분끼리 비교하는 답을 표에 저장합니다. 마지막 문자가 같으면 두 문자를 함께 사용하여 더 짧은 두 접두부의 답에 1을 더합니다. 다르면 둘을 서로 짝지을 수 없으므로 한쪽 끝을 제외하는 두 경우 중 큰 값을 택합니다.
 
-같으면 대각선+1, 다르면 위·왼쪽 중 최대입니다. 길이 0 접두부의 행·열은 0입니다.
+`first="abc", second="ac"`. 행은 첫 문자열 접두부, 열은 두 번째 접두부입니다.
+
+| 행 계산 완료 | 빈 접두부 | a | ac |
+| --- | --- | --- | --- |
+| 빈 접두부 | 0 | 0 | 0 |
+| a | 0 | 1 (=0+1) | 1 (=max(0,1)) |
+| ab | 0 | 1 (=max(1,0)) | 1 (=max(1,1)) |
+| abc | 0 | 1 (=max(1,0)) | 2 (=1+1) |
+
+답 2는 `ac`의 길이입니다. b를 건너뛰므로 연속 부분문자열과 다릅니다.
 
 <!-- lecture-page -->
 
-## 1143 · 구현
+## 1143 · 아이디어를 코드로 옮기기
 
 ```python
 def lcs(first, second):
@@ -505,48 +477,19 @@ def lcs(first, second):
     return dp[rows][cols]
 ```
 
+dp[r][c]는 길이 r, c인 접두부의 답입니다. 마지막 문자의 인덱스는 각각 r-1, c-1입니다. 0행·0열은 한쪽 문자열이 비어 있어 답 0입니다.
+
+같으면 왼쪽 위 대각선+1, 다르면 위·왼쪽의 max를 사용합니다. 두 선택은 같은 부분수열을 포함할 수 있으므로 더하지 않습니다. 이 코드는 길이만 반환합니다.
+
 <!-- lecture-page -->
 
-## 1143 · 정당성과 비용
+## 1143 · 정당성·시간·메모리의 근거
 
 끝 문자가 같으면 두 끝을 맞춘 최적 부분수열을 택할 수 있습니다. 다르면 둘을 동시에 마지막으로 맞출 수 없어 적어도 한쪽을 생략해야 합니다. 두 경우의 최댓값을 취합니다.
 
-n,m=문자열 길이. O(nm) 시간·O(nm) 보조 공간. 길이만 반환하며 문자열 복원은 별도입니다.
+길이가 n, m인 문자열에는 (n+1)(m+1)개 접두부 쌍이 있습니다. 각 내부 칸은 문자 비교와 최대 한 번의 덧셈 또는 max로 계산하므로 O(nm) 시간입니다. n과 m이 같은 크기일 때만 이를 O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>)로 쓸 수 있습니다.
 
-<!-- lecture-page -->
-
-## 상태 추적
-
-| LCS("ab","ac") | 빈 접두부 | a | c |
-| --- | --- | --- | --- |
-| 빈 접두부 | 0 | 0 | 0 |
-| a | 0 | 1 | 1 |
-| ab | 0 | 1 | 1 |
-
-행과 열은 0을 포함한 접두부 길이입니다.
-
-<!-- lecture-page -->
-
-## 실패 입력과 이해 확인
-
-`[[1]*C]*R`은 같은 행을 공유합니다. `[[1]*C for _ in range(R)]`로 만듭니다.
-
-경로 수에서는 왜 max가 아니라 +인가요?
-
-교사용 답은 별도 진행안에 있습니다. 코드 설명은 읽기자료의 구현과 줄별로 대조합니다.
-
-<!-- lecture-page -->
-
-## 이전 두 최적값의 보존
-
-| 현재 값 | 갱신 전 prev_two | 갱신 전 prev_one | 새 최적값 |
-| --- | --- | --- | --- |
-| 3 | 0 | 0 | 3 |
-| 1 | 0 | 3 | 3 |
-| 4 | 3 | 3 | 7 |
-| 2 | 3 | 7 | 7 |
-
-오른쪽 식은 모두 갱신 전 값을 사용합니다. 현재 값을 선택하면 바로 앞 위치는 건너뜁니다.
+표 전체가 (n+1)(m+1)칸이므로 보조 공간 O(nm)입니다. 문자열 길이를 반환하는 한 정수는 O(1) 출력입니다. 실제 공통 부분수열을 복원하려면 표를 역추적하고 별도 출력 문자를 저장해야 합니다.
 
 <!-- lecture-page -->
 
@@ -557,33 +500,16 @@ n,m=문자열 길이. O(nm) 시간·O(nm) 보조 공간. 길이만 반환하며 
 3. 1×4와 2×4 격자의 경로 수는?
 4. `abc`, `ac`의 LCS 길이는? 연속해야 하나요?
 
-<!-- lecture-page -->
+### 실습과 참고자료
 
-## 독립 실습과 다음 연결
-
-[학생 실습](/courses/practical-algorithms/week-07-practice/)
-
-[힌트·해설](/courses/practical-algorithms/week-07-reading/)
-
-[교사용 진행안](/courses/practical-algorithms/week-07-instructor/)
-
-[7주차 코드 내려받기](/assets/courses/practical-algorithms/week-07-code.zip)
-
-코드·상태 정의·정당성·복잡도·경계 입력을 함께 제출합니다. 8주차에는 주제를 숨긴 혼합 평가가 있습니다.
-
-<!-- lecture-page -->
-
-## 실행과 참고자료
-
-[주차별 코드](/assets/courses/practical-algorithms/week-07-code.zip)의 `code` 폴더에서 실행합니다.
+[LeetCode · 198, 322, 62, 1143](/courses/practical-algorithms/week-07-practice/) · [풀이](/courses/practical-algorithms/week-07-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-07-code.zip)
 
 ```text
 python demo_13.py
 python demo_14.py
 python verify.py
-python verify.py --student
 ```
 
-마지막 명령은 학생 파일을 구현한 뒤 실행합니다.
+학생 파일을 구현한 뒤 `python verify.py --student`로 검사합니다.
 
-Erik Demaine·Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).

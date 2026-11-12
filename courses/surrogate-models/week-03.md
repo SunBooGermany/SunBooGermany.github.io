@@ -6,7 +6,7 @@ description: "Learn a state transition and evaluate one-step and trajectory pred
 description_ko: "상태전이를 학습하고 주어진 미래 입력에서 one-step·전체 궤적 예측을 평가합니다."
 material_label: "Week 3"
 material_label_ko: "3주차"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: /courses/surrogate-models/week-03/
 pdf_en: /assets/courses/surrogate-models/week-03-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-03-ko.pdf
@@ -97,7 +97,7 @@ With constant interval inputs, the balances are affine in the state. Write dc/dt
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><mi>c</mi><mo>,</mo><mi>u</mi><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>=</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>+</mo><msup><mi>e</mi><mrow><mi>M</mi><mi>Δt</mi></mrow></msup><mrow><mo>(</mo><mi>c</mi><mo>−</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-The lab generates labels at the selected Δt from this analytic solution. Work through the derivations of M and the component formulas in the reading companion.
+The lab generates labels at the selected Δt from this analytic solution.
 
 At c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L: c₁ ≈ [1.153870, 0.045672, 0.000458] mol/L.
 
@@ -305,7 +305,7 @@ Submission: state/input definitions, split/scaling details, one-step and rollout
 3. Explain why the same MLP receives different state inputs in the two evaluations.
 4. Change an initial state while keeping the input plan fixed. Compare both reference and predicted trajectories.
 
-Work through the derivations, examples, code, and answer checks in the [reading companion](/courses/surrogate-models/week-03-reading/). It develops the error recurrence and treats multi-step training as an optional extension.
+[reading companion](/courses/surrogate-models/week-03-reading/)
 
 <!-- lecture-page -->
 
@@ -412,7 +412,7 @@ k₁(T) = 0.2 exp[6000(1/330 − 1/T)], k₂(T) = 0.1 exp[5000(1/330 − 1/T)]�
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><mi>c</mi><mo>,</mo><mi>u</mi><mo>;</mo><mi>q</mi><mo>)</mo></mrow><mo>=</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>+</mo><msup><mi>e</mi><mrow><mi>M</mi><mi>Δt</mi></mrow></msup><mrow><mo>(</mo><mi>c</mi><mo>−</mo><msup><mi>c</mi><mrow><mo>∗</mo></mrow></msup><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
 
-실습은 이 식의 해석해로 정한 Δt의 기준값을 생성. M과 성분별 식의 유도는 읽기자료에서 확인
+실습은 이 식의 해석해로 정한 Δt의 기준값을 생성합니다.
 
 c₀ = [1.2, 0, 0], T = 330 K, τ = 5 min, feed = 1.2 mol/L이면 c₁ ≈ [1.153870, 0.045672, 0.000458] mol/L입니다.
 
@@ -620,7 +620,7 @@ python week03_lab.py --train --output-dir week03-retrained
 3. 두 평가에서 같은 MLP에 서로 다른 상태를 입력하는 이유를 설명합니다.
 4. 입력 계획은 유지한 채 초기 상태를 바꿔 기준 궤적과 예측 궤적을 비교
 
-[읽기자료](/courses/surrogate-models/week-03-reading/)에서 유도·계산 예·코드와 답을 확인. 오차 전달식을 계산하고 multi-step 학습 목적함수는 선택 내용으로 다룹니다.
+[읽기자료](/courses/surrogate-models/week-03-reading/)
 
 <!-- lecture-page -->
 

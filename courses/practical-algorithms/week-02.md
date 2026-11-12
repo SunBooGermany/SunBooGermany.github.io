@@ -4,7 +4,7 @@ title: "Week 2: Sliding windows and stacks"
 title_ko: "2주차: 슬라이딩 윈도우와 스택"
 course_id: "practical-algorithms"
 permalink: "/courses/practical-algorithms/week-02/"
-updated: "2026-11-10"
+updated: "2026-11-12"
 material_label: "Week 2 lecture"
 material_label_ko: "2주차 강의"
 pdf_en: "/assets/courses/practical-algorithms/week-02-en.pdf"
@@ -24,9 +24,7 @@ Rebuilding the character collection for every interval repeatedly reads the same
 
 This week: incremental window state and stacks that retrieve the most recently stored information first.
 
-<!-- lecture-page -->
-
-## Week 2 problems and learning outcomes
+### Week 2 problems and learning outcomes
 
 Session 3: fixed-width and variable-width intervals. Session 4: per-depth minima and postfix evaluation order.
 
@@ -35,7 +33,7 @@ Session 3: fixed-width and variable-width intervals. Session 4: per-depth minima
 - Restored stack state and operand order
 - Positivity, repeated minima, and negative division checks
 
-Practice uses LeetCode 3, 209, 155, and 150. Examples and trace tables are original teaching examples.
+Practice uses LeetCode 3, 209, 155, and 150.
 
 <!-- lecture-page -->
 
@@ -68,6 +66,8 @@ def fixed_window_sums(nums, width):
 ```
 
 With constant-cost integer arithmetic, time is O(n). The initial slice uses O(w) temporary space; the output uses O(n-w+1) space. `total += value` accumulates; `total =+ value` assigns the value with unary plus.
+
+Subtract the one outgoing value and add the one incoming value. `right-width` is the outgoing position. Slicing and summing a width-sized interval every time would take O(n·width); this code sums only the initial interval.
 
 <!-- lecture-page -->
 
@@ -136,6 +136,8 @@ def longest_unique(text):
 
 `"abba"` returns 2, empty text returns 0, and one space returns 1. To return a substring rather than its length, also retain the starting position of the best interval.
 
+Remove the character at the old left boundary and advance left until the duplicate is gone. At the second b in `abba`, removing only a leaves b duplicated, so one if is insufficient. Measure length after inserting the incoming character.
+
 <!-- lecture-page -->
 
 ## Correctness and total pointer movements
@@ -144,7 +146,7 @@ A window containing the previous occurrence cannot include the incoming duplicat
 
 The right pointer advances n times and the left pointer at most n times. The nested `while` therefore executes at most n times in total.
 
-Under expected O(1) hash-set operations, total time is expected O(n), with O(min(n,a)) auxiliary space. Here a is the alphabet size; hash operations are not assumed constant in the worst case.
+right advances n times and left at most n times without moving back. Sum their movements, at most 2n, instead of multiplying apparent loop bounds. With expected O(1) set operations, time is expected O(n). At most min(n,a) characters are retained, giving O(min(n,a)) auxiliary space for alphabet size a.
 
 <!-- lecture-page -->
 
@@ -193,6 +195,8 @@ def min_subarray(target, nums):
 
 With `target=8` and `[1,2,4]`, the total is insufficient, so the result is 0.
 
+Add the incoming value first. While the target is met, record the current length and remove the left value to try a shorter interval. best=n+1 marks no solution yet, since a valid interval can be at most n long.
+
 <!-- lecture-page -->
 
 ## Shortest-interval correctness and cost
@@ -201,7 +205,7 @@ Adding a positive value increases the sum; removing one decreases it. If the sum
 
 When the sum qualifies, record the length before shrinking. Every discarded start already produced a recorded valid interval. Reusing that start at a later endpoint only makes a longer interval, so no better answer is lost.
 
-Each value is added at most once and removed at most once. Under constant-cost bounded-integer arithmetic, total time is O(n) and auxiliary space is O(1).
+Each value is added once and removed at most once. Total boundary movement is at most 2n, giving O(n) time. No window is copied; total, left, right, and best use O(1) auxiliary space. The n-entry input is counted separately from workspace.
 
 <!-- lecture-page -->
 
@@ -221,8 +225,6 @@ Removing the next value, -1, would raise the sum back to 3. Removing a negative 
 2. If `while` becomes `if` on `"abba"`, where does the state first become invalid?
 3. Why does the inner `while` execute only O(n) times overall?
 4. For `target=3`, `[1,-1,3]`, compare the positive-only algorithm's result with the actual answer.
-
-Write your answers first, then compare with the checks in the [worked companion](/courses/practical-algorithms/week-02-reading/).
 
 <!-- lecture-page -->
 
@@ -298,6 +300,8 @@ class MinStack:
         return self.entries[-1][1]
 ```
 
+Each tuple stores `(current value, minimum through this depth)`. Removing the last tuple reveals the previous depth’s minimum. getMin reads one slot in the last tuple instead of scanning all values with min.
+
 <!-- lecture-page -->
 
 ## Independent instance state and self
@@ -320,9 +324,7 @@ A shared `entries=[]` in the class body can mix values from separate stacks. An 
 
 The first entry's minimum is its own value. If the previous prefix minimum is correct, taking the smaller of it and the new value gives the correct new minimum. A pop removes only the final entry and reveals the unchanged previous prefix.
 
-`top` and `getMin` cost O(1). Python list `push` and `pop` cost amortized O(1), including resizing, and storage is O(d).
-
-The official problem requires O(1) abstract stack operations. For this dynamic-array implementation, distinguish amortized cost from a worst-case O(1) guarantee on every individual insertion.
+At depth d, getMin and top read one slot and cost O(1). Push and pop are amortized O(1), including list resizing. Two values per depth give 2d stored values, or O(d) space. Recomputing min over the whole stack would make each query O(d).
 
 <!-- lecture-page -->
 
@@ -389,15 +391,17 @@ def rpn(tokens):
     return stack[0]
 ```
 
+At an operator, the first popped value is the right operand and the second is the left. Push their result back. For division, divide magnitudes and restore the sign to truncate toward zero.
+
 <!-- lecture-page -->
 
 ## Subexpression invariant and evaluation cost
 
 A number creates one completed subexpression. An operator combines the last two completed values in operand order. Repeating this process leaves one value for the entire valid expression.
 
-Each token causes at most two pops and one push. For t tokens under the bounded-integer model, time is O(t) and auxiliary space is O(t).
-
 `["9","4","-"]` returns 5; reversing the subtraction gives -5. Inputs are string tokens: `["-2"]` represents one number and returns -2.
+
+Each of t tokens performs at most two pops, one append, and one arithmetic operation, giving O(t) time. The bounded 32-bit intermediates support constant-cost arithmetic. Many uncombined operands can accumulate, so peak auxiliary space is O(t), even though only one value remains at the end.
 
 <!-- lecture-page -->
 
@@ -430,7 +434,7 @@ Distinguish pointer movements, set operations, and list resizing when counting w
 
 Start with the [student exercises](/courses/practical-algorithms/week-02-practice/). Define inputs, outputs, and constraints before implementing `student_week_02.py`. Include the state meaning, correctness argument, time and space costs, and your own boundary inputs.
 
-The [Week 2 code bundle](/assets/courses/practical-algorithms/week-02-code.zip) contains student stubs, completed solutions, demos, and a verification script. Consult the [worked companion](/courses/practical-algorithms/week-02-reading/) one hint at a time when needed.
+[Week 2 code](/assets/courses/practical-algorithms/week-02-code.zip) · [Worked solutions](/courses/practical-algorithms/week-02-reading/)
 
 [All Week 2 materials](/assets/courses/practical-algorithms/week-02-materials.zip) · [Instructor guide](/courses/practical-algorithms/week-02-instructor/)
 
@@ -457,9 +461,7 @@ Use the official LeetCode pages for complete problem statements and constraints.
 
 이번 주의 주제: 구간 상태 갱신과 가장 최근에 저장한 정보부터 꺼내는 스택
 
-<!-- lecture-page -->
-
-## 2주차의 문제와 학습 목표
+### 2주차의 문제와 학습 목표
 
 3차시: 고정 길이와 가변 길이 구간. 4차시: 깊이별 최솟값과 후위 표기 식의 계산 순서.
 
@@ -468,7 +470,7 @@ Use the official LeetCode pages for complete problem statements and constraints.
 - 스택의 복원 정보와 피연산자 순서
 - 양수 조건, 중복 최솟값, 음수 나눗셈 검증
 
-실습 문제: LeetCode 3, 209, 155, 150. 예제와 상태 표는 강의용으로 구성했습니다.
+실습 문제: LeetCode 3, 209, 155, 150.
 
 <!-- lecture-page -->
 
@@ -501,6 +503,8 @@ def fixed_window_sums(nums, width):
 ```
 
 정수 연산을 상수 비용으로 보면 시간은 O(n). 공간 비용: 초기 슬라이스 O(w), 결과 O(n-w+1). `total += value`는 누적이고 `total =+ value`는 양의 부호를 붙인 값을 대입합니다.
+
+이전 구간 합에서 나가는 값 하나를 빼고 들어오는 값 하나를 더합니다. `right-width`가 나가는 위치입니다. 매번 길이 width인 구간을 새로 슬라이스하여 합산하면 O(n·width)가 되지만 이 코드는 초기 구간만 합산합니다.
 
 <!-- lecture-page -->
 
@@ -569,6 +573,8 @@ def longest_unique(text):
 
 `"abba"`는 2, 빈 문자열은 0, 공백 하나는 1입니다. 반환값은 길이이며, 문자열 자체가 필요하면 최장 구간의 시작점도 저장합니다.
 
+중복이 사라질 때까지 old left의 문자를 제거한 뒤 left를 옮깁니다. `abba`의 두 번째 b에서 a 하나만 지우면 여전히 b가 남으므로 if 한 번으로 끝낼 수 없습니다. 새 문자를 넣고 나서 길이를 계산합니다.
+
 <!-- lecture-page -->
 
 ## 최장 구간의 정당성과 전체 이동 수
@@ -577,7 +583,7 @@ def longest_unique(text):
 
 포인터 이동: 오른쪽 n번, 왼쪽 최대 n번. 중첩된 `while`의 전체 실행 횟수: 최대 n번
 
-해시 집합 연산의 평균 비용을 O(1)로 보면 전체 시간은 평균 O(n), 보조 공간은 O(min(n,a))입니다. a는 입력에서 가능한 문자 종류 수이며, 해시의 최악 비용을 상수라고 가정하지 않습니다.
+right는 n번, left도 뒤로 가지 않아 최대 n번 움직입니다. 겉보기 중첩 반복을 n×n으로 세지 않고 전체 이동을 합하면 최대 2n입니다. set 연산이 기대 O(1)이므로 기대 시간 O(n), 동시에 든 문자 수가 최대 min(n,a)이므로 보조 공간 O(min(n,a))입니다. a는 문자 종류 수입니다.
 
 <!-- lecture-page -->
 
@@ -626,6 +632,8 @@ def min_subarray(target, nums):
 
 `target=8`, `[1,2,4]`이면 합이 부족하므로 0을 반환합니다.
 
+right의 값을 먼저 더합니다. 목표 합을 만족하는 동안 현재 길이를 기록하고 왼쪽 값을 빼서 더 짧은 구간을 시험합니다. best=n+1은 아직 답을 못 찾았다는 표시이며, 가능한 구간 길이는 최대 n입니다.
+
 <!-- lecture-page -->
 
 ## 최단 구간의 정당성과 비용
@@ -634,7 +642,7 @@ def min_subarray(target, nums):
 
 합이 충분하면 길이를 기록한 뒤 줄입니다. 버린 시작점은 이미 유효한 길이를 기록했으며, 그 시작점을 이후에 다시 사용하면 더 긴 구간만 만듭니다. 따라서 더 짧은 답을 잃지 않습니다.
 
-각 값은 최대 한 번 더하고 한 번 뺍니다. 고정 폭 정수 연산 모델에서 전체 시간은 O(n), 보조 공간은 O(1)
+원소마다 합에 한 번 더하고 최대 한 번 뺍니다. 양 끝 이동의 합이 2n 이하이므로 전체 O(n) 시간입니다. 구간을 복사하지 않고 total, left, right, best만 저장하므로 보조 공간 O(1)입니다. 입력이 n칸인 것과 추가 작업 공간은 별도로 셉니다.
 
 <!-- lecture-page -->
 
@@ -654,8 +662,6 @@ def min_subarray(target, nums):
 2. `"abba"`에서 `while`을 `if`로 바꾸면 처음 어긋나는 상태는 무엇인가요?
 3. `for` 안의 `while`이 전체 O(n)번만 실행되는 근거는 무엇인가요?
 4. `target=3`, `[1,-1,3]`에서 양수 전용 풀이가 반환하는 값과 실제 답을 비교
-
-먼저 답을 적고 [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)의 확인 답과 대조합니다.
 
 <!-- lecture-page -->
 
@@ -731,6 +737,8 @@ class MinStack:
         return self.entries[-1][1]
 ```
 
+각 튜플은 `(현재 값, 이 깊이까지의 최솟값)`입니다. pop은 마지막 튜플만 없애 이전 깊이의 최솟값을 다시 드러냅니다. getMin은 전체를 훑는 min 연산 없이 마지막 튜플의 두 번째 칸만 읽습니다.
+
 <!-- lecture-page -->
 
 ## 인스턴스의 독립 상태와 self
@@ -753,9 +761,7 @@ print(first.getMin(), second.getMin())  # 2 7
 
 첫 항목의 최소는 그 값 자신입니다. 이전 항목까지의 최소가 맞다고 가정하면, 새 항목의 최소는 이전 최소와 새 값 중 작은 값이므로 역시 맞습니다. `pop`은 마지막 항목만 제거해 이전 깊이의 정보를 그대로 드러냅니다.
 
-`top`과 `getMin`은 O(1)입니다. Python 리스트의 `push`와 `pop`은 재할당 비용을 포함해 상각 O(1), 저장 공간은 O(d)입니다.
-
-공식 문제의 추상 스택 연산은 O(1)을 요구합니다. 이 Python 구현에서는 모든 개별 삽입의 최악 시간이 O(1)이라고 단정하지 않고, 동적 배열의 상각 비용을 구분합니다.
+깊이 d에서 getMin과 top은 마지막 튜플 한 칸만 읽어 O(1)입니다. push·pop은 list 재할당을 포함한 분할상환 O(1)입니다. 각 깊이마다 값 두 개를 저장하므로 2d개 값, 즉 O(d) 공간입니다. getMin마다 전체 min을 계산하면 한 질의가 O(d)로 바뀝니다.
 
 <!-- lecture-page -->
 
@@ -822,15 +828,17 @@ def rpn(tokens):
     return stack[0]
 ```
 
+연산자를 만나면 먼저 꺼낸 값이 오른쪽 피연산자입니다. 두 번째 값이 왼쪽이며 계산 결과 하나를 다시 넣습니다. 나눗셈은 절댓값끼리 나눈 몫에 부호를 붙여 0 방향 절삭을 구현합니다.
+
 <!-- lecture-page -->
 
 ## 부분식 불변식과 계산 비용
 
 숫자를 읽으면 계산이 끝난 부분식 하나가 생깁니다. 연산자를 읽으면 마지막 두 부분식의 값을 올바른 순서로 결합합니다. 이 과정을 반복하면 유효한 전체 식의 마지막에 값 하나가 남습니다.
 
-토큰마다 최대 두 번 꺼내고 한 번 넣으므로, 고정 폭 정수 모델에서 t개 토큰의 시간은 O(t), 보조 공간은 O(t)입니다.
-
 `["9","4","-"]`는 5이고, 순서를 뒤집어 빼면 -5입니다. `[-2]`가 아니라 문자열 토큰 `["-2"]`를 입력하면 숫자 하나로 읽어 -2를 반환합니다.
+
+t개 토큰 각각에서 최대 두 번 pop, 한 번 append, 산술 연산 한 번을 수행하여 O(t) 시간입니다. 문제의 중간 값은 32비트 범위라 산술을 O(1)로 셉니다. 아직 결합되지 않은 피연산자가 많이 쌓이면 스택 크기가 O(t)이므로 보조 공간도 O(t)입니다. 마지막 한 값만 남는다는 사실이 실행 중 공간을 줄이지는 않습니다.
 
 <!-- lecture-page -->
 
@@ -863,7 +871,7 @@ def rpn(tokens):
 
 [학생 실습](/courses/practical-algorithms/week-02-practice/)에서 입력·출력·제약을 적은 뒤 `student_week_02.py`에 풀이를 작성합니다. 각 문제에 상태의 의미, 정당성, 시간·공간 비용, 직접 만든 경계 입력을 첨부
 
-[2주차 코드 묶음](/assets/courses/practical-algorithms/week-02-code.zip)에는 실습 파일, 완성 풀이, 실행 예제와 검증 스크립트가 있습니다. 힌트가 필요하면 [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)를 단계별로 확인합니다.
+[2주차 코드](/assets/courses/practical-algorithms/week-02-code.zip) · [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)
 
 [2주차 자료 전체](/assets/courses/practical-algorithms/week-02-materials.zip) · [교사용 진행안](/courses/practical-algorithms/week-02-instructor/)
 

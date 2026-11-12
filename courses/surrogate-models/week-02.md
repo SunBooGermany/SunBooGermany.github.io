@@ -6,7 +6,7 @@ description: "Train and evaluate a steady-state three-output MLP; follow one gra
 description_ko: "정상상태 세 출력 MLP를 학습·평가하고, gradient 갱신 한 번과 농도 합의 일관성을 확인합니다."
 material_label: "Week 2"
 material_label_ko: "2주차"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: /courses/surrogate-models/week-02/
 pdf_en: /assets/courses/surrogate-models/week-02-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-02-ko.pdf
@@ -245,8 +245,6 @@ Balance-consistent training labels do not force the sum of the three linear outp
 
 For feed 1.2 mol/L, predictions [0.62, 0.41, 0.20] mol/L sum to 1.23 mol/L, giving r = 0.03 mol/L. A model predicting mole fractions can likewise return a sum different from one.
 
-
-
 <!-- lecture-page -->
 
 ## Week 4 preview: concentration-sum constraints in the model
@@ -296,7 +294,7 @@ Original explanations: PyTorch [model construction](https://docs.pytorch.org/tut
 
 ## Reading companion
 
-The [Week 2 companion]({{ page.reading_note | relative_url }}) and [English PDF]({{ page.reading_pdf_en | relative_url }}) work through the three-output map, parameter count, scaling, gradient update, training, and independent evaluation.
+[Week 2 companion]({{ page.reading_note | relative_url }}) · [English PDF]({{ page.reading_pdf_en | relative_url }})
 
 KKT-hPINN reference: Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, 189, 108764.
 
@@ -529,8 +527,6 @@ Test residual RMSE는 {{ result.steady_balance }} mol/L. 성분별 오차로 예
 
 유입 1.2 mol/L에서 예측이 [0.62, 0.41, 0.20] mol/L이면 합은 1.23 mol/L이고 r = 0.03 mol/L입니다. 몰분율을 예측할 때도 합이 1을 벗어날 수 있습니다.
 
-
-
 <!-- lecture-page -->
 
 ## 4주차 예고: 농도 합 제약의 모델 반영
@@ -580,6 +576,6 @@ python week02_lab.py --mode steady --output-dir week02-results
 
 ## 읽기자료
 
-[2주차 읽기자료]({{ page.reading_note | relative_url }})와 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 세 출력의 관계식, 파라미터 수, scaling, gradient 갱신과 학습 과정을 계산하고 독립 평가를 확인
+[2주차 읽기자료]({{ page.reading_note | relative_url }}) · [국문 PDF]({{ page.reading_pdf_ko | relative_url }})
 
 KKT-hPINN 참고문헌: Chen, H., Constante Flores, G. E., & Li, C. (2024). [Physics-informed neural networks with hard linear equality constraints](https://doi.org/10.1016/j.compchemeng.2024.108764). *Computers & Chemical Engineering*, 189, 108764.

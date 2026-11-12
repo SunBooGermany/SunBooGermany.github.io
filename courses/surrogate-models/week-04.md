@@ -6,7 +6,7 @@ description: "Residual losses, KKT projection, scaling, and differentiable physi
 description_ko: "Residual loss, KKT 투영, scaling과 미분 가능한 물리 등식을 다룹니다."
 material_label: "Week 4"
 material_label_ko: "4주차"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-04/"
 pdf_en: "/assets/courses/surrogate-models/week-04-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-04-ko.pdf"
@@ -258,7 +258,7 @@ loss.backward()
 optimizer.step()
 ```
 
-Projection adds no trainable parameters. The companion and lab script include the general B implementation and gradient checks.
+Projection adds no trainable parameters.
 
 <!-- lecture-page -->
 
@@ -626,7 +626,7 @@ loss.backward()
 optimizer.step()
 ```
 
-투영에는 학습 파라미터가 추가되지 않습니다. 일반 B의 구현과 gradient 확인은 읽기자료와 실습 스크립트에 있습니다.
+투영에는 학습 파라미터가 추가되지 않습니다.
 
 <!-- lecture-page -->
 

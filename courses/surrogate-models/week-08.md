@@ -6,7 +6,7 @@ description: "Revalidate Week 6 reactor decisions with reference process equatio
 description_ko: "6주차 반응기 모델의 후보를 기준 공정식으로 재검증하고, 제약 위반·비용·추가 데이터의 효과를 비교합니다."
 material_label: "Week 8"
 material_label_ko: "8주차"
-updated: "2026-11-01"
+updated: "2026-11-12"
 permalink: "/courses/surrogate-models/week-08/"
 pdf_en: "/assets/courses/surrogate-models/week-08-en.pdf"
 pdf_ko: "/assets/courses/surrogate-models/week-08-ko.pdf"
@@ -66,7 +66,7 @@ Changing τ in an existing fixed-size vessel requires changing flow or another c
 
 Rate constants have units min⁻¹, activation energies are J/mol, and R = 8.314 J/(mol·K). At 330 K, k₁ = 0.2 and k₂ = 0.1.
 
-These are teaching parameters. Temperature is externally maintained; this model includes no energy balance or cooling-capacity limit.
+Temperature is externally maintained; this model includes no energy balance or cooling-capacity limit.
 
 <!-- lecture-page -->
 
@@ -268,7 +268,7 @@ Change a margin or local-grid width once, then revalidate the new candidate agai
 
 ## Companion and primary sources
 
-The [Week 8 companion](/courses/surrogate-models/week-08-reading/) derives the steady-state balances, margin directions, reference candidates, and cost comparisons.
+[Week 8 companion](/courses/surrogate-models/week-08-reading/)
 
 [Week 6 lecture](/courses/surrogate-models/week-06/) · [Week 6 model and executable lab](/assets/courses/surrogate-models/week-06/week06_lab.py)
 
@@ -325,7 +325,7 @@ The [Week 8 companion](/courses/surrogate-models/week-08-reading/) derives the s
 
 k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K). 330 K에서 k₁ = 0.2, k₂ = 0.1
 
-계수는 강의용으로 정한 값입니다. 온도는 외부에서 유지된다고 가정하며 에너지 수지나 냉각 한계는 이 모델에 포함하지 않습니다.
+온도는 외부에서 유지된다고 가정하며 에너지 수지나 냉각 한계는 이 모델에 포함하지 않습니다.
 
 <!-- lecture-page -->
 

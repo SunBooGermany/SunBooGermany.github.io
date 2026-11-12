@@ -6,7 +6,7 @@ description: "A worked guide to prediction contracts, reference balances, data s
 description_ko: "예측 문제 정의, 기준 수지, 데이터 분할, 회귀 학습과 독립 평가를 직접 계산하는 읽기자료입니다."
 material_label: "Week 1 reading"
 material_label_ko: "1주차 읽기자료"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: /courses/surrogate-models/week-01-reading/
 pdf_en: /assets/courses/surrogate-models/week-01-reading-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-01-reading-ko.pdf
@@ -49,7 +49,7 @@ Conversion is independent of feed concentration in this first-order model.
 
 ## 3. Build independent train, validation, and test data
 
-Use this teaching rate law, with T in K and k in 1/min:
+Assume the following rate law, with T in K and k in 1/min:
 
 <math display="block" aria-label="Numeric temperature-dependent teaching rate law"><mrow><mi>k</mi><mo>(</mo><mi>T</mi><mo>)</mo><mo>=</mo><mn>0.2</mn><mi>exp</mi><mo>[</mo><mn>6000</mn><mo>(</mo><mfrac><mn>1</mn><mn>330</mn></mfrac><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><mo>)</mo><mo>]</mo></mrow></math>
 

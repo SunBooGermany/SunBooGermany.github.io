@@ -79,6 +79,28 @@ slides. The user established this project preference on 2026-10-09.
 - Refer to Boyd's slides for layout only; retain original course content and
   figures. Do not copy the slides' text, figures, or branding.
 
+## Self-contained course explanations (2026-11-12)
+
+The user asked that lecture materials themselves teach the reasoning. Remove
+production and navigation boilerplate such as "additional teaching examples",
+"the instructor answer is in a separate guide", and instructions to compare
+code with another document. Keep useful problem constraints, model assumptions,
+references, and actual exercises. This preference supersedes older instructions
+to label original teaching examples.
+
+For Data Structures and Algorithms, explain the problem, the intuitive idea,
+why it works, how the implementation represents it, and the time and memory
+costs. Include concrete intermediate states and structural diagrams where they
+help. Explain counts and retained storage, not just a Big-O label. Distinguish
+worst-case, expected, and amortized costs, input storage, auxiliary storage, and
+output storage. Do not leave sparse pages containing only an answer or a code
+block when an explanation can accompany it without shrinking text.
+
+Week 1 introduces list indexing versus searching, insertion/removal and shifts,
+append/resizing, copying/slicing, stack and queue operations, deque, dict, and
+set. Connect these operation costs to the later algorithms. Maintain both
+languages and regenerate matching PDFs and material archives after revisions.
+
 ## Research Blog Posts
 
 Research Blog posts live in `_posts/` and use `layout: post`.

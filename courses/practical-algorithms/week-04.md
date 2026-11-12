@@ -4,7 +4,7 @@ title: "Week 4: Tree recursion, BFS, and BSTs"
 title_ko: "4주차: 트리 재귀·BFS·BST"
 course_id: "practical-algorithms"
 permalink: "/courses/practical-algorithms/week-04/"
-updated: "2026-11-11"
+updated: "2026-11-12"
 material_label: "Week 4 lecture"
 material_label_ko: "4주차 강의"
 pdf_en: "/assets/courses/practical-algorithms/week-04-en.pdf"
@@ -22,9 +22,7 @@ A task tree has at most two subtasks per node. What is its deepest level? We als
 
 Each node can branch in two directions. Recursive return values, stacks, queues, and ancestor bounds carry the information needed for these questions.
 
-<!-- lecture-page -->
-
-## Week 4 problems and learning outcomes
+### Learning outcomes
 
 Session 7: recursive returns and maximum depth. Session 8: BFS, BST validation, and inorder traversal.
 
@@ -33,21 +31,13 @@ Session 7: recursive returns and maximum depth. Session 8: BFS, BST validation, 
 - Separate time, auxiliary space, and output space.
 - Understand recursion on small trees; use iteration for long chains.
 
-Practice: LeetCode 104, 102, 98, 230. Diagrams, traces, and midpoint checks are additional teaching examples.
+Practice: LeetCode 104, 102, 98, 230.
 
 <!-- lecture-page -->
 
-## Binary-tree nodes and input notation
+## Tree height, width, and storage
 
-![Root 4, children 2 and 7, and node 2's right child 3](/assets/courses/practical-algorithms/week-04-tree.svg)
-
-`[4,2,7,None,3]`: level-order notation. `None` marks a missing child; subsequent entries fill the left and right children of queued parents.
-
-Depth counts nodes from the root: 0 for an empty tree, 1 for a root alone.
-
-<!-- lecture-page -->
-
-## TreeNode and local variables
+A node stores a value and two child references. Missing children are None. Depth counts nodes from the root; height h is maximum depth, and width w is the largest number of nodes on one level.
 
 ```python
 class TreeNode:
@@ -55,58 +45,58 @@ class TreeNode:
         self.val, self.left, self.right = val, left, right
 ```
 
-- `left`, `right`: references to child nodes
-- Separate local variables for each recursive call
-- `return`: pass a result back to the caller
+![Five-node tree with maximum depth three](/assets/courses/practical-algorithms/curriculum/tree-depth.svg)
 
-Combine the returned child heights to obtain the current height.
+Here n=5, h=3, and w=2. DFS retains unfinished paths in a stack; BFS retains pending levels in a queue. Trees with equal node counts can therefore have different peak storage requirements.
 
 <!-- lecture-page -->
 
-## 104 · Problem and state
+## What a recursive depth call returns
+
+```python
+def depth_recursive(root):
+    if root is None:
+        return 0
+    return 1 + max(depth_recursive(root.left),
+                   depth_recursive(root.right))
+```
+
+| Current node | Left return | Right return | Current return |
+| --- | --- | --- | --- |
+| Each leaf: 9,15,7 | 0 | 0 | 1 |
+| 20 | 1 (from 15) | 1 (from 7) | 2 |
+| 3 | 1 (from 9) | 2 (from 20) | 3 |
+
+Each call has its own local root variable. A parent remains active while waiting for child results. Every node is visited once, giving O(n) time, but up to h calls wait simultaneously, giving O(h) auxiliary space.
+
+Python limits recursion depth. The following implementation retains depth information in an explicit stack to handle long chains.
+
+<!-- lecture-page -->
+
+## 104 · Idea and execution trace
 
 [LeetCode 104: Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/) · Easy
 
 Return the maximum root-to-leaf path length measured in nodes.
 
-`root=[4,2,7,None,3] → 3`
+Depth counts nodes from the root to the current node. Store `(node, depth)` together so depth need not be reconstructed. Each child is one level deeper; the largest encountered depth is the answer.
 
-Derive depth(None)=0 and depth(node)=1+max(left,right) on small trees; the iterative implementation uses an explicit (node,depth) stack.
+Tree: root 3; children 9 and 20; children of 20 are 15 and 7. Stack top is on the right.
 
-<!-- lecture-page -->
-
-## Recursive depth computation
-
-```python
-def depth_recursive(root):
-    """Small-tree demonstration; Python's recursion limit applies."""
-    if root is None:
-        return 0
-    return 1 + max(depth_recursive(root.left), depth_recursive(root.right))
-```
-
-The empty tree has height 0. Add the current node to the larger child height. This function is for small-tree demonstrations.
+| Popped (value,depth) | Stack after child pushes | best |
+| --- | --- | --- |
+| (3,1) | [(9,2),(20,2)] | 1 |
+| (20,2) | [(9,2),(15,3),(7,3)] | 2 |
+| (7,3) | [(9,2),(15,3)] | 3 |
+| (15,3) | [(9,2)] | 3 |
+| (9,2) | [] | 3 |
 
 <!-- lecture-page -->
 
-## Subtree return values
-
-| call | left height | right height | return |
-| --- | --- | --- | --- |
-| depth(3) | 0 | 0 | 1 |
-| depth(2) | 0 | 1 | 2 |
-| depth(7) | 0 | 0 | 1 |
-| depth(4) | 2 | 1 | 3 |
-
-The parent waits for both child results before combining them.
-
-<!-- lecture-page -->
-
-## Explicit stack for maximum depth
+## 104 · Turning the idea into code
 
 ```python
 def max_depth(root):
-    """Explicit stack supports skew trees within the official size limit."""
     if root is None:
         return 0
     stack, best = [(root, 1)], 0
@@ -120,68 +110,47 @@ def max_depth(root):
     return best
 ```
 
+Start the root at depth 1. Update best after popping, then push children at `depth+1`. The right child is pushed last and therefore visited first; this does not change the maximum.
+
+An empty tree has depth 0. The recurrence `1 + max(left depth, right depth)` expresses the same calculation; the explicit stack avoids Python recursion-depth limits on long chains.
+
 <!-- lecture-page -->
 
-## 104 · Correctness and cost
+## 104 · Why it works; time and memory
 
 Structural induction proves the recurrence. The explicit stack carries the true root depth to every node and records its maximum.
 
-n is node count, h height. O(n) time, O(h) DFS space, O(n) worst case.
+Every tree node is pushed once by its unique parent. There are n pushes and pops, plus two child checks per node, so time is O(n). The two if statements do not add another size-dependent loop.
+
+For height h, at most one pending sibling branch per level accumulates, giving O(h) stack space, at worst O(n). A one-child chain keeps only one pending entry in this iterative version, whereas recursive calls accumulate to depth h.
 
 <!-- lecture-page -->
 
-## Skipped branches and recursion depth
-
-`if left ... elif right ...` skips the right child when the left child exists. Check both children with separate `if` statements.
-
-A chain can exceed Python's recursion limit. Use the explicit-stack implementation for the official maximum of 10,000 nodes.
-
-Checks: empty tree, one node, and a long right-only chain.
-
-<!-- lecture-page -->
-
-## 102 · Problem and state
+## 102 · Idea and execution trace
 
 [LeetCode 102: Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) · Medium
 
 Return tree values grouped by depth, left to right.
 
-`root=[4,2,7,None,3] → [[4],[2,7],[3]]`
+A first-in, first-out queue visits nodes by depth. Freeze its length at the start of each level so children appended during that level remain for the next one.
 
-Pop exactly the initial len(queue) nodes, appending children for the next level.
+Use the preceding 3–9–20–15–7 tree. The queue’s left end is removed next.
+
+| Queue at level start | Frozen length | Current level | Next queue |
+| --- | --- | --- | --- |
+| [3] | 1 | [3] | [9,20] |
+| [9,20] | 2 | [9,20] | [15,7] |
+| [15,7] | 2 | [15,7] | [] |
+
+The result is `[[3],[9,20],[15,7]]`.
 
 <!-- lecture-page -->
 
-## deque and level boundaries
+## 102 · Turning the idea into code
 
 ```python
 from collections import deque
-queue = deque([root])
-```
 
-- `popleft()`: remove the earliest queued node
-- `append(child)`: enqueue a next-level child
-- `range(len(queue))`: fix the node count at level entry
-
-Children added during processing are visited in the next outer iteration.
-
-<!-- lecture-page -->
-
-## Queue trace by level
-
-| Queue at entry | Nodes to remove | Output level | Next queue |
-| --- | --- | --- | --- |
-| [4] | 1 | [4] | [2,7] |
-| [2,7] | 2 | [2,7] | [3] |
-| [3] | 1 | [3] | [] |
-
-After removing the current level, only the next level remains. Enqueue left children before right children.
-
-<!-- lecture-page -->
-
-## BFS level-order implementation
-
-```python
 def level_order(root):
     if root is None:
         return []
@@ -199,64 +168,43 @@ def level_order(root):
     return result
 ```
 
-Import `deque` from `collections`.
+`range(len(queue))` fixes the iteration count when the for loop begins; later appends do not increase it. Allocate a new level list each round and append it to result after that level finishes.
+
+Use `deque.popleft()` for removal at the front. A list’s `pop(0)` would shift the remaining references.
 
 <!-- lecture-page -->
 
-## 102 · Correctness and cost
+## 102 · Why it works; time and memory
 
 At each outer-loop entry the queue contains one level. Processing its initial size leaves only the next level; left-first insertion preserves order.
 
-n is node count, w maximum width. O(n) time, O(w) queue space, O(n) output.
+The outer loop counts levels, but the inner-loop counts sum to exactly n nodes across all levels. Constant-time queue insertion and removal give O(n) time. Using list.pop(0) on wide levels can instead cause O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>) total shifting.
+
+If maximum level width is w, the queue holds the rest of one level plus part of the next, still O(w) entries. Queue workspace is O(w); returned level values occupy O(n). Including output, extra space is O(n).
 
 <!-- lecture-page -->
 
-## Queue operations and result storage
-
-`list.pop(0)` shifts the remaining entries and can lead to O(n²) total work on wide trees. Removal with `deque.popleft()` costs O(1).
-
-The queue can hold the remainder of one level and part of the next. Each level has at most w nodes, so queue storage is O(w).
-
-The returned level lists separately occupy O(n) space.
-
-<!-- lecture-page -->
-
-## 98 · Problem and state
+## 98 · Idea and execution trace
 
 [LeetCode 98: Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/) · Medium
 
 Decide whether all descendants satisfy strict BST ordering.
 
-`root=[8,3,10,None,None,6,12] → False`
+Comparing only parent and child misses constraints inherited from ancestors. With root 5, every value in the right subtree must exceed 5. Pass an allowed interval `(lower, upper)` to summarize all ancestral constraints.
 
-Carry an open interval (lower,upper); tighten the upper bound on the left and lower bound on the right.
+Check a tree with root 5, right child 8, and 8’s left child 4.
 
-<!-- lecture-page -->
+| Node value | Allowed interval | Test result |
+| --- | --- | --- |
+| 5 | (-∞,∞) | Pass |
+| 8 | (5,∞) | Pass |
+| 4 | (5,8) | 5 < 4 is false → False |
 
-## Open bounds inherited from ancestors
-
-- Root: `(-inf, inf)`
-- Left child: `(lower, node.val)`
-- Right child: `(node.val, upper)`
-- Check: `lower < node.val < upper`
-
-Strict inequalities reject duplicate keys. Every descendant in the right subtree of root 8 must exceed 8.
+Although 4 is smaller than its parent 8, it cannot lie to the right of root 5.
 
 <!-- lecture-page -->
 
-## Ancestor-bound counterexample
-
-| node | lower | upper | decision |
-| --- | --- | --- | --- |
-| 8 | -inf | inf | pass |
-| 10 | 8 | inf | pass |
-| 6 | 8 | 10 | 6<=8, fails |
-
-Selected nodes on the root-to-6 path; other visited nodes are omitted. The value 6 passes the parent comparison with 10 but fails the inherited lower bound 8.
-
-<!-- lecture-page -->
-
-## BST validation implementation
+## 98 · Turning the idea into code
 
 ```python
 def valid_bst(root):
@@ -272,43 +220,42 @@ def valid_bst(root):
     return True
 ```
 
+For a right child, raise lower to the current value and retain upper. For a left child, lower upper to the current value and retain lower.
+
+The strict test `lower < node.val < upper` implements a BST contract that excludes duplicates. Skip None entries because they are not nodes.
+
 <!-- lecture-page -->
 
-## 98 · Correctness and cost
+## 98 · Why it works; time and memory
 
 The interval is the intersection of all ancestor constraints. Tightening it preserves that meaning; any violation invalidates the whole tree.
 
-n is node count, h height. O(n) time, O(h) explicit DFS space, O(n) worst case.
+A valid tree requires processing n nodes and a fixed number of empty-child entries per node. Two bound comparisons and stack operations per node give O(n) time. Early failure can shorten a run but does not change the worst-case bound.
+
+Each stack entry contains a node reference and two bounds, a constant-size record. At most O(h) entries remain pending, so auxiliary space is O(h), at worst O(n). Adding bounds does not make each record grow with the tree.
 
 <!-- lecture-page -->
 
-## 230 · Problem and state
+## 230 · Idea and execution trace
 
 [LeetCode 230: Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) · Medium
 
 Return the kth smallest BST value.
 
-`root=[5,2,8,1,3], k=3 → 3`
+In a BST, visiting the left subtree, node, then right subtree yields increasing values. Stop at the kth visit rather than collecting and sorting every value.
 
-Use an explicit inorder stack; decrement k when visiting a node.
+Root 3, left child 1 with right child 2, and right child 4. k=2; stack top is on the right.
 
-<!-- lecture-page -->
-
-## Inorder traversal and visit order
-
-For BST `[5,2,8,1,3]`, inorder values are `1,2,3,5,8`.
-
-| Visited value | Remaining k | Action for initial k=3 |
-| --- | --- | --- |
-| 1 | 2 | continue |
-| 2 | 1 | continue |
-| 3 | 0 | return 3 |
-
-Store nodes while descending left. Visit a popped node, then enter its right subtree.
+| Action | stack | Remaining k | Visited values |
+| --- | --- | --- | --- |
+| Push left path 3,1 | [3,1] | 2 | None |
+| Pop 1; move to its right, 2 | [3] | 1 | 1 |
+| Push 2 | [3,2] | 1 | 1 |
+| Pop 2 | [3] | 0 | 1,2 → return 2 |
 
 <!-- lecture-page -->
 
-## Kth-smallest implementation
+## 230 · Turning the idea into code
 
 ```python
 def kth_smallest(root, k):
@@ -325,26 +272,19 @@ def kth_smallest(root, k):
     raise ValueError("k exceeds tree size")
 ```
 
+The inner loop saves an unvisited left path. A node is visited when popped, so decrement k at that moment. Then repeat the leftmost descent in its right subtree.
+
+The stack retains ancestors whose right portions remain to be processed. The input must be a valid BST with k between 1 and the node count.
+
 <!-- lecture-page -->
 
-## 230 · Correctness and cost
+## 230 · Why it works; time and memory
 
 Every left value is smaller and every right value larger. Induction makes inorder sorted, so the kth visit gives the answer.
 
-n is node count, h height. O(h+k) time, O(n) worst case, O(h) space.
+The initial left descent pushes at most h nodes. The algorithm pops k nodes; total pushes can be charged to popped nodes plus the at most h entries still pending. Time is O(h+k), becoming O(n) for k=n.
 
-<!-- lecture-page -->
-
-## Baseline methods and costs
-
-| Task | Baseline | Current implementation |
-| --- | --- | --- |
-| Maximum depth | recursion on small trees | explicit DFS stack |
-| Level order | remove from front of list | O(1) deque removal |
-| BST validation | recheck descendants: O(n²) worst case | carry bounds: O(n) |
-| Kth value | store full inorder: O(n) time/space | stop early: O(h+k) time, O(h) space |
-
-Height h can reach n in a chain. Integer comparisons and node references are treated as constant-cost operations.
+At most h ancestors occupy the stack, so auxiliary space is O(h). No full traversal array is stored. A balanced tree has h=O(log n), but a skew tree can have h=O(n).
 
 <!-- lecture-page -->
 
@@ -358,20 +298,19 @@ Submit code, state definitions, correctness, costs, and boundary cases. Attempt 
 
 <!-- lecture-page -->
 
-## Execution and sources
+## Exercises and sources
 
-Extract the [Week 4 code](/assets/courses/practical-algorithms/week-04-code.zip) and run these commands in the `code` directory.
+[LeetCode · 104, 102, 98, 230](/courses/practical-algorithms/week-04-practice/) · [Worked solutions](/courses/practical-algorithms/week-04-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-04-code.zip)
 
 ```text
 python demo_07.py
 python demo_08.py
 python verify.py
-python verify.py --student
 ```
 
-Run the last command after implementing `student_week_04.py`.
+After implementing the student file, check it with `python verify.py --student`.
 
-Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
 
 <!-- ko -->
 
@@ -381,9 +320,7 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 
 한 줄로 저장한 기록과 달리 각 노드에서 두 갈래를 따라가야 합니다. 재귀 반환값, 스택·큐, 조상의 범위로 필요한 정보를 전달합니다.
 
-<!-- lecture-page -->
-
-## 4주차 문제와 학습 목표
+### 학습 목표
 
 7차시: 재귀 반환값과 최대 깊이. 8차시: BFS·BST 검증·중위 순회.
 
@@ -392,21 +329,13 @@ Erik Demaine and Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://
 - 시간·보조 공간·출력 공간 구분
 - 작은 예제로 재귀를 이해하고 반복 구현으로 긴 트리 처리
 
-실습: LeetCode 104, 102, 98, 230. 그림·추적 표·중간 점검은 강의용 추가 예시입니다.
+실습: LeetCode 104, 102, 98, 230.
 
 <!-- lecture-page -->
 
-## 이진 트리의 노드와 입력 표기
+## 트리의 높이·너비와 저장 공간
 
-![루트 4, 자식 2와 7, 노드 2의 오른쪽 자식 3](/assets/courses/practical-algorithms/week-04-tree.svg)
-
-`[4,2,7,None,3]`: 레벨 순서 표기. `None`은 없는 자식이며, 다음 값은 큐에서 꺼낸 부모의 왼쪽·오른쪽 자식에 배정합니다.
-
-깊이: 루트부터 세는 노드 수. 빈 트리 0, 루트만 있으면 1.
-
-<!-- lecture-page -->
-
-## TreeNode와 지역 변수
+각 노드는 값과 두 자식 참조를 가집니다. 없는 자식은 None입니다. 깊이는 루트에서 현재 노드까지의 노드 수이며, 높이 h는 최대 깊이, 너비 w는 한 층의 최대 노드 수입니다.
 
 ```python
 class TreeNode:
@@ -414,58 +343,58 @@ class TreeNode:
         self.val, self.left, self.right = val, left, right
 ```
 
-- `left`, `right`: 자식 노드 참조
-- 재귀 호출마다 별도의 지역 변수
-- `return`: 계산 결과를 호출자에게 전달
+![깊이 3인 다섯 노드 트리](/assets/courses/practical-algorithms/curriculum/tree-depth.svg)
 
-각 자식의 높이를 반환받아 현재 높이를 계산합니다.
+이 트리는 n=5, h=3, w=2입니다. DFS는 아직 끝내지 않은 경로를 스택으로, BFS는 다음에 처리할 층을 큐로 보관합니다. 따라서 같은 노드 수라도 트리 모양에 따라 최대 저장량이 달라집니다.
 
 <!-- lecture-page -->
 
-## 104 · 문제와 상태
+## 재귀 호출이 돌려주는 깊이
+
+```python
+def depth_recursive(root):
+    if root is None:
+        return 0
+    return 1 + max(depth_recursive(root.left),
+                   depth_recursive(root.right))
+```
+
+| 현재 노드 | 왼쪽 반환값 | 오른쪽 반환값 | 현재 호출의 반환값 |
+| --- | --- | --- | --- |
+| 잎 9,15,7 각각 | 0 | 0 | 1 |
+| 20 | 1 (15에서) | 1 (7에서) | 2 |
+| 3 | 1 (9에서) | 2 (20에서) | 3 |
+
+각 호출의 root는 서로 다른 지역 변수입니다. 부모 호출은 자식의 결과를 기다리며 남아 있습니다. 따라서 방문 작업은 노드당 한 번으로 O(n)이지만 동시에 기다리는 호출은 높이 h개여서 보조 공간 O(h)입니다.
+
+Python의 재귀 깊이는 제한되어 있습니다. 다음 구현은 같은 깊이 정보를 명시적 스택에 넣어 긴 사슬도 처리합니다.
+
+<!-- lecture-page -->
+
+## 104 · 풀이의 출발점과 실행 추적
 
 [LeetCode 104: Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/) · Easy
 
 root에서 잎까지 가장 긴 경로의 노드 수를 반환합니다.
 
-`root=[4,2,7,None,3] → 3`
+깊이는 루트에서 현재 노드까지 지나온 노드 수입니다. 노드만 저장하면 깊이를 다시 계산해야 하므로 `(node, depth)`를 함께 스택에 넣습니다. 자식은 부모보다 한 단계 깊고, 가장 큰 depth가 답입니다.
 
-작은 트리에서 depth(None)=0, depth(node)=1+max(left,right)를 도출합니다. 실행 해설은 (node,depth)의 명시적 스택도 제공합니다.
+트리: 루트 3, 왼쪽 9, 오른쪽 20, 20의 자식 15·7. 스택 오른쪽이 top입니다.
 
-<!-- lecture-page -->
-
-## 최대 깊이의 재귀식
-
-```python
-def depth_recursive(root):
-    """Small-tree demonstration; Python's recursion limit applies."""
-    if root is None:
-        return 0
-    return 1 + max(depth_recursive(root.left), depth_recursive(root.right))
-```
-
-빈 트리의 높이는 0. 자식 높이 중 큰 값에 현재 노드 1을 더합니다. 이 함수는 작은 트리의 설명용입니다.
+| pop한 (값,깊이) | 자식 삽입 후 stack | best |
+| --- | --- | --- |
+| (3,1) | [(9,2),(20,2)] | 1 |
+| (20,2) | [(9,2),(15,3),(7,3)] | 2 |
+| (7,3) | [(9,2),(15,3)] | 3 |
+| (15,3) | [(9,2)] | 3 |
+| (9,2) | [] | 3 |
 
 <!-- lecture-page -->
 
-## 부분 트리의 반환값
-
-| 호출 | 왼쪽 높이 | 오른쪽 높이 | 반환 |
-| --- | --- | --- | --- |
-| depth(3) | 0 | 0 | 1 |
-| depth(2) | 0 | 1 | 2 |
-| depth(7) | 0 | 0 | 1 |
-| depth(4) | 2 | 1 | 3 |
-
-부모는 두 자식의 결과를 받은 뒤 현재 높이를 계산합니다.
-
-<!-- lecture-page -->
-
-## 최대 깊이의 명시적 스택
+## 104 · 아이디어를 코드로 옮기기
 
 ```python
 def max_depth(root):
-    """Explicit stack supports skew trees within the official size limit."""
     if root is None:
         return 0
     stack, best = [(root, 1)], 0
@@ -479,68 +408,47 @@ def max_depth(root):
     return best
 ```
 
+루트 깊이를 1로 넣고, 꺼낸 깊이로 best를 갱신한 뒤 자식 깊이 `depth+1`을 저장합니다. 왼쪽을 먼저 넣고 오른쪽을 나중에 넣으므로 실제 방문은 오른쪽부터입니다. 최댓값은 방문 순서와 무관합니다.
+
+빈 트리는 깊이 0입니다. 재귀식 `1 + max(왼쪽 깊이, 오른쪽 깊이)`도 같은 의미지만 긴 사슬에는 명시적 스택을 사용합니다.
+
 <!-- lecture-page -->
 
-## 104 · 정당성과 비용
+## 104 · 정당성·시간·메모리의 근거
 
 재귀는 자식 높이가 맞다고 가정하면 현재 높이를 정확히 결합합니다. 명시적 스택은 각 노드의 실제 root 깊이를 전달하며 최대를 기록하므로 같은 답입니다.
 
-n=노드 수,h=높이. O(n) 시간, DFS 보조 O(h), 최악 O(n).
+트리에서는 각 노드가 부모 하나에서 한 번만 스택에 들어갑니다. n번의 push·pop과 노드당 두 자식 검사이므로 총 시간은 O(n)입니다. 루프 안의 if 두 개는 n에 따라 늘어나지 않습니다.
+
+깊이 h인 이진 트리에서 스택에는 현재 경로의 각 층에 남긴 형제 가지가 최대 하나씩 쌓여 O(h) 공간입니다. 최악에는 h=O(n)입니다. 이 반복 구현에서 자식이 하나뿐인 사슬은 스택 원소가 한 개뿐이지만 재귀 호출은 h개 쌓입니다.
 
 <!-- lecture-page -->
 
-## 분기 누락과 재귀 깊이
-
-`if left ... elif right ...`는 왼쪽 자식이 있으면 오른쪽을 건너뜁니다. 양쪽 자식은 별도의 `if`로 검사합니다.
-
-Python의 재귀 제한보다 긴 연결 모양 트리에서는 재귀 호출이 실패할 수 있습니다. 공식 최대 크기 10,000노드에는 명시적 스택 구현을 사용합니다.
-
-검사: 빈 트리, 노드 하나, 오른쪽만 긴 트리.
-
-<!-- lecture-page -->
-
-## 102 · 문제와 상태
+## 102 · 풀이의 출발점과 실행 추적
 
 [LeetCode 102: Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) · Medium
 
 트리 값을 깊이별 왼쪽부터 묶어 반환합니다.
 
-`root=[4,2,7,None,3] → [[4],[2,7],[3]]`
+같은 깊이끼리 묶으려면 먼저 들어온 노드를 먼저 꺼내는 큐를 사용합니다. 한 층을 시작할 때 큐 길이를 고정하면, 처리 중 추가되는 자식은 다음 층으로 남습니다.
 
-deque에서 시작 시점의 len(queue)개만 꺼내고 자식을 다음 레벨로 추가합니다.
+앞의 3–9–20–15–7 트리를 사용합니다. 큐 왼쪽이 다음에 꺼낼 위치입니다.
+
+| 층 시작 queue | 고정한 길이 | 이번 level | 다음 queue |
+| --- | --- | --- | --- |
+| [3] | 1 | [3] | [9,20] |
+| [9,20] | 2 | [9,20] | [15,7] |
+| [15,7] | 2 | [15,7] | [] |
+
+결과는 `[[3],[9,20],[15,7]]`입니다.
 
 <!-- lecture-page -->
 
-## deque와 레벨 경계
+## 102 · 아이디어를 코드로 옮기기
 
 ```python
 from collections import deque
-queue = deque([root])
-```
 
-- `popleft()`: 가장 먼저 들어온 노드 제거
-- `append(child)`: 다음 레벨의 자식 추가
-- `range(len(queue))`: 레벨 시작 시점의 노드 수 고정
-
-처리 중 추가한 자식은 다음 외부 반복에서 방문합니다.
-
-<!-- lecture-page -->
-
-## 레벨별 큐 추적
-
-| 시작 큐 | 이번에 꺼낼 수 | 결과 레벨 | 다음 큐 |
-| --- | --- | --- | --- |
-| [4] | 1 | [4] | [2,7] |
-| [2,7] | 2 | [2,7] | [3] |
-| [3] | 1 | [3] | [] |
-
-현재 레벨의 노드를 모두 꺼내고 나면 큐에는 다음 레벨만 남습니다. 자식은 왼쪽부터 추가합니다.
-
-<!-- lecture-page -->
-
-## BFS 레벨 순회 구현
-
-```python
 def level_order(root):
     if root is None:
         return []
@@ -558,64 +466,43 @@ def level_order(root):
     return result
 ```
 
-`deque`는 `collections`에서 가져옵니다.
+`range(len(queue))`는 for를 시작할 때 횟수를 결정합니다. 자식을 append해도 이 횟수는 늘지 않습니다. `level`은 층마다 새 리스트로 만들고 층 처리가 끝나면 result에 넣습니다.
+
+`deque.popleft()`로 앞을 제거합니다. 리스트의 `pop(0)`을 쓰면 나머지 원소를 앞으로 옮기는 비용이 발생합니다.
 
 <!-- lecture-page -->
 
-## 102 · 정당성과 비용
+## 102 · 정당성·시간·메모리의 근거
 
 각 외부 반복 시작 때 큐에는 현재 레벨만 있습니다. 그 수만 꺼내면 새 자식은 다음 레벨 큐로 남습니다. 왼쪽 자식부터 추가하면 순서도 유지됩니다.
 
-n=노드 수,w=최대 폭. O(n) 시간, 큐 O(w), 출력 O(n).
+바깥 while의 반복 수는 층 수지만, 안쪽 for의 횟수를 모든 층에 걸쳐 합하면 정확히 n개 노드입니다. 각 노드의 큐 삽입·제거가 O(1)이므로 시간은 O(n)입니다. 넓은 층을 list.pop(0)으로 처리하면 총 이동량이 O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>)까지 커질 수 있습니다.
+
+최대 층 너비를 w라 하면 큐에는 현재 층의 나머지와 다음 층 일부가 함께 있어도 O(w)개만 저장됩니다. 보조 큐는 O(w), 반환하는 모든 층의 값은 O(n)입니다. 결과를 포함한 전체 추가 공간은 O(n)입니다.
 
 <!-- lecture-page -->
 
-## 큐 연산과 결과 저장
-
-`list.pop(0)`는 남은 원소를 이동시킵니다. 넓은 트리에서 반복하면 전체 비용이 O(n²)까지 증가합니다. `deque.popleft()`의 제거 비용은 O(1)입니다.
-
-큐에는 현재 레벨의 남은 노드와 다음 레벨의 일부가 함께 있을 수 있습니다. 두 레벨의 폭은 각각 최대 w이므로 큐 공간은 O(w)입니다.
-
-반환하는 레벨 목록은 별도로 O(n) 공간을 사용합니다.
-
-<!-- lecture-page -->
-
-## 98 · 문제와 상태
+## 98 · 풀이의 출발점과 실행 추적
 
 [LeetCode 98: Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/) · Medium
 
 모든 왼쪽 후손이 작고 오른쪽 후손이 큰 BST인지 판정합니다.
 
-`root=[8,3,10,None,None,6,12] → False`
+부모와 자식만 비교하면 조상에게서 내려온 조건을 놓칩니다. 루트가 5이면 오른쪽 부분 트리의 모든 값이 5보다 커야 합니다. 각 노드에 허용 구간 `(lower, upper)`을 전달하면 모든 조상의 제약을 두 경계로 요약할 수 있습니다.
 
-각 노드에 열린 범위 (lower,upper)를 전달합니다. 왼쪽 upper=node.val, 오른쪽 lower=node.val입니다.
+루트 5, 오른쪽 자식 8, 그 왼쪽 자식 4인 트리를 검사합니다.
 
-<!-- lecture-page -->
+| 노드 값 | 허용 구간 | 검사 결과 |
+| --- | --- | --- |
+| 5 | (-∞,∞) | 통과 |
+| 8 | (5,∞) | 통과 |
+| 4 | (5,8) | 5 < 4가 거짓 → False |
 
-## 조상에서 전달한 열린 범위
-
-- 루트: `(-inf, inf)`
-- 왼쪽 자식: `(lower, node.val)`
-- 오른쪽 자식: `(node.val, upper)`
-- 검사: `lower < node.val < upper`
-
-엄격한 부등식이므로 중복 값은 허용하지 않습니다. 예를 들어 루트 8의 오른쪽에 있는 모든 후손은 8보다 커야 합니다.
+4는 부모 8보다 작지만 루트 5의 오른쪽에 올 수 없습니다.
 
 <!-- lecture-page -->
 
-## 조상 범위 위반의 반례
-
-| 노드 | lower | upper | 판정 |
-| --- | --- | --- | --- |
-| 8 | -inf | inf | 통과 |
-| 10 | 8 | inf | 통과 |
-| 6 | 8 | 10 | 6<=8, 실패 |
-
-루트에서 6으로 가는 경로만 표시했습니다. 6은 부모 10과의 비교는 통과하지만 조상에게서 받은 하한 8을 위반합니다.
-
-<!-- lecture-page -->
-
-## BST 검증 구현
+## 98 · 아이디어를 코드로 옮기기
 
 ```python
 def valid_bst(root):
@@ -631,43 +518,42 @@ def valid_bst(root):
     return True
 ```
 
+오른쪽 자식에는 lower를 현재 값으로 올리고 upper는 유지합니다. 왼쪽 자식에는 upper를 현재 값으로 내리고 lower는 유지합니다.
+
+`lower < node.val < upper`의 엄격한 부등식은 중복 값을 허용하지 않는 BST 조건입니다. None은 실제 노드가 아니므로 건너뜁니다.
+
 <!-- lecture-page -->
 
-## 98 · 정당성과 비용
+## 98 · 정당성·시간·메모리의 근거
 
 범위는 모든 조상에서 온 제약의 교집합입니다. 범위를 만족하면 조상 관계를 모두 만족하고, 자식 범위를 줄여 같은 성질을 유지합니다. 한 위반이라도 전체가 False입니다.
 
-n=노드 수,h=높이. O(n) 시간, 명시적 DFS 스택 O(h), 최악 O(n).
+유효한 트리에서는 n개 노드와 각 노드의 고정 개수 빈 자식을 처리합니다. 노드당 두 경계 비교와 스택 조작만 하므로 시간은 O(n)입니다. 잘못된 노드를 빨리 만나면 조기 종료할 수 있지만 최악 비용은 그대로입니다.
+
+각 스택 항목은 노드 참조와 숫자 두 개입니다. 항목 크기는 O(1)이고 동시에 남는 항목 수가 O(h)이므로 보조 공간은 O(h), 최악 O(n)입니다. 경계값을 추가해도 항목당 고정 크기라는 점은 바뀌지 않습니다.
 
 <!-- lecture-page -->
 
-## 230 · 문제와 상태
+## 230 · 풀이의 출발점과 실행 추적
 
 [LeetCode 230: Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) · Medium
 
 BST에서 작은 순서로 k번째 값을 반환합니다.
 
-`root=[5,2,8,1,3], k=3 → 3`
+BST에서는 왼쪽 부분 트리, 현재 노드, 오른쪽 부분 트리 순으로 읽으면 값이 오름차순입니다. 모든 값을 배열에 저장한 뒤 정렬할 필요 없이, 이 순서대로 k번째 값을 만나는 순간 멈춥니다.
 
-명시적 스택으로 inorder 순회하고 노드를 꺼낼 때 k를 하나 줄입니다.
+루트 3, 왼쪽 1(오른쪽 자식 2), 오른쪽 4. k=2이며 스택 오른쪽이 top입니다.
 
-<!-- lecture-page -->
-
-## 중위 순회와 방문 순서
-
-BST `[5,2,8,1,3]`의 중위 순서: `1,2,3,5,8`.
-
-| 방문 값 | 방문 후 남은 k | k=3일 때 행동 |
-| --- | --- | --- |
-| 1 | 2 | 계속 |
-| 2 | 1 | 계속 |
-| 3 | 0 | 3 반환 |
-
-왼쪽으로 내려가며 노드를 저장하고, 꺼낸 노드를 방문한 뒤 오른쪽 부분 트리로 이동합니다.
+| 동작 | stack | 남은 k | 방문 값 |
+| --- | --- | --- | --- |
+| 왼쪽으로 3,1 저장 | [3,1] | 2 | 없음 |
+| 1 pop, 오른쪽 2로 | [3] | 1 | 1 |
+| 2 저장 | [3,2] | 1 | 1 |
+| 2 pop | [3] | 0 | 1,2 → 2 반환 |
 
 <!-- lecture-page -->
 
-## k번째 작은 값 구현
+## 230 · 아이디어를 코드로 옮기기
 
 ```python
 def kth_smallest(root, k):
@@ -684,26 +570,19 @@ def kth_smallest(root, k):
     raise ValueError("k exceeds tree size")
 ```
 
+안쪽 while은 아직 방문하지 않은 왼쪽 경로를 저장합니다. pop할 때 비로소 현재 노드를 방문하므로 그때 k를 1 줄입니다. 그 뒤 오른쪽 부분 트리에서 다시 왼쪽 끝을 찾습니다.
+
+스택에는 오른쪽 부분을 나중에 처리해야 하는 조상이 남습니다. 입력 조건은 유효한 BST와 `1 <= k <= 노드 수`입니다.
+
 <!-- lecture-page -->
 
-## 230 · 정당성과 비용
+## 230 · 정당성·시간·메모리의 근거
 
 BST의 왼쪽 전체는 현재보다 작고 오른쪽 전체는 큽니다. 귀납적으로 inorder는 정렬 순서이므로 k번째 방문 값이 답입니다.
 
-n=노드 수,h=높이. O(h+k) 시간(최악 O(n)), O(h) 보조 공간.
+초기 왼쪽 경로를 내려가는 데 최대 h번 push하고 k개 노드를 pop합니다. 방문 중의 push는 이미 pop한 노드들과 아직 남은 최대 h개 경로 항목으로 계산할 수 있어 시간은 O(h+k)입니다. k가 n이면 전체 O(n)입니다.
 
-<!-- lecture-page -->
-
-## 기준 풀이와 비용 비교
-
-| 문제 | 기준 풀이 | 이번 구현 |
-| --- | --- | --- |
-| 최대 깊이 | 작은 트리 재귀 | 명시적 DFS 스택 |
-| 레벨 순회 | 리스트 앞에서 제거 | deque의 O(1) 제거 |
-| BST 검증 | 각 노드에서 후손 재검사: 최악 O(n²) | 범위 전달: O(n) |
-| k번째 값 | 중위 배열 전체 저장: O(n) 시간·공간 | 조기 종료: O(h+k) 시간, O(h) 공간 |
-
-높이 h는 편향 트리에서 n까지 증가합니다. 정수 비교·노드 참조는 상수 비용으로 가정합니다.
+동시에 저장하는 것은 조상 경로 최대 h개이므로 보조 공간은 O(h)입니다. 전체 순회 결과 배열을 만들지 않습니다. 균형 트리는 h=O(log n)이지만 편향 트리는 h=O(n)이므로 항상 로그 공간이라고 말할 수는 없습니다.
 
 <!-- lecture-page -->
 
@@ -717,17 +596,16 @@ n=노드 수,h=높이. O(h+k) 시간(최악 O(n)), O(h) 보조 공간.
 
 <!-- lecture-page -->
 
-## 실행과 참고자료
+## 실습과 참고자료
 
-[4주차 코드](/assets/courses/practical-algorithms/week-04-code.zip)를 풀고 `code` 폴더에서 실행합니다.
+[LeetCode · 104, 102, 98, 230](/courses/practical-algorithms/week-04-practice/) · [풀이](/courses/practical-algorithms/week-04-reading/) · [Python ZIP](/assets/courses/practical-algorithms/week-04-code.zip)
 
 ```text
 python demo_07.py
 python demo_08.py
 python verify.py
-python verify.py --student
 ```
 
-마지막 명령은 `student_week_04.py`를 구현한 뒤 실행합니다.
+학생 파일을 구현한 뒤 `python verify.py --student`로 검사합니다.
 
-Erik Demaine·Srini Devadas, [MIT 6.006: Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).
+Erik Demaine, Srini Devadas. [MIT 6.006, Introduction to Algorithms](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/) (2011).

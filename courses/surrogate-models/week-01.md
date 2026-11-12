@@ -6,7 +6,7 @@ description: "Define a prediction task, fit a steady-state CSTR regression basel
 description_ko: "예측 문제를 정의하고 정상상태 CSTR 회귀 baseline을 학습한 뒤 독립 데이터에서 예측 오차를 평가합니다."
 material_label: "Week 1"
 material_label_ko: "1주차"
-updated: "2026-10-20"
+updated: "2026-11-12"
 permalink: /courses/surrogate-models/week-01/
 pdf_en: /assets/courses/surrogate-models/week-01-en.pdf
 pdf_ko: /assets/courses/surrogate-models/week-01-ko.pdf
@@ -120,8 +120,6 @@ This gives a three-input, two-output map: temperature, residence time, and feed 
 
 At 330 K and 5 min, conversion is 0.5; with feed 1.2 mol/L, outlet concentration is 0.6 mol/L.
 
-
-
 </div>
 
 <div markdown="1">
@@ -226,7 +224,7 @@ Answer checks: C_A = 0.4 mol/L and X = 2/3 in Question 2; ten features; residual
 
 ## Reading and the next prediction task
 
-Work through the data definition, CSTR derivation, input scaling, regression, and independent evaluation in the [Week 1 companion]({{ page.reading_note | relative_url }}) or [English PDF]({{ page.reading_pdf_en | relative_url }}), then check your answers.
+[Week 1 companion]({{ page.reading_note | relative_url }}) · [English PDF]({{ page.reading_pdf_en | relative_url }})
 
 Using a predictor to select operating conditions requires objectives, operating constraints, and reference-model revalidation. Weeks 5-8 develop that process.
 
@@ -334,8 +332,6 @@ Using a predictor to select operating conditions requires objectives, operating 
 
 330 K·5 min에서 전환율은 0.5이고, 유입 농도가 1.2 mol/L이면 출구 농도는 0.6 mol/L입니다.
 
-
-
 </div>
 
 <div markdown="1">
@@ -440,6 +436,6 @@ python week01_lab.py --output-dir week01-results --seed 42
 
 ## 읽기자료와 다음 예측 문제
 
-[1주차 읽기자료]({{ page.reading_note | relative_url }}) 또는 [국문 PDF]({{ page.reading_pdf_ko | relative_url }})에서 데이터 정의, CSTR 유도, 입력 크기 조정, 회귀와 독립 평가를 계산하고 답을 확인
+[1주차 읽기자료]({{ page.reading_note | relative_url }}) · [국문 PDF]({{ page.reading_pdf_ko | relative_url }})
 
 예측 모델을 운전 조건 선택에 사용하려면 목적함수와 운전 제약을 정의하고 기준 공정 모델로 재검증해야 합니다. 이 과정은 5-8주차에서 다룹니다.
