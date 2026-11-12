@@ -72,6 +72,8 @@ Define e=prediction−reference. Positive e is adverse for B; negative e is adve
 
 The last row applies when the error limit holds at that input. The maximum over 961 calibration points does not prove a bound at every unseen point. Reevaluate the next candidate with the reference process even after adding margins.
 
+Sample margins are δ_B=max(0,maxᵢ e_B,i) and δ_C=max(0,maxᵢ(−e_C,i)). B errors [−0.003,0.008,0.002] give 0.008; C errors [0.004,−0.006,−0.001] give 0.006. Unlike an absolute-error maximum, these select only the direction that can violate the specification.
+
 <!-- lecture-page -->
 
 ## Data partitions and reference-evaluation cost
@@ -119,6 +121,23 @@ corrected_y = network_y + design @ beta
 ```
 
 For nine inputs, design is (9,3), the three-component residual is (9,3), and beta is (3,3). Multiplying a row [1,x₁,x₂] by beta gives three corrections. Restrict the next optimization to the fitted region and check remaining error at the new candidate.
+
+<!-- lecture-page -->
+
+## Substituting the fitted correction coefficients
+
+The recorded B correction coefficients are [−0.0160962605,0.0074357617,0.0823403944]. At local candidate (339.815193 K,2.870934 min), x₁=0.745379824 and x₂=0.108866748.
+
+| B correction term | Value [mol/L] |
+| --- | --- |
+| Intercept | −0.0160962605 |
+| Temperature-coordinate term | 0.0074357617×0.745379824=0.0055424667 |
+| Residence-time-coordinate term | 0.0823403944×0.108866748=0.0089641309 |
+| Sum | −0.0015896628 |
+
+Adding this to the original network prediction B≈0.3835896628 gives corrected prediction 0.382000. The reference value at the same input is 0.3768201356, leaving error 0.0051798644.
+
+Least squares reduces the summed squared errors of nine points. It does not require interpolation of every point or exact prediction at a new candidate. Correctly computed regression coefficients still require candidate revalidation.
 
 <!-- lecture-page -->
 
@@ -170,6 +189,18 @@ Take max(2, <math><msub><mi>τ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></
 
 <!-- lecture-page -->
 
+## Rationalizing the smaller-root formula
+
+For aτ²+dτ+b=0, define D=d²−4ab. With a>0,d<0,D≥0, the smaller root is (−d−√D)/(2a). Multiply numerator and denominator by −d+√D.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mfrac><mrow><mo>−</mo><mi>d</mi><mo>−</mo><msqrt><mi>D</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><mo>−</mo><mi>D</mi></mrow><mrow><mn>2</mn><mi>a</mi><mo stretchy="false">(</mo><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt><mo stretchy="false">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>2</mn><mi>b</mi></mrow><mrow><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt></mrow></mfrac></mrow></math></div>
+
+Since d²−D=4ab, cancellation gives the last expression. Replacing subtraction of similar positive values −d and √D with addition reduces loss of significant digits.
+
+At 330 K,b=0.4, a=0.008,d=−0.12,D=0.0016 and √D=0.04. The smaller root is 0.8/(0.12+0.04)=5; the larger is (0.12+0.04)/0.016=10 min. Substitute roots back into the original B equation and C specification before accepting a candidate.
+
+<!-- lecture-page -->
+
 ## Calculating the reference-repaired candidate
 
 Fix the local-correction candidate’s temperature at 339.8152 K and use b = 0.382. The smaller root is τ = 3.08559 min.
@@ -218,6 +249,8 @@ For minimization using an objective model m on a common feasible input domain, c
 Use this ratio only with a positive denominator. Here the cost is an exact input function, so feasibility error is the issue rather than objective-model error. Do not use this ratio to accept infeasible candidates.
 
 [Alexandrov, Dennis, Lewis and Torczon, A trust-region framework for managing the use of approximation models in optimization (1998), author manuscript](https://www.cs.wm.edu/~va/research/adlt.pdf)
+
+If the true objective drops from 100 to 92 while the model predicts 100 to 90, actual improvement is 8, predicted improvement is 10, and ρ=0.8. If the model also predicts 100 at the new point, the denominator is zero and the ratio is not evaluated. Both candidates must first satisfy the original constraints.
 
 <!-- lecture-page -->
 
@@ -308,6 +341,8 @@ C에서는 과소예측 −<math><msub><mi>e</mi><mrow><mi>C</mi></mrow></msub><
 
 이 마지막 행은 오차 한계가 그 입력에서 성립할 때의 계산입니다. calibration 961점의 최대값은 보지 않은 모든 점의 한계를 증명하지 않습니다. 그래서 margin을 넣은 다음 후보도 기준 공정으로 다시 계산합니다.
 
+표본에서 margin을 구하는 연산은 δ_B=max(0,maxᵢ e_B,i), δ_C=max(0,maxᵢ(−e_C,i))입니다. B 오차 [−0.003,0.008,0.002]라면 0.008, C 오차 [0.004,−0.006,−0.001]라면 0.006을 사용합니다. 절댓값 최대와 달리 규격을 위반시키는 쪽만 선택합니다.
+
 <!-- lecture-page -->
 
 ## 데이터 분할과 참조 계산의 비용
@@ -355,6 +390,23 @@ corrected_y = network_y + design @ beta
 ```
 
 9개 입력의 design은 (9,3), 세 성분 residual도 (9,3), beta는 (3,3)입니다. design의 한 행 [1,x₁,x₂]와 beta를 곱하면 세 성분의 보정값이 나옵니다. 이 회귀가 본 범위 안으로 다음 최적화 영역을 제한하되, 남은 오차는 새 후보에서 확인합니다.
+
+<!-- lecture-page -->
+
+## 학습된 보정 계수의 수치 대입
+
+제공 실행의 B 보정 계수는 [−0.0160962605,0.0074357617,0.0823403944]입니다. 국소 후보 (339.815193 K,2.870934 min)의 좌표는 x₁=0.745379824,x₂=0.108866748입니다.
+
+| B 보정의 항 | 계산값 [mol/L] |
+| --- | --- |
+| 절편 | −0.0160962605 |
+| 온도 좌표 항 | 0.0074357617×0.745379824=0.0055424667 |
+| 체류시간 좌표 항 | 0.0823403944×0.108866748=0.0089641309 |
+| 합 | −0.0015896628 |
+
+원래 신경망 B≈0.3835896628에 이 합을 더하면 보정 예측은 0.382000입니다. 같은 입력의 기준값 0.3768201356과 비교하면 오차 0.0051798644가 남습니다.
+
+최소제곱은 아홉 점의 제곱오차 합을 줄입니다. 모든 점을 통과하는 보간 조건이나 새 후보에서 정확해야 한다는 제약은 없습니다. 회귀 계수의 계산이 맞아도 후보 재검증이 필요한 이유입니다.
 
 <!-- lecture-page -->
 
@@ -406,6 +458,18 @@ T를 고정하고 목표 농도를 b라고 하면 <math><msub><mi>C</mi><mrow><m
 
 <!-- lecture-page -->
 
+## 작은 근 공식의 유리화
+
+이차식 aτ²+dτ+b=0에서 D=d²−4ab입니다. a>0,d<0,D≥0이면 작은 근은 (−d−√D)/(2a)입니다. 분자·분모에 −d+√D를 곱합니다.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mfrac><mrow><mo>−</mo><mi>d</mi><mo>−</mo><msqrt><mi>D</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><mo>−</mo><mi>D</mi></mrow><mrow><mn>2</mn><mi>a</mi><mo stretchy="false">(</mo><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt><mo stretchy="false">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mn>2</mn><mi>b</mi></mrow><mrow><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt></mrow></mfrac></mrow></math></div>
+
+d²−D=4ab를 약분한 결과입니다. 비슷한 두 양수 −d와 √D의 뺄셈을 합으로 바꿔 유효 숫자의 손실을 줄입니다.
+
+330 K,b=0.4 예에서는 a=0.008,d=−0.12,D=0.0016,√D=0.04입니다. 작은 근은 0.8/(0.12+0.04)=5, 큰 근은 (0.12+0.04)/0.016=10 min입니다. 계산한 근을 다시 원래 B 식과 C 규격에 대입해야 후보 판정이 끝납니다.
+
+<!-- lecture-page -->
+
 ## 기준식 보완 후보의 계산
 
 국소 보정 후보의 온도 339.8152 K를 고정하고 b = 0.382를 사용합니다. 작은 쪽 근은 τ = 3.08559 min입니다.
@@ -454,6 +518,8 @@ tau = 2*b / (-d + np.sqrt(disc))
 분모가 양수일 때만 이 비율로 예측 개선을 평가합니다. 이번 예제의 비용식은 정확한 입력 함수라 비용 오차보다 feasibility 오차가 문제입니다. Infeasible 후보에는 이 비율을 수락 근거로 쓰지 않습니다.
 
 [Alexandrov, Dennis, Lewis and Torczon, A trust-region framework for managing the use of approximation models in optimization (1998), author manuscript](https://www.cs.wm.edu/~va/research/adlt.pdf)
+
+예를 들어 목적값이 100→92로 줄고 모델은 100→90을 예측했다면 실제 개선 8, 예측 개선 10으로 ρ=0.8입니다. 모델의 새 예측도 100이라면 분모가 0이므로 나누지 않습니다. 이 비율은 두 후보의 원래 제약 만족을 확인한 뒤에만 의미가 있습니다.
 
 <!-- lecture-page -->
 

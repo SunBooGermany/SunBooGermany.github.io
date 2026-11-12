@@ -48,6 +48,20 @@ This formula remains valid when T changes at a boundary: compute a new M and c�
 
 <!-- lecture-page -->
 
+## Connecting the balance matrix to exponential response
+
+At 330 K and τ=5, M has rows [−0.4,0,0], [0.2,−0.3,0], [0,0.1,−0.2], and b=[0.24,0,0]. Its second row gives the original B balance, 0.2<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−0.3<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>.
+
+Subtracting equilibrium <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math> gives dz/dt=Mz. The scalar solution of dz/dt=−0.4z is exp(−0.4t)z(0); exp(Mt)z(0) extends this to coupled components.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>M</mi><mi>t</mi></mrow></msup><mo>=</mo><mi>I</mi><mo>+</mo><mi>M</mi><mi>t</mi><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>2</mn></msup><mn>2!</mn></mfrac><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>3</mn></msup><mn>3!</mn></mfrac><mo>+</mo><mo>⋯</mo></mrow></math></div>
+
+M² is a matrix product, not an elementwise power. Likewise, exp(Mt) is not an array of elementwise exponentials. Mt is dimensionless. Keeping only I+Mt gives one Euler step; later terms account for changing concentrations feeding back into reaction rates within the interval.
+
+For z(0)=[0.6,−0.4,−0.2], Mz=[−0.24,0.24,0]. Thus <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>+(I+0.2M)z=[1.152,0.048,0], recovering the Euler calculation.
+
+<!-- lecture-page -->
+
 ## A worked first transition
 
 At 330 K, τ = 5 min and feed = 1.2 mol/L, a = 1/τ + k₁ = 0.4 and b = 1/τ + k₂ = 0.3 min⁻¹. The steady composition is c∗ = [0.6, 0.4, 0.2] mol/L. With Δt = 0.2 min and c₀ = [1.2, 0, 0]:
@@ -57,6 +71,20 @@ At 330 K, τ = 5 min and feed = 1.2 mol/L, a = 1/τ + k₁ = 0.4 and b = 1/τ + 
 C_C,1 = S₁ − C_A,1 − C_B,1. This gives [1.153870, 0.045672, 0.000458] mol/L.
 
 Forward Euler gives [1.152, 0.048, 0]. It differs because the rates change during the interval. When a = b, the fraction’s limit is Δt exp(−aΔt).
+
+<!-- lecture-page -->
+
+## Integrating the effect of A on B
+
+Write deviations <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>A</mi><mo>∗</mo></msubsup></math> and <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>B</mi><mo>∗</mo></msubsup></math>, with a=1/τ+k₁ and b=1/τ+k₂. Then <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(t)=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at).
+
+Multiply <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>′+b<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at) by exp(bt). The left side becomes the derivative of a product. Integrating from 0 to t gives:
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>b</mi><mi>t</mi></mrow></msup><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>z</mi><mi>A</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mfrac><mrow><msup><mi>e</mi><mrow><mo stretchy="false">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false">)</mo><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div>
+
+Multiplying by exp(−bt) gives the transfer term k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)[exp(−at)−exp(−bt)]/(b−a). In the numerical calculation, 0.12 is k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)=0.2×0.6, and −0.1 is b−a=0.3−0.4.
+
+If a=b, the integrand is 1 and its integral is t. Use k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)t exp(−at) rather than evaluating 0/0.
 
 <!-- lecture-page -->
 
@@ -92,6 +120,8 @@ d_scale = np.maximum(train_increments.std(axis=0), 1e-8)
 ```
 
 The first input row contains c₀ and the first interval control. The last contains c₁₄₉ and the last control; its label is c₁₅₀. Test statistics do not enter scaling.
+
+`states[:-1]` contains c₀ through c₁₄₉; `states[1:]` contains c₁ through c₁₅₀. Subtract matching rows to obtain 0.2-minute increments. `controls[k]` is [T_k,τ,C_Af] for interval k. A scale floor of 10⁻⁸ prevents division by zero for constant columns.
 
 <!-- lecture-page -->
 
@@ -146,6 +176,8 @@ For constant L and local error bound ε, repeated substitution gives:
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mo>‖</mo><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>‖</mo><mo>≤</mo><msup><mi>L</mi><mrow><mi>h</mi></mrow></msup><mo>‖</mo><msub><mi>e</mi><mrow><mn>0</mn></mrow></msub><mo>‖</mo><mo>+</mo><mi>ε</mi><munderover><mo>∑</mo><mrow><mi>r</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>h</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>L</mi><mrow><mi>r</mi></mrow></msup></mrow></mtd></mtr></mtable></math>
 
 L < 1 limits this bound to ε/(1−L) when e₀ = 0; L = 1 gives hε. The sensitivity and error bounds must hold along the relevant states. Test RMSE alone is not that bound.
+
+Apply the triangle inequality to the two error terms, then use the Lipschitz definition ‖f(v)−f(w)‖≤L‖v−w‖ for the first term. Starting from e₀=0, the first three bounds are ε, Lε+ε, and L²ε+Lε+ε. Adding a new ε at each step produces the geometric sum.
 
 <!-- lecture-page -->
 
@@ -202,6 +234,8 @@ With incomplete observations, an RNN/LSTM hidden state can summarize available h
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html) and [LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): recurrent updates, inputs, hidden states, and outputs.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): an alternative implementation of exp(MΔt).
 
+For a scalar RNN with φ=tanh, W_x=1,W_h=0.5,b=0 and h₀=0, observation x₁=1 gives h₁=tanh(1)≈0.762. Even when x₂=0, h₂=tanh(0.5×0.762)≈0.363 retains information from the past. An LSTM uses learned gates to control retention, addition and exposure of memory.
+
 <!-- ko -->
 
 ## 초기 상태와 미래 입력에 따른 궤적 예측
@@ -238,6 +272,20 @@ Mc∗ + b = 0인 c∗를 사용해 z = c − c∗로 놓으면 dz/dt = Mz입니�
 
 <!-- lecture-page -->
 
+## 수지 행렬과 지수 응답의 연결
+
+330 K, τ=5에서 M의 첫 행은 [−0.4,0,0], 둘째는 [0.2,−0.3,0], 셋째는 [0,0.1,−0.2]이고 b=[0.24,0,0]입니다. 예를 들어 B의 변화율은 0.2<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−0.3<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>로 원래 수지와 같습니다.
+
+평형 <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>를 뺀 편차 z는 dz/dt=Mz를 만족합니다. 스칼라 dz/dt=−0.4z의 해 z(t)=exp(−0.4t)z(0)를 행렬로 확장한 것이 exp(Mt)z(0)입니다.
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>M</mi><mi>t</mi></mrow></msup><mo>=</mo><mi>I</mi><mo>+</mo><mi>M</mi><mi>t</mi><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>2</mn></msup><mn>2!</mn></mfrac><mo>+</mo><mfrac><msup><mrow><mo stretchy="false">(</mo><mi>M</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>3</mn></msup><mn>3!</mn></mfrac><mo>+</mo><mo>⋯</mo></mrow></math></div>
+
+M²은 행렬곱입니다. 각 원소를 따로 지수화한 배열이 아닙니다. Mt는 무차원이고, I+Mt까지만 남기면 시작 시점 기울기를 사용하는 Euler 한 단계가 됩니다. 뒤 항들은 구간 안에서 변하는 농도가 반응속도에 다시 미치는 영향을 반영합니다.
+
+첫 단계에서 z(0)=[0.6,−0.4,−0.2]이며 Mz=[−0.24,0.24,0]입니다. <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>c</mi><mo>∗</mo></msup></math>+(I+0.2M)z=[1.152,0.048,0]으로 Euler 계산을 다시 얻습니다.
+
+<!-- lecture-page -->
+
 ## 첫 전이 손 계산
 
 330 K, τ = 5 min, feed = 1.2 mol/L에서 a = 1/τ + k₁ = 0.4, b = 1/τ + k₂ = 0.3 min⁻¹입니다. 정상 조성은 c∗ = [0.6, 0.4, 0.2] mol/L이며, Δt = 0.2 min, c₀ = [1.2, 0, 0]에서 첫 전이를 계산합니다.
@@ -247,6 +295,20 @@ Mc∗ + b = 0인 c∗를 사용해 z = c − c∗로 놓으면 dz/dt = Mz입니�
 C_C,1 = S₁ − C_A,1 − C_B,1이므로 결과는 [1.153870, 0.045672, 0.000458] mol/L입니다.
 
 Forward Euler의 결과는 [1.152, 0.048, 0]입니다. 구간 안에서도 반응속도가 바뀌므로 해석해와 차이가 납니다. a = b일 때 분수의 극한은 Δt exp(−aΔt)입니다.
+
+<!-- lecture-page -->
+
+## A의 변화가 B로 전달되는 적분
+
+편차를 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>A</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>A</mi><mo>∗</mo></msubsup></math>, <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>B</mi></msub></math>−<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>B</mi><mo>∗</mo></msubsup></math>로 두고 a=1/τ+k₁, b=1/τ+k₂로 씁니다. A의 편차는 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(t)=<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at)입니다.
+
+B의 식 <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>′+b<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>B</mi></msub></math>=k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)exp(−at)에 exp(bt)를 곱하면 왼쪽은 곱의 미분이 됩니다. 0부터 t까지 적분하면:
+
+<div class="equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>e</mi><mrow><mi>b</mi><mi>t</mi></mrow></msup><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>z</mi><mi>B</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>z</mi><mi>A</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mfrac><mrow><msup><mi>e</mi><mrow><mo stretchy="false">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false">)</mo><mi>t</mi></mrow></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div>
+
+양변에 exp(−bt)를 곱하면 A에서 전달되는 항이 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)[exp(−at)−exp(−bt)]/(b−a)가 됩니다. 앞 계산의 0.12는 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)=0.2×0.6, −0.1은 b−a=0.3−0.4입니다.
+
+a=b이면 적분 안 지수항이 1이므로 적분값은 t입니다. 따라서 0/0을 계산하지 않고 전달항 k₁<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>z</mi><mi>A</mi></msub></math>(0)t exp(−at)를 사용합니다.
 
 <!-- lecture-page -->
 
@@ -282,6 +344,8 @@ d_scale = np.maximum(train_increments.std(axis=0), 1e-8)
 ```
 
 첫 입력 행은 c₀와 첫 구간 입력, 마지막 입력 행은 c₁₄₉와 마지막 구간 입력입니다. 마지막 label은 c₁₅₀이며, scaling에는 test 통계량을 사용하지 않습니다.
+
+`states[:-1]`은 c₀~c₁₄₉, `states[1:]`은 c₁~c₁₅₀입니다. 같은 행끼리 빼야 0.2분 증가량이 됩니다. `controls[k]`의 순서는 [T_k,τ,C_Af]이며 k번째 전이 구간의 조건입니다. 표준편차가 0인 열에서도 나눗셈이 가능하도록 scale의 하한을 10⁻⁸로 둡니다.
 
 <!-- lecture-page -->
 
@@ -337,6 +401,8 @@ L과 한 단계 오차 상한 ε이 일정할 때 반복 대입합니다.
 
 e₀ = 0에서 L < 1이면 상한은 ε/(1−L) 이하이고 L = 1이면 hε입니다. 이 민감도와 오차 상한은 실제로 거치는 상태에서 유효해야 하며, test RMSE 자체를 상한으로 사용할 수는 없습니다.
 
+삼각부등식으로 두 오차 항의 norm을 더하고, 첫 항에 Lipschitz 정의 ‖f(v)−f(w)‖≤L‖v−w‖를 적용합니다. e₀=0이면 첫 세 상한은 ε, Lε+ε, L²ε+Lε+ε입니다. 매 단계에 새 ε이 더해져 기하급수의 합이 생깁니다.
+
 <!-- lecture-page -->
 
 ## 두 평가 방식의 중간 상태
@@ -391,3 +457,5 @@ Gradient는 펼친 각 전이를 거쳐 전달됩니다. 모델이 학습 중 �
 - Sutskever·Vinyals·Le (2014), [1-2절](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence의 encoding·decoding을 다룹니다.
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html)·[LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): 반복 갱신, 입력, 은닉 상태와 출력을 확인합니다.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): exp(MΔt)의 다른 구현 방법을 확인합니다.
+
+스칼라 RNN의 φ를 tanh로 두고 W_x=1,W_h=0.5,b=0,h₀=0이라 합시다. 관측 x₁=1이면 h₁=tanh(1)≈0.762이고, 다음 관측 x₂=0이어도 h₂=tanh(0.5×0.762)≈0.363으로 이전 정보가 남습니다. LSTM은 이 메모리의 유지·추가·출력 비율을 학습한 gate로 조절합니다.

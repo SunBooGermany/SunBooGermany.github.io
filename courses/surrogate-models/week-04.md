@@ -108,6 +108,8 @@ Minimize the scalar objective ½(z − a)² + ½λ(z − b)², where data favor 
 
 If a ≠ b, a residual remains for finite λ. Very large penalties also require attention to loss magnitudes and numerical conditioning.
 
+Collecting the derivative terms gives (1+λ)z=a+λb. With a=1.4,b=1.2,λ=9, this is 10z=12.2, hence z=1.22. The data derivative −0.18 cancels the penalty derivative 9×0.02=+0.18, although the equality residual remains 0.02.
+
 <!-- lecture-page -->
 
 ## Differentiation targets in automatic differentiation
@@ -220,6 +222,25 @@ Equal correction has squared distance 3×(0.20/3)²=0.013333. Subtracting 0.20 o
 
 <!-- lecture-page -->
 
+## Projecting onto two independent equalities
+
+Consider a linear example requiring both total concentration 1.2 and A−B=0.2. The rows of constraint matrix B are [1,1,1] and [1,−1,0], with right side [1.2,0.2]. Project raw output [0.70,0.45,0.25].
+
+| Step | Calculation |
+| --- | --- |
+| Residuals Bŷ−d | [0.20,0.05] |
+| Diagonal entries of G=BBᵀ | row squared norms: 3 and 2 |
+| Off-diagonal entry | 1×1+1×(−1)+1×0=0 |
+| Solve Gλ=residual | λ=[0.20/3,0.05/2] |
+| Bᵀλ | [0.091667,0.041667,0.066667] |
+| Projected output | [0.608333,0.408333,0.183333] |
+
+The sum is 1.2 and A−B=0.2. Independence allows the two residuals to be removed separately. If the second row were twice the first, G would have no inverse.
+
+Here B names the constraint matrix, distinct from product species B. The additional A−B equality is a condition of this linear calculation example.
+
+<!-- lecture-page -->
+
 ## Post-projection and training through projection
 
 | Method | Output used in the training loss |
@@ -284,6 +305,8 @@ projected = raw - (raw.sum() - 1.2) * weights
 ```
 
 B has the largest scale, making a physical correction less costly in standardized distance. It therefore changes more. Checking only the final sum 1.20 hides the difference between these metrics.
+
+Let Δⱼ be the correction. Minimize ½∑Δⱼ²/sⱼ² subject to ∑Δⱼ=−0.20. Stationarity gives Δⱼ/sⱼ²+λ=0, hence Δⱼ=−λsⱼ². Substituting into the sum constraint gives λ=0.20/∑sⱼ², which explains the squared-scale proportions.
 
 <!-- lecture-page -->
 
@@ -552,6 +575,8 @@ A가 B로 반응한 양은 A 수지에서 음수, B 수지에서 양수로 한 �
 
 a ≠ b일 때 residual은 유한한 λ에서 남습니다. λ를 매우 크게 잡으면 손실항의 크기 차이와 수치 조건도 확인해야 합니다.
 
+미분식을 모으면 (1+λ)z=a+λb입니다. a=1.4,b=1.2,λ=9에서는 10z=12.2로 z=1.22를 얻습니다. 데이터 방향 미분은 −0.18, 벌점 방향 미분은 9×0.02=+0.18로 서로 상쇄되지만 등식 residual 0.02는 남습니다.
+
 <!-- lecture-page -->
 
 ## 자동미분의 계산 대상
@@ -664,6 +689,25 @@ rank(B) = m이면 G = BBᵀ는 양의 정부호입니다. 식에서는 역행렬
 
 <!-- lecture-page -->
 
+## 독립 등식 두 개의 투영 계산
+
+출력 합 1.2에 더해 A−B=0.2를 요구하는 선형 예제입니다. B의 행을 [1,1,1]과 [1,−1,0], 우변을 [1.2,0.2]로 두고 원시 출력 [0.70,0.45,0.25]를 보정합니다.
+
+| 단계 | 계산 결과 |
+| --- | --- |
+| 두 잔차 Bŷ−d | [0.20,0.05] |
+| G=BBᵀ의 대각 원소 | 첫 행 제곱합 3, 둘째 행 제곱합 2 |
+| G의 비대각 원소 | 1×1+1×(−1)+1×0=0 |
+| Gλ=잔차 | λ=[0.20/3,0.05/2] |
+| Bᵀλ | [0.091667,0.041667,0.066667] |
+| 보정 출력 | [0.608333,0.408333,0.183333] |
+
+합은 1.2이고 A−B=0.2입니다. 두 등식이 독립이어서 두 종류의 잔차를 따로 제거합니다. 두 번째 행이 첫 행의 두 배이면 G의 역행렬이 없어 같은 계산을 할 수 없습니다.
+
+여기서 B는 제약 행렬의 이름이며 제품 성분 B와 구별합니다. 추가한 A−B 등식은 이 선형 계산 예제의 조건입니다.
+
+<!-- lecture-page -->
+
 ## 학습 후 보정과 투영층을 포함한 학습
 
 | 방법 | 학습 loss에 들어가는 출력 |
@@ -728,6 +772,8 @@ projected = raw - (raw.sum() - 1.2) * weights
 ```
 
 B는 표준편차가 커 같은 농도 수정이 표준화 거리에서 덜 비쌉니다. 따라서 더 많이 바뀝니다. 합 1.20만 확인하면 두 거리 정의의 차이가 보이지 않습니다.
+
+수정량을 Δⱼ라 두면 최소화할 거리는 ½∑Δⱼ²/sⱼ²이고 ∑Δⱼ=−0.20입니다. 정지조건 Δⱼ/sⱼ²+λ=0에서 Δⱼ=−λsⱼ²를 얻고, 합 조건에 넣으면 λ=0.20/∑sⱼ²입니다. 따라서 각 수정량이 sⱼ²에 비례합니다.
 
 <!-- lecture-page -->
 

@@ -156,6 +156,23 @@ The optimum of min t agrees with the objective at the selected u. Auxiliary vari
 
 <!-- lecture-page -->
 
+## Restoring two auxiliary layers to forward values
+
+Consider h₁=ReLU(u−0.4), h₂=ReLU(2h₁−0.1), and f=0.2−u+3h₂. Hidden weight 2 and output weight 3 are positive. Fix u=0.6.
+
+| State | h₁ | h₂ | Output expression |
+| --- | --- | --- | --- |
+| Actual forward | 0.2 | 0.3 | 0.5 |
+| Loose epigraph point | 0.4 | 0.7 | 1.7 |
+| Restore first layer only | 0.2 | 0.7 | 1.7 |
+| Restore second layer | 0.2 | 0.3 | 0.5 |
+
+Lowering h₁ lowers 2h₁−0.1, so the existing h₂ still satisfies its lower bound. Lowering h₂ then decreases the objective because its output coefficient is positive. This is the layer-by-layer restoration argument.
+
+With output coefficient −3, raising h₂ would improve the objective and the argument would fail. An external requirement h₂≥0.7 would also prevent restoration to 0.3. Both weight signs and external constraints matter.
+
+<!-- lecture-page -->
+
 ## Applicability by output use
 
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">Output use</th><th style="font-size:clamp(15px,1.7cqw,22px)">Assessment</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">min f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">Use an epigraph objective</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">f(u) ≤ b</td><td style="font-size:clamp(15px,1.7cqw,22px)">Adding t ≤ b gives the exact input feasible set</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">f(u) ≥ b</td><td style="font-size:clamp(15px,1.7cqw,22px)">Adding only t ≥ b does not enforce a lower bound on the true output</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">y = f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">The output graph equality is generally nonconvex</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">max f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">The same LP argument does not cover convex maximization</td></tr></tbody></table>
@@ -273,6 +290,8 @@ At fixed c, the optimum is u = c. The lab solves separate LPs for c = 0.2, 0.5, 
 
 Along u = c, f = −0.1c². The endpoint average is −0.05 but the midpoint value is −0.025, violating joint convexity.
 
+For fixed c=0.2, represent <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>u</mi><mo>−</mo><mn>0.2</mn><mo stretchy="false">&#x7C;</mo></mrow></math> with t≥u−0.2 and t≥0.2−u, and minimize t−0.004. The minimum is −0.004 at u=0.2,t=0. If c becomes a variable, −0.1c² is no longer a constant, so this LP no longer applies unchanged.
+
 <!-- lecture-page -->
 
 ## Fitting a known convex reference function
@@ -284,6 +303,8 @@ Fit coefficients at 41 evenly spaced inputs and evaluate at 200 separate midpoin
 This shallow ICNN with fixed knots is a special case with convex training. The conclusion does not extend to general deep-ICNN training.
 
 Fixed knots κ allow every ReLU feature to be computed before fitting. Only b,a,w remain unknown, giving bounded linear least squares. w≥0 prevents downward slope jumps at knots and preserves convexity of the fitted curve.
+
+At u=0.25, the feature row is [1,0.25,0.15,0.05,0,0,0,0,0,0,0]. Only knots 0.1 and 0.2 have been crossed. Fit least squares with b and a unrestricted and lower bounds of zero on the remaining nine weights.
 
 <!-- lecture-page -->
 
@@ -505,6 +526,23 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 
 <!-- lecture-page -->
 
+## 두 층의 보조변수를 forward로 복원하기
+
+h₁=ReLU(u−0.4), h₂=ReLU(2h₁−0.1), f=0.2−u+3h₂인 ICNN을 봅니다. 은닉 연결 2와 출력 연결 3이 양수입니다. 입력 u=0.6을 고정합니다.
+
+| 상태 | h₁ | h₂ | 출력식의 값 |
+| --- | --- | --- | --- |
+| 실제 forward | 0.2 | 0.3 | 0.5 |
+| 느슨한 epigraph 가능점 | 0.4 | 0.7 | 1.7 |
+| 첫 층만 실제값으로 내림 | 0.2 | 0.7 | 1.7 |
+| 둘째 층도 실제값으로 내림 | 0.2 | 0.3 | 0.5 |
+
+h₁을 낮추면 2h₁−0.1도 낮아져 기존 h₂의 하한 제약을 깨뜨리지 않습니다. 이어 h₂를 낮추면 양의 출력 계수 때문에 목적값도 내려갑니다. 이 순서가 층별 복원 논증입니다.
+
+출력 계수가 −3이면 h₂를 높일수록 목적값이 낮아져 이 논리가 성립하지 않습니다. 외부에서 h₂≥0.7을 요구해도 실제값 0.3으로 복원할 수 없으므로, 부호와 외부 제약을 함께 확인합니다.
+
+<!-- lecture-page -->
+
 ## 출력 사용 방식에 따른 적용 범위
 
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">사용 방식</th><th style="font-size:clamp(15px,1.7cqw,22px)">판단</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">min f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">epigraph 목적함수로 표현</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">f(u) ≤ b</td><td style="font-size:clamp(15px,1.7cqw,22px)">t ≤ b를 추가하면 정확한 입력 feasible set</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">f(u) ≥ b</td><td style="font-size:clamp(15px,1.7cqw,22px)">t ≥ b만으로는 실제 출력 하한을 강제하지 못함</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">y = f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">출력 그래프 등식은 일반적으로 비convex</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">max f(u)</td><td style="font-size:clamp(15px,1.7cqw,22px)">convex 함수 최대화에 같은 LP 논증을 적용할 수 없음</td></tr></tbody></table>
@@ -622,6 +660,8 @@ c도 최적화하면 W(c)h나 A(c)u가 비선형 결합이 될 수 있습니다.
 
 u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 −0.05인데 중점 값은 −0.025이므로 공동 convexity 조건을 위반합니다.
 
+고정 c=0.2에서는 <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>u</mi><mo>−</mo><mn>0.2</mn><mo stretchy="false">&#x7C;</mo></mrow></math>를 보조변수 t의 두 하한 t≥u−0.2, t≥0.2−u로 표현하고 t−0.004를 최소화합니다. u=0.2,t=0에서 최솟값 −0.004입니다. c가 변수가 되면 목적식의 −0.1c²가 상수가 아니므로 이 LP를 그대로 사용할 수 없습니다.
+
 <!-- lecture-page -->
 
 ## 알려진 convex 함수를 이용한 학습
@@ -633,6 +673,8 @@ u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 
 고정 knot을 사용하는 이 얕은 ICNN은 convex 학습이 가능한 특수한 경우입니다. 깊은 ICNN의 일반적인 학습에는 이 결론을 적용할 수 없습니다.
 
 절점 κ가 고정이면 각 입력의 ReLU 특성을 미리 계산할 수 있습니다. 계수 b,a,w만 미지수이므로 제한된 선형 최소제곱입니다. w≥0은 절점에서 기울기가 감소하지 않게 해 학습된 곡선의 convexity를 유지합니다.
+
+예를 들어 u=0.25의 특성 행은 [1,0.25,0.15,0.05,0,0,0,0,0,0,0]입니다. 절점 0.1과 0.2만 지났으므로 두 hinge만 양수입니다. b,a 두 계수는 음수도 허용하고 나머지 9개에는 하한 0을 주어 최소제곱을 풉니다.
 
 <!-- lecture-page -->
 

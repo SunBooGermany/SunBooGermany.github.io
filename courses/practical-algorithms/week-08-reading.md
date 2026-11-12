@@ -144,6 +144,8 @@ The target is n-1. Processing the last index overcounts; [0] gives zero. Unreach
 
 `nums=[2,3,0,1,0] → 2`
 
+In the example, layer 0 is {0}, the positions newly reached with one jump are {1,2}, and the next layer is {3,4}. Even after index=1 discovers endpoint 4, the scan finishes the current layer through index=2 before committing jumps=2. end is the last index to examine in a layer, not a chosen landing position.
+
 <!-- lecture-page -->
 
 ## 134 · Idea and execution trace
@@ -196,6 +198,23 @@ zip reads one pair at a time without constructing a difference array. A fixed nu
 Choosing the largest gas supply is unjustified: gas=[5,0,4],cost=[6,1,2] fails at station 0; station 2 is the unique valid start.
 
 `gas=[1,4,2], cost=[3,1,3] → 1`
+
+<!-- lecture-page -->
+
+## Removing a failed segment and wrapping around
+
+For differences [2,−1,−3,3], starting at 0 gives fuel 2→1→−2. The first failure at 2 eliminates starts 0,1,2. Start 1 would also fail with −1−3=−4; start 2 fails with −3.
+
+Prefix sum P[k] is the sum of the first k differences. Here P=[0,2,1,−2,1] has its minimum at 3, which is also the algorithm's new start.
+
+| Station visited from start 3 | Calculation | Fuel |
+| --- | --- | --- |
+| 3 | 3 | 3 |
+| 0 | 3+2 | 5 |
+| 1 | 3+2−1 | 4 |
+| 2 | 3+2−1−3 | 1 |
+
+In general, fuel after a minimum-prefix position s is P[k]−P[s]≥0. After wrapping, fuel is the full sum P[n] plus P[k]−P[s]. If the full sum is nonnegative, this is also nonnegative, proving that the final candidate completes the wrapped portion too.
 
 <!-- lecture-page -->
 
@@ -430,6 +449,8 @@ end, farthest, jumps와 반복 변수만 저장하여 보조 공간은 O(1)입�
 
 `nums=[2,3,0,1,0] → 2`
 
+예시에서 0번 층은 {0}, 한 번 점프로 새로 도달하는 1번 층은 {1,2}, 두 번이면 {3,4}입니다. index=1에서 다음 끝 4를 알아도 index=2까지 현재 층을 마친 뒤 jumps를 2로 확정합니다. end는 실제로 착지할 한 위치가 아니라 이 층에서 조사할 마지막 인덱스입니다.
+
 <!-- lecture-page -->
 
 ## 134 · 풀이의 출발점과 실행 추적
@@ -482,6 +503,23 @@ s..i에서 처음 실패했다면 s..j-1의 누적합은 음수가 아닙니다.
 연료가 가장 많은 곳을 고르는 규칙에는 증명이 없습니다. gas=[5,0,4],cost=[6,1,2]에서는 최대 연료 위치 0이 즉시 실패하고 유일한 시작점 2가 가능합니다.
 
 `gas=[1,4,2], cost=[3,1,3] → 1`
+
+<!-- lecture-page -->
+
+## 실패 구간 제거와 한 바퀴의 누적합
+
+차이가 [2,−1,−3,3]이면 0에서 시작한 잔량은 2→1→−2입니다. 2번에서 처음 실패하므로 시작점 0,1,2를 모두 제외합니다. 1에서 시작해도 −1−3=−4, 2에서는 −3으로 실패합니다.
+
+접두합 P[k]는 처음 k개 차이의 합입니다. 이 예의 P=[0,2,1,−2,1]에서 최소 위치는 3이며, 알고리즘의 새 시작점도 3입니다.
+
+| 출발 3 이후 방문 | 계산 | 잔량 |
+| --- | --- | --- |
+| 3 | 3 | 3 |
+| 0 | 3+2 | 5 |
+| 1 | 3+2−1 | 4 |
+| 2 | 3+2−1−3 | 1 |
+
+일반적으로 최소 접두합 위치 s 이후의 잔량은 P[k]−P[s]≥0입니다. 앞쪽으로 돌아온 뒤에는 전체 합 P[n]에 P[k]−P[s]를 더합니다. 전체 합이 0 이상이면 이 값도 0 이상이므로 마지막 후보가 순환 구간까지 통과합니다.
 
 <!-- lecture-page -->
 

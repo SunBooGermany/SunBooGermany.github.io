@@ -79,6 +79,23 @@ Full-precision coefficients are stored in `frozen_network.json`. Reconstructing 
 
 <!-- lecture-page -->
 
+## From interpolation slopes to ReLU weights
+
+The first three B knot values at τ=2,4,6 are 0.285714286,0.380952381,0.409090909. Since x=(τ−2)/8, adjacent knots are 2/8=0.25 apart in x.
+
+| Calculation | Result |
+| --- | --- |
+| First slope in x | (0.380952381−0.285714286)/0.25=0.380952381 |
+| Second slope in x | (0.409090909−0.380952381)/0.25=0.112554113 |
+| First ReLU weight W₀B | first slope: 0.380952381 |
+| Weight W₁B at knot 0.25 | new minus previous slope: −0.268398268 |
+
+For 0.25<x<0.5, only the first two ReLUs have derivative 1, so the total slope is 0.380952381 − 0.268398268 = 0.112554113. The new hinge is zero at its knot, preserving continuity.
+
+Slopes computed with respect to τ must be multiplied by 8 to obtain weights for x: the same concentration change occurs over an x interval eight times shorter. Construct the A and C columns in the same way.
+
+<!-- lecture-page -->
+
 ## Hidden values and B concentration at τ=5 min
 
 Subtract thresholds [0,0.25,0.50,0.75] from x=(5−2)/8=0.375.
@@ -155,6 +172,28 @@ The variable order is [x, h₀, h₁, h₂, h₃, y_A, y_B, y_C, z₁, z₂, z�
 For V = 2 + 8x, the constant 2 does not change the optimizer, so the solver minimizes 8x. Add 2 back when reporting V and its dual bound.
 
 An integer variable becomes binary only when its bounds are [0, 1]. If pre-activations are explicit variables, assign lower bounds that permit negative values.
+
+<!-- lecture-page -->
+
+## Storing one constraint as a solver row
+
+Use variable order [x,h₀,h₁,h₂,h₃,y_A,y_B,y_C,z₁,z₂,z₃]. Only three columns are nonzero for h₁−x+0.25z₁≤0.
+
+```python
+import numpy as np
+row = [-1, 0, 1, 0, 0, 0, 0, 0, 0.25, 0, 0]
+row_lower = -np.inf
+row_upper = 0.0
+```
+
+| Substitution | Row dot product | Check |
+| --- | --- | --- |
+| x=0.5,h₁=0.25,z₁=1 | −0.5+0.25+0.25=0 | satisfies upper bound 0 |
+| x=0.5,h₁=0.30,z₁=1 | −0.5+0.30+0.25=0.05 | violates upper bound |
+
+For output equality y_B−∑WⱼB hⱼ=b_B, set both row bounds to b_B. Mark the z₁ column as integer and also give it bounds [0,1]. A coefficient row alone does not make a variable binary.
+
+[SciPy LinearConstraint](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.LinearConstraint.html) interprets each row as `lb <= A @ v <= ub`. Check variable order and coefficient signs against the same equation.
 
 <!-- lecture-page -->
 
@@ -315,6 +354,23 @@ b = [0.857142857, 0.285714286, 0.057142857] mol/L입니다. W의 단위도 mol/L
 
 <!-- lecture-page -->
 
+## 보간 기울기에서 ReLU 가중치로
+
+B의 첫 세 절점 값은 τ=2,4,6에서 0.285714286,0.380952381,0.409090909입니다. x=(τ−2)/8이므로 절점의 x 간격은 2/8=0.25입니다.
+
+| 계산 | 결과 |
+| --- | --- |
+| 첫 구간의 x 기울기 | (0.380952381−0.285714286)/0.25=0.380952381 |
+| 두 번째 구간의 x 기울기 | (0.409090909−0.380952381)/0.25=0.112554113 |
+| 첫 ReLU 가중치 W₀B | 첫 기울기 0.380952381 |
+| 절점 0.25의 가중치 W₁B | 새 기울기−이전 기울기=−0.268398268 |
+
+0.25<x<0.5에서는 첫 두 ReLU만 미분이 1이므로 전체 기울기는 0.380952381 − 0.268398268 = 0.112554113입니다. 새 항은 절점에서 0이므로 값의 연속성도 유지됩니다.
+
+τ 기준 기울기를 사용했다면 x 기준 가중치로 옮길 때 8을 곱해야 합니다. 같은 농도 변화가 x에서는 8배 짧은 간격에 걸쳐 일어나기 때문입니다. A와 C 열도 같은 방법으로 구합니다.
+
+<!-- lecture-page -->
+
 ## τ=5 min에서 은닉값과 B 농도
 
 x=(5−2)/8=0.375를 네 절점 [0,0.25,0.50,0.75]에서 뺍니다.
@@ -391,6 +447,28 @@ ReLU를 통과한 다음 구간은 [max(0, L), max(0, U)]입니다. 이 구간�
 V = 2 + 8x에서 상수 2는 최적해에 영향을 주지 않으므로 solver에는 8x만 전달합니다. 보고하는 V와 dual bound에는 2를 다시 더합니다.
 
 정수변수의 bounds를 [0, 1]로 지정해야 이진변수가 됩니다. pre-activation을 별도 변수로 만들면 음수도 허용하도록 하한을 직접 지정합니다.
+
+<!-- lecture-page -->
+
+## 제약식 한 줄을 solver 행으로 저장하기
+
+전체 변수 순서는 [x,h₀,h₁,h₂,h₃,y_A,y_B,y_C,z₁,z₂,z₃]입니다. h₁−x+0.25z₁≤0의 계수는 해당 세 열에만 들어갑니다.
+
+```python
+import numpy as np
+row = [-1, 0, 1, 0, 0, 0, 0, 0, 0.25, 0, 0]
+row_lower = -np.inf
+row_upper = 0.0
+```
+
+| 대입 | 행 내적 | 판정 |
+| --- | --- | --- |
+| x=0.5,h₁=0.25,z₁=1 | −0.5+0.25+0.25=0 | 상한 0 만족 |
+| x=0.5,h₁=0.30,z₁=1 | −0.5+0.30+0.25=0.05 | 상한 위반 |
+
+출력 등식 y_B−∑WⱼB hⱼ=b_B는 해당 행의 하한과 상한을 모두 b_B로 둡니다. z₁ 열은 정수 표시와 [0,1] bounds를 함께 설정합니다. 계수 배열만 만들고 이 두 설정을 빼면 이진변수가 되지 않습니다.
+
+[SciPy LinearConstraint](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.LinearConstraint.html)는 각 행을 `lb <= A @ v <= ub`로 해석합니다. 따라서 변수 순서와 계수의 부호를 같은 행에서 대조합니다.
 
 <!-- lecture-page -->
 

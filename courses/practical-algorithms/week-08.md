@@ -145,6 +145,8 @@ Explicitly constructing all possible jump edges could create many edges per posi
 
 Only end, farthest, jumps, and loop variables are stored, giving O(1) auxiliary space. It uses BFS layers conceptually without building a queue. Length one executes zero iterations and returns zero jumps.
 
+In the example, layer 0 is {0}, the positions newly reached with one jump are {1,2}, and the next layer is {3,4}. Even after index=1 discovers endpoint 4, the scan finishes the current layer through index=2 before committing jumps=2. end is the last index to examine in a layer, not a chosen landing position.
+
 <!-- lecture-page -->
 
 ## 134 · Idea and execution trace
@@ -193,6 +195,23 @@ At the first failure over s..i, each earlier prefix s..j-1 is nonnegative. Remov
 Trying n steps independently from each start would cost O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>). Eliminating every start in a failed segment lets index advance without restarting, so there are n constant-cost updates: O(n) time.
 
 zip reads one pair at a time without constructing a difference array. A fixed number of counters gives O(1) auxiliary space. Check both the size of the returned index and the absence of growing intermediate storage.
+
+<!-- lecture-page -->
+
+## Removing a failed segment and wrapping around
+
+For differences [2,−1,−3,3], starting at 0 gives fuel 2→1→−2. The first failure at 2 eliminates starts 0,1,2. Start 1 would also fail with −1−3=−4; start 2 fails with −3.
+
+Prefix sum P[k] is the sum of the first k differences. Here P=[0,2,1,−2,1] has its minimum at 3, which is also the algorithm's new start.
+
+| Station visited from start 3 | Calculation | Fuel |
+| --- | --- | --- |
+| 3 | 3 | 3 |
+| 0 | 3+2 | 5 |
+| 1 | 3+2−1 | 4 |
+| 2 | 3+2−1−3 | 1 |
+
+In general, fuel after a minimum-prefix position s is P[k]−P[s]≥0. After wrapping, fuel is the full sum P[n] plus P[k]−P[s]. If the full sum is nonnegative, this is also nonnegative, proving that the final candidate completes the wrapped portion too.
 
 <!-- lecture-page -->
 
@@ -409,6 +428,8 @@ def min_jumps(nums):
 
 end, farthest, jumps와 반복 변수만 저장하여 보조 공간은 O(1)입니다. BFS의 층 개념을 사용하지만 큐를 만들지는 않습니다. 길이 1이면 반복 횟수 0, 반환 점프 수 0입니다.
 
+예시에서 0번 층은 {0}, 한 번 점프로 새로 도달하는 1번 층은 {1,2}, 두 번이면 {3,4}입니다. index=1에서 다음 끝 4를 알아도 index=2까지 현재 층을 마친 뒤 jumps를 2로 확정합니다. end는 실제로 착지할 한 위치가 아니라 이 층에서 조사할 마지막 인덱스입니다.
+
 <!-- lecture-page -->
 
 ## 134 · 풀이의 출발점과 실행 추적
@@ -457,6 +478,23 @@ s..i에서 처음 실패했다면 s..j-1의 누적합은 음수가 아닙니다.
 각 출발점에서 n칸씩 따로 시험하면 O(<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>n</mi><mn>2</mn></msup></math>)입니다. 실패 구간 안의 출발점을 함께 제외하면 index가 뒤로 돌아가지 않아 n번만 처리합니다. 각 처리의 합·비교가 O(1)이므로 시간 O(n)입니다.
 
 차이 배열을 새로 만들지 않고 zip으로 한 쌍씩 읽습니다. total, tank, start 등 고정 개수의 변수만 보관하므로 보조 공간 O(1)입니다. 반환 인덱스가 한 개라는 사실과 실제 실행 중 배열을 만들지 않는다는 사실을 함께 확인해야 합니다.
+
+<!-- lecture-page -->
+
+## 실패 구간 제거와 한 바퀴의 누적합
+
+차이가 [2,−1,−3,3]이면 0에서 시작한 잔량은 2→1→−2입니다. 2번에서 처음 실패하므로 시작점 0,1,2를 모두 제외합니다. 1에서 시작해도 −1−3=−4, 2에서는 −3으로 실패합니다.
+
+접두합 P[k]는 처음 k개 차이의 합입니다. 이 예의 P=[0,2,1,−2,1]에서 최소 위치는 3이며, 알고리즘의 새 시작점도 3입니다.
+
+| 출발 3 이후 방문 | 계산 | 잔량 |
+| --- | --- | --- |
+| 3 | 3 | 3 |
+| 0 | 3+2 | 5 |
+| 1 | 3+2−1 | 4 |
+| 2 | 3+2−1−3 | 1 |
+
+일반적으로 최소 접두합 위치 s 이후의 잔량은 P[k]−P[s]≥0입니다. 앞쪽으로 돌아온 뒤에는 전체 합 P[n]에 P[k]−P[s]를 더합니다. 전체 합이 0 이상이면 이 값도 0 이상이므로 마지막 후보가 순환 구간까지 통과합니다.
 
 <!-- lecture-page -->
 

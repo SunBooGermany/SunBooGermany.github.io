@@ -96,6 +96,25 @@ Removing the last element is also amortized O(1) when resizing is included. This
 
 <!-- lecture-page -->
 
+## Sharing resize costs across calls
+
+Count eight appends to an array whose capacity doubles through 1,2,4,8. This is a calculation for geometric growth, not CPython's exact allocation schedule.
+
+| Length after append | New capacity needed | Existing references moved |
+| --- | --- | --- |
+| 1 | 1 | 0 |
+| 2 | 2 | 1 |
+| 3 | 4 | 2 |
+| 4 | unchanged | 0 |
+| 5 | 8 | 4 |
+| 6–8 | unchanged | 0 |
+
+Eight new writes plus 1+2+4=7 copies give 15 operations. When N is a power of two, copies total N−1 and all writes total 2N−1. Between powers of two, copies remain below 2N, so total cost is O(N). Growing by just one slot would instead copy 1+2+…+(N−1) references, giving O(N²).
+
+Dividing O(N) total work by N calls gives amortized O(1) per append.
+
+<!-- lecture-page -->
+
 ## Time and memory of copies and slices
 
 ```python
@@ -115,7 +134,9 @@ print(c)  # [20, 30]
 | `a.copy()`, `list(a)` | O(n) | O(n) |
 | `sorted(a)` | O(n log n) worst case | O(n) copy/sorting workspace |
 
-A shallow copy does not clone the referenced objects. For a two-dimensional list, distinguish copying the outer list from copying each row. Memory counts simultaneously retained storage, not the total number of processed elements.
+
+
+With `rows=[[1],[2]]; copied=rows.copy()`, `copied[0].append(9)` changes both first rows to `[1,9]`: copied outer slots point to the same row object. Memory counts simultaneously retained storage, not the number of elements processed.
 
 <!-- lecture-page -->
 
@@ -316,6 +337,8 @@ One lookup, distance comparison, and update per value give expected O(n) time. T
 - Which answer is missed if index 2 does not update state in `[4,7,4,4], k=1`?
 - How does copying latest on every iteration change complexity?
 
+Check: membership tests list elements or dictionary keys. Storing first can return `[0,0]` on the first iteration of `[3,3]`. Skipping the latest-index update misses the last two 4s. Copying the dictionary each time can copy 0+1+…+(n−1) entries, giving expected O(n²) time and peak O(n) extra space even if only one copy is retained.
+
 <!-- lecture-page -->
 
 ## Pairing sorted part lengths
@@ -457,6 +480,8 @@ For each fixed value, restart two pointers in the suffix. Skip repeated fixed va
 
 After storing a match, move both pointers and skip values equal to the ones just used.
 
+For `[-2,0,0,2,2]`, the first answer uses positions (0,1,4). Moving both pointers gives (left,right)=(2,3). Since `values[2]==values[1]==0`, left becomes 3 and the scan ends. The extra 0 and 2 would reproduce `[-2,0,2]`, so no new value combination is lost.
+
 <!-- lecture-page -->
 
 ## Two places to remove duplicate output
@@ -586,6 +611,25 @@ list는 현재 길이보다 여유 있는 저장 공간을 확보합니다. 여�
 
 <!-- lecture-page -->
 
+## 확장 비용을 여러 호출에 나누기
+
+용량을 1,2,4,8칸으로 두 배씩 늘리는 배열에서 append 8회를 세어봅니다. CPython의 실제 증설 비율을 재현한 표는 아니며, 비율을 정해 확장할 때 총 이동량이 어떻게 제한되는지 계산합니다.
+
+| 추가 후 길이 | 필요한 새 용량 | 옮기는 기존 참조 수 |
+| --- | --- | --- |
+| 1 | 1 | 0 |
+| 2 | 2 | 1 |
+| 3 | 4 | 2 |
+| 4 | 유지 | 0 |
+| 5 | 8 | 4 |
+| 6~8 | 유지 | 0 |
+
+새 값 기록 8회와 복사 1+2+4=7회를 합하면 15회입니다. N이 2의 거듭제곱이면 복사 합은 N−1, 총 기록은 2N−1입니다. N이 그 사이에 있어도 복사 합은 2N보다 작아 총비용은 O(N)입니다. 반면 용량을 한 칸씩만 늘리면 1+2+…+(N−1)을 복사하므로 O(N²)이 됩니다.
+
+전체 O(N)을 호출 N회로 나누면 append의 분할상환 비용은 O(1)입니다.
+
+<!-- lecture-page -->
+
 ## 복사와 슬라이싱의 시간·메모리
 
 ```python
@@ -605,7 +649,9 @@ print(c)  # [20, 30]
 | `a.copy()`, `list(a)` | O(n) | O(n) |
 | `sorted(a)` | 최악 O(n log n) | 복사·정렬 작업 공간 O(n) |
 
-얕은 복사는 내부 객체까지 복제하지 않습니다. 이차원 리스트라면 바깥 리스트 복사와 각 행 복사를 구분합니다. 메모리는 원소를 처리한 총횟수가 아니라 동시에 유지되는 저장량입니다.
+
+
+예를 들어 `rows=[[1],[2]]; copied=rows.copy()` 뒤 `copied[0].append(9)`를 실행하면 두 목록 모두 첫 행이 `[1,9]`입니다. 바깥 슬롯만 복사했고 그 슬롯이 가리키는 첫 행 객체는 공유하기 때문입니다. 메모리는 처리 횟수가 아니라 동시에 유지되는 저장량입니다.
 
 <!-- lecture-page -->
 
@@ -806,6 +852,8 @@ latest의 값은 해당 숫자를 가장 최근에 본 위치입니다. 멀리 �
 - `[4,7,4,4], k=1`에서 2번 위치의 갱신을 생략하면 어떤 답을 놓치나요?
 - 매 반복에서 `latest.copy()`를 만들면 복잡도는 어떻게 달라지나요?
 
+확인: 리스트에서는 원소 값, 사전에서는 키를 검사합니다. `[3,3]`을 먼저 저장하면 첫 반복부터 `[0,0]`을 만들 수 있습니다. 최근 위치 갱신을 생략하면 마지막 두 4를 놓칩니다. 매번 사전을 복사하면 최악에 0+1+…+(n−1)개 항목을 복사해 기대 시간 O(n²), 사본 하나만 유지해도 최대 추가 공간 O(n)입니다.
+
 <!-- lecture-page -->
 
 ## 정렬된 부품 길이의 합
@@ -946,6 +994,8 @@ def three_sum(nums):
 ```
 
 정답을 저장한 뒤 양쪽 포인터를 이동하고, 방금 사용한 값과 같은 값을 건너뜁니다.
+
+`[-2,0,0,2,2]`에서 첫 답을 찾은 위치는 (0,1,4)입니다. 양쪽 이동 뒤 (left,right)=(2,3)인데 `values[2]==values[1]==0`이므로 left=3이 되어 종료합니다. 추가 0과 2로 만들 조합도 이미 저장한 `[-2,0,2]`여서 새 답을 잃지 않습니다.
 
 <!-- lecture-page -->
 

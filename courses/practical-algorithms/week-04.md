@@ -51,6 +51,22 @@ Here n=5, h=3, and w=2. DFS retains unfinished paths in a stack; BFS retains pen
 
 <!-- lecture-page -->
 
+## From list notation to a tree
+
+`[4,2,7,None,3]` is level-order notation. Read the left and right child slots of each real node; None means that slot is empty. Do not read child slots for None itself.
+
+| Values read | Connection | Nodes awaiting child slots |
+| --- | --- | --- |
+| 4 | create the root | [4] |
+| 2,7 | 4.left=2, 4.right=7 | [2,7] |
+| None,3 | 2.left=None, 2.right=3 | [7,3] |
+
+Omitted trailing child slots are None. The path 4→2→3 has depth 3 and the levels are `[[4],[2,7],[3]]`. The depth function receives the connected TreeNode root, rather than this list directly.
+
+In this notation for a sparse tree, children of list position i are not always at 2i+1 and 2i+2. In `[1,None,2,3]`, node 3 is the left child of node 2.
+
+<!-- lecture-page -->
+
 ## What a recursive depth call returns
 
 ```python
@@ -143,6 +159,8 @@ Use the preceding 3–9–20–15–7 tree. The queue’s left end is removed ne
 | [15,7] | 2 | [15,7] | [] |
 
 The result is `[[3],[9,20],[15,7]]`.
+
+At the second level, queue=[9,20] fixes the loop count at two. Removing 9 leaves [20]; removing 20 and adding its children leaves [15,7]. Although the queue is nonempty, those two iterations are complete, so level=[9,20] is stored before the next level starts.
 
 <!-- lecture-page -->
 
@@ -349,6 +367,22 @@ class TreeNode:
 
 <!-- lecture-page -->
 
+## 리스트 표기에서 실제 트리로
+
+`[4,2,7,None,3]`은 레벨 순서 표기입니다. 실제 노드의 자식을 왼쪽·오른쪽 순서로 읽으며 None은 그 자리가 비었다는 뜻입니다. None 자체의 자식은 읽지 않습니다.
+
+| 읽은 값 | 연결 | 다음에 자식을 읽을 노드 |
+| --- | --- | --- |
+| 4 | 루트 생성 | [4] |
+| 2,7 | 4.left=2, 4.right=7 | [2,7] |
+| None,3 | 2.left=None, 2.right=3 | [7,3] |
+
+남은 자식 표기는 생략된 None입니다. 따라서 경로 4→2→3의 깊이는 3이고, 레벨은 `[[4],[2,7],[3]]`입니다. 최대 깊이 함수는 이 목록을 직접 받는 것이 아니라 연결된 TreeNode의 root를 받습니다.
+
+임의의 희소 트리에서 목록 위치 i의 자식이 항상 2i+1,2i+2인 것은 아닙니다. 예를 들어 `[1,None,2,3]`의 3은 노드 2의 왼쪽 자식입니다.
+
+<!-- lecture-page -->
+
 ## 재귀 호출이 돌려주는 깊이
 
 ```python
@@ -441,6 +475,8 @@ def max_depth(root):
 | [15,7] | 2 | [15,7] | [] |
 
 결과는 `[[3],[9,20],[15,7]]`입니다.
+
+두 번째 층에서 처음 queue=[9,20]이면 반복 횟수는 2로 정해집니다. 9를 꺼내 [20], 20을 꺼내 자식들을 넣으면 [15,7]입니다. 아직 큐가 비지 않아도 두 번을 마쳤으므로 level=[9,20]을 저장하고 새 층을 시작합니다.
 
 <!-- lecture-page -->
 

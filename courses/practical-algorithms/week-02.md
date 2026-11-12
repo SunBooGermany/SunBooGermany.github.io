@@ -302,6 +302,8 @@ class MinStack:
 
 Each tuple stores `(current value, minimum through this depth)`. Removing the last tuple reveals the previous depth’s minimum. getMin reads one slot in the last tuple instead of scanning all values with min.
 
+In `entries[-1][1]`, −1 selects the last tuple and 1 selects its second field. For `[(4,4),(7,4)]`, top is 7 and getMin is 4. On an empty list the conditional expression evaluates only its else branch, val, so it never reads a nonexistent last entry.
+
 <!-- lecture-page -->
 
 ## Independent instance state and self
@@ -366,6 +368,8 @@ The problem requires truncation toward zero. Python `//` rounds toward negative 
 
 Compute the magnitude as `abs(left) // abs(right)` and negate it when the signs differ. This uses integer arithmetic without a floating-point conversion.
 
+`(left < 0) != (right < 0)` tests whether the signs differ. For 5 and −2, False != True gives a negative result, −2. For −5 and −2, True != True is False, giving +2. Operator token `"-"` and numeric token `"-2"` are different strings, so the latter is converted with int.
+
 <!-- lecture-page -->
 
 ## Implementing postfix evaluation
@@ -413,7 +417,7 @@ Each of t tokens performs at most two pops, one append, and one arithmetic opera
 4. Comparison: `5//-2` with the problem's required result for `5/-2`
 5. How does calling `min(entries)` inside `getMin` change query cost?
 
-Answer checks: in the [worked companion](/courses/practical-algorithms/week-02-reading/)
+Checks: the remaining tuple is (2,2), with minimum 2. Push into only one stack and check that the other stays empty to detect shared storage. The first pop returns 4. 5//−2 gives −3; the required result is −2. Recomputing min makes a query O(n).
 
 <!-- lecture-page -->
 
@@ -739,6 +743,8 @@ class MinStack:
 
 각 튜플은 `(현재 값, 이 깊이까지의 최솟값)`입니다. pop은 마지막 튜플만 없애 이전 깊이의 최솟값을 다시 드러냅니다. getMin은 전체를 훑는 min 연산 없이 마지막 튜플의 두 번째 칸만 읽습니다.
 
+`entries[-1][1]`에서 −1은 마지막 튜플, 1은 그 튜플의 두 번째 값입니다. 예를 들어 `[(4,4),(7,4)]`이면 top은 7, getMin은 4입니다. 빈 리스트에서는 조건식의 else 쪽 val만 평가하므로 없는 마지막 항목을 읽지 않습니다.
+
 <!-- lecture-page -->
 
 ## 인스턴스의 독립 상태와 self
@@ -803,6 +809,8 @@ print(first.getMin(), second.getMin())  # 2 7
 
 `abs(left) // abs(right)`로 크기를 계산하고 두 값의 부호가 다를 때 음수를 붙입니다. 부동소수점 변환 없이 정수 연산만 사용합니다.
 
+`(left < 0) != (right < 0)`는 두 부호가 다른지 검사합니다. 5와 −2에서는 False != True가 True여서 −2, −5와 −2에서는 True != True가 False여서 +2입니다. 연산자 토큰 `"-"`와 숫자 토큰 `"-2"`는 서로 다른 문자열이므로 후자는 int로 변환됩니다.
+
 <!-- lecture-page -->
 
 ## 후위 표기 계산의 구현
@@ -850,7 +858,7 @@ t개 토큰 각각에서 최대 두 번 pop, 한 번 append, 산술 연산 한 �
 4. `5//-2`와 공식 문제의 `5/-2`는 각각 얼마인가요?
 5. `getMin`에서 `min(entries)`를 호출하면 조회 비용이 어떻게 달라지나요?
 
-확인 답은 [풀이 읽기자료](/courses/practical-algorithms/week-02-reading/)에 있습니다.
+확인: 남은 튜플은 (2,2), 최소는 2입니다. 첫 스택에만 push하고 둘째 스택이 비어 있는지 확인하면 공유 오류를 찾습니다. 첫 pop은 4입니다. 5//−2는 −3, 요구값은 −2입니다. 매번 min을 계산하면 조회가 O(n)이 됩니다.
 
 <!-- lecture-page -->
 

@@ -168,6 +168,23 @@ One neuron combines all input columns into one number. Each of 32 first-layer ne
 
 <!-- lecture-page -->
 
+## Computing column equations as a batch matrix
+
+The equations use column inputs. If batch code stores X as (N,3) rows, the first layer is `X @ W1.T + b1`, producing (N,32). Transposing the weights implements the same weighted sums with row storage; the 32 biases are applied to every data row.
+
+| Array | Shape | Axis meanings |
+| --- | --- | --- |
+| X | N×3 | data rows, input variables |
+| W1.T | 3×32 | input variables, hidden neurons |
+| X @ W1.T | N×32 | data rows, hidden neurons |
+| b1 | 32 | one bias per neuron |
+
+Take input rows [1,0,−1] and [0,1,1], first-neuron weights [1,0,0], and bias 0.2. The first output column contains 1×1+0×0−1×0+0.2=1.2 and 0×1+1×0+1×0+0.2=0.2. The other 31 columns repeat this calculation with their own neuron weights.
+
+ReLU then acts on each matrix entry separately. This operation does not mix different data rows.
+
+<!-- lecture-page -->
+
 ## Scaling and the training loss
 
 Scale the inputs with the declared lower and upper bounds. Standardize each output with its training mean μ and standard deviation s, and restore physical units after prediction:
@@ -195,6 +212,23 @@ Hidden pre-activation a, activation h, prediction, and error:
 <math display="block" aria-label="Forward computation in the small network"><mrow><mi mathvariant="bold">a</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">h</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">e</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
 
 The first hidden neuron reads input component 1 and the second reads component −1. ReLU leaves [1,0]. The output layer forms [first, second, their sum], yielding [1,0,1].
+
+<!-- lecture-page -->
+
+## The chain rule for one weight
+
+The hand calculation uses L=½∑eⱼ² with eⱼ=ŷⱼ−yⱼ. Its derivative with respect to prediction ŷⱼ is eⱼ. Increasing output weight W₂,ji changes ŷⱼ at rate hᵢ.
+
+| Derivative path | Factors | Value in the example |
+| --- | --- | --- |
+| W₂,A1 → ŷ_A → L | e_A×h₁ | 1×1=1 |
+| W₂,B1 → ŷ_B → L | e_B×h₁ | −1×1=−1 |
+| h₁ → three outputs → L | sum of weight×error | 1×1+0×(−1)+1×1=2 |
+| W₁,13 → a₁ → h₁ → L | x₃×ReLU′(a₁)×2 | (−1)×1×2=−2 |
+
+ReLU has derivative 1 for a>0 and 0 for a<0; this example avoids a=0. A bias enters the weighted sum with coefficient 1, so its derivative uses 1 instead of an input value.
+
+δ denotes the loss derivative with respect to a layer's pre-activation; ⊙ multiplies matching components. For the actual mean-squared loss, the output derivative is 2e/(3N), with a different factor from the hand calculation's half squared sum.
 
 <!-- lecture-page -->
 
@@ -273,6 +307,25 @@ optimizer.step()
 | step | Parameters updated using gradients and optimizer state |
 
 The hand calculation uses gradient descent; the lab uses Adam. Adam also uses gradient history, so its numerical update is not the same subtraction by 0.1 times the gradient. To assess the updated parameters, run a new forward pass after step.
+
+<!-- lecture-page -->
+
+## Adam's first update and the meaning of a batch
+
+A batch is a group of rows used for one loss and gradient calculation. Splitting 400 rows into batches of 64 gives six full batches and a final batch of 16, hence seven updates per epoch. An epoch is one pass through the training data.
+
+Adam accumulates a gradient average m and a squared-gradient average v. Start with m=v=0 and consider one weight with g=2, β₁=0.9 and β₂=0.999.
+
+| Calculation | First-step value |
+| --- | --- |
+| m=0.9m+0.1g | 0.2 |
+| v=0.999v+0.001g² | 0.004 |
+| Correction for initialization at zero | m̂=0.2/(1−0.9)=2; v̂=0.004/(1−0.999)=4 |
+| Update magnitude at learning rate 0.001 | 0.001×2/(√4+10⁻⁸)≈0.001 |
+
+Plain gradient descent would subtract 0.001×2=0.002. Adam scales the step using accumulated gradient magnitudes, so equal learning rates need not give equal updates. Here ε=10⁻⁸ prevents a zero denominator.
+
+[PyTorch Adam update definition](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html)
 
 <!-- lecture-page -->
 
@@ -527,6 +580,23 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 
 <!-- lecture-page -->
 
+## 열벡터 수식을 batch 행렬로 계산하기
+
+수식은 입력을 열벡터로 씁니다. Batch 코드가 입력을 (N,3)의 행으로 저장하면 첫 층은 `X @ W1.T + b1`이고 결과는 (N,32)입니다. 전치는 같은 가중합을 행 단위 저장 방식에 맞추며, bias 32개는 각 데이터 행에 반복 적용됩니다.
+
+| 배열 | 크기 | 각 축의 의미 |
+| --- | --- | --- |
+| X | N×3 | 데이터 행, 입력 변수 |
+| W1.T | 3×32 | 입력 변수, 은닉 뉴런 |
+| X @ W1.T | N×32 | 데이터 행, 은닉 뉴런 |
+| b1 | 32 | 각 뉴런의 bias |
+
+두 입력 행 [1,0,−1], [0,1,1]과 첫 뉴런 가중치 [1,0,0], bias 0.2를 생각합니다. 첫 출력 열은 각각 1×1+0×0−1×0+0.2=1.2와 0×1+1×0+1×0+0.2=0.2입니다. 나머지 31개 열도 해당 뉴런의 가중치로 같은 계산을 합니다.
+
+행렬곱 뒤 ReLU는 각 원소에 따로 적용합니다. 행 하나가 다른 데이터 행과 섞이는 연산은 아닙니다.
+
+<!-- lecture-page -->
+
 ## Scaling과 학습 loss
 
 입력은 명시한 하한·상한으로 크기를 조정합니다. 출력은 train 평균 μ와 표준편차 s로 표준화하고, 예측한 뒤 원래 단위로 복원
@@ -554,6 +624,23 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 <math display="block" aria-label="Forward computation in the small network"><mrow><mi mathvariant="bold">a</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">h</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">e</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
 
 첫 은닉 뉴런은 입력 첫 성분 1을 읽고, 두 번째는 셋째 성분 −1을 읽습니다. ReLU 뒤에는 [1,0]만 남습니다. 출력층은 이 두 숫자를 각각 [첫째,둘째,두 값의 합]으로 조합하므로 [1,0,1]이 됩니다.
+
+<!-- lecture-page -->
+
+## 가중치 하나의 연쇄법칙
+
+손계산 손실은 L=½∑eⱼ²이고 eⱼ=ŷⱼ−yⱼ입니다. 따라서 출력 ŷⱼ를 조금 늘렸을 때의 손실 변화율은 eⱼ입니다. 출력 가중치 W₂,ji를 늘리면 ŷⱼ는 은닉값 hᵢ만큼 변합니다.
+
+| 미분 경로 | 곱하는 값 | 앞 예제의 결과 |
+| --- | --- | --- |
+| W₂,A1 → ŷ_A → L | e_A×h₁ | 1×1=1 |
+| W₂,B1 → ŷ_B → L | e_B×h₁ | −1×1=−1 |
+| h₁ → 세 출력 → L | 연결 가중치×오차의 합 | 1×1+0×(−1)+1×1=2 |
+| W₁,13 → a₁ → h₁ → L | x₃×ReLU′(a₁)×2 | (−1)×1×2=−2 |
+
+ReLU 미분은 a>0에서 1, a<0에서 0입니다. 이 예는 a=0을 피합니다. Bias는 가중합에 1배로 더해지므로 그 미분에는 입력값 대신 1을 곱합니다.
+
+δ는 해당 층의 활성화 전 값에 대한 손실 미분, ⊙는 같은 위치끼리의 곱입니다. 실제 평균제곱 손실에서는 출력 미분이 2e/(3N)이므로 손계산의 ½ 제곱합과 계수가 다릅니다.
 
 <!-- lecture-page -->
 
@@ -632,6 +719,25 @@ optimizer.step()
 | step | 기울기와 optimizer 상태로 파라미터 갱신 |
 
 손 계산은 단순 gradient descent였고 실제 학습은 Adam입니다. Adam은 과거 기울기 정보도 사용하므로 같은 0.1배 빼기와 수치가 같지 않습니다. step 뒤의 성능을 보려면 갱신된 가중치로 순전파를 다시 수행합니다.
+
+<!-- lecture-page -->
+
+## Adam의 첫 갱신과 batch의 의미
+
+Batch는 한 번에 손실과 기울기를 계산하는 데이터 묶음입니다. 400개 행을 batch 64로 나누면 한 epoch에 64개짜리 6묶음과 16개짜리 마지막 묶음, 총 7번 갱신합니다. Epoch는 학습 데이터 한 바퀴입니다.
+
+Adam은 기울기 평균 m과 제곱 평균 v를 누적합니다. 처음 m=v=0, 기울기 g=2, β₁=0.9, β₂=0.999인 가중치 하나를 계산합니다.
+
+| 계산 | 첫 단계 값 |
+| --- | --- |
+| m=0.9m+0.1g | 0.2 |
+| v=0.999v+0.001g² | 0.004 |
+| 초기 0의 편향 보정 | m̂=0.2/(1−0.9)=2; v̂=0.004/(1−0.999)=4 |
+| 학습률 0.001의 이동 크기 | 0.001×2/(√4+10⁻⁸)≈0.001 |
+
+단순 경사하강이라면 0.001×2=0.002를 뺍니다. Adam은 누적된 기울기 크기로 이동을 조정하므로 같은 학습률이어도 갱신량이 다릅니다. 이 계산의 ε=10⁻⁸은 분모가 0이 되는 것을 막습니다.
+
+[PyTorch Adam의 갱신 정의](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html)
 
 <!-- lecture-page -->
 

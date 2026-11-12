@@ -29,7 +29,28 @@ Summing n values while retaining only a running sum takes O(n) time and O(1) aux
 
 <!-- lecture-page -->
 
+## Sharing resize costs across calls
+
+Count eight appends to an array whose capacity doubles through 1,2,4,8. This is a calculation for geometric growth, not CPython's exact allocation schedule.
+
+| Length after append | New capacity needed | Existing references moved |
+| --- | --- | --- |
+| 1 | 1 | 0 |
+| 2 | 2 | 1 |
+| 3 | 4 | 2 |
+| 4 | unchanged | 0 |
+| 5 | 8 | 4 |
+| 6–8 | unchanged | 0 |
+
+Eight new writes plus 1+2+4=7 copies give 15 operations. When N is a power of two, copies total N−1 and all writes total 2N−1. Between powers of two, copies remain below 2N, so total cost is O(N). Growing by just one slot would instead copy 1+2+…+(N−1) references, giving O(N²).
+
+Dividing O(N) total work by N calls gives amortized O(1) per append.
+
+<!-- lecture-page -->
+
 ## 1 · Staged hints
+
+Return two distinct indices whose values sum to target. An element cannot be reused; official inputs have one answer.
 
 [LeetCode 1: Two Sum](https://leetcode.com/problems/two-sum/) · Easy
 
@@ -83,6 +104,8 @@ Each iteration looks up the complement `target-value`. Store the current value o
 
 ## 219 · Staged hints
 
+Return True exactly when equal values occur at distinct positions i,j with distance <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>i</mi><mo>−</mo><mi>j</mi><mo stretchy="false">&#x7C;</mo></mrow></math> at most k.
+
 [LeetCode 219: Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/) · Easy
 
 H1. Which occurrence of a value should be retained?
@@ -135,6 +158,8 @@ latest stores the most recent position for each value. Update it even after a fa
 <!-- lecture-page -->
 
 ## 167 · Staged hints
+
+Find two distinct positions summing to target in a nondecreasing array. Return 1-based indices using O(1) auxiliary space.
 
 [LeetCode 167: Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) · Medium
 
@@ -190,6 +215,8 @@ When the sum is too small, every pair using the current left value is too small;
 <!-- lecture-page -->
 
 ## 15 · Staged hints
+
+Return all distinct value triples from three distinct positions whose sum is zero. Results contain values rather than indices, with no repeated value combination.
 
 [LeetCode 15: 3Sum](https://leetcode.com/problems/3sum/) · Medium
 
@@ -265,6 +292,8 @@ For each fixed value, restart two pointers in the suffix. Skip repeated fixed va
 
 When the sum is zero, record the triplet and move both ends inward. The following while loops skip repeated values so the same value combination is not emitted again. Both pointers keep moving inward, so these skips are part of the same linear scan.
 
+For `[-2,0,0,2,2]`, the first answer uses positions (0,1,4). Moving both pointers gives (left,right)=(2,3). Since `values[2]==values[1]==0`, left becomes 3 and the scan ends. The extra 0 and 2 would reproduce `[-2,0,2]`, so no new value combination is lost.
+
 <!-- lecture-page -->
 
 ## Execution and sources
@@ -298,11 +327,30 @@ Erik Demaine and Srini Devadas, [Introduction to Algorithms, MIT 6.006](https://
 
 <!-- lecture-page -->
 
+## 확장 비용을 여러 호출에 나누기
+
+용량을 1,2,4,8칸으로 두 배씩 늘리는 배열에서 append 8회를 세어봅니다. CPython의 실제 증설 비율을 재현한 표는 아니며, 비율을 정해 확장할 때 총 이동량이 어떻게 제한되는지 계산합니다.
+
+| 추가 후 길이 | 필요한 새 용량 | 옮기는 기존 참조 수 |
+| --- | --- | --- |
+| 1 | 1 | 0 |
+| 2 | 2 | 1 |
+| 3 | 4 | 2 |
+| 4 | 유지 | 0 |
+| 5 | 8 | 4 |
+| 6~8 | 유지 | 0 |
+
+새 값 기록 8회와 복사 1+2+4=7회를 합하면 15회입니다. N이 2의 거듭제곱이면 복사 합은 N−1, 총 기록은 2N−1입니다. N이 그 사이에 있어도 복사 합은 2N보다 작아 총비용은 O(N)입니다. 반면 용량을 한 칸씩만 늘리면 1+2+…+(N−1)을 복사하므로 O(N²)이 됩니다.
+
+전체 O(N)을 호출 N회로 나누면 append의 분할상환 비용은 O(1)입니다.
+
+<!-- lecture-page -->
+
 ## 1 · 단계별 힌트
 
-[LeetCode 1: Two Sum](https://leetcode.com/problems/two-sum/) · Easy
+서로 다른 두 인덱스의 값 합이 target인 인덱스 두 개를 반환합니다. 같은 원소를 재사용하지 않으며, 공식 입력에는 답 하나가 있습니다.
 
-신규 연습
+[LeetCode 1: Two Sum](https://leetcode.com/problems/two-sum/) · Easy
 
 H1. 현재 값과 짝이 되는 값은 무엇인가요?
 
@@ -354,9 +402,9 @@ def two_sum(nums, target):
 
 ## 219 · 단계별 힌트
 
-[LeetCode 219: Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/) · Easy
+서로 다른 위치 i,j에서 값이 같고 거리 <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">&#x7C;</mo><mi>i</mi><mo>−</mo><mi>j</mi><mo stretchy="false">&#x7C;</mo></mrow></math>가 k 이하이면 True, 아니면 False입니다.
 
-신규 연습
+[LeetCode 219: Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/) · Easy
 
 H1. 같은 값의 어떤 위치를 남길까요?
 
@@ -409,9 +457,9 @@ latest의 값은 해당 숫자를 가장 최근에 본 위치입니다. 멀리 �
 
 ## 167 · 단계별 힌트
 
-[LeetCode 167: Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) · Medium
+비내림차순 배열에서 합이 target인 서로 다른 두 위치를 찾습니다. 답은 1-based 인덱스이며 보조 공간 O(1)이 요구됩니다.
 
-신규 연습
+[LeetCode 167: Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) · Medium
 
 H1. 양 끝 합이 작으면 어느 후보들이 모두 작나요?
 
@@ -466,9 +514,9 @@ def two_sum_sorted(numbers, target):
 
 ## 15 · 단계별 힌트
 
-[LeetCode 15: 3Sum](https://leetcode.com/problems/3sum/) · Medium
+합이 0인 서로 다른 세 위치의 값 조합을 모두 반환합니다. 결과는 인덱스가 아닌 값이며, 같은 값 조합을 중복 반환하지 않습니다.
 
-신규 연습
+[LeetCode 15: 3Sum](https://leetcode.com/problems/3sum/) · Medium
 
 H1. 한 값을 고정하면 남는 문제는 무엇인가요?
 
@@ -541,6 +589,8 @@ def three_sum(nums):
 ```
 
 합이 0이면 세 값을 저장한 뒤 양 끝을 한 칸씩 옮깁니다. 이후 같은 값을 넘기는 while은 이미 저장한 값 조합을 반복하지 않기 위한 것입니다. 포인터는 계속 안쪽으로만 이동하므로 이 중복 제거도 같은 선형 탐색 비용에 포함됩니다.
+
+`[-2,0,0,2,2]`에서 첫 답을 찾은 위치는 (0,1,4)입니다. 양쪽 이동 뒤 (left,right)=(2,3)인데 `values[2]==values[1]==0`이므로 left=3이 되어 종료합니다. 추가 0과 2로 만들 조합도 이미 저장한 `[-2,0,2]`여서 새 답을 잃지 않습니다.
 
 <!-- lecture-page -->
 
