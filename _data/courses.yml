@@ -22,6 +22,7 @@
       deliverable: "A steady-state CSTR data contract, fitted regression baseline, and held-out prediction report."
       deliverable_ko: "정상상태 CSTR 예측 문제 정의, 회귀 baseline과 독립 test 평가 보고서."
       url: /courses/surrogate-models/week-01/
+      practice_url: /courses/surrogate-models/week-01-practice/
     - number: 2
       title: "Learning Multicomponent Steady-State Responses with MLPs"
       title_ko: "MLP로 다성분 정상상태 응답 학습하기"
@@ -30,6 +31,7 @@
       deliverable: "A steady-state MLP evaluated in physical units, with a hand-checked gradient update."
       deliverable_ko: "물리 단위로 평가한 정상상태 MLP와 손 계산으로 확인한 gradient 갱신."
       url: /courses/surrogate-models/week-02/
+      practice_url: /courses/surrogate-models/week-02-practice/
     - number: 3
       title: "Predicting Dynamic Responses and Rollout"
       title_ko: "동적 응답 예측과 rollout"
@@ -38,6 +40,7 @@
       deliverable: "A comparison of one-step and trajectory errors under prescribed future inputs."
       deliverable_ko: "정해진 미래 입력에 대한 one-step·전체 궤적 오차 비교."
       url: /courses/surrogate-models/week-03/
+      practice_url: /courses/surrogate-models/week-03-practice/
     - number: 4
       title: "Learning with Physical Constraints"
       title_ko: "물리 제약을 반영한 학습"
@@ -46,6 +49,7 @@
       deliverable: "An MLP/soft-physics/hard-equality comparison separating accuracy from physical consistency."
       deliverable_ko: "정확도와 물리적 일관성을 구분한 MLP·soft physics·hard 등식 모델 비교."
       url: /courses/surrogate-models/week-04/
+      practice_url: /courses/surrogate-models/week-04-practice/
     - number: 5
       title: "From a Predictor to an Optimization Formulation"
       title_ko: "예측 모델을 최적화 문제에 넣기"
@@ -54,6 +58,7 @@
       deliverable: "A hand-built MILP representation checked against the frozen network forward pass."
       deliverable_ko: "고정 신경망의 forward 출력과 대조한 직접 작성한 MILP 표현."
       url: /courses/surrogate-models/week-05/
+      practice_url: /courses/surrogate-models/week-05-practice/
     - number: 6
       title: "Solve Time and Results in Neural-Network Optimization"
       title_ko: "신경망 기반 최적화의 풀이 속도와 결과 해석"
@@ -62,6 +67,7 @@
       deliverable: "A comparison of formulations for the same frozen network, reporting bounds, binary counts, termination, gaps, timing, and forward checks."
       deliverable_ko: "같은 고정 신경망의 정식화를 비교하고 bounds·이진변수 수·종료 상태·gap·계산 시간·forward 검사 결과를 정리한 보고서."
       url: /courses/surrogate-models/week-06/
+      practice_url: /courses/surrogate-models/week-06-practice/
     - number: 7
       title: "Designing Model Structure for Optimization"
       title_ko: "최적화 활용을 위한 모델 구조 설계"
@@ -70,6 +76,7 @@
       deliverable: "An ICNN and valid LP on a known convex example, with explicit applicability conditions."
       deliverable_ko: "알려진 convex 예제의 ICNN·유효한 LP와 적용 조건 목록."
       url: /courses/surrogate-models/week-07/
+      practice_url: /courses/surrogate-models/week-07-practice/
     - number: 8
       title: "Selecting and Revalidating Operating Conditions"
       title_ko: "운전 조건 선택과 공정 모델 재검증"
@@ -78,6 +85,7 @@
       deliverable: "A reproducible prediction-to-optimization report separating errors, violations, decision quality, and computation."
       deliverable_ko: "오차·제약 위반·의사결정 품질·계산 부담을 구분한 재현 가능한 예측–최적화 보고서."
       url: /courses/surrogate-models/week-08/
+      practice_url: /courses/surrogate-models/week-08-practice/
 
 - id: "practical-algorithms"
   title: "Practical Data Structures and Algorithms"

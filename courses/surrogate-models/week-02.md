@@ -16,6 +16,7 @@ reading_note: /courses/surrogate-models/week-02-reading/
 reading_pdf_en: /assets/courses/surrogate-models/week-02-reading-en.pdf
 reading_pdf_ko: /assets/courses/surrogate-models/week-02-reading-ko.pdf
 course_id: "surrogate-models"
+practice_note: "/courses/surrogate-models/week-02-practice/"
 ---
 
 ## Conversion and product composition in consecutive reactions

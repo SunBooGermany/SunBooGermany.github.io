@@ -16,6 +16,7 @@ lab_script: "/assets/courses/surrogate-models/week-05/week05_lab.py"
 reading_note: "/courses/surrogate-models/week-05-reading/"
 reading_pdf_en: "/assets/courses/surrogate-models/week-05-reading-en.pdf"
 reading_pdf_ko: "/assets/courses/surrogate-models/week-05-reading-ko.pdf"
+practice_note: "/courses/surrogate-models/week-05-practice/"
 ---
 
 ## The smallest reactor that meets product specifications

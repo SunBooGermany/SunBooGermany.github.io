@@ -16,6 +16,8 @@ reading_note: /courses/surrogate-models/week-01-reading/
 reading_pdf_en: /assets/courses/surrogate-models/week-01-reading-en.pdf
 reading_pdf_ko: /assets/courses/surrogate-models/week-01-reading-ko.pdf
 course_id: "surrogate-models"
+practice_note: "/courses/surrogate-models/week-01-practice/"
+lab_bundle: "/assets/courses/surrogate-models/week-01/week01-lab.zip"
 ---
 
 ## Outlet concentration prediction at specified operating conditions

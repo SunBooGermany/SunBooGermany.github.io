@@ -16,6 +16,7 @@ reading_pdf_en: "/assets/courses/surrogate-models/week-04-reading-en.pdf"
 reading_pdf_ko: "/assets/courses/surrogate-models/week-04-reading-ko.pdf"
 notebook: "/assets/courses/surrogate-models/week-04/week04_lab.ipynb"
 lab_script: "/assets/courses/surrogate-models/week-04/week04_lab.py"
+practice_note: "/courses/surrogate-models/week-04-practice/"
 ---
 
 ## Mismatch between predicted total and feed concentration

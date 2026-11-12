@@ -16,6 +16,7 @@ reading_pdf_en: /assets/courses/surrogate-models/week-03-reading-en.pdf
 reading_pdf_ko: /assets/courses/surrogate-models/week-03-reading-ko.pdf
 notebook: /assets/courses/surrogate-models/week-03/week03_lab.ipynb
 lab_script: /assets/courses/surrogate-models/week-03/week03_lab.py
+practice_note: "/courses/surrogate-models/week-03-practice/"
 ---
 
 ## Transient product concentrations after a temperature change

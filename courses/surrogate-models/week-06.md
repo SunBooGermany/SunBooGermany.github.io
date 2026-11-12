@@ -16,6 +16,7 @@ lab_script: "/assets/courses/surrogate-models/week-06/week06_lab.py"
 reading_note: "/courses/surrogate-models/week-06-reading/"
 reading_pdf_en: "/assets/courses/surrogate-models/week-06-reading-en.pdf"
 reading_pdf_ko: "/assets/courses/surrogate-models/week-06-reading-ko.pdf"
+practice_note: "/courses/surrogate-models/week-06-practice/"
 ---
 
 ## Reactor conditions that meet product specifications

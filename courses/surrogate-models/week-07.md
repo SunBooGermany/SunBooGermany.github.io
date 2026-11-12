@@ -17,6 +17,7 @@ lab_bundle: "/assets/courses/surrogate-models/week-07/week07-lab.zip"
 reading_note: "/courses/surrogate-models/week-07-reading/"
 reading_pdf_en: "/assets/courses/surrogate-models/week-07-reading-en.pdf"
 reading_pdf_ko: "/assets/courses/surrogate-models/week-07-reading-ko.pdf"
+practice_note: "/courses/surrogate-models/week-07-practice/"
 ---
 
 ## Utility cost models and repeated operating decisions

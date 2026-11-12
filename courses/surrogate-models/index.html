@@ -30,6 +30,7 @@ permalink: /courses/surrogate-models/
         <h3>{% if week.url %}<a href="{{ week.url | relative_url }}">{% endif %}<span data-lang-panel="en">{{ week.title }}</span><span data-lang-panel="ko" hidden>{{ week.title_ko }}</span>{% if week.url %}</a>{% endif %}</h3>
         <p><span data-lang-panel="en">{{ week.topics }}</span><span data-lang-panel="ko" hidden>{{ week.topics_ko }}</span></p>
         {% if week.url %}<a class="course-status" href="{{ week.url | relative_url }}"><span data-lang-panel="en">Available: notes, PDFs, notebook, and Python lab →</span><span data-lang-panel="ko" hidden>공개: 강의 노트·PDF·notebook·Python 실습 →</span></a>{% else %}<span class="course-status planned"><span data-lang-panel="en">Planned · materials in preparation</span><span data-lang-panel="ko" hidden>강의 계획 · 자료 준비 중</span></span>{% endif %}
+        {% if week.practice_url %}<p><a href="{{ week.practice_url | relative_url }}"><span data-lang-panel="en">Guided lab: calculations, implementation, and interpretation →</span><span data-lang-panel="ko" hidden>실습: 중간 계산·구현·결과 해석 →</span></a></p>{% endif %}
       </div>
     </article>
   {% endfor %}
