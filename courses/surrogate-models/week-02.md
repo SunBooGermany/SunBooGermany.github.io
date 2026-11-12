@@ -50,9 +50,7 @@ All three concentrations have the same units, but their variation differs. An un
 
 This week: MLP outputs, one gradient update, and component-wise evaluation.
 
-<!-- lecture-page -->
-
-## Learn and check the steady-state MLP
+### Learn and check the steady-state MLP
 
 1. Steady-state label derivation for A, B, and C
 2. Data scaling, forward pass, backpropagation, and one parameter update
@@ -65,6 +63,8 @@ This week: MLP outputs, one gradient update, and component-wise evaluation.
 Consider a perfectly mixed, constant-volume, constant-density, isothermal CSTR with consecutive first-order reactions A → B → C. The feed contains A; its B and C concentrations are zero. Temperature is an operating input. With concentrations in mol/L, temperature in K, and time in min, the balances are:
 
 <math display="block" aria-label="Concentration balances for consecutive CSTR reactions"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>A</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mi>Af</mi></msub><mo>−</mo><msub><mi>C</mi><mi>A</mi></msub></mrow><mi>τ</mi></mfrac><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>B</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>B</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>C</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>C</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
+
+The B balance contains both formation and consumption. Formation from A contributes +k₁C_A; onward reaction and outflow contribute −k₂C_B and −C_B/τ. Their competition creates the maximum in B.
 
 <!-- lecture-page -->
 
@@ -93,6 +93,8 @@ Set the time derivatives to zero and multiply each balance by τ. Collect the co
 
 <math display="block" aria-label="Steady-state balance equations"><mtable columnalign="left"><mtr><mtd><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mo>)</mo><msub><mi>C</mi><mi>A</mi></msub><mo>=</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi></mrow><mo>)</mo><msub><mi>C</mi><mi>B</mi></msub><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>A</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>C</mi><mi>C</mi></msub><mo>=</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
 
+The first equation contains only A, so solve it directly. Substitute A into the second equation for B, then B into the last equation for C. This ordering avoids an iterative simultaneous solve for all three unknowns.
+
 <!-- lecture-page -->
 
 ## Solve for A, B, and C
@@ -103,6 +105,8 @@ Solve in the order A, B, C:
 
 At 330 K, τ = 5 min, and feed = 1.2 mol/L, the concentrations are [0.6, 0.4, 0.2] mol/L. Their sum equals the feed concentration. These three outputs are the labels for the steady-state MLP.
 
+Numerically, A=1.2/2=0.6, B=(0.2×5×0.6)/1.5=0.4, then C=0.1×5×0.4=0.2. The B denominator must retain both the outflow term 1 and the onward-reaction term 0.5.
+
 <!-- lecture-page -->
 
 ## Nonmonotone response of intermediate B
@@ -110,6 +114,8 @@ At 330 K, τ = 5 min, and feed = 1.2 mol/L, the concentrations are [0.6, 0.4, 0.
 At a fixed temperature, the B yield and its maximizing residence time follow from the expression for C_B:
 
 <math display="block" aria-label="B yield and maximizing residence time at fixed temperature"><mrow><msub><mi>Y</mi><mi>B</mi></msub><mo>=</mo><mfrac><msub><mi>C</mi><mi>B</mi></msub><msub><mi>C</mi><mi>Af</mi></msub></mfrac><mo>=</mo><mfrac><mrow><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mo>)</mo><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi></mrow><mo>)</mo></mrow></mfrac><mo>,</mo><mspace width="1em"/><msup><mi>τ</mi><mo>*</mo></msup><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><msub><mi>k</mi><mn>1</mn></msub><msub><mi>k</mi><mn>2</mn></msub></mrow></msqrt></mfrac></mrow></math>
+
+Write the denominator as D=1+(k₁+k₂)τ+k₁k₂τ². Differentiation gives numerator k₁(D−τD′)=k₁(1−k₁k₂τ²). The positive denominator D² does not change its sign: yield increases before τ=1/√(k₁k₂) and decreases afterward.
 
 <!-- lecture-page -->
 
@@ -139,6 +145,8 @@ Each row contains inputs [T, τ, C_Af] and outputs [C_A, C_B, C_C]. Input and ou
 
 The three concentrations have the same units but different variations. In the training data, their standard deviations are approximately [0.283, 0.110, 0.217] mol/L.
 
+A, B, and C in one row belong to the same input. Shuffling components independently breaks input-label alignment. Apply splitting and shuffling to paired input and output rows.
+
 <!-- lecture-page -->
 
 ## 4. Forward calculation and scaling
@@ -156,6 +164,8 @@ Hidden-layer calculation: weighted sum + bias → ReLU(a) = max(0, a). Positive 
 | Hidden 2 → output | 3 × 32 | 3 | 99 |
 | Total | | | **1283** |
 
+One neuron combines all input columns into one number. Each of 32 first-layer neurons has three weights and one bias, giving 32×(3+1)=128 parameters. Hidden layers repeat this computation for several learned features.
+
 <!-- lecture-page -->
 
 ## Scaling and the training loss
@@ -170,6 +180,8 @@ Loss: mean squared error across samples and standardized output components.
 
 Thus a concentration error is measured relative to that component's training variation. For example, the smaller B standard deviation gives its raw squared error a larger weight in this loss.
 
+The same 0.01 mol/L error becomes about 0.0353 for A and 0.0909 for B after division by 0.283 and 0.110. Squaring makes B contribute about 6.62 times as much. Output scaling changes the relative emphasis in training as well as the numerical scale.
+
 <!-- lecture-page -->
 
 ## 5. Backpropagation: one calculation
@@ -182,6 +194,8 @@ Hidden pre-activation a, activation h, prediction, and error:
 
 <math display="block" aria-label="Forward computation in the small network"><mrow><mi mathvariant="bold">a</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">h</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">e</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
 
+The first hidden neuron reads input component 1 and the second reads component −1. ReLU leaves [1,0]. The output layer forms [first, second, their sum], yielding [1,0,1].
+
 <!-- lecture-page -->
 
 ## Gradients and the parameter update
@@ -191,6 +205,24 @@ The output error propagates through the output weights and the ReLU derivative:
 <math display="block" aria-label="Backpropagation gradients for one example"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">δ</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="bold">e</mi><mo>,</mo><msub><mi>∇</mi><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub></msub><mi>L</mi><mo>=</mo><mi mathvariant="bold">e</mi><msup><mi mathvariant="bold">h</mi><mi>T</mi></msup><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">δ</mi><mn>1</mn></msub><mo>=</mo><mo>(</mo><msup><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><mi>T</mi></msup><mi mathvariant="bold">e</mi><mo>)</mo><mo>⊙</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>∇</mi><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub></msub><mi>L</mi><mo>=</mo><msub><mi mathvariant="bold">δ</mi><mn>1</mn></msub><msup><mi mathvariant="bold">x</mi><mi>T</mi></msup><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>2</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>-2</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 The bias gradients are δ₁ and δ₂. Update every weight and bias with parameter ← parameter − 0.1 × gradient. The next forward calculation gives [0.26, 0.14, 0.26], and the loss decreases from 1.5 to 0.4374. The notebook checks these gradients using autograd.
+
+The first hidden value connects to outputs A and C with unit weights, receiving their combined error 1+1=2. The second pre-activation is negative, so its ReLU derivative is zero. Its input weights and bias therefore do not move in this update.
+
+<!-- lecture-page -->
+
+## The second forward pass after updating parameters
+
+Update both weights and biases with learning rate 0.1. Subtracting 0.1×[2,0,−2] from the first hidden weight [1,0,0] gives [0.8,0,0.2]; its bias becomes −0.2.
+
+| Intermediate value | Updated calculation |
+| --- | --- |
+| First hidden pre-activation | 0.8×1+0×0+0.2×(−1)−0.2=0.4 |
+| Second hidden pre-activation | −1 |
+| ReLU output | [0.4,0] |
+| Outputs A and C | 0.9×0.4−0.1=0.26 |
+| Output B | 0.1×0.4+0.1=0.14 |
+
+The new error is [0.26,−0.86,0.26]. Loss falls to (0.0676+0.7396+0.0676)/2=0.4374, but B remains below its target 1. One decrease does not complete training.
 
 <!-- lecture-page -->
 
@@ -222,6 +254,28 @@ optimizer.step()
 
 <!-- lecture-page -->
 
+## Values and changes inside the training loop
+
+```python
+prediction = model(inputs)
+loss = loss_function(prediction, targets)
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+```
+
+| Line | Value produced or changed |
+| --- | --- |
+| model(inputs) | Batch predictions with current weights |
+| loss_function | Prediction errors reduced to a scalar loss |
+| zero_grad | Previous batch gradients cleared |
+| backward | Current loss gradients for weights and biases |
+| step | Parameters updated using gradients and optimizer state |
+
+The hand calculation uses gradient descent; the lab uses Adam. Adam also uses gradient history, so its numerical update is not the same subtraction by 0.1 times the gradient. To assess the updated parameters, run a new forward pass after step.
+
+<!-- lecture-page -->
+
 ## Evaluate each output component
 
 | Test RMSE, mol/L | A | B | C |
@@ -235,6 +289,27 @@ In this comparison, output scaling reduces A and B RMSE; C RMSE is slightly high
 
 <!-- lecture-page -->
 
+## From standardized outputs to concentrations and errors
+
+For a one-component calculation, take training mean μ=0.4 mol/L and standard deviation s=0.1 mol/L. Target concentration 0.45 becomes z=(0.45−0.4)/0.1=0.5.
+
+| Quantity | Calculation |
+| --- | --- |
+| Standardized network prediction | ẑ=0.3 |
+| Restore concentration | 0.4+0.1×0.3=0.43 mol/L |
+| Standardized error | 0.3−0.5=−0.2 |
+| Concentration error | 0.43−0.45=−0.02 mol/L |
+
+```python
+prediction = y_mean + y_scale * standardized_prediction
+component_rmse = np.sqrt(((prediction - truth)**2).mean(axis=0))
+sum_residual = prediction.sum(axis=1) - feed
+```
+
+The first line applies each column's mean and scale. axis=0 measures accuracy by component; axis=1 sums the three components at one condition. Swapping these axes computes a different quantity.
+
+<!-- lecture-page -->
+
 ## Check the concentration sum
 
 <math display="block" aria-label="Concentration-sum residual"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>B</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>C</mi></msub><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
@@ -244,6 +319,8 @@ Its test RMSE is {{ result.steady_balance }} mol/L. Component prediction errors 
 Balance-consistent training labels do not force the sum of the three linear outputs to match the feed concentration.
 
 For feed 1.2 mol/L, predictions [0.62, 0.41, 0.20] mol/L sum to 1.23 mol/L, giving r = 0.03 mol/L. A model predicting mole fractions can likewise return a sum different from one.
+
+The sum residual equals the sum of component errors. Errors [0.02,−0.01,−0.01] sum to zero despite incorrect components. Small positive errors in all three components instead accumulate into a larger total-concentration error.
 
 <!-- lecture-page -->
 
@@ -332,9 +409,7 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 
 이번 주에는 MLP의 출력 계산, gradient 한 번으로 파라미터가 바뀌는 과정과 성분별 평가를 다뤄봅니다.
 
-<!-- lecture-page -->
-
-## 정상상태 MLP를 학습하고 확인하기
+### 정상상태 MLP를 학습하고 확인하기
 
 1. A·B·C의 정상상태 기준값을 유도합니다.
 2. 데이터 크기를 조정하고 순전파·역전파·파라미터 갱신을 한 번씩 계산
@@ -347,6 +422,8 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 기준 공정: 완전혼합·일정 부피·일정 밀도·등온 CSTR의 1차 연속반응 A → B → C. 유입: A 포함, B·C 농도 0. 운전 입력: 온도. 단위: 농도 mol/L, 온도 K, 시간 min
 
 <math display="block" aria-label="Concentration balances for consecutive CSTR reactions"><mtable columnalign="left"><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>A</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>C</mi><mi>Af</mi></msub><mo>−</mo><msub><mi>C</mi><mi>A</mi></msub></mrow><mi>τ</mi></mfrac><mo>−</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>B</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>B</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><msub><mi>C</mi><mi>A</mi></msub><mo>−</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mfrac><mrow><mi>d</mi><msub><mi>C</mi><mi>C</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mfrac><msub><mi>C</mi><mi>C</mi></msub><mi>τ</mi></mfrac><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
+
+B 수지에는 생성과 소모가 모두 들어갑니다. A에서 생기는 k₁C_A는 양수, 다음 반응으로 사라지는 k₂C_B와 탱크 밖으로 나가는 C_B/τ는 음수입니다. B의 최대점은 이 경쟁에서 생깁니다.
 
 <!-- lecture-page -->
 
@@ -375,6 +452,8 @@ A → B → C에서 원하는 중간 생성물은 B입니다. 체류시간이 �
 
 <math display="block" aria-label="Steady-state balance equations"><mtable columnalign="left"><mtr><mtd><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mo>)</mo><msub><mi>C</mi><mi>A</mi></msub><mo>=</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi></mrow><mo>)</mo><msub><mi>C</mi><mi>B</mi></msub><mo>=</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>A</mi></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>C</mi><mi>C</mi></msub><mo>=</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi><msub><mi>C</mi><mi>B</mi></msub></mrow></mtd></mtr></mtable></math>
 
+첫 식은 A만 포함하므로 바로 풀 수 있습니다. 그 A를 두 번째 식에 넣어 B를 구하고, B를 마지막 식에 넣어 C를 구합니다. 이 순서 때문에 세 미지수를 동시에 반복 계산할 필요가 없습니다.
+
 <!-- lecture-page -->
 
 ## A·B·C 농도 계산
@@ -385,6 +464,8 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 330 K, τ = 5 min, 유입 농도 1.2 mol/L에서 농도는 [0.6, 0.4, 0.2] mol/L. 합은 유입 농도와 같으며, 이 세 농도를 정상상태 MLP의 기준값으로 사용
 
+수치 대입은 A=1.2/2=0.6, B=(0.2×5×0.6)/1.5=0.4, C=0.1×5×0.4=0.2 순서입니다. B 계산에서는 분모의 유출 항 1과 다음 반응 항 0.5를 모두 남겨야 합니다.
+
 <!-- lecture-page -->
 
 ## 중간 생성물 B의 비단조 응답
@@ -392,6 +473,8 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 온도가 고정되면 C_B 식에서 B의 수율과 그 수율을 최대화하는 체류시간을 구할 수 있습니다.
 
 <math display="block" aria-label="B yield and maximizing residence time at fixed temperature"><mrow><msub><mi>Y</mi><mi>B</mi></msub><mo>=</mo><mfrac><msub><mi>C</mi><mi>B</mi></msub><msub><mi>C</mi><mi>Af</mi></msub></mfrac><mo>=</mo><mfrac><mrow><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>1</mn></msub><mi>τ</mi></mrow><mo>)</mo><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>k</mi><mn>2</mn></msub><mi>τ</mi></mrow><mo>)</mo></mrow></mfrac><mo>,</mo><mspace width="1em"/><msup><mi>τ</mi><mo>*</mo></msup><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><msub><mi>k</mi><mn>1</mn></msub><msub><mi>k</mi><mn>2</mn></msub></mrow></msqrt></mfrac></mrow></math>
+
+분모를 D=1+(k₁+k₂)τ+k₁k₂τ²로 두면 미분의 분자는 k₁(D−τD′)=k₁(1−k₁k₂τ²)입니다. 양의 분모 D²는 부호를 바꾸지 않습니다. 따라서 τ=1/√(k₁k₂) 전에는 증가하고 이후에는 감소합니다.
 
 <!-- lecture-page -->
 
@@ -421,6 +504,8 @@ A를 먼저 구하고 B, C에 차례로 대입합니다.
 
 Train 데이터에서 세 농도의 표준편차는 약 [0.283, 0.110, 0.217] mol/L로, 단위가 같아도 변화 폭은 다릅니다.
 
+한 행의 A·B·C는 같은 입력에서 계산한 하나의 묶음입니다. 성분별로 행을 따로 섞으면 입력과 정답의 대응이 깨집니다. 분할과 순서 섞기는 입력 행과 출력 행에 함께 적용합니다.
+
 <!-- lecture-page -->
 
 ## 4. Forward 계산과 scaling
@@ -438,6 +523,8 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 | Hidden 2 → 출력 | 3 × 32 | 3 | 99 |
 | 합계 | | | **1283** |
 
+한 뉴런은 입력 열 전체를 가중합해 숫자 하나를 만듭니다. 첫 층의 뉴런 32개가 각각 입력 3개의 가중치와 편향 하나를 가져 32×(3+1)=128개입니다. 은닉층은 이 계산을 여러 특징에 반복합니다.
+
 <!-- lecture-page -->
 
 ## Scaling과 학습 loss
@@ -452,6 +539,8 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 
 각 농도 오차를 해당 성분의 train 변화 폭에 상대적으로 평가하므로, 표준편차가 작은 B의 원래 단위 제곱 오차에는 더 큰 가중치가 붙습니다.
 
+같은 0.01 mol/L 오차라도 A의 표준화 오차는 0.01/0.283≈0.0353, B는 0.01/0.110≈0.0909입니다. 제곱하면 B의 손실 기여가 약 6.62배입니다. 출력 scaling은 단위 변환과 함께 학습에서 강조하는 성분도 바꿉니다.
+
 <!-- lecture-page -->
 
 ## 5. Backpropagation 한 번 계산하기
@@ -464,6 +553,8 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 
 <math display="block" aria-label="Forward computation in the small network"><mrow><mi mathvariant="bold">a</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">h</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mover><mi mathvariant="bold">y</mi><mo>^</mo></mover><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>,</mo><mi mathvariant="bold">e</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
 
+첫 은닉 뉴런은 입력 첫 성분 1을 읽고, 두 번째는 셋째 성분 −1을 읽습니다. ReLU 뒤에는 [1,0]만 남습니다. 출력층은 이 두 숫자를 각각 [첫째,둘째,두 값의 합]으로 조합하므로 [1,0,1]이 됩니다.
+
 <!-- lecture-page -->
 
 ## Gradient와 파라미터 갱신
@@ -473,6 +564,24 @@ MLP 구조: 3 → 32 → 32 → 3. ReLU 은닉층과 선형 출력층
 <math display="block" aria-label="Backpropagation gradients for one example"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi mathvariant="bold">δ</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="bold">e</mi><mo>,</mo><msub><mi>∇</mi><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub></msub><mi>L</mi><mo>=</mo><mi mathvariant="bold">e</mi><msup><mi mathvariant="bold">h</mi><mi>T</mi></msup><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>-1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi mathvariant="bold">δ</mi><mn>1</mn></msub><mo>=</mo><mo>(</mo><msup><msub><mi mathvariant="bold">W</mi><mn>2</mn></msub><mi>T</mi></msup><mi mathvariant="bold">e</mi><mo>)</mo><mo>⊙</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>∇</mi><msub><mi mathvariant="bold">W</mi><mn>1</mn></msub></msub><mi>L</mi><mo>=</mo><msub><mi mathvariant="bold">δ</mi><mn>1</mn></msub><msup><mi mathvariant="bold">x</mi><mi>T</mi></msup><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>2</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>-2</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mtd></mtr></mtable></math>
 
 Bias gradient는 각각 δ₁, δ₂입니다. 모든 가중치와 bias를 parameter ← parameter − 0.1 × gradient로 갱신하면 다음 순전파 출력은 [0.26, 0.14, 0.26]이고, loss는 1.5에서 0.4374로 줄어듭니다. Notebook의 autograd 결과와 손계산을 대조합니다.
+
+첫 은닉값은 A와 C 출력에 각각 가중치 1로 연결되어 있어 두 오차 1+1=2를 받습니다. 두 번째 은닉값의 pre-activation은 음수라 ReLU 미분이 0입니다. 따라서 그 뉴런의 입력 가중치와 편향은 이번 단계에서 움직이지 않습니다.
+
+<!-- lecture-page -->
+
+## 가중치 갱신 뒤의 두 번째 순전파
+
+학습률 0.1로 가중치와 편향을 모두 갱신합니다. 첫 은닉 가중치 [1,0,0]에서 0.1×[2,0,−2]를 빼면 [0.8,0,0.2], 편향은 −0.2가 됩니다.
+
+| 중간값 | 갱신 뒤 계산 |
+| --- | --- |
+| 첫 은닉 pre-activation | 0.8×1+0×0+0.2×(−1)−0.2=0.4 |
+| 두 번째 은닉 pre-activation | −1 |
+| ReLU 출력 | [0.4,0] |
+| 출력 A, C | 0.9×0.4−0.1=0.26 |
+| 출력 B | 0.1×0.4+0.1=0.14 |
+
+새 오차는 [0.26,−0.86,0.26]입니다. 손실은 (0.0676+0.7396+0.0676)/2=0.4374로 줄지만 B는 여전히 목표 1보다 작습니다. 한 번의 감소가 학습 완료를 뜻하지는 않습니다.
 
 <!-- lecture-page -->
 
@@ -504,6 +613,28 @@ optimizer.step()
 
 <!-- lecture-page -->
 
+## 학습 루프의 값과 변경 시점
+
+```python
+prediction = model(inputs)
+loss = loss_function(prediction, targets)
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+```
+
+| 줄 | 만들어지거나 바뀌는 값 |
+| --- | --- |
+| model(inputs) | 현재 가중치로 batch의 출력 계산 |
+| loss_function | 출력과 정답 차이를 스칼라 손실로 축약 |
+| zero_grad | 이전 batch의 기울기 제거 |
+| backward | 현재 손실의 가중치·편향별 기울기 |
+| step | 기울기와 optimizer 상태로 파라미터 갱신 |
+
+손 계산은 단순 gradient descent였고 실제 학습은 Adam입니다. Adam은 과거 기울기 정보도 사용하므로 같은 0.1배 빼기와 수치가 같지 않습니다. step 뒤의 성능을 보려면 갱신된 가중치로 순전파를 다시 수행합니다.
+
+<!-- lecture-page -->
+
 ## 출력 성분별 평가
 
 | Test RMSE, mol/L | A | B | C |
@@ -517,6 +648,27 @@ optimizer.step()
 
 <!-- lecture-page -->
 
+## 표준화 출력에서 농도와 오차로
+
+계산용 한 성분의 학습 평균 μ=0.4 mol/L, 표준편차 s=0.1 mol/L를 둡니다. 정답 농도 0.45는 z=(0.45−0.4)/0.1=0.5입니다.
+
+| 항목 | 계산 |
+| --- | --- |
+| 신경망의 표준화 예측 | ẑ=0.3 |
+| 농도 복원 | 0.4+0.1×0.3=0.43 mol/L |
+| 표준화 오차 | 0.3−0.5=−0.2 |
+| 농도 오차 | 0.43−0.45=−0.02 mol/L |
+
+```python
+prediction = y_mean + y_scale * standardized_prediction
+component_rmse = np.sqrt(((prediction - truth)**2).mean(axis=0))
+sum_residual = prediction.sum(axis=1) - feed
+```
+
+첫 줄은 각 출력 열에 해당 평균과 표준편차를 적용합니다. axis=0은 성분별 정확도, axis=1은 같은 조건의 세 성분 합을 계산합니다. 두 축을 바꾸면 다른 질문을 계산하게 됩니다.
+
+<!-- lecture-page -->
+
 ## 농도 합 확인
 
 <math display="block" aria-label="Concentration-sum residual"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>B</mi></msub><mo>^</mo></mover><mo>+</mo><mover><msub><mi>C</mi><mi>C</mi></msub><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
@@ -526,6 +678,8 @@ Test residual RMSE는 {{ result.steady_balance }} mol/L. 성분별 오차로 예
 수지를 만족하는 기준값으로 학습해도 세 선형 출력의 합이 유입 농도와 같도록 강제되지는 않습니다.
 
 유입 1.2 mol/L에서 예측이 [0.62, 0.41, 0.20] mol/L이면 합은 1.23 mol/L이고 r = 0.03 mol/L입니다. 몰분율을 예측할 때도 합이 1을 벗어날 수 있습니다.
+
+성분 오차의 합이 합 잔차입니다. 오차 [0.02,−0.01,−0.01]은 합이 0이지만 성분은 틀립니다. 반대로 작은 양의 오차가 세 성분에 누적되면 총농도 오차가 커집니다.
 
 <!-- lecture-page -->
 

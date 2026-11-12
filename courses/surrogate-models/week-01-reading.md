@@ -47,6 +47,21 @@ Conversion is independent of feed concentration in this first-order model.
 
 <!-- lecture-page -->
 
+## A steady-state calculation, step by step
+
+At 330 K, τ=5 min, and C_Af=1.2 mol/L, k=0.2/min. Treat concentration as the unknown and rearrange the balance.
+
+| Step | Calculation | Interpretation |
+| --- | --- | --- |
+| Zero accumulation | 0=(1.2−C_A)/5−0.2C_A | Flow and reaction balance |
+| Multiply by residence time | 0=1.2−C_A−1.0C_A | Every term now in mol/L |
+| Collect concentration | 2C_A=1.2 | Add coefficients of the unknown |
+| Concentration and conversion | C_A=0.6; X=1−0.6/1.2=0.5 | Half of A converted |
+
+Substitution gives a net flow term (1.2−0.6)/5=0.12 mol/(L·min) and reaction consumption 0.2×0.6=0.12. Their equality explains why concentration no longer changes.
+
+<!-- lecture-page -->
+
 ## 3. Build independent train, validation, and test data
 
 Assume the following rate law, with T in K and k in 1/min:
@@ -79,6 +94,27 @@ The feature row contains 1 constant + 3 inputs + 3 squares + 3 pairwise products
 
 <!-- lecture-page -->
 
+## From one input row to ten features
+
+Scaling [330, 5, 1.2] with the declared bounds gives [a,b,c]=[0,−1/9,1/7]. Inputs with different units and magnitudes move to the same −1 to 1 interval.
+
+| Feature group | Values for this row |
+| --- | --- |
+| Constant and inputs | 1, 0, −0.111111, 0.142857 |
+| Squares a²,b²,c² | 0, 0.012346, 0.020408 |
+| Products ab,ac,bc | 0, 0, −0.015873 |
+
+```python
+phi = features(np.array([[330., 5., 1.2]]))
+phi_train = features(train_x)
+coef = np.linalg.lstsq(phi_train, train_y, rcond=None)[0]
+prediction = phi @ coef
+```
+
+Shapes are (1,10), (10,2), and (1,2) for phi, coef, and prediction. Matrix multiplication weights and sums feature columns separately for each output. Preserve the training feature order at new inputs.
+
+<!-- lecture-page -->
+
 ## 5. Prediction accuracy and output consistency
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
@@ -90,6 +126,26 @@ The seed-42 baseline gives concentration RMSE 0.032623 mol/L and conversion RMSE
 <math display="block" aria-label="Consistency residual of concentration and conversion"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><msub><mi>C</mi><mi>Af</mi></msub><mover><mi>X</mi><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
 For feed 1.2, prediction C_A = 0.65 and X = 0.45 gives r = 0.65 + 1.2 × 0.45 − 1.2 = −0.01 mol/L. The predicted pair is not exactly consistent with the defined conversion relation.
+
+<!-- lecture-page -->
+
+## From residuals to RMSE and consistency
+
+Compare reference concentrations [0.60,0.40] mol/L with predictions [0.65,0.38] mol/L.
+
+| Calculation | Result |
+| --- | --- |
+| Prediction minus reference | [0.05,−0.02] mol/L |
+| Square | [0.0025,0.0004] (mol/L)² |
+| Average | 0.00145 (mol/L)² |
+| Square root | RMSE≈0.038079 mol/L |
+
+```python
+error = prediction - truth
+rmse = np.sqrt(np.mean(error**2, axis=0))
+```
+
+axis=0 averages input rows and retains output columns. Averaging both outputs together would mix concentration with dimensionless conversion. Separately, C_A=0.65, X=0.45, C_Af=1.2 gives 0.65+1.2×0.45−1.2=−0.01 mol/L. Accuracy and the relation between outputs need separate checks.
 
 <!-- lecture-page -->
 
@@ -136,6 +192,21 @@ Surrogate는 명시한 영역에서 입력에 대응하는 출력을 예측하�
 
 <!-- lecture-page -->
 
+## 정상상태 농도의 계산 순서
+
+330 K, τ=5 min, C_Af=1.2 mol/L에서 k=0.2/min입니다. 농도를 미지수로 두고 수지를 한 줄씩 정리합니다.
+
+| 단계 | 계산 | 의미 |
+| --- | --- | --- |
+| 축적 0 | 0=(1.2−C_A)/5−0.2C_A | 유입·유출·반응의 상쇄 |
+| 체류시간 곱하기 | 0=1.2−C_A−1.0C_A | 각 항의 단위 mol/L |
+| 농도 묶기 | 2C_A=1.2 | 같은 미지수의 계수 합 |
+| 농도와 전환율 | C_A=0.6; X=1−0.6/1.2=0.5 | A의 절반 전환 |
+
+역대입하면 유입·유출 차이는 (1.2−0.6)/5=0.12 mol/(L·min), 반응 소모도 0.2×0.6=0.12입니다. 두 항이 같으므로 농도가 더 변하지 않습니다.
+
+<!-- lecture-page -->
+
 ## 3. 독립 train·validation·test 데이터 만들기
 
 교육용 속도식에서 T의 단위는 K, k는 1/min입니다.
@@ -168,6 +239,27 @@ Surrogate는 명시한 영역에서 입력에 대응하는 출력을 예측하�
 
 <!-- lecture-page -->
 
+## 입력 한 행에서 열 개의 특성으로
+
+[330, 5, 1.2]를 정해진 범위로 변환하면 [a,b,c]=[0,−1/9,1/7]입니다. 단위와 크기가 다른 입력을 같은 −1~1 범위로 옮깁니다.
+
+| 특성 묶음 | 해당 행의 값 |
+| --- | --- |
+| 상수와 입력 | 1, 0, −0.111111, 0.142857 |
+| 제곱 a²,b²,c² | 0, 0.012346, 0.020408 |
+| 곱 ab,ac,bc | 0, 0, −0.015873 |
+
+```python
+phi = features(np.array([[330., 5., 1.2]]))
+phi_train = features(train_x)
+coef = np.linalg.lstsq(phi_train, train_y, rcond=None)[0]
+prediction = phi @ coef
+```
+
+phi는 (1,10), coef는 (10,2), prediction은 (1,2)입니다. 행렬곱은 특성 열마다 계수를 곱해 두 출력별로 합산합니다. 새 입력에서도 학습 때 사용한 특성 순서를 유지합니다.
+
+<!-- lecture-page -->
+
 ## 5. 예측 정확도와 출력 일관성 평가
 
 <math display="block" aria-label="Root mean squared error for one output"><msub><mtext>RMSE</mtext><mi>j</mi></msub><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msup><mrow><mo>(</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>y</mi><mrow><mi>n</mi><mi>j</mi></mrow></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></msqrt></math>
@@ -179,6 +271,26 @@ Seed 42 기준 모델의 농도 RMSE는 0.032623 mol/L, 전환율 RMSE는 0.0256
 <math display="block" aria-label="Consistency residual of concentration and conversion"><mrow><mi>r</mi><mo>=</mo><mover><msub><mi>C</mi><mi>A</mi></msub><mo>^</mo></mover><mo>+</mo><msub><mi>C</mi><mi>Af</mi></msub><mover><mi>X</mi><mo>^</mo></mover><mo>−</mo><msub><mi>C</mi><mi>Af</mi></msub></mrow></math>
 
 유입 1.2에서 예측 C_A = 0.65, X = 0.45라면 r = 0.65 + 1.2 × 0.45 − 1.2 = −0.01 mol/L입니다. 이 예측 쌍은 전환율의 정의를 정확히 만족하지 않습니다.
+
+<!-- lecture-page -->
+
+## 잔차에서 RMSE와 일관성 검사로
+
+농도 기준값 [0.60,0.40] mol/L와 예측 [0.65,0.38] mol/L를 비교합니다.
+
+| 계산 | 결과 |
+| --- | --- |
+| 예측−기준 | [0.05,−0.02] mol/L |
+| 제곱 | [0.0025,0.0004] (mol/L)² |
+| 평균 | 0.00145 (mol/L)² |
+| 제곱근 | RMSE≈0.038079 mol/L |
+
+```python
+error = prediction - truth
+rmse = np.sqrt(np.mean(error**2, axis=0))
+```
+
+axis=0은 여러 입력 행을 평균하고 출력 열은 남깁니다. 두 출력을 모두 평균하면 농도와 무차원 전환율을 섞게 됩니다. 별도로 C_A=0.65, X=0.45, C_Af=1.2를 검사하면 0.65+1.2×0.45−1.2=−0.01 mol/L입니다. 정확도와 출력 간 관계를 각각 검사합니다.
 
 <!-- lecture-page -->
 

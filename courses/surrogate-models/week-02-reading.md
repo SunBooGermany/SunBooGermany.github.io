@@ -71,6 +71,22 @@ Bias gradients are the corresponding error vectors. Updating both weights and bi
 
 <!-- lecture-page -->
 
+## The second forward pass after updating parameters
+
+Update both weights and biases with learning rate 0.1. Subtracting 0.1×[2,0,−2] from the first hidden weight [1,0,0] gives [0.8,0,0.2]; its bias becomes −0.2.
+
+| Intermediate value | Updated calculation |
+| --- | --- |
+| First hidden pre-activation | 0.8×1+0×0+0.2×(−1)−0.2=0.4 |
+| Second hidden pre-activation | −1 |
+| ReLU output | [0.4,0] |
+| Outputs A and C | 0.9×0.4−0.1=0.26 |
+| Output B | 0.1×0.4+0.1=0.14 |
+
+The new error is [0.26,−0.86,0.26]. Loss falls to (0.0676+0.7396+0.0676)/2=0.4374, but B remains below its target 1. One decrease does not complete training.
+
+<!-- lecture-page -->
+
 ## 5. Read the training loop as a calculation
 
 Each batch computes predictions and a loss, clears previously accumulated parameter gradients, differentiates the current loss, and applies an optimizer update:
@@ -91,6 +107,28 @@ Original explanations: PyTorch [training loop](https://docs.pytorch.org/tutorial
 
 <!-- lecture-page -->
 
+## Values and changes inside the training loop
+
+```python
+prediction = model(inputs)
+loss = loss_function(prediction, targets)
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+```
+
+| Line | Value produced or changed |
+| --- | --- |
+| model(inputs) | Batch predictions with current weights |
+| loss_function | Prediction errors reduced to a scalar loss |
+| zero_grad | Previous batch gradients cleared |
+| backward | Current loss gradients for weights and biases |
+| step | Parameters updated using gradients and optimizer state |
+
+The hand calculation uses gradient descent; the lab uses Adam. Adam also uses gradient history, so its numerical update is not the same subtraction by 0.1 times the gradient. To assess the updated parameters, run a new forward pass after step.
+
+<!-- lecture-page -->
+
 ## 6. Diagnose the held-out predictions
 
 Suppose a reference row is [0.6, 0.4, 0.2] mol/L and the predictor returns [0.62, 0.39, 0.19] mol/L.
@@ -102,6 +140,27 @@ Check: which quantities should a test report include, and which data may be used
 Answer check: report A/B/C RMSE in physical units, concentration-sum residual, and minimum predicted concentration. Fit on train, choose with validation, and leave test out of both steps.
 
 Check the same metrics in the [Week 2 core lab]({{ page.lecture_note | relative_url }}).
+
+<!-- lecture-page -->
+
+## From standardized outputs to concentrations and errors
+
+For a one-component calculation, take training mean μ=0.4 mol/L and standard deviation s=0.1 mol/L. Target concentration 0.45 becomes z=(0.45−0.4)/0.1=0.5.
+
+| Quantity | Calculation |
+| --- | --- |
+| Standardized network prediction | ẑ=0.3 |
+| Restore concentration | 0.4+0.1×0.3=0.43 mol/L |
+| Standardized error | 0.3−0.5=−0.2 |
+| Concentration error | 0.43−0.45=−0.02 mol/L |
+
+```python
+prediction = y_mean + y_scale * standardized_prediction
+component_rmse = np.sqrt(((prediction - truth)**2).mean(axis=0))
+sum_residual = prediction.sum(axis=1) - feed
+```
+
+The first line applies each column's mean and scale. axis=0 measures accuracy by component; axis=1 sums the three components at one condition. Swapping these axes computes a different quantity.
 
 <!-- ko -->
 
@@ -162,6 +221,22 @@ Bias gradient는 해당 오차 벡터입니다. 학습률 0.1로 가중치와 bi
 
 <!-- lecture-page -->
 
+## 가중치 갱신 뒤의 두 번째 순전파
+
+학습률 0.1로 가중치와 편향을 모두 갱신합니다. 첫 은닉 가중치 [1,0,0]에서 0.1×[2,0,−2]를 빼면 [0.8,0,0.2], 편향은 −0.2가 됩니다.
+
+| 중간값 | 갱신 뒤 계산 |
+| --- | --- |
+| 첫 은닉 pre-activation | 0.8×1+0×0+0.2×(−1)−0.2=0.4 |
+| 두 번째 은닉 pre-activation | −1 |
+| ReLU 출력 | [0.4,0] |
+| 출력 A, C | 0.9×0.4−0.1=0.26 |
+| 출력 B | 0.1×0.4+0.1=0.14 |
+
+새 오차는 [0.26,−0.86,0.26]입니다. 손실은 (0.0676+0.7396+0.0676)/2=0.4374로 줄지만 B는 여전히 목표 1보다 작습니다. 한 번의 감소가 학습 완료를 뜻하지는 않습니다.
+
+<!-- lecture-page -->
+
 ## 5. 학습 loop를 계산 순서로 읽기
 
 한 batch에서 예측과 loss를 계산한 뒤, 이전에 누적된 파라미터 gradient를 지웁니다. 이어 현재 loss를 미분하고 optimizer로 파라미터를 갱신합니다.
@@ -182,6 +257,28 @@ Epoch 뒤 validation loss를 평가해 가장 작은 값의 가중치를 보관�
 
 <!-- lecture-page -->
 
+## 학습 루프의 값과 변경 시점
+
+```python
+prediction = model(inputs)
+loss = loss_function(prediction, targets)
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()
+```
+
+| 줄 | 만들어지거나 바뀌는 값 |
+| --- | --- |
+| model(inputs) | 현재 가중치로 batch의 출력 계산 |
+| loss_function | 출력과 정답 차이를 스칼라 손실로 축약 |
+| zero_grad | 이전 batch의 기울기 제거 |
+| backward | 현재 손실의 가중치·편향별 기울기 |
+| step | 기울기와 optimizer 상태로 파라미터 갱신 |
+
+손 계산은 단순 gradient descent였고 실제 학습은 Adam입니다. Adam은 과거 기울기 정보도 사용하므로 같은 0.1배 빼기와 수치가 같지 않습니다. step 뒤의 성능을 보려면 갱신된 가중치로 순전파를 다시 수행합니다.
+
+<!-- lecture-page -->
+
 ## 6. 독립 예측을 진단하기
 
 기준값이 [0.6, 0.4, 0.2] mol/L이고 예측 모델이 [0.62, 0.39, 0.19] mol/L를 반환한다고 가정합니다.
@@ -193,3 +290,24 @@ Test 보고서에는 어떤 지표를 넣어야 할까요? 모델 선택에는 �
 답 확인: 물리 단위의 A·B·C RMSE, 농도 합 residual과 최소 예측 농도를 보고합니다. Train으로 학습하고 validation으로 선택하며 test는 두 단계에 사용하지 않습니다.
 
 [2주차 필수 실습]({{ page.lecture_note | relative_url }})에서 같은 지표를 확인합니다.
+
+<!-- lecture-page -->
+
+## 표준화 출력에서 농도와 오차로
+
+계산용 한 성분의 학습 평균 μ=0.4 mol/L, 표준편차 s=0.1 mol/L를 둡니다. 정답 농도 0.45는 z=(0.45−0.4)/0.1=0.5입니다.
+
+| 항목 | 계산 |
+| --- | --- |
+| 신경망의 표준화 예측 | ẑ=0.3 |
+| 농도 복원 | 0.4+0.1×0.3=0.43 mol/L |
+| 표준화 오차 | 0.3−0.5=−0.2 |
+| 농도 오차 | 0.43−0.45=−0.02 mol/L |
+
+```python
+prediction = y_mean + y_scale * standardized_prediction
+component_rmse = np.sqrt(((prediction - truth)**2).mean(axis=0))
+sum_residual = prediction.sum(axis=1) - feed
+```
+
+첫 줄은 각 출력 열에 해당 평균과 표준편차를 적용합니다. axis=0은 성분별 정확도, axis=1은 같은 조건의 세 성분 합을 계산합니다. 두 축을 바꾸면 다른 질문을 계산하게 됩니다.

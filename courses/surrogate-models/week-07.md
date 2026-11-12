@@ -37,9 +37,7 @@ We begin with a known convex cost. Reactor concentrations and yields are not ass
 
 Structural restrictions reduce the function class, so evaluate prediction error together with the resulting decisions.
 
-<!-- lecture-page -->
-
-## Learning objectives and deliverables
+### Learning objectives and deliverables
 
 1. Decisions, fixed context, and ICNN sign conditions
 2. Objective-value equivalence and conditions for a ReLU epigraph LP
@@ -56,6 +54,8 @@ Choose a normalized heating load u, while fixing measured supply composition or 
 
 Convexity here concerns u. It does not establish convexity in c or θ.
 
+c is the observed supply condition; u is the load selected now. A changed supply condition may change the cost curve, so fix the new c and solve again. Distinguish training parameters θ from the operating decision u.
+
 <!-- lecture-page -->
 
 ## Convex functions and sublevel sets
@@ -67,6 +67,8 @@ A convex function lies below the line segment joining two function values.
 For convex f, the constraint f(u) ≤ b defines a convex set. The reverse inequality generally does not. This distinction determines valid LP uses.
 
 [Boyd and Vandenberghe, Convex Optimization, §§3.1-3.2 and 4.1-4.3](https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf)
+
+If two inputs each satisfy cost cap b, the cost at their mixture is at most their weighted average and hence at most b. This proves convexity of the sublevel set. The same inequality argument does not establish a lower-cost constraint.
 
 <!-- lecture-page -->
 
@@ -80,6 +82,8 @@ ReLU is convex and nondecreasing. These conditions preserve convexity in the inp
 
 [Amos, Xu and Kolter, Input Convex Neural Networks, ICML 2017, pp. 146-155](https://proceedings.mlr.press/v70/amos17b.html)
 
+Nonnegative sums preserve the convexity inequality of previous-layer functions. A negative multiplier reverses that inequality. Direct affine input terms have no curvature even with negative slopes, so their weights need no such restriction.
+
 <!-- lecture-page -->
 
 ## Layerwise convexity derivation
@@ -89,6 +93,8 @@ The first layer is a maximum of an affine function and zero, so it is convex. As
 With W ≥ 0, their weighted sum is convex; adding an affine input connection preserves this property. Applying convex, nondecreasing ReLU preserves it again.
 
 The output condition w ≥ 0 serves the same purpose. Negative slopes in direct input connections remain affine and do not break the argument.
+
+The induction hypothesis is componentwise convexity of the previous layer. Multiplying its inequalities by nonnegative W entries and adding preserves their direction. Applying nondecreasing ReLU then preserves the ordering needed for the composition argument.
 
 <!-- lecture-page -->
 
@@ -110,6 +116,8 @@ Here softplus parameterizes positive weights. Hidden activations remain ReLU dur
 
 Inspect the actual fitted weights. Training a general deep ICNN in its parameters is nonlinear and nonconvex.
 
+If an updated constrained weight is −0.03, clipping replaces it by zero; a weight of 0.2 stays unchanged. These restrictions make the function convex in its input, without making the general weight-training problem convex.
+
 <!-- lecture-page -->
 
 ## ReLU graphs and epigraphs
@@ -119,6 +127,8 @@ Inspect the actual fitted weights. Training a general deep ICNN in its parameter
 The two inequalities describe the region above ReLU. They allow h = 10 at s = 0, so they do not represent the graph equality itself.
 
 To use these lower bounds in an LP, it must be possible to reduce the auxiliary activations to the actual outputs, and the objective and remaining constraints must permit that reduction.
+
+At fixed input, values above the true ReLU still satisfy both lower inequalities. Reducing h to its forward value is harmless only when the objective favors reduction and other constraints permit it. These conditions justify using the epigraph instead of the graph equality.
 
 <!-- lecture-page -->
 
@@ -131,6 +141,8 @@ Constraint scope: a finite ReLU network with frozen weights
 Add Gu ≤ r and minimize t. With W, w ≥ 0 and linear remaining expressions, this is an LP without binary variables.
 
 Replacing the activation by softplus can preserve convexity, but not an exact representation by these finitely many linear constraints.
+
+Auxiliary t is an upper value for cost. Every feasible point has t≥f(u), and the actual forward values permit t=f(u). Minimizing t therefore attains the same optimal value as minimizing the original cost.
 
 <!-- lecture-page -->
 
@@ -150,6 +162,8 @@ The optimum of min t agrees with the objective at the selected u. Auxiliary vari
 
 Also inspect any other constraints that favor larger h or t.
 
+An upper cap gives f(u)≤t≤b and therefore enforces the original cap. A lower bound t≥b can be met by inflating t even when f(u) is small. The same predictor needs different formulations depending on whether its output is minimized, capped, or lower-bounded.
+
 <!-- lecture-page -->
 
 ## A two-hinge cost model for hand calculation
@@ -159,6 +173,8 @@ Also inspect any other constraints that favor larger h or t.
 Dimensionless cost example for direct numerical checks. Successive slopes: −0.6 → 0.4 → 0.9.
 
 Minimum: first slope change at u = 0.4; f(0.4) = 0.16.
+
+Before u=0.4 both ReLUs are zero and the slope is −0.6. Activating the first adds slope 1, giving 0.4; activating the second adds 0.5, giving 0.9. The first knot where cost switches from decreasing to increasing is the minimum.
 
 <!-- lecture-page -->
 
@@ -172,6 +188,39 @@ Lab checks: minimum value 0.16 and forward agreement.
 
 <!-- lecture-page -->
 
+## Cost and feasibility between two knots
+
+Keep only active ReLUs in each interval to simplify the cost.
+
+| u interval | Active terms | Cost | Condition for f(u)≤0.25 |
+| --- | --- | --- | --- |
+| 0–0.4 | None | 0.4−0.6u | u≥0.25 |
+| 0.4–0.7 | u−0.4 | 0.4u | u≤0.625 |
+| 0.7–1 | Both | 0.9u−0.35 | u≤2/3, outside this interval |
+
+The feasible interval is [0.25,0.625]. At minimum u=0.4, both ReLUs are zero and f=0.4−0.6×0.4=0.16.
+
+For example, u=0.6 gives h₁=0.2,h₂=0 and f=0.4−0.36+0.2=0.24. This matches 0.4u=0.24 in the middle interval, checking the piecewise expression against the original network.
+
+<!-- lecture-page -->
+
+## LP matrix columns and inequalities
+
+Fix variable order [u,h₁,h₂]. Each row of linprog's A_ub is dotted with the variable vector and bounded above by the matching b_ub entry.
+
+| Code value | Expression | Role |
+| --- | --- | --- |
+| Objective [−0.6,1,0.5] | −0.6u+h₁+0.5h₂ | Cost without constant 0.4 |
+| Row [1,−1,0], rhs 0.4 | u−h₁≤0.4 | h₁≥u−0.4 |
+| Row [1,0,−1], rhs 0.7 | u−h₂≤0.7 | h₂≥u−0.7 |
+| h bounds (0,None) | h₁,h₂≥0 | Other ReLU lower bounds |
+
+At solution [0.4,0,0], row values [0.4,0.4] satisfy their upper bounds. Add constant 0.4 to solver objective −0.24 to report 0.16. The original forward cost must also be 0.16.
+
+Positive h coefficients make this objective minimize h. Changing their signs requires rechecking the recovery argument.
+
+<!-- lecture-page -->
+
 ## A counterexample for an output lower bound
 
 On 0 ≤ u ≤ 1, let f(u) = ReLU(u) and minimize u subject to f(u) ≥ 0.8. The true optimum is u = 0.8.
@@ -179,6 +228,8 @@ On 0 ≤ u ≤ 1, let f(u) = ReLU(u) and minimize u subject to f(u) ≥ 0.8. The
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mi>u</mi><mo>,</mo><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mi>h</mi><mo>≥</mo><mn>.8</mn></mrow></mtd></mtr></mtable></math>
 
 The relaxation permits u = 0, h = 0.8. An inflated auxiliary variable lowers the cost. A small MIP gap or an LP optimal status cannot detect this modeling error.
+
+At u=0,h=0.8, all three linear inequalities hold but f(0)=0. Solving a model with the wrong output lower-bound representation exactly still returns the wrong input. This is why forward validation follows status checking.
 
 <!-- lecture-page -->
 
@@ -210,6 +261,8 @@ Evaluate the context path once at observed c, then freeze its coefficients. With
 
 Optimizing c as well can introduce nonlinear products W(c)h or A(c)u. Fixed-context results do not imply joint convexity or an LP.
 
+At observed c, W(c), A(c), and b(c) are numbers. Freezing them makes each expression affine in u and h. Leaving c variable turns a numerical coefficient times a variable into a function of a variable times another variable, which is no longer the same LP.
+
 <!-- lecture-page -->
 
 ## Conditional versus joint convexity
@@ -230,6 +283,8 @@ Fit coefficients at 41 evenly spaced inputs and evaluate at 200 separate midpoin
 
 This shallow ICNN with fixed knots is a special case with convex training. The conclusion does not extend to general deep-ICNN training.
 
+Fixed knots κ allow every ReLU feature to be computed before fitting. Only b,a,w remain unknown, giving bounded linear least squares. w≥0 prevents downward slope jumps at knots and preserves convexity of the fitted curve.
+
 <!-- lecture-page -->
 
 ## Fitted curve and selected load
@@ -239,6 +294,24 @@ This shallow ICNN with fixed knots is a special case with convex training. The c
 Independent-evaluation RMSE: 0.000760. LP choice: u = 0.50. Reference minimum: u = 0.55.
 
 The reference cost difference is 0.0025. Close prediction curves can still have different minimizers.
+
+A flat reference curve near its minimum allows a noticeable input shift with a small cost change. Input difference 0.05 and cost difference 0.0025 measure different things. Visually close prediction curves do not establish identical minimizing inputs.
+
+<!-- lecture-page -->
+
+## Prediction error and loss from the selected input
+
+Complete the square in q(u)=(u−0.6)²+0.1u+0.2 to obtain q(u)=(u−0.55)²+0.2575. Squared distance from the minimizer equals the cost increase.
+
+| Input | Reference calculation | Cost |
+| --- | --- | --- |
+| Reference minimum u=0.55 | 0²+0.2575 | 0.2575 |
+| Model choice u=0.50 | (−0.05)²+0.2575 | 0.2600 |
+| Difference | 0.2600−0.2575 | 0.0025 |
+
+The difference 0.001563 between predicted cost 0.258437 and reference cost 0.260000 is prediction error at the selected point. Difference 0.0025 from the reference minimum is cost lost because of the selection.
+
+These comparisons use different baselines. State the quantities subtracted in both accuracy reports and decision evaluations.
 
 <!-- lecture-page -->
 
@@ -313,9 +386,7 @@ Companion: derivations and short answer checks.
 
 구조 제약을 추가하면 표현할 수 있는 함수가 줄어들므로, 예측 오차와 의사결정 결과를 함께 확인합니다.
 
-<!-- lecture-page -->
-
-## 학습 목표와 제출 항목
+### 학습 목표와 제출 항목
 
 1. 결정변수와 고정 context를 구분하고 ICNN의 부호 조건을 확인합니다.
 2. ReLU epigraph LP의 목적값 동치성과 적용 조건을 설명합니다.
@@ -332,6 +403,8 @@ Companion: derivations and short answer checks.
 
 여기서 convexity는 u에 관한 성질입니다. c나 θ에 대해서도 convex라고 결론 내릴 수는 없습니다.
 
+c는 현재 관측한 공급 조건이고 u는 지금 선택할 부하입니다. 공급 조건이 바뀌면 같은 u의 비용 곡선도 바뀔 수 있어 c를 다시 고정하고 풉니다. 학습에서 바꾸는 θ와 운전에서 선택하는 u를 구분합니다.
+
 <!-- lecture-page -->
 
 ## Convex 함수와 sublevel set
@@ -343,6 +416,8 @@ Companion: derivations and short answer checks.
 Convex f에 대한 f(u) ≤ b는 convex 영역을 만듭니다. f(u) ≥ b는 일반적으로 그렇지 않습니다. 이 방향 차이가 LP 사용 조건에 반영됩니다.
 
 [Boyd and Vandenberghe, Convex Optimization, §§3.1-3.2 and 4.1-4.3](https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf)
+
+두 입력이 각각 비용 상한 b를 만족하면 그 사이 혼합 입력의 비용은 두 비용의 가중평균 이하이므로 b 이하입니다. 이 계산이 sublevel set의 convexity를 설명합니다. 비용 하한에는 같은 부등식 논리를 적용할 수 없습니다.
 
 <!-- lecture-page -->
 
@@ -356,6 +431,8 @@ ReLU는 convex이고 비감소합니다. 이 조건으로 각 층과 출력의 �
 
 [Amos, Xu and Kolter, Input Convex Neural Networks, ICML 2017, pp. 146-155](https://proceedings.mlr.press/v70/amos17b.html)
 
+이전 층의 convex 곡선을 양수 가중치로 더하면 아래로 굽는 부분이 새로 생기지 않습니다. 반면 그 곡선에 음수 가중치를 곱하면 위아래가 뒤집힙니다. 직접 입력의 affine 항은 기울기가 음수여도 굽음이 없어 별도 취급합니다.
+
 <!-- lecture-page -->
 
 ## 층별 convexity 유도
@@ -365,6 +442,8 @@ ReLU는 convex이고 비감소합니다. 이 조건으로 각 층과 출력의 �
 W ≥ 0이면 그 성분의 가중합도 convex이고, affine 입력 연결을 더해도 유지됩니다. 여기에 convex·비감소 ReLU를 적용합니다.
 
 출력의 w ≥ 0도 같은 역할을 합니다. 입력 연결의 음의 기울기는 affine 항이므로 이 논증을 깨지 않습니다.
+
+귀납 단계에서 필요한 것은 이전 층의 각 성분이 convex라는 조건입니다. W의 각 원소가 비음수라면 성분별 convexity 부등식에 곱해 더해도 방향이 유지됩니다. 그 다음 비감소 함수 ReLU를 적용해도 대소관계를 뒤집지 않습니다.
 
 <!-- lecture-page -->
 
@@ -386,6 +465,8 @@ Gradient 갱신 뒤 W를 max(W, 0)으로 투영하거나, 자유 매개변수 V�
 
 학습 후 확인: 가중치의 부호. 일반적인 깊은 ICNN의 매개변수 학습: 비선형·비볼록 문제
 
+가중치 하나가 갱신 뒤 −0.03이면 clipping은 0으로 바꿉니다. 다른 가중치가 0.2이면 그대로 둡니다. 이는 함수가 입력에 대해 convex하도록 제약하는 것이며, 가중치 전체를 찾는 학습 문제의 convexity를 보장하지는 않습니다.
+
 <!-- lecture-page -->
 
 ## ReLU 그래프와 epigraph
@@ -395,6 +476,8 @@ Gradient 갱신 뒤 W를 max(W, 0)으로 투영하거나, 자유 매개변수 V�
 두 부등식은 ReLU 위쪽 영역을 표현합니다. s = 0에서 h = 10도 허용하므로 그래프 등식 자체와 같지는 않습니다.
 
 이 하한 제약을 LP에 사용하려면 보조변수를 실제 출력으로 줄일 수 있어야 하며, 목적함수와 나머지 제약도 그 방향을 허용해야 합니다.
+
+고정 입력에서 h를 실제 ReLU값보다 크게 두어도 두 하한은 만족합니다. 최소화 목적이 h를 줄이는 방향이고 다른 제약도 그 감소를 허용할 때만 실제 순전파 값으로 내려도 손해가 없습니다. 이 조건이 등식 그래프 대신 epigraph를 사용하는 근거입니다.
 
 <!-- lecture-page -->
 
@@ -407,6 +490,8 @@ Gradient 갱신 뒤 W를 max(W, 0)으로 투영하거나, 자유 매개변수 V�
 입력 제약 Gu ≤ r를 추가하고 t를 최소화합니다. W, w ≥ 0이고 나머지 식도 선형이면 이진변수 없이 LP가 됩니다.
 
 활성화를 softplus로 바꾸면 convexity는 유지할 수 있어도 이 유한한 선형 제약식으로 정확히 표현되지는 않습니다.
+
+t는 비용의 상한을 나타내는 보조 변수입니다. 모든 허용된 점에서 t≥f(u)이고 실제 순전파 값을 넣으면 t=f(u)가 가능하므로, t 최소화는 원래 비용 최소화와 같은 최적값을 얻습니다.
 
 <!-- lecture-page -->
 
@@ -426,6 +511,8 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 
 다른 제약이 h나 t를 큰 쪽으로 밀어 올리는 경우도 다시 확인합니다.
 
+비용 상한은 f(u)≤t≤b를 만들기 때문에 원래 상한도 만족합니다. 비용 하한 t≥b는 f(u)가 작아도 t만 키워 만족할 수 있습니다. 동일한 모델에서도 출력이 목적식인지 상한인지 하한인지에 따라 정식화가 달라집니다.
+
 <!-- lecture-page -->
 
 ## 손 계산용 두 hinge 비용 모델
@@ -435,6 +522,8 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 직접 수치 검증을 위한 무차원 비용 예제. 구간별 기울기: −0.6 → 0.4 → 0.9
 
 최소점: 첫 번째 기울기 전환점 u = 0.4. 최솟값: f(0.4) = 0.16
+
+u=0.4 전에는 두 ReLU가 모두 0이라 기울기는 −0.6입니다. 첫 ReLU가 켜지면 기울기 1이 더해져 0.4가 되고, 두 번째가 켜지면 0.5가 더해져 0.9가 됩니다. 부하를 늘릴 때 비용이 내려가다가 올라가는 첫 절점이 최소점입니다.
 
 <!-- lecture-page -->
 
@@ -448,6 +537,39 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 
 <!-- lecture-page -->
 
+## 두 절점 사이의 비용과 가능 구간
+
+각 구간에서 켜진 ReLU만 남겨 비용식을 정리합니다.
+
+| u 구간 | 켜진 항 | 비용식 | f(u)≤0.25의 조건 |
+| --- | --- | --- | --- |
+| 0~0.4 | 없음 | 0.4−0.6u | u≥0.25 |
+| 0.4~0.7 | u−0.4 | 0.4u | u≤0.625 |
+| 0.7~1 | 두 항 모두 | 0.9u−0.35 | u≤2/3, 해당 구간에 없음 |
+
+가능 구간은 [0.25,0.625]입니다. 최소점 u=0.4에서 두 ReLU가 0이므로 f=0.4−0.6×0.4=0.16입니다.
+
+예를 들어 u=0.6이면 h₁=0.2,h₂=0이고 f=0.4−0.36+0.2=0.24입니다. 중간 구간의 0.4u=0.24와 일치하므로 구간식과 원래 신경망을 서로 확인할 수 있습니다.
+
+<!-- lecture-page -->
+
+## LP 행렬의 열과 부등식
+
+변수 순서를 [u,h₁,h₂]로 고정합니다. linprog의 A_ub는 각 행과 변수 벡터를 내적한 값이 b_ub 이하가 되도록 해석합니다.
+
+| 코드의 값 | 해당 수식 | 역할 |
+| --- | --- | --- |
+| 목적 계수 [−0.6,1,0.5] | −0.6u+h₁+0.5h₂ | 상수 0.4를 뺀 비용 |
+| 행 [1,−1,0], 우변 0.4 | u−h₁≤0.4 | h₁≥u−0.4 |
+| 행 [1,0,−1], 우변 0.7 | u−h₂≤0.7 | h₂≥u−0.7 |
+| h의 bounds (0,None) | h₁,h₂≥0 | ReLU의 다른 하한 |
+
+해 [0.4,0,0]을 대입하면 행 값은 [0.4,0.4]로 우변 이하입니다. solver 목적값 −0.24에 상수 0.4를 더해 0.16을 보고합니다. 원래 forward에서 계산한 비용도 0.16이어야 합니다.
+
+양의 h 계수 때문에 이 목적식은 h를 가능한 작게 만듭니다. 목적 계수의 부호를 바꾸면 이 복원 논리를 다시 검사해야 합니다.
+
+<!-- lecture-page -->
+
 ## 출력 하한 제약의 반례
 
 0 ≤ u ≤ 1에서 f(u) = ReLU(u)라 두고 f(u) ≥ 0.8을 만족하며 u를 최소화. 실제 최적점은 u = 0.8
@@ -455,6 +577,8 @@ min t의 최적값과 선택한 u의 목적값이 일치합니다. 출력에 영
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>h</mi><mo>≥</mo><mi>u</mi><mo>,</mo><mi>h</mi><mo>≥</mo><mn>0</mn><mo>,</mo><mi>h</mi><mo>≥</mo><mn>.8</mn></mrow></mtd></mtr></mtable></math>
 
 이 완화에서는 u = 0, h = 0.8이 허용됩니다. 비용을 줄이려고 보조변수를 부풀린 결과입니다. 작은 MIP gap이나 LP optimal 종료 상태로 이 모델링 오류를 발견할 수는 없습니다.
+
+u=0,h=0.8을 두면 세 선형 부등식은 모두 만족하지만 실제 f(0)=0입니다. 출력 하한을 잘못 표현한 모델은 정확히 풀어도 잘못된 입력을 반환합니다. solver 상태 확인 뒤 순전파 검사가 필요한 이유입니다.
 
 <!-- lecture-page -->
 
@@ -486,6 +610,8 @@ PICNN은 일부 입력에만 convexity를 부여합니다. 공급 조건 c를 �
 
 c도 최적화하면 W(c)h나 A(c)u가 비선형 결합이 될 수 있습니다. 고정 context의 결론이 공동 최적화로 이어지지는 않습니다.
 
+관측 c에서 계산된 W(c), A(c), b(c)는 숫자입니다. 이를 고정하면 최적화 변수 u와 h에 대해 모든 식이 affine입니다. c도 변수로 남기면 “숫자 계수×변수”가 “변수의 함수×변수”가 되어 같은 LP가 아닙니다.
+
 <!-- lecture-page -->
 
 ## 조건부 convexity와 공동 convexity
@@ -506,6 +632,8 @@ u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 
 
 고정 knot을 사용하는 이 얕은 ICNN은 convex 학습이 가능한 특수한 경우입니다. 깊은 ICNN의 일반적인 학습에는 이 결론을 적용할 수 없습니다.
 
+절점 κ가 고정이면 각 입력의 ReLU 특성을 미리 계산할 수 있습니다. 계수 b,a,w만 미지수이므로 제한된 선형 최소제곱입니다. w≥0은 절점에서 기울기가 감소하지 않게 해 학습된 곡선의 convexity를 유지합니다.
+
 <!-- lecture-page -->
 
 ## 학습 곡선과 선택한 부하
@@ -515,6 +643,24 @@ u = c인 선 위에서는 f = −0.1c²입니다. 끝점 함수값의 평균은 
 독립 평가 RMSE: 0.000760. LP 선택: u = 0.50. 기준 함수의 최소점: u = 0.55
 
 두 점 사이의 기준 비용 차이는 0.0025입니다. 예측 곡선이 가까워도 최소점 위치는 달라질 수 있습니다.
+
+최소점 근처에서 기준 곡선이 평평하면 입력이 조금 이동해도 비용 차이는 작습니다. 이 예의 입력 차이 0.05와 비용 차이 0.0025는 서로 다른 평가량입니다. 그래프가 겹쳐 보인다는 이유만으로 최적 입력까지 같다고 판단하지 않습니다.
+
+<!-- lecture-page -->
+
+## 예측 오차와 선택한 입력의 손실
+
+기준 비용 q(u)=(u−0.6)²+0.1u+0.2를 완전제곱으로 정리하면 q(u)=(u−0.55)²+0.2575입니다. 최소점에서 벗어난 거리의 제곱이 비용 증가량입니다.
+
+| 입력 | 기준 비용 계산 | 비용 |
+| --- | --- | --- |
+| 기준 최소 u=0.55 | 0²+0.2575 | 0.2575 |
+| 모델 선택 u=0.50 | (−0.05)²+0.2575 | 0.2600 |
+| 차이 | 0.2600−0.2575 | 0.0025 |
+
+모델이 선택한 점의 예측 비용 0.258437과 기준 비용 0.260000의 차이 0.001563은 그 점의 예측 오차입니다. 기준 최소값과의 차이 0.0025는 선택 때문에 생긴 비용 손실입니다.
+
+같은 숫자를 비교하는 기준이 다릅니다. 정확도 표와 의사결정 평가 표에서 각각 무엇을 빼는지 명시합니다.
 
 <!-- lecture-page -->
 
@@ -554,8 +700,6 @@ python week07_lab.py --output-dir my-results
 2. 출력 하한 반례를 실행하고 잘못 허용된 u와 실제 출력을 기록
 3. 학습 모델의 knot 간격을 0.1에서 0.05로 바꿔 예측 오차와 기준 비용 손실을 비교
 4. c를 고정해야 하는 이유와 현재 모델에 허용된 출력 사용 방식을 설명합니다.
-
-
 
 <!-- lecture-page -->
 

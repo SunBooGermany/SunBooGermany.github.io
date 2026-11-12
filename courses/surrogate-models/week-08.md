@@ -37,9 +37,7 @@ Recompute product specifications, physical consistency, and cost at those decisi
 
 This week: these distinctions with the unchanged frozen network from Week 6.
 
-<!-- lecture-page -->
-
-## Learning objectives and final report
+### Learning objectives and final report
 
 1. Prediction error, formulation error, and process constraint violation
 2. Cost comparison among candidates feasible in the reference process model
@@ -68,6 +66,8 @@ Rate constants have units min⁻¹, activation energies are J/mol, and R = 8.314
 
 Temperature is externally maintained; this model includes no energy balance or cooling-capacity limit.
 
+Unlike the 6000 K and 5000 K sensitivities in Weeks 1–4, this reference uses E/R=40000/8.314 and 50000/8.314 K. Rates agree at 330 K but differ elsewhere. Revalidate the Week 6 weights with the reference used in Weeks 6–8.
+
 <!-- lecture-page -->
 
 ## Reference process equations and product specifications
@@ -77,6 +77,8 @@ Temperature is externally maintained; this model includes no energy balance or c
 Specifications are <math><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></math> ≥ 0.38 and <math><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></math> ≤ 0.25 mol/L. Concentrations must be nonnegative and sum to 1.2 mol/L.
 
 Revalidation with these equations is conditional on their assumptions. Actual equipment requires additional checks on dynamics, heat management, measurement error, and other operating limits.
+
+Calculate A first, then balance B formation against its outflow and onward reaction. C follows from formation out of B. Use this sequence at the identical T,τ when comparing the network with the reference process.
 
 <!-- lecture-page -->
 
@@ -90,6 +92,8 @@ This cost compares designs meeting product specifications. It includes neither s
 
 Baseline: T = 330 K, τ = 6 min; cost 76.80 $/h.
 
+At flow 1 L/min, τ=6 min means volume 6 L. Volume cost is 12×6=72 $/h and temperature cost is 0.24×(330−310)=4.8 $/h, totaling 76.8 $/h. This baseline is checked for specifications as well as cost.
+
 <!-- lecture-page -->
 
 ## The surrogate optimization problem
@@ -99,6 +103,8 @@ Baseline: T = 330 K, τ = 6 min; cost 76.80 $/h.
 Input bounds and scaling match Week 6. The objective is twelve times the Week 6 cost index, so the unadjusted model has the same optimal input.
 
 Use the ReLU MILP from Weeks 5 and 6. The Week 7 cost-epigraph LP does not automatically apply to concentration constraints.
+
+Multiplying every objective value by positive 12 preserves ranking, so the optimal input matches Week 6 while the cost unit changes. Specifications are imposed on network predictions; that ranking alone does not establish feasible costs for the reference process.
 
 <!-- lecture-page -->
 
@@ -118,6 +124,8 @@ At the optimized candidate, B is overpredicted by 0.00884 mol/L. Since its predi
 
 Report error at the optimized candidate alongside independent average error so that specification violations at the selected point are visible.
 
+Optimization can reduce cost by reducing specification slack until predicted B touches its lower bound. At that point even a small overprediction causes violation. Evaluate the selected point’s error direction and slack separately from domain-average RMSE.
+
 <!-- lecture-page -->
 
 ## Reference revalidation of the unadjusted candidate
@@ -125,6 +133,8 @@ Report error at the optimized candidate alongside independent average error so t
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">Quantity</th><th style="font-size:clamp(15px,1.7cqw,22px)">Value</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">T / τ</td><td style="font-size:clamp(15px,1.7cqw,22px)">342.0593 K / 2.52444 min</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Predicted B / reference B</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.380000 / 0.371157 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Reference C</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.178136 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">B shortfall</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.008843 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Calculated cost</td><td style="font-size:clamp(15px,1.7cqw,22px)">37.9875 $/h</td></tr></tbody></table>
 
 Reject this candidate because it violates the product specification. Its lower cost does not make it an improvement over a feasible baseline.
+
+Predicted B slack is zero and overprediction is 0.008843, so reference slack is −0.008843. C retains slack 0.25−0.178136=0.071864 mol/L. Failure of even one required specification rejects the candidate.
 
 <!-- lecture-page -->
 
@@ -156,6 +166,23 @@ Overprediction of B and underprediction of C are the adverse directions. A separ
 
 These are maxima observed at 961 points, not proven bounds over the continuous domain. Reevaluate the new candidate with the process equations.
 
+B has a lower requirement, so guard against the model predicting too much. C has an upper limit, so guard against predicting too little. Opposite inequality directions explain why one margin is added and the other subtracted.
+
+<!-- lecture-page -->
+
+## Calculating one-sided margins
+
+Define e=prediction−reference. Positive e is adverse for B; negative e is adverse for C.
+
+| Quantity | B lower limit | C upper limit |
+| --- | --- | --- |
+| Original specification | Reference B≥0.38 | Reference C≤0.25 |
+| Applied margin | δ_B=0.02130 | δ_C=0.01305 |
+| Required prediction | B̂≥0.40130 | Ĉ≤0.23695 |
+| At the assumed error limit | 0.40130−0.02130=0.38 | 0.23695+0.01305=0.25 |
+
+The last row applies when the error limit holds at that input. The maximum over 961 calibration points does not prove a bound at every unseen point. Reevaluate the next candidate with the reference process even after adding margins.
+
 <!-- lecture-page -->
 
 ## Cost and specifications of the margin candidate
@@ -163,6 +190,8 @@ These are maxima observed at 961 points, not proven bounds over the continuous d
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">Quantity</th><th style="font-size:clamp(15px,1.7cqw,22px)">Result</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">T / τ</td><td style="font-size:clamp(15px,1.7cqw,22px)">329.1148 K / 4.66529 min</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Reference B / C</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.392935 / 0.174547 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Reference feasibility</td><td style="font-size:clamp(15px,1.7cqw,22px)">Specifications met</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Cost</td><td style="font-size:clamp(15px,1.7cqw,22px)">60.5710 $/h</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Savings versus baseline</td><td style="font-size:clamp(15px,1.7cqw,22px)">16.2290 $/h</td></tr></tbody></table>
 
 Using a large error observed anywhere in the domain as a margin can be costly in some regions. Compare the margin with error at the actual selected point.
+
+Savings from the baseline are 76.8000−60.5710=16.2290 $/h. First confirm positive reference slacks: 0.012935 for B and 0.075453 mol/L for C; then report the savings.
 
 <!-- lecture-page -->
 
@@ -184,6 +213,28 @@ Fit an affine model to reference-minus-prediction residuals at the nine points. 
 
 This margin is heuristic. Affine correction preserves the MILP structure but provides no uniform bound on residual error.
 
+The correction target is reference minus prediction. At a point overpredicting B by 0.008843, the desired correction is −0.008843. Reversing the sign would raise an already inflated prediction; check corrected output explicitly at one point.
+
+<!-- lecture-page -->
+
+## Local-data coordinates and the regression matrix
+
+Candidate (342.0593 K,2.52444 min) has scaled coordinates [(342.0593−310)/40,(2.52444−2)/8]≈[0.80148,0.06556].
+
+| Axis | Scaled offset | Physical offset |
+| --- | --- | --- |
+| Temperature | ±0.06 | ±2.4 K |
+| Residence time | ±0.06 | ±0.48 min |
+
+```python
+design = np.column_stack((np.ones(len(x_local)), x_local))
+residual = reference_y - network_y
+beta = np.linalg.lstsq(design, residual, rcond=None)[0]
+corrected_y = network_y + design @ beta
+```
+
+For nine inputs, design is (9,3), the three-component residual is (9,3), and beta is (3,3). Multiplying a row [1,x₁,x₂] by beta gives three corrections. Restrict the next optimization to the fitted region and check remaining error at the new candidate.
+
 <!-- lecture-page -->
 
 ## Failed revalidation after local correction
@@ -193,6 +244,8 @@ This margin is heuristic. Affine correction preserves the MILP structure but pro
 Reject this candidate despite nine new data points and a restricted local domain. Its corrected-model error exceeds the 0.002 margin.
 
 The new residual at the candidate becomes useful follow-up data. Do not report the rejected candidate’s cost as achieved savings.
+
+The corrected model predicts 0.382 while the reference gives 0.376820. Subtracting the reserved margin 0.002 from error 0.005180 leaves shortfall 0.003180. Adding data does not by itself establish that remaining error lies within the margin.
 
 <!-- lecture-page -->
 
@@ -206,6 +259,41 @@ Specification feasibility of this candidate is checked directly with the referen
 
 <!-- lecture-page -->
 
+## From the B specification to a quadratic in residence time
+
+At fixed temperature, k₁ and k₂ are numbers. Set B to target b and multiply by the positive concentration denominator.
+
+| Step | Relation |
+| --- | --- |
+| Set B=b | 1.2k₁τ=b(1+k₁τ)(1+k₂τ) |
+| Expand denominator | 1.2k₁τ=b[1+(k₁+k₂)τ+k₁k₂τ²] |
+| Collect terms | bk₁k₂τ²+[b(k₁+k₂)−1.2k₁]τ+b=0 |
+
+At 330 K and b=0.4, this is 0.008τ²−0.12τ+0.4=0. Dividing by 0.008 gives (τ−5)(τ−10)=0. B≥0.4 holds between the roots, [5,10].
+
+At fixed temperature, cost increases with τ, so check 5 min first. It gives C=0.1×5×0.4=0.2≤0.25. At 10 min, C=0.4 violates the cap; the B condition alone is insufficient.
+
+<!-- lecture-page -->
+
+## Computing the smaller root and revalidating the candidate
+
+At T=339.8152 K and b=0.382, calculate a=bk₁k₂ and d=b(k₁+k₂)−1.2k₁. A negative discriminant means there is no real residence time with B=b at this temperature.
+
+```python
+k1 = 0.2 * np.exp(40000 / 8.314 * (1/330 - 1/T))
+k2 = 0.1 * np.exp(50000 / 8.314 * (1/330 - 1/T))
+a = b * k1 * k2
+d = b * (k1 + k2) - 1.2 * k1
+disc = d*d - 4*a*b
+tau = 2*b / (-d + np.sqrt(disc))
+```
+
+Here k₁≈0.3047, k₂≈0.1693/min and τ≈3.08559 min. This smaller-root formula uses a>0,d<0,disc≥0. Check the original τ bounds and reference B,C for each candidate.
+
+Reference C≈0.199530<0.25 and cost is 12×3.08559+0.24×(339.8152−310)≈44.1828 $/h. Savings from the original baseline are 76.8−44.1828=32.6172 $/h.
+
+<!-- lecture-page -->
+
 ## Reference-model optimization for comparison
 
 At each T, solve the quadratic equation for the smaller τ giving B = 0.38. Check τ bounds and the C specification, then use 4,001 temperature grid points and a scalar search near the best grid point.
@@ -214,6 +302,8 @@ Comparison candidate: T = 344.9116 K, τ = 2.75110 min; cost 41.3920 $/h.
 
 This supplies a feasible benchmark, not a certified global bound over the continuous domain. Report cost differences as observed benchmark differences.
 
+At fixed temperature, cost increases with τ, so first inspect the smallest τ satisfying the B lower limit. Residence-time bounds and the C limit still apply. The smaller root at an arbitrary temperature is not automatically feasible.
+
 <!-- lecture-page -->
 
 ## Reference process results by candidate
@@ -221,6 +311,8 @@ This supplies a feasible benchmark, not a certified global bound over the contin
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">Candidate</th><th style="font-size:clamp(15px,1.7cqw,22px)">B (mol/L)</th><th style="font-size:clamp(15px,1.7cqw,22px)">Cost ($/h)</th><th style="font-size:clamp(15px,1.7cqw,22px)">Specs</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Baseline</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.40909</td><td style="font-size:clamp(15px,1.7cqw,22px)">76.800</td><td style="font-size:clamp(15px,1.7cqw,22px)">Met</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Unadjusted MILP</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.37116</td><td style="font-size:clamp(15px,1.7cqw,22px)">37.988</td><td style="font-size:clamp(15px,1.7cqw,22px)">Violated</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Margin MILP</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.39293</td><td style="font-size:clamp(15px,1.7cqw,22px)">60.571</td><td style="font-size:clamp(15px,1.7cqw,22px)">Met</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Local correction</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.37682</td><td style="font-size:clamp(15px,1.7cqw,22px)">41.607</td><td style="font-size:clamp(15px,1.7cqw,22px)">Violated</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Reference repair</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.38200</td><td style="font-size:clamp(15px,1.7cqw,22px)">44.183</td><td style="font-size:clamp(15px,1.7cqw,22px)">Met</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Reference benchmark</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.38000</td><td style="font-size:clamp(15px,1.7cqw,22px)">41.392</td><td style="font-size:clamp(15px,1.7cqw,22px)">Met</td></tr></tbody></table>
 
 Every B value uses the same reference process equations. Specification checks include B, C, nonnegative concentrations, and the concentration sum.
+
+Check each row using its complete reference composition. Although the table displays B, also evaluate C, the sum, and nonnegativity. A failed row’s low cost is excluded from rankings of feasible savings.
 
 <!-- lecture-page -->
 
@@ -231,6 +323,8 @@ Every B value uses the same reference process equations. Specification checks in
 The reference-repaired candidate costs 32.6172 $/h less than the initial baseline, with an observed benchmark difference of 2.7908 $/h.
 
 All values depend on the assumed cost coefficients. Record reference evaluations, model training, and optimization time separately.
+
+Subtracting benchmark 41.3920 from repaired-candidate cost 44.1828 gives 2.7908 $/h. This compares two checked candidates. Without a proof that the benchmark is globally optimal, it is not certified regret relative to the global optimum.
 
 <!-- lecture-page -->
 
@@ -296,9 +390,7 @@ Change a margin or local-grid width once, then revalidate the new candidate agai
 
 이번 주에는 6주차의 고정 네트워크를 그대로 사용해 이 차이를 추적합니다.
 
-<!-- lecture-page -->
-
-## 학습 목표와 최종 보고서
+### 학습 목표와 최종 보고서
 
 1. 예측 오차, 정식화 오차, 공정 제약 위반을 구분
 2. 기준 공정 모델에서 feasible한 후보의 비용을 비교
@@ -327,6 +419,8 @@ k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K). 330 
 
 온도는 외부에서 유지된다고 가정하며 에너지 수지나 냉각 한계는 이 모델에 포함하지 않습니다.
 
+1~4주차의 온도 민감도 6000 K,5000 K와 달리 이번 기준식은 E/R=40000/8.314,50000/8.314 K를 사용합니다. 330 K에서는 두 모델의 기준 속도가 같지만 다른 온도에서는 다릅니다. 6주차 가중치를 사용할 때는 6~8주차 기준식으로 재검증합니다.
+
 <!-- lecture-page -->
 
 ## 기준 공정식과 제품 규격
@@ -336,6 +430,8 @@ k의 단위는 min⁻¹, 활성화에너지는 J/mol, R = 8.314 J/(mol·K). 330 
 규격은 <math><msub><mi>C</mi><mrow><mi>B</mi></mrow></msub></math> ≥ 0.38, <math><msub><mi>C</mi><mrow><mi>C</mi></mrow></msub></math> ≤ 0.25 mol/L. 모든 농도는 0 이상이고 합은 1.2 mol/L여야 합니다.
 
 이 공정식으로 재검증한 결과는 해당 가정 아래의 계산입니다. 실제 설비에서는 동특성·열관리·계측 오차 등 추가 조건을 확인해야 합니다.
+
+A를 먼저 구한 뒤 A에서 B로 넘어간 양과 B의 유출·추가 반응을 계산합니다. C는 B에서 생성된 양으로 정해집니다. 같은 T,τ에 이 순서를 적용해야 신경망과 기준 공정의 차이를 비교할 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -349,6 +445,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 기준 후보: T = 330 K, τ = 6 min. 비용: 76.80 $/h
 
+유량 1 L/min에서 τ=6 min은 부피 6 L입니다. 부피 비용 12×6=72 $/h, 온도 비용 0.24×(330−310)=4.8 $/h를 더하면 76.8 $/h입니다. 이 기준안은 비용뿐 아니라 제품 규격도 확인된 비교 출발점입니다.
+
 <!-- lecture-page -->
 
 ## 서로게이트 최적화 문제
@@ -358,6 +456,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 입력 범위와 scaling은 6주차 모델과 같습니다. 목적함수는 6주차 비용 지표의 12배이므로 무보정 모델의 최적 입력도 같습니다.
 
 5·6주차의 ReLU MILP를 사용합니다. 농도 제약에는 7주차 비용 epigraph LP를 자동으로 적용하지 않습니다.
+
+모든 후보의 목적값에 양수 12를 곱하면 비용 순서는 유지됩니다. 그래서 6주차와 최적 입력이 같고 비용 단위만 바뀝니다. 제품 규격은 신경망 예측에 걸려 있으므로 그 순서가 실제 가능해의 비용 순서를 보장하지는 않습니다.
 
 <!-- lecture-page -->
 
@@ -377,6 +477,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 최적 후보에서의 오차와 독립 평가 평균을 함께 보고해야 선택 지점의 규격 위반을 놓치지 않습니다.
 
+최적화는 규격 여유를 줄여 비용을 낮추는 경향이 있어 예측 B가 하한에 닿습니다. 그 점에서는 작은 과대 예측도 바로 규격 위반이 됩니다. 전체 영역 평균 RMSE와 별개로 선택점의 오차 방향과 규격 여유를 계산합니다.
+
 <!-- lecture-page -->
 
 ## 무보정 후보의 기준 공정 재검증
@@ -384,6 +486,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">항목</th><th style="font-size:clamp(15px,1.7cqw,22px)">값</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">T / τ</td><td style="font-size:clamp(15px,1.7cqw,22px)">342.0593 K / 2.52444 min</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">예측 B / 기준 B</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.380000 / 0.371157 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준 C</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.178136 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">B 규격 부족량</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.008843 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">계산 비용</td><td style="font-size:clamp(15px,1.7cqw,22px)">37.9875 $/h</td></tr></tbody></table>
 
 이 후보는 제품 규격을 위반하므로 채택 목록에서 제외합니다. 비용이 낮다는 이유로 feasible 기준 후보보다 낫다고 평가하지 않습니다.
+
+B 하한에서 예측 여유가 0인데 과대 예측이 0.008843이므로 실제 여유는 −0.008843입니다. C는 0.25−0.178136=0.071864 mol/L의 여유가 남습니다. 한 규격만 실패해도 후보 전체는 받아들일 수 없습니다.
 
 <!-- lecture-page -->
 
@@ -415,6 +519,23 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 961개 점에서 관측한 최대 오차입니다. 전체 연속 영역의 오차 상한을 증명한 값은 아니므로 새 후보를 다시 공정식에 넣습니다.
 
+B는 많이 나와야 하므로 모델이 실제보다 높게 말하는 오차를 막아야 합니다. C는 적게 나와야 하므로 모델이 실제보다 낮게 말하는 오차를 막아야 합니다. 두 규격의 방향이 달라 margin을 더하는 쪽과 빼는 쪽도 달라집니다.
+
+<!-- lecture-page -->
+
+## 한쪽 방향 margin의 계산
+
+오차를 e=예측−기준으로 정의합니다. B에서는 e가 양수일 때, C에서는 e가 음수일 때 위험한 방향입니다.
+
+| 항목 | B 하한 | C 상한 |
+| --- | --- | --- |
+| 원래 규격 | 기준 B≥0.38 | 기준 C≤0.25 |
+| 적용 margin | δ_B=0.02130 | δ_C=0.01305 |
+| 예측에 요구할 값 | B̂≥0.40130 | Ĉ≤0.23695 |
+| 오차가 가정한 한계일 때 | 0.40130−0.02130=0.38 | 0.23695+0.01305=0.25 |
+
+이 마지막 행은 오차 한계가 그 입력에서 성립할 때의 계산입니다. calibration 961점의 최대값은 보지 않은 모든 점의 한계를 증명하지 않습니다. 그래서 margin을 넣은 다음 후보도 기준 공정으로 다시 계산합니다.
+
 <!-- lecture-page -->
 
 ## Margin 후보의 비용과 규격
@@ -422,6 +543,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">항목</th><th style="font-size:clamp(15px,1.7cqw,22px)">결과</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">T / τ</td><td style="font-size:clamp(15px,1.7cqw,22px)">329.1148 K / 4.66529 min</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준 B / C</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.392935 / 0.174547 mol/L</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준 공정 feasibility</td><td style="font-size:clamp(15px,1.7cqw,22px)">규격 충족</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">비용</td><td style="font-size:clamp(15px,1.7cqw,22px)">60.5710 $/h</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준 후보 대비 절감</td><td style="font-size:clamp(15px,1.7cqw,22px)">16.2290 $/h</td></tr></tbody></table>
 
 전체 영역의 큰 오차를 margin으로 사용하면 일부 지역에서는 비용을 많이 늘릴 수 있습니다. Margin 크기와 실제 선택 지점의 오차를 함께 비교합니다.
+
+기준안과 비교한 절감은 76.8000−60.5710=16.2290 $/h입니다. B 여유 0.012935, C 여유 0.075453 mol/L가 모두 양수인지 먼저 확인한 뒤 절감을 계산합니다.
 
 <!-- lecture-page -->
 
@@ -443,6 +566,28 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 이 margin은 휴리스틱 값입니다. Affine 보정은 MILP 구조를 유지하지만 잔차의 균일한 오차 상한을 제공하지는 않습니다.
 
+보정값은 기준−예측입니다. 모델이 B를 0.008843 높게 예측한 점에서는 보정 방향이 −0.008843입니다. 부호를 반대로 두면 이미 높은 B 예측을 더 올리므로, 한 점에서 보정 전후 출력을 직접 확인합니다.
+
+<!-- lecture-page -->
+
+## 국소 데이터의 좌표와 회귀 행렬
+
+후보 (342.0593 K,2.52444 min)의 scaled 좌표는 [(342.0593−310)/40,(2.52444−2)/8]≈[0.80148,0.06556]입니다.
+
+| 축 | scaled offset | 물리 단위 offset |
+| --- | --- | --- |
+| 온도 | ±0.06 | ±2.4 K |
+| 체류시간 | ±0.06 | ±0.48 min |
+
+```python
+design = np.column_stack((np.ones(len(x_local)), x_local))
+residual = reference_y - network_y
+beta = np.linalg.lstsq(design, residual, rcond=None)[0]
+corrected_y = network_y + design @ beta
+```
+
+9개 입력의 design은 (9,3), 세 성분 residual도 (9,3), beta는 (3,3)입니다. design의 한 행 [1,x₁,x₂]와 beta를 곱하면 세 성분의 보정값이 나옵니다. 이 회귀가 본 범위 안으로 다음 최적화 영역을 제한하되, 남은 오차는 새 후보에서 확인합니다.
+
 <!-- lecture-page -->
 
 ## 국소 보정 후보의 재검증 실패
@@ -452,6 +597,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 새 데이터 9개와 국소 영역 제한을 적용했어도 이 후보는 기각합니다. 보정 후의 오차가 margin 0.002보다 큽니다.
 
 후보 지점의 새 잔차는 다음 보완 데이터가 됩니다. 기각된 후보의 비용을 실현한 절감액으로 보고하지 않습니다.
+
+보정 모델은 0.382를 예측했지만 실제는 0.376820입니다. 오차 0.005180에서 확보한 여유 0.002를 빼면 부족량 0.003180이 남습니다. 새 데이터를 넣었다는 사실만으로 오차가 margin 안에 들어왔다고 가정할 수 없습니다.
 
 <!-- lecture-page -->
 
@@ -465,6 +612,41 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 <!-- lecture-page -->
 
+## B 규격에서 체류시간 이차식으로
+
+온도를 고정하면 k₁,k₂가 숫자로 정해집니다. 목표 B 농도를 b라 두고 농도식의 양의 분모를 곱합니다.
+
+| 순서 | 관계식 |
+| --- | --- |
+| B=b | 1.2k₁τ=b(1+k₁τ)(1+k₂τ) |
+| 분모 전개 | 1.2k₁τ=b[1+(k₁+k₂)τ+k₁k₂τ²] |
+| 한쪽으로 모으기 | bk₁k₂τ²+[b(k₁+k₂)−1.2k₁]τ+b=0 |
+
+330 K에서 b=0.4이면 0.008τ²−0.12τ+0.4=0이고, 0.008로 나누면 (τ−5)(τ−10)=0입니다. B≥0.4는 두 근 사이 [5,10]에서 성립합니다.
+
+비용은 같은 온도에서 τ가 작을수록 낮으므로 5분을 먼저 확인합니다. 이때 C=0.1×5×0.4=0.2≤0.25입니다. 10분에서는 C=0.4로 상한을 위반하므로 B 조건만으로는 부족합니다.
+
+<!-- lecture-page -->
+
+## 작은 근의 계산과 후보 재검증
+
+T=339.8152 K, b=0.382에서 a=bk₁k₂, d=b(k₁+k₂)−1.2k₁을 계산합니다. 판별식이 음수이면 이 온도에서 B=b인 실수 체류시간이 없습니다.
+
+```python
+k1 = 0.2 * np.exp(40000 / 8.314 * (1/330 - 1/T))
+k2 = 0.1 * np.exp(50000 / 8.314 * (1/330 - 1/T))
+a = b * k1 * k2
+d = b * (k1 + k2) - 1.2 * k1
+disc = d*d - 4*a*b
+tau = 2*b / (-d + np.sqrt(disc))
+```
+
+이 경우 k₁≈0.3047, k₂≈0.1693/min이고 τ≈3.08559 min입니다. 작은 근 식은 a>0,d<0,disc≥0인 경우를 사용합니다. 후보마다 원래 τ 범위와 기준 B,C를 다시 검사합니다.
+
+기준 C≈0.199530<0.25이며 비용은 12×3.08559+0.24×(339.8152−310)≈44.1828 $/h입니다. 초기 기준안 대비 절감은 76.8−44.1828=32.6172 $/h입니다.
+
+<!-- lecture-page -->
+
 ## 기준 공정의 비교용 최적화
 
 각 T에서 B = 0.38의 작은 쪽 τ를 이차방정식으로 구합니다. τ 범위와 C 규격을 확인한 뒤, 4,001개 온도 격자와 최선 격자점 주변의 1차원 탐색을 사용
@@ -473,6 +655,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 
 이 계산은 feasible benchmark를 제공합니다. 연속 전체 영역의 전역 최적값에 대한 인증된 bound는 아니므로, 비용 차이를 관측된 benchmark 차이로 보고합니다.
 
+온도 하나를 고정하면 비용은 τ에 대해 증가하므로 B 하한을 만족하는 가장 작은 τ부터 검사합니다. 다만 τ의 상하한과 C 규격이 남아 있습니다. 모든 온도의 작은 근이 곧 가능해인 것은 아닙니다.
+
 <!-- lecture-page -->
 
 ## 후보별 기준 공정 결과
@@ -480,6 +664,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">후보</th><th style="font-size:clamp(15px,1.7cqw,22px)">B (mol/L)</th><th style="font-size:clamp(15px,1.7cqw,22px)">비용 ($/h)</th><th style="font-size:clamp(15px,1.7cqw,22px)">규격</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준 후보</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.40909</td><td style="font-size:clamp(15px,1.7cqw,22px)">76.800</td><td style="font-size:clamp(15px,1.7cqw,22px)">충족</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">무보정 MILP</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.37116</td><td style="font-size:clamp(15px,1.7cqw,22px)">37.988</td><td style="font-size:clamp(15px,1.7cqw,22px)">위반</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Margin MILP</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.39293</td><td style="font-size:clamp(15px,1.7cqw,22px)">60.571</td><td style="font-size:clamp(15px,1.7cqw,22px)">충족</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">국소 보정</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.37682</td><td style="font-size:clamp(15px,1.7cqw,22px)">41.607</td><td style="font-size:clamp(15px,1.7cqw,22px)">위반</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준식 보완</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.38200</td><td style="font-size:clamp(15px,1.7cqw,22px)">44.183</td><td style="font-size:clamp(15px,1.7cqw,22px)">충족</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기준식 benchmark</td><td style="font-size:clamp(15px,1.7cqw,22px)">0.38000</td><td style="font-size:clamp(15px,1.7cqw,22px)">41.392</td><td style="font-size:clamp(15px,1.7cqw,22px)">충족</td></tr></tbody></table>
 
 표의 B는 모두 같은 기준 공정식으로 계산했습니다. 규격은 B·C·비음수 농도·농도 합을 함께 확인했습니다.
+
+각 행의 규격 검사는 그 행의 기준 농도 전체를 사용합니다. B만 표에 보여도 C와 농도 합·비음수 조건을 함께 검사합니다. 실패한 행의 낮은 비용은 가능한 절감액 순위에 포함하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -490,6 +676,8 @@ J의 단위는 $/h입니다. 부피 비용은 12 $/(L·h), 가열 비용 계수�
 기준식 보완 후보는 초기 기준 후보보다 32.6172 $/h 낮습니다. 비교용 benchmark와의 차이는 2.7908 $/h
 
 모든 값은 가정한 비용 계수에 대한 계산입니다. 기준식 호출 비용과 모델 학습·최적화 시간을 별도로 기록합니다.
+
+기준 보완안 44.1828에서 비교 후보 41.3920을 빼면 2.7908 $/h입니다. 이 값은 두 확인된 후보 사이의 비용 차이입니다. 비교 후보가 전역 최적이라고 증명되지 않았으므로 전역 최적 대비 regret으로 이름 붙이지 않습니다.
 
 <!-- lecture-page -->
 

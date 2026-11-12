@@ -36,9 +36,7 @@ Hold the fitted ReLU model, input domain, objective, and product specifications 
 
 Solver for all LPs and MILPs: open-source HiGHS.
 
-<!-- lecture-page -->
-
-## Learning objectives for formulations and solver results
+### Learning objectives for formulations and solver results
 
 1. Incumbent objective, objective bound, and gap
 2. Interval propagation versus LP-based bound tightening
@@ -67,6 +65,8 @@ For minimization, the incumbent is the best integer-feasible solution found so f
 
 An upper bound of 100 and lower bound of 80 give an absolute gap of 20 and a relative gap of 20% under this definition. Without an incumbent this gap is unavailable; near a zero objective, also report the absolute gap.
 
+A feasible design supplies an upper bound because there is no need to select anything more expensive. A relaxation admits even more favorable choices and supplies a lower bound. The interval between them is the remaining possible improvement.
+
 <!-- lecture-page -->
 
 ## How branch-and-bound progresses
@@ -76,6 +76,8 @@ Relaxing binaries to continuous intervals gives an LP lower bound for minimizati
 An integer-feasible solution updates the incumbent. Infeasible nodes and nodes whose lower bounds cannot improve the incumbent need no further search.
 
 Valid bounds from open nodes form the global lower bound. HiGHS also uses presolve, cuts, and heuristics, so the original LP relaxation value can differ from the final solver bound.
+
+If the incumbent costs 100 and a node has lower bound 105, every integer solution in that node costs at least 105, so it can be pruned. A node bounded by 80 may still contain an improvement below 100 and needs further investigation.
 
 <!-- lecture-page -->
 
@@ -89,15 +91,19 @@ At a = 0, the largest allowed h is −UL/(U − L). It is 0.5 when L = −1 and 
 
 This triangle is the convex hull of the scalar (a, h) graph. Correlations across inputs and neurons may require additional constraints.
 
+With L=−1,U=1 and a=0, the upper bound is (0+1)/2=0.5. Allowing this value above the true h=0 creates relaxation slack. Tighter valid bounds can reduce it.
+
 <!-- lecture-page -->
 
 ## Two neurons coupled by an equality
 
 Dimensionless example: a dependence missed by box bounds
 
-<math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
+<math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
 
 Using only the input box gives [−1, 1] for both pre-activations. The input equality, however, makes the first pre-activation identically zero.
+
+Box bounds alone allow combinations x₁=x₂=0 or 1. The equality x₁+x₂=1 excludes them and fixes the first pre-activation at zero. Individual variable ranges and relations between variables therefore contain different information.
 
 <!-- lecture-page -->
 
@@ -109,6 +115,8 @@ The minimum <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></m
 
 The LP relaxation can place h above the network output, so this conclusion does not immediately apply to its solution.
 
+When x₁≤0.5, the second ReLU is also zero and cannot meet 0.4. In its active branch, solve 2x₁−1≥0.4 to get x₁≥0.7. Substituting 0.7 verifies feasibility and makes the lower limit attainable.
+
 <!-- lecture-page -->
 
 ## LP relaxations before and after tightening
@@ -116,6 +124,20 @@ The LP relaxation can place h above the network output, so this conclusion does 
 <figure><img src="/assets/courses/surrogate-models/week-06/toy-relaxation-en.png" alt="Box-bound and equality-aware LP envelopes compared with the network" /></figure>
 
 The original LP allows <math><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0.4 even at <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0. Enforcing <math><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0 raises the LP optimum to 0.4, still below the MILP optimum of 0.7.
+
+<!-- lecture-page -->
+
+## Relaxed solutions versus the actual network
+
+Each formulation minimizes x₁ with x₂=1−x₁ and required output sum 0.4.
+
+| Formulation | x₁,x₂ | Allowed h₁,h₂ | Actual ReLU output | Interpretation |
+| --- | --- | --- | --- | --- |
+| Box-bound LP | 0,1 | 0.4,0 | 0,0 | Inflated h₁ meets the limit |
+| Equality-aware LP | 0.4,0.6 | 0,0.4 | 0,0 | Inflated h₂ meets the limit |
+| MILP | 0.7,0.3 | 0,0.4 | 0,0.4 | Matches the original output |
+
+After incorporating the equality, the second triangle has upper bound h₂≤x₁. Thus h₂≥0.4 requires x₁≥0.4. Yet at x₁=0.4, the actual a₂=−0.2 gives zero ReLU output. Improving the lower bound does not make the relaxation identical to the graph.
 
 <!-- lecture-page -->
 
@@ -137,6 +159,8 @@ Suppose the previous layer satisfies ℓ ≤ h ≤ u, with <math><msup><mrow><mi
 
 After a ReLU, pass [max(0, L), max(0, U)] to the next layer. This is inexpensive but does not check whether different variable extremes can occur simultaneously.
 
+If h₁=h₂ but both are represented only by [0,1], interval arithmetic gives h₁−h₂ in [−1,1], although the true difference is zero. Interval propagation quickly constructs valid outward bounds but loses such dependencies.
+
 <!-- lecture-page -->
 
 ## LP-based bound tightening
@@ -146,6 +170,8 @@ Let P be an LP relaxation containing the network MILP feasible set. Minimize and
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>min</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>U</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>max</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>
 
 This is optimization-based bound tightening, or OBBT. The lab solves 54 LPs over the full input domain without product specifications, then rebuilds the MILP with the resulting bounds.
+
+The lower-bound problem asks how small this neuron can become over every allowed input. The upper-bound problem maximizes the same expression. Solving over a relaxation containing every original network point produces bounds that do not exclude those points.
 
 <!-- lecture-page -->
 
@@ -167,6 +193,8 @@ Reuse exactly the offsets and scales used during fitting. Supplying physical-inp
 
 Outputs in this lab already use mol/L. If outputs were standardized, include the fixed inverse transform before connecting product specifications.
 
+330 K and 6 min are both interval midpoints, giving scaled input [0.5,0.5]. Swapping input order makes temperature weights read residence time. Comparing forward outputs at identical physical inputs also detects this ordering error.
+
 <!-- lecture-page -->
 
 ## Objective constants and relative gaps
@@ -176,6 +204,23 @@ Outputs in this lab already use mol/L. If outputs were standardized, include the
 Educational objective: residence time + temperature increase weighted by α. Unit: min-equivalent score.
 
 Dropping the constant 2 preserves the optimizer but changes the denominator of a relative gap. The lab reports objectives and bounds with the constant included.
+
+<!-- lecture-page -->
+
+## Computing gaps with an objective constant
+
+Keep the same incumbent and valid bound, removing only constant 2 from the objective.
+
+| Calculation | J with constant | J−2 without constant |
+| --- | --- | --- |
+| Feasible objective | 3.2 | 1.2 |
+| Valid lower bound | 2.8 | 0.8 |
+| Absolute gap | 3.2−2.8=0.4 | 1.2−0.8=0.4 |
+| Relative gap | 0.4/3.2=12.5% | 0.4/1.2≈33.3% |
+
+Subtracting the same number from every candidate preserves ranking and the optimal input. The relative-gap denominator changes, however. Percentages alone cannot compare solve quality when the objective definitions differ.
+
+Without an incumbent there is no value for that denominator. Report the valid bound and absence of a feasible solution; do not interpret initialized variables as the answer.
 
 <!-- lecture-page -->
 
@@ -208,6 +253,8 @@ model.obj = pyo.Objective(
 ```
 
 Complete construction: lab function `make_omlt`.
+
+outputs[1] is B and outputs[2] is C. inputs[0] is temperature in K; inputs[1] is residence time in min. OMLT scaling equalities connect physical inputs to network coordinates; the objective must use the intended physical quantities.
 
 <!-- lecture-page -->
 
@@ -254,6 +301,8 @@ The default lab loads the supplied coefficients. `--refit` optionally refits the
 
 LP-OBBT raises the original LP lower bound from 2.0000 to 2.5215. All three MILPs attain 3.1656. All three comparisons use the same predictor.
 
+The interval from lower bound 2.5215 to feasible value 3.1656 is about 0.6441, narrower than 1.1656 from the loose bound 2.0000. Predictions are unchanged, but less optimality uncertainty remains at the start of the search.
+
 <!-- lecture-page -->
 
 ## Timing including bound computation
@@ -261,6 +310,22 @@ LP-OBBT raises the original LP lower bound from 2.0000 to 2.5215. All three MILP
 <figure><img src="/assets/courses/surrogate-models/week-06/timing-en.png" alt="Time for bounds, model construction, and the MILP solve" /></figure>
 
 In the supplied run, LP-OBBT reduces MILP solve time, but its total time including bounds exceeds interval propagation. These single-run measurements include interface overhead and do not establish a general speed ranking.
+
+<!-- lecture-page -->
+
+## Total time when bounds are reused
+
+In the recorded run, interval-bound MILP time was 0.1539 s and LP-OBBT MILP time was 0.0955 s. OBBT preprocessing required 0.1132 s.
+
+| Solves m | Interval: 0.0001+m×0.1555 | OBBT: 0.1132+m×0.0971 |
+| --- | --- | --- |
+| 1 | 0.1556 s | 0.2103 s |
+| 2 | 0.3111 s | 0.3074 s |
+| 5 | 0.7776 s | 0.5987 s |
+
+Each per-solve cost includes 0.0016 s for construction. This arithmetic uses rounded recorded times and assumes identical solve times on every repetition; it is not a repeated timing experiment.
+
+Bounds reusable for fixed weights and input domain spread preprocessing cost across solves. A new model or expanded domain requires renewed bound validation, so this calculation cannot automatically be carried over.
 
 <!-- lecture-page -->
 
@@ -275,6 +340,8 @@ In the supplied run, LP-OBBT reduces MILP solve time, but its total time includi
 | Termination / relative gap | optimal / 0 |
 
 HiGHS establishes optimality for this surrogate MILP within the configured numerical tolerances. The B lower bound is active; the C upper bound has slack.
+
+The objective is 2.524440 + 0.02 × (342.059300−310) = 3.165626. The temperature contribution 0.641186 adds to residence time. Recomputing it checks units and offset handling in the reported solver value.
 
 <!-- lecture-page -->
 
@@ -318,6 +385,8 @@ if inc is not None and np.isfinite(inc):
 
 Reading variables after termination without a solution can mistake initial or stale values for results. The complete lab function also returns gaps and constraint residuals.
 
+load_solution=False prevents automatic loading immediately after the solve. Call load_vars only after confirming a finite feasible objective. Then compute specification and integrality residuals from those loaded values.
+
 <!-- lecture-page -->
 
 ## Solver gaps and process prediction error
@@ -359,8 +428,6 @@ python week06_lab.py --output-dir my-results
 
 [HiGHS and its MIT license](https://highs.dev/) · [Pyomo HiGHS interface](https://pyomo.readthedocs.io/en/stable/api/pyomo.contrib.appsi.solvers.highs.Highs.html)
 
-
-
 <!-- ko -->
 
 ## 제품 규격을 만족하는 반응기 조건
@@ -381,9 +448,7 @@ python week06_lab.py --output-dir my-results
 
 모든 LP와 MILP는 오픈소스 HiGHS로 풉니다.
 
-<!-- lecture-page -->
-
-## 정식화와 solver 결과의 학습 목표
+### 정식화와 solver 결과의 학습 목표
 
 1. 가능해의 목적값, 최적값에 대한 bound와 gap
 2. 구간 전파와 LP 기반 bound tightening 비교
@@ -412,6 +477,8 @@ python week06_lab.py --output-dir my-results
 
 상한 100, 하한 80이면 절대 gap은 20이고 이 정의의 상대 gap은 20%입니다. Incumbent가 없으면 이 gap을 계산할 수 없으며, 목적값이 0에 가까우면 절대 gap을 함께 보고합니다.
 
+가능해 하나를 찾으면 그 비용보다 나쁜 설계를 선택할 필요가 없으므로 상한을 얻습니다. 반대로 완화 문제는 원래보다 유리한 선택까지 허용하므로 하한을 줍니다. 두 값 사이가 아직 개선될 수 있는 범위입니다.
+
 <!-- lecture-page -->
 
 ## Branch-and-bound의 진행
@@ -421,6 +488,8 @@ python week06_lab.py --output-dir my-results
 정수 가능해를 찾으면 incumbent를 갱신합니다. 불가능한 노드나 하한이 incumbent보다 나쁘거나 같은 노드는 더 탐색할 필요가 없습니다.
 
 열린 노드들의 유효한 하한을 모아 전체 하한을 계산합니다. 실제 HiGHS는 presolve, cutting plane과 heuristic도 사용하므로 원래 LP 완화값과 solver의 최종 bound는 다를 수 있습니다.
+
+현재 가능해 비용이 100인데 어떤 노드의 하한이 105이면 그 노드의 모든 정수 해는 105 이상이므로 탐색을 멈춥니다. 하한 80인 노드는 100보다 좋은 해가 남아 있을 수 있어 더 조사합니다.
 
 <!-- lecture-page -->
 
@@ -434,15 +503,19 @@ a = 0에서 허용하는 최대 h는 −UL/(U − L)입니다. L = −1, U = 1�
 
 이 삼각형은 스칼라 (a, h) 그래프의 convex hull입니다. 여러 뉴런과 입력 간 상관관계를 함께 표현하는 데에는 추가 제약이 필요할 수 있습니다.
 
+L=−1,U=1에서 a=0을 넣으면 상한은 (0+1)/2=0.5입니다. 실제 h=0보다 높게 허용하는 이 여유가 완화 오차입니다. a의 유효 범위를 좁히면 이 여유도 줄어들 수 있습니다.
+
 <!-- lecture-page -->
 
 ## 등식 제약이 있는 두 뉴런 예제
 
 다음 무차원 예제로 bounds가 놓치는 관계를 직접 계산
 
-<math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo><mtext>  </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
+<math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mn>0</mn><mo>≤</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≤</mo><mn>1</mn><mo>,</mo><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>−</mo><mn>1</mn><mo>)</mo><mo>,</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo><mi>max</mi><mo>(</mo><mn>0</mn><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>−</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>min</mi></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></msub><mtext>  </mtext><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub><mtext>   subject to   </mtext><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mrow><mi>h</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>≥</mo><mn>.4</mn></mrow></mtd></mtr></mtable></math>
 
 입력 구간만 사용하면 두 pre-activation의 bounds는 모두 [−1, 1]입니다. 하지만 첫 번째 pre-activation은 입력 등식 때문에 항상 0입니다.
+
+상자 범위만 보면 x₁=x₂=0 또는 1을 조합할 수 있습니다. 등식 x₁+x₂=1은 두 조합을 금지하고 첫 pre-activation을 항상 0으로 만듭니다. 각 변수 범위와 변수 간 관계가 주는 정보가 다른 이유입니다.
 
 <!-- lecture-page -->
 
@@ -454,6 +527,8 @@ a = 0에서 허용하는 최대 h는 −UL/(U − L)입니다. L = −1, U = 1�
 
 LP 완화에서는 h가 실제 신경망 출력보다 커질 수 있으므로 같은 결론이 바로 성립하지 않습니다.
 
+x₁≤0.5이면 두 번째 ReLU도 0이어서 출력 하한 0.4를 채울 수 없습니다. 활성 구간에서는 2x₁−1≥0.4를 풀어 x₁≥0.7을 얻습니다. 0.7을 직접 대입해 가능함을 보이면 하한과 달성 가능한 값이 일치합니다.
+
 <!-- lecture-page -->
 
 ## Bounds 강화 전후의 LP 완화
@@ -461,6 +536,20 @@ LP 완화에서는 h가 실제 신경망 출력보다 커질 수 있으므로 �
 <figure><img src="/assets/courses/surrogate-models/week-06/toy-relaxation-ko.png" alt="구간 bounds, 등식 반영 bounds와 실제 신경망 출력의 비교" /></figure>
 
 원래 LP는 <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0에서도 첫 뉴런의 <math><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0.4를 허용합니다. <math><msub><mrow><mi>h</mi></mrow><mrow><mn>1</mn></mrow></msub></math> = 0을 반영하면 LP 최적값은 0.4로 올라가지만 MILP 최적값 0.7에는 아직 못 미칩니다.
+
+<!-- lecture-page -->
+
+## 완화 해와 실제 신경망의 대조
+
+각 방식에서 목적값 x₁을 최소화합니다. x₂=1−x₁이고 필요한 출력 합은 0.4입니다.
+
+| 방식 | x₁,x₂ | 허용된 h₁,h₂ | 실제 ReLU 출력 | 해석 |
+| --- | --- | --- | --- | --- |
+| 상자 bounds LP | 0,1 | 0.4,0 | 0,0 | 가짜 h₁로 규격 충족 |
+| 등식 반영 LP | 0.4,0.6 | 0,0.4 | 0,0 | 가짜 h₂로 규격 충족 |
+| MILP | 0.7,0.3 | 0,0.4 | 0,0.4 | 원래 출력과 일치 |
+
+등식 반영 뒤 두 번째 삼각형의 상한은 h₂≤x₁입니다. 따라서 h₂≥0.4를 만족하려면 x₁≥0.4입니다. 그러나 x₁=0.4에서 실제 a₂=−0.2이므로 ReLU 출력은 0입니다. 하한이 좋아져도 완화가 원래 그래프와 같아진 것은 아닙니다.
 
 <!-- lecture-page -->
 
@@ -482,6 +571,8 @@ Bounds는 허용한 모든 입력에서 성립해야 합니다. 학습 데이터
 
 ReLU 뒤에는 [max(0, L), max(0, U)]를 다음 층에 전달합니다. 계산 비용은 작지만 각 변수의 극값을 동시에 달성할 수 있는지는 반영하지 않습니다.
 
+예를 들어 h₁=h₂인 관계를 버리고 두 값의 범위만 [0,1]로 두면 h₁−h₂ 범위는 [−1,1]입니다. 실제 차이는 0입니다. 구간 전파는 빠르게 안전한 외곽 범위를 만들지만 이런 상관관계는 사용하지 못합니다.
+
 <!-- lecture-page -->
 
 ## LP 기반 bound tightening
@@ -491,6 +582,8 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>min</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mrow><msub><mrow><mi>U</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>=</mo><msub><mrow><mi>max</mi></mrow><mrow><mi>v</mi><mo>∈</mo><mi>P</mi></mrow></msub><mtext>  </mtext><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub><mo>(</mo><mi>v</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>
 
 이 방식은 optimization-based bound tightening(OBBT). 실습은 제품 규격을 제외한 입력 영역 전체에서 LP 54개를 풀고, bounds를 적용한 MILP를 새로 만듭니다.
+
+하한 계산은 “가능한 모든 입력에서 이 뉴런이 얼마나 작아질 수 있는가”라는 별도 최적화입니다. 상한은 같은 식을 최대화합니다. 원래 신경망의 모든 점을 포함한 완화 집합에서 풀어야 원래 점을 자르지 않는 bounds가 됩니다.
 
 <!-- lecture-page -->
 
@@ -512,6 +605,8 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 
 실습 출력 단위: mol/L. 표준화된 출력을 사용한다면 제품 규격에 연결하기 전에 고정된 역변환도 넣어야 합니다.
 
+330 K, 6 min은 두 축에서 모두 중앙이므로 scaled input [0.5,0.5]입니다. 입력 순서를 바꾸면 온도 가중치가 체류시간을 읽게 됩니다. 동일한 physical input에 대한 forward 비교는 이 순서 오류도 찾습니다.
+
 <!-- lecture-page -->
 
 ## 목적함수의 상수와 상대 gap
@@ -521,6 +616,23 @@ P를 신경망 MILP 가능집합을 포함하는 LP 완화라고 놓습니다. �
 교육용 목적함수: 체류시간 + α로 가중한 온도 증가. 단위: min 등가
 
 상수 2를 빼도 최적 입력은 같지만 상대 gap의 분모는 바뀝니다. 실습은 상수를 포함한 목적값과 bound를 그대로 보고
+
+<!-- lecture-page -->
+
+## 목적함수 상수와 gap의 계산
+
+동일한 가능해와 하한에서 목적함수의 상수 2만 제거한다고 둡니다.
+
+| 계산 | 상수 포함 J | 상수 제거 J−2 |
+| --- | --- | --- |
+| 가능해 목적값 | 3.2 | 1.2 |
+| 유효 하한 | 2.8 | 0.8 |
+| 절대 gap | 3.2−2.8=0.4 | 1.2−0.8=0.4 |
+| 상대 gap | 0.4/3.2=12.5% | 0.4/1.2≈33.3% |
+
+모든 후보의 값에서 같은 수를 빼므로 후보 순위와 최적 입력은 유지됩니다. 하지만 상대 gap의 분모는 달라집니다. 두 보고서를 비교할 때 목적함수 정의가 다르면 %만으로 풀이 품질을 비교할 수 없습니다.
+
+가능해가 없으면 분모에 사용할 값도 없습니다. 그때는 유효 하한과 가능해 부재를 보고하고, 변수의 초기값을 해로 해석하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -553,6 +665,8 @@ model.obj = pyo.Objective(
 ```
 
 완전한 구성 코드는 실습의 `make_omlt` 함수에 있습니다.
+
+outputs[1]은 B, outputs[2]는 C입니다. inputs[0]은 K 단위 온도이고 inputs[1]은 min 단위 체류시간입니다. OMLT의 scaling 등식이 physical input을 신경망 좌표로 연결하므로 목적식에 scaled input을 잘못 사용하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -599,6 +713,8 @@ OMLT는 이 버전에서 ReLU마다 이진변수를 생성합니다. 직접 작�
 
 LP-OBBT는 원래 LP 하한을 2.0000에서 2.5215로 올렸습니다. 세 MILP의 최적값은 모두 3.1656으로 일치합니다. 세 비교에는 같은 예측 모델을 사용했습니다.
 
+하한 2.5215와 가능해 3.1656 사이의 차이는 약 0.6441입니다. 느슨한 하한 2.0000일 때의 1.1656보다 좁습니다. 모델 예측은 같아도 탐색 시작 시 남는 최적성 불확실성이 줄어드는 것입니다.
+
 <!-- lecture-page -->
 
 ## Bounds 계산 비용을 포함한 시간
@@ -606,6 +722,22 @@ LP-OBBT는 원래 LP 하한을 2.0000에서 2.5215로 올렸습니다. 세 MILP�
 <figure><img src="/assets/courses/surrogate-models/week-06/timing-ko.png" alt="Bounds 계산, 모델 구성과 MILP 풀이 시간" /></figure>
 
 제공 실행에서 LP-OBBT의 MILP 풀이 시간은 줄었지만 bounds 계산을 더한 총시간은 구간 전파보다 길었습니다. 인터페이스 비용을 포함해 한 번 측정한 결과이므로 이 속도 순위가 일반적으로 성립하는지는 알 수 없습니다.
+
+<!-- lecture-page -->
+
+## bounds를 재사용할 때의 총시간
+
+기록된 한 번의 실행에서 구간 전파의 MILP 시간은 0.1539 s, LP-OBBT는 0.0955 s입니다. OBBT 전처리는 0.1132 s가 필요했습니다.
+
+| 풀이 수 m | 구간 전파: 0.0001+m×0.1555 | OBBT: 0.1132+m×0.0971 |
+| --- | --- | --- |
+| 1 | 0.1556 s | 0.2103 s |
+| 2 | 0.3111 s | 0.3074 s |
+| 5 | 0.7776 s | 0.5987 s |
+
+열별 1회 비용에는 build 0.0016 s를 포함합니다. 표는 반올림된 기록 시간을 사용하고 각 반복의 풀이 시간이 같다고 가정한 산술 계산입니다. 실제 반복 실험 결과는 아닙니다.
+
+고정된 가중치와 입력 영역에서 bounds를 재사용할 수 있을 때 전처리 비용을 나누어 부담합니다. 새 모델이나 더 넓은 영역이면 bounds 유효성을 다시 확인해야 하며 이 계산을 그대로 적용할 수 없습니다.
 
 <!-- lecture-page -->
 
@@ -620,6 +752,8 @@ LP-OBBT는 원래 LP 하한을 2.0000에서 2.5215로 올렸습니다. 세 MILP�
 | 종료 상태 / 상대 gap | optimal / 0 |
 
 HiGHS는 설정한 수치 허용오차 안에서 이 surrogate MILP의 최적성을 확인했습니다. B 하한은 활성이고 C 상한에는 여유가 있습니다.
+
+목적값은 2.524440 + 0.02 × (342.059300−310) = 3.165626입니다. 온도 상승 비용 0.641186이 체류시간 비용에 더해집니다. 입력과 목적값을 다시 계산하면 solver 보고 값의 단위·offset 처리도 확인할 수 있습니다.
 
 <!-- lecture-page -->
 
@@ -662,6 +796,8 @@ if inc is not None and np.isfinite(inc):
 ```
 
 가능해가 없는 종료에서 변수 값을 읽으면 초기값이나 이전 계산값을 결과로 오해할 수 있습니다. 실습 함수는 gap과 제약 잔차도 반환합니다.
+
+load_solution=False는 풀이 직후 변수에 값을 넣지 않도록 합니다. 유한한 가능해 목적값이 확인된 경우에만 load_vars를 호출합니다. 그 다음 읽은 값에 대해 규격 잔차와 정수 제약 위반을 계산합니다.
 
 <!-- lecture-page -->
 

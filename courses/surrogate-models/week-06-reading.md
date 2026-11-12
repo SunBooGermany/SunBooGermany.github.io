@@ -56,6 +56,20 @@ The point <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></mat
 
 <!-- lecture-page -->
 
+## Relaxed solutions versus the actual network
+
+Each formulation minimizes x₁ with x₂=1−x₁ and required output sum 0.4.
+
+| Formulation | x₁,x₂ | Allowed h₁,h₂ | Actual ReLU output | Interpretation |
+| --- | --- | --- | --- | --- |
+| Box-bound LP | 0,1 | 0.4,0 | 0,0 | Inflated h₁ meets the limit |
+| Equality-aware LP | 0.4,0.6 | 0,0.4 | 0,0 | Inflated h₂ meets the limit |
+| MILP | 0.7,0.3 | 0,0.4 | 0,0.4 | Matches the original output |
+
+After incorporating the equality, the second triangle has upper bound h₂≤x₁. Thus h₂≥0.4 requires x₁≥0.4. Yet at x₁=0.4, the actual a₂=−0.2 gives zero ReLU output. Improving the lower bound does not make the relaxation identical to the graph.
+
+<!-- lecture-page -->
+
 ## An interval-propagation calculation
 
 Consider a = 2<math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> − 3<math><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></math> + 0.5, <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> ∈ [0, 1], and <math><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></math> ∈ [−1, 2]. Positive coefficients use the matching extreme; negative coefficients use the opposite extreme.
@@ -113,6 +127,23 @@ If an output were standardized as s = (B − 0.3)/0.1, B ≥ 0.38 would become s
 An incumbent J of 3.2 and lower bound of 2.8 give an absolute gap of 0.4 and a relative gap of 12.5%. After dropping the constant 2, the same values become 1.2 and 0.8, giving about 33.3%.
 
 The optimizer and absolute gap are unchanged, but the relative gap changes. State the reported objective, its constant term, and the solver gap convention.
+
+<!-- lecture-page -->
+
+## Computing gaps with an objective constant
+
+Keep the same incumbent and valid bound, removing only constant 2 from the objective.
+
+| Calculation | J with constant | J−2 without constant |
+| --- | --- | --- |
+| Feasible objective | 3.2 | 1.2 |
+| Valid lower bound | 2.8 | 0.8 |
+| Absolute gap | 3.2−2.8=0.4 | 1.2−0.8=0.4 |
+| Relative gap | 0.4/3.2=12.5% | 0.4/1.2≈33.3% |
+
+Subtracting the same number from every candidate preserves ranking and the optimal input. The relative-gap denominator changes, however. Percentages alone cannot compare solve quality when the objective definitions differ.
+
+Without an incumbent there is no value for that denominator. Report the valid bound and absence of a feasible solution; do not interpret initialized variables as the answer.
 
 <!-- lecture-page -->
 
@@ -204,6 +235,22 @@ Reusing bounds for a fixed model and domain can spread preprocessing cost across
 
 <!-- lecture-page -->
 
+## Total time when bounds are reused
+
+In the recorded run, interval-bound MILP time was 0.1539 s and LP-OBBT MILP time was 0.0955 s. OBBT preprocessing required 0.1132 s.
+
+| Solves m | Interval: 0.0001+m×0.1555 | OBBT: 0.1132+m×0.0971 |
+| --- | --- | --- |
+| 1 | 0.1556 s | 0.2103 s |
+| 2 | 0.3111 s | 0.3074 s |
+| 5 | 0.7776 s | 0.5987 s |
+
+Each per-solve cost includes 0.0016 s for construction. This arithmetic uses rounded recorded times and assumes identical solve times on every repetition; it is not a repeated timing experiment.
+
+Bounds reusable for fixed weights and input domain spread preprocessing cost across solves. A new model or expanded domain requires renewed bound validation, so this calculation cannot automatically be carried over.
+
+<!-- lecture-page -->
+
 ## Exercise: scaling and gaps
 
 Scale T = 340 K and τ = 4 min, then calculate J. Next calculate absolute and relative gaps for incumbent 5.0 and lower bound 4.5.
@@ -278,6 +325,20 @@ L이 음수이므로 나눌 때 부등호가 뒤집힙니다. 여기에 h ≥ 0�
 
 <!-- lecture-page -->
 
+## 완화 해와 실제 신경망의 대조
+
+각 방식에서 목적값 x₁을 최소화합니다. x₂=1−x₁이고 필요한 출력 합은 0.4입니다.
+
+| 방식 | x₁,x₂ | 허용된 h₁,h₂ | 실제 ReLU 출력 | 해석 |
+| --- | --- | --- | --- | --- |
+| 상자 bounds LP | 0,1 | 0.4,0 | 0,0 | 가짜 h₁로 규격 충족 |
+| 등식 반영 LP | 0.4,0.6 | 0,0.4 | 0,0 | 가짜 h₂로 규격 충족 |
+| MILP | 0.7,0.3 | 0,0.4 | 0,0.4 | 원래 출력과 일치 |
+
+등식 반영 뒤 두 번째 삼각형의 상한은 h₂≤x₁입니다. 따라서 h₂≥0.4를 만족하려면 x₁≥0.4입니다. 그러나 x₁=0.4에서 실제 a₂=−0.2이므로 ReLU 출력은 0입니다. 하한이 좋아져도 완화가 원래 그래프와 같아진 것은 아닙니다.
+
+<!-- lecture-page -->
+
 ## 구간 전파 손계산
 
 a = 2<math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> − 3<math><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></math> + 0.5, <math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn></mrow></msub></math> ∈ [0, 1], <math><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub></math> ∈ [−1, 2]를 계산합니다. 양의 계수는 같은 방향의 극값을, 음의 계수는 반대쪽 극값을 선택합니다.
@@ -335,6 +396,23 @@ T = 330 K, τ = 6 min이면 (<math><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn>
 J의 incumbent가 3.2, 하한이 2.8이면 절대 gap은 0.4이고 상대 gap은 12.5%입니다. 상수 2를 뺀 식에서는 같은 두 값이 1.2와 0.8이 되어 상대 gap은 약 33.3%입니다.
 
 최적 입력과 절대 gap은 같지만 상대 gap은 달라집니다. 보고하는 목적함수, 상수항, solver의 gap 정의를 같이 적습니다.
+
+<!-- lecture-page -->
+
+## 목적함수 상수와 gap의 계산
+
+동일한 가능해와 하한에서 목적함수의 상수 2만 제거한다고 둡니다.
+
+| 계산 | 상수 포함 J | 상수 제거 J−2 |
+| --- | --- | --- |
+| 가능해 목적값 | 3.2 | 1.2 |
+| 유효 하한 | 2.8 | 0.8 |
+| 절대 gap | 3.2−2.8=0.4 | 1.2−0.8=0.4 |
+| 상대 gap | 0.4/3.2=12.5% | 0.4/1.2≈33.3% |
+
+모든 후보의 값에서 같은 수를 빼므로 후보 순위와 최적 입력은 유지됩니다. 하지만 상대 gap의 분모는 달라집니다. 두 보고서를 비교할 때 목적함수 정의가 다르면 %만으로 풀이 품질을 비교할 수 없습니다.
+
+가능해가 없으면 분모에 사용할 값도 없습니다. 그때는 유효 하한과 가능해 부재를 보고하고, 변수의 초기값을 해로 해석하지 않습니다.
 
 <!-- lecture-page -->
 
@@ -423,6 +501,22 @@ OMLT도 같은 MILP 최적값을 반환했습니다. 입력·가중치·제품 �
 합계는 bounds, 모델 구성과 MILP 풀이의 합입니다. 별도로 측정한 LP 완화, 예측 검증, 학습 시간은 포함하지 않습니다.
 
 고정 모델과 영역에서 bounds를 재사용하면 여러 풀이에 전처리 비용을 나눌 수 있습니다. 반복 비교에서는 같은 장비·스레드·시간 제한을 사용하고 중앙값과 변동을 기록합니다.
+
+<!-- lecture-page -->
+
+## bounds를 재사용할 때의 총시간
+
+기록된 한 번의 실행에서 구간 전파의 MILP 시간은 0.1539 s, LP-OBBT는 0.0955 s입니다. OBBT 전처리는 0.1132 s가 필요했습니다.
+
+| 풀이 수 m | 구간 전파: 0.0001+m×0.1555 | OBBT: 0.1132+m×0.0971 |
+| --- | --- | --- |
+| 1 | 0.1556 s | 0.2103 s |
+| 2 | 0.3111 s | 0.3074 s |
+| 5 | 0.7776 s | 0.5987 s |
+
+열별 1회 비용에는 build 0.0016 s를 포함합니다. 표는 반올림된 기록 시간을 사용하고 각 반복의 풀이 시간이 같다고 가정한 산술 계산입니다. 실제 반복 실험 결과는 아닙니다.
+
+고정된 가중치와 입력 영역에서 bounds를 재사용할 수 있을 때 전처리 비용을 나누어 부담합니다. 새 모델이나 더 넓은 영역이면 bounds 유효성을 다시 확인해야 하며 이 계산을 그대로 적용할 수 없습니다.
 
 <!-- lecture-page -->
 

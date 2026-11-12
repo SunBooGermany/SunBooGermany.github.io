@@ -59,6 +59,21 @@ This argument assumes uniform bounds. Maxima on a finite calibration sample do n
 
 <!-- lecture-page -->
 
+## Calculating one-sided margins
+
+Define e=prediction−reference. Positive e is adverse for B; negative e is adverse for C.
+
+| Quantity | B lower limit | C upper limit |
+| --- | --- | --- |
+| Original specification | Reference B≥0.38 | Reference C≤0.25 |
+| Applied margin | δ_B=0.02130 | δ_C=0.01305 |
+| Required prediction | B̂≥0.40130 | Ĉ≤0.23695 |
+| At the assumed error limit | 0.40130−0.02130=0.38 | 0.23695+0.01305=0.25 |
+
+The last row applies when the error limit holds at that input. The maximum over 961 calibration points does not prove a bound at every unseen point. Reevaluate the next candidate with the reference process even after adding margins.
+
+<!-- lecture-page -->
+
 ## Data partitions and reference-evaluation cost
 
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">Data</th><th style="font-size:clamp(15px,1.7cqw,22px)">Size and role</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Existing training</td><td style="font-size:clamp(15px,1.7cqw,22px)">Week 6 network, 1,200 training points</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Independent evaluation</td><td style="font-size:clamp(15px,1.7cqw,22px)">997 inputs, seed 808, full-box prediction error</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Calibration</td><td style="font-size:clamp(15px,1.7cqw,22px)">31 × 31 = 961, margin calculation</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Local update</td><td style="font-size:clamp(15px,1.7cqw,22px)">3 × 3 = 9, affine residual fitting</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Candidate revalidation</td><td style="font-size:clamp(15px,1.7cqw,22px)">Fresh reference evaluation at each selected input</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Comparison search</td><td style="font-size:clamp(15px,1.7cqw,22px)">4,001 T values and local scalar refinement</td></tr></tbody></table>
@@ -87,6 +102,26 @@ Use the same input matrix for every output component. Adding an affine output te
 
 <!-- lecture-page -->
 
+## Local-data coordinates and the regression matrix
+
+Candidate (342.0593 K,2.52444 min) has scaled coordinates [(342.0593−310)/40,(2.52444−2)/8]≈[0.80148,0.06556].
+
+| Axis | Scaled offset | Physical offset |
+| --- | --- | --- |
+| Temperature | ±0.06 | ±2.4 K |
+| Residence time | ±0.06 | ±0.48 min |
+
+```python
+design = np.column_stack((np.ones(len(x_local)), x_local))
+residual = reference_y - network_y
+beta = np.linalg.lstsq(design, residual, rcond=None)[0]
+corrected_y = network_y + design @ beta
+```
+
+For nine inputs, design is (9,3), the three-component residual is (9,3), and beta is (3,3). Multiplying a row [1,x₁,x₂] by beta gives three corrections. Restrict the next optimization to the fitted region and check remaining error at the new candidate.
+
+<!-- lecture-page -->
+
 ## Follow-up data from a failed correction
 
 B error at the local-correction candidate is 0.005180 mol/L, exceeding the applied 0.002 margin. Although its prediction is 0.002 above the specification, its reference output falls short by 0.003180.
@@ -109,6 +144,22 @@ The smaller root is preferred because cost increases with τ at fixed T.
 
 <!-- lecture-page -->
 
+## From the B specification to a quadratic in residence time
+
+At fixed temperature, k₁ and k₂ are numbers. Set B to target b and multiply by the positive concentration denominator.
+
+| Step | Relation |
+| --- | --- |
+| Set B=b | 1.2k₁τ=b(1+k₁τ)(1+k₂τ) |
+| Expand denominator | 1.2k₁τ=b[1+(k₁+k₂)τ+k₁k₂τ²] |
+| Collect terms | bk₁k₂τ²+[b(k₁+k₂)−1.2k₁]τ+b=0 |
+
+At 330 K and b=0.4, this is 0.008τ²−0.12τ+0.4=0. Dividing by 0.008 gives (τ−5)(τ−10)=0. B≥0.4 holds between the roots, [5,10].
+
+At fixed temperature, cost increases with τ, so check 5 min first. It gives C=0.1×5×0.4=0.2≤0.25. At 10 min, C=0.4 violates the cap; the B condition alone is insufficient.
+
+<!-- lecture-page -->
+
 ## The smaller root and a stable numerical formula
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>a</mi><mo>=</mo><mi>b</mi><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mo>,</mo><mi>d</mi><mo>=</mo><mi>b</mi><mo>(</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mo>)</mo><mo>−</mo><mn>1.2</mn><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><msup><mi>d</mi><mrow><mn>2</mn></mrow></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>b</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>τ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mi>b</mi></mrow><mrow><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt></mrow></mfrac></mrow></mtd></mtr></mtable></math>
@@ -126,6 +177,25 @@ Fix the local-correction candidate’s temperature at 339.8152 K and use b = 0.3
 Reference outputs are A = 0.618470, B = 0.382000, and C = 0.199530 mol/L. They sum to 1.2 and satisfy the C upper bound.
 
 Cost is 44.1828 $/h, which is 32.6172 $/h below the initial baseline. This point leaves the local optimization box, so report it separately as a repair checked directly with the reference equations.
+
+<!-- lecture-page -->
+
+## Computing the smaller root and revalidating the candidate
+
+At T=339.8152 K and b=0.382, calculate a=bk₁k₂ and d=b(k₁+k₂)−1.2k₁. A negative discriminant means there is no real residence time with B=b at this temperature.
+
+```python
+k1 = 0.2 * np.exp(40000 / 8.314 * (1/330 - 1/T))
+k2 = 0.1 * np.exp(50000 / 8.314 * (1/330 - 1/T))
+a = b * k1 * k2
+d = b * (k1 + k2) - 1.2 * k1
+disc = d*d - 4*a*b
+tau = 2*b / (-d + np.sqrt(disc))
+```
+
+Here k₁≈0.3047, k₂≈0.1693/min and τ≈3.08559 min. This smaller-root formula uses a>0,d<0,disc≥0. Check the original τ bounds and reference B,C for each candidate.
+
+Reference C≈0.199530<0.25 and cost is 12×3.08559+0.24×(339.8152−310)≈44.1828 $/h. Savings from the original baseline are 76.8−44.1828=32.6172 $/h.
 
 <!-- lecture-page -->
 
@@ -225,6 +295,21 @@ C에서는 과소예측 −<math><msub><mi>e</mi><mrow><mi>C</mi></mrow></msub><
 
 <!-- lecture-page -->
 
+## 한쪽 방향 margin의 계산
+
+오차를 e=예측−기준으로 정의합니다. B에서는 e가 양수일 때, C에서는 e가 음수일 때 위험한 방향입니다.
+
+| 항목 | B 하한 | C 상한 |
+| --- | --- | --- |
+| 원래 규격 | 기준 B≥0.38 | 기준 C≤0.25 |
+| 적용 margin | δ_B=0.02130 | δ_C=0.01305 |
+| 예측에 요구할 값 | B̂≥0.40130 | Ĉ≤0.23695 |
+| 오차가 가정한 한계일 때 | 0.40130−0.02130=0.38 | 0.23695+0.01305=0.25 |
+
+이 마지막 행은 오차 한계가 그 입력에서 성립할 때의 계산입니다. calibration 961점의 최대값은 보지 않은 모든 점의 한계를 증명하지 않습니다. 그래서 margin을 넣은 다음 후보도 기준 공정으로 다시 계산합니다.
+
+<!-- lecture-page -->
+
 ## 데이터 분할과 참조 계산의 비용
 
 <table><thead><tr><th style="font-size:clamp(15px,1.7cqw,22px)">데이터</th><th style="font-size:clamp(15px,1.7cqw,22px)">크기·역할</th></tr></thead><tbody><tr><td style="font-size:clamp(15px,1.7cqw,22px)">기존 학습</td><td style="font-size:clamp(15px,1.7cqw,22px)">6주차 네트워크, 1,200개 학습점</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">독립 평가</td><td style="font-size:clamp(15px,1.7cqw,22px)">997개, seed 808, 전체 box의 예측 오차</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">Calibration</td><td style="font-size:clamp(15px,1.7cqw,22px)">31 × 31 = 961개, margin 계산</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">국소 보완</td><td style="font-size:clamp(15px,1.7cqw,22px)">3 × 3 = 9개, affine 잔차 학습</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">후보 재검증</td><td style="font-size:clamp(15px,1.7cqw,22px)">선택한 각 입력의 새로운 기준 계산</td></tr><tr><td style="font-size:clamp(15px,1.7cqw,22px)">비교용 탐색</td><td style="font-size:clamp(15px,1.7cqw,22px)">4,001개 T와 국소 1차원 refinement</td></tr></tbody></table>
@@ -253,6 +338,26 @@ C 예측은 0.171228, 기준값은 0.178136 mol/L입니다. <math><msub><mi>e</m
 
 <!-- lecture-page -->
 
+## 국소 데이터의 좌표와 회귀 행렬
+
+후보 (342.0593 K,2.52444 min)의 scaled 좌표는 [(342.0593−310)/40,(2.52444−2)/8]≈[0.80148,0.06556]입니다.
+
+| 축 | scaled offset | 물리 단위 offset |
+| --- | --- | --- |
+| 온도 | ±0.06 | ±2.4 K |
+| 체류시간 | ±0.06 | ±0.48 min |
+
+```python
+design = np.column_stack((np.ones(len(x_local)), x_local))
+residual = reference_y - network_y
+beta = np.linalg.lstsq(design, residual, rcond=None)[0]
+corrected_y = network_y + design @ beta
+```
+
+9개 입력의 design은 (9,3), 세 성분 residual도 (9,3), beta는 (3,3)입니다. design의 한 행 [1,x₁,x₂]와 beta를 곱하면 세 성분의 보정값이 나옵니다. 이 회귀가 본 범위 안으로 다음 최적화 영역을 제한하되, 남은 오차는 새 후보에서 확인합니다.
+
+<!-- lecture-page -->
+
 ## 보정 실패에서 얻는 다음 데이터
 
 국소 보정 후보의 B 예측 오차는 0.005180 mol/L로 적용한 margin 0.002보다 큽니다. 모델은 원래 규격보다 0.002 높은 값을 예측하지만 기준 출력은 0.003180 부족합니다.
@@ -275,6 +380,22 @@ T를 고정하고 목표 농도를 b라고 하면 <math><msub><mi>C</mi><mrow><m
 
 <!-- lecture-page -->
 
+## B 규격에서 체류시간 이차식으로
+
+온도를 고정하면 k₁,k₂가 숫자로 정해집니다. 목표 B 농도를 b라 두고 농도식의 양의 분모를 곱합니다.
+
+| 순서 | 관계식 |
+| --- | --- |
+| B=b | 1.2k₁τ=b(1+k₁τ)(1+k₂τ) |
+| 분모 전개 | 1.2k₁τ=b[1+(k₁+k₂)τ+k₁k₂τ²] |
+| 한쪽으로 모으기 | bk₁k₂τ²+[b(k₁+k₂)−1.2k₁]τ+b=0 |
+
+330 K에서 b=0.4이면 0.008τ²−0.12τ+0.4=0이고, 0.008로 나누면 (τ−5)(τ−10)=0입니다. B≥0.4는 두 근 사이 [5,10]에서 성립합니다.
+
+비용은 같은 온도에서 τ가 작을수록 낮으므로 5분을 먼저 확인합니다. 이때 C=0.1×5×0.4=0.2≤0.25입니다. 10분에서는 C=0.4로 상한을 위반하므로 B 조건만으로는 부족합니다.
+
+<!-- lecture-page -->
+
 ## 작은 근과 안정적인 계산식
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mi>a</mi><mo>=</mo><mi>b</mi><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mo>,</mo><mi>d</mi><mo>=</mo><mi>b</mi><mo>(</mo><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>k</mi><mrow><mn>2</mn></mrow></msub><mo>)</mo><mo>−</mo><mn>1.2</mn><msub><mi>k</mi><mrow><mn>1</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi>D</mi><mo>=</mo><msup><mi>d</mi><mrow><mn>2</mn></mrow></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>b</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>τ</mi><mrow><mi>l</mi><mi>o</mi><mi>w</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mi>b</mi></mrow><mrow><mo>−</mo><mi>d</mi><mo>+</mo><msqrt><mi>D</mi></msqrt></mrow></mfrac></mrow></mtd></mtr></mtable></math>
@@ -292,6 +413,25 @@ T를 고정하고 목표 농도를 b라고 하면 <math><msub><mi>C</mi><mrow><m
 기준 출력은 A = 0.618470, B = 0.382000, C = 0.199530 mol/L입니다. 농도 합은 1.2이며 C 상한도 만족합니다.
 
 비용은 44.1828 $/h이고 초기 기준 후보 대비 32.6172 $/h 낮습니다. 최적화에 사용한 국소 box를 벗어나므로 기준식으로 직접 확인한 보완 단계로 따로 보고합니다.
+
+<!-- lecture-page -->
+
+## 작은 근의 계산과 후보 재검증
+
+T=339.8152 K, b=0.382에서 a=bk₁k₂, d=b(k₁+k₂)−1.2k₁을 계산합니다. 판별식이 음수이면 이 온도에서 B=b인 실수 체류시간이 없습니다.
+
+```python
+k1 = 0.2 * np.exp(40000 / 8.314 * (1/330 - 1/T))
+k2 = 0.1 * np.exp(50000 / 8.314 * (1/330 - 1/T))
+a = b * k1 * k2
+d = b * (k1 + k2) - 1.2 * k1
+disc = d*d - 4*a*b
+tau = 2*b / (-d + np.sqrt(disc))
+```
+
+이 경우 k₁≈0.3047, k₂≈0.1693/min이고 τ≈3.08559 min입니다. 작은 근 식은 a>0,d<0,disc≥0인 경우를 사용합니다. 후보마다 원래 τ 범위와 기준 B,C를 다시 검사합니다.
+
+기준 C≈0.199530<0.25이며 비용은 12×3.08559+0.24×(339.8152−310)≈44.1828 $/h입니다. 초기 기준안 대비 절감은 76.8−44.1828=32.6172 $/h입니다.
 
 <!-- lecture-page -->
 

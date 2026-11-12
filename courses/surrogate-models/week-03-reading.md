@@ -60,6 +60,23 @@ Forward Euler gives [1.152, 0.048, 0]. It differs because the rates change durin
 
 <!-- lecture-page -->
 
+## Concentration changes over the first 0.2 min
+
+At [1.2,0,0], A inflow minus outflow is zero and its reaction consumption is 0.24 mol/(L·min). B forms at that rate; C initially has zero production rate because no B is yet present.
+
+| Quantity | Calculation | mol/L |
+| --- | --- | --- |
+| Euler A | 1.2−0.2×0.24 | 1.152000 |
+| Exact A | 0.6+0.6 exp(−0.08) | 1.153870 |
+| B equilibrium-deviation term | 0.4−0.4 exp(−0.06) | 0.023294 |
+| Transfer from A into B | 0.12[exp(−0.08)−exp(−0.06)]/(−0.1) | 0.022378 |
+| Exact B | 0.023294+0.022378 | 0.045672 |
+| Exact C | 1.2−1.153870−0.045672 | 0.000458 |
+
+Euler uses the initial rate throughout the interval. During the actual interval, A decreases, B forms, and C production begins. These changing rates explain its difference from the exact interval solution.
+
+<!-- lecture-page -->
+
 ## Transition-pair construction from trajectories
 
 One trajectory has states of shape (151, 3) and controls of shape (150, 3). Split by trajectory, then stack its rows:
@@ -96,6 +113,26 @@ Restore Δc before adding it to c. Flatten all noninitial times across test traj
 
 <!-- lecture-page -->
 
+## Restoring increments and checking total concentration
+
+Take state [0.6,0.4,0.2] mol/L, increment mean [0,0,0], scales [0.02,0.01,0.01] mol/L, and model output [−0.5,0.6,0.4].
+
+| Step | Value |
+| --- | --- |
+| Standardized output | [−0.5,0.6,0.4] |
+| Multiply by scales | [−0.010,0.006,0.004] mol/L |
+| Add to current state | [0.590,0.406,0.204] mol/L |
+| Total concentration | 0.590+0.406+0.204=1.200 mol/L |
+
+```python
+increment = d_mean + d_scale * standardized_increment
+next_state = state + increment
+```
+
+These example increments sum to zero. A general MLP does not enforce that property, so check the sum and negative entries at each predicted state. When the initial total differs from feed, compare against the exact total-concentration transition rather than a fixed 1.2.
+
+<!-- lecture-page -->
+
 ## Derive the error recurrence
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
@@ -109,6 +146,28 @@ For constant L and local error bound ε, repeated substitution gives:
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mo>‖</mo><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>‖</mo><mo>≤</mo><msup><mi>L</mi><mrow><mi>h</mi></mrow></msup><mo>‖</mo><msub><mi>e</mi><mrow><mn>0</mn></mrow></msub><mo>‖</mo><mo>+</mo><mi>ε</mi><munderover><mo>∑</mo><mrow><mi>r</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>h</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>L</mi><mrow><mi>r</mi></mrow></msup></mrow></mtd></mtr></mtable></math>
 
 L < 1 limits this bound to ε/(1−L) when e₀ = 0; L = 1 gives hε. The sensitivity and error bounds must hold along the relevant states. Test RMSE alone is not that bound.
+
+<!-- lecture-page -->
+
+## Intermediate states in the two evaluation protocols
+
+Use reference F(c)=0.9c, model f(c)=0.9c+0.001, and c₀=1. Values below are calculated from these scalar functions.
+
+| Step | Reference c | One-step prediction | Rollout prediction | Rollout error |
+| --- | --- | --- | --- | --- |
+| 0 | 1 | Initial state | 1 | 0 |
+| 1 | 0.9 | 0.901 | 0.901 | 0.001 |
+| 2 | 0.81 | 0.811 | 0.8119 | 0.0019 |
+| 3 | 0.729 | 0.730 | 0.73171 | 0.00271 |
+
+```python
+state = 1.0
+for step in range(3):
+    state = 0.9 * state + 0.001
+    print(step + 1, state)
+```
+
+The second rollout computes 0.9×0.901+0.001. One-step receives reference 0.9 again and computes 0.9×0.9+0.001, so it does not inherit the previous error.
 
 <!-- lecture-page -->
 
@@ -142,8 +201,6 @@ With incomplete observations, an RNN/LSTM hidden state can summarize available h
 - Sutskever, Vinyals & Le (2014), [Sections 1-2](https://proceedings.neurips.cc/paper_files/paper/2014/hash/5a18e133cbf9f257297f410bb7eca942-Abstract.html): sequence encoding and decoding.
 - PyTorch [RNN](https://docs.pytorch.org/docs/stable/generated/torch.nn.RNN.html) and [LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html): recurrent updates, inputs, hidden states, and outputs.
 - SciPy [matrix exponential](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html): an alternative implementation of exp(MΔt).
-
-
 
 <!-- ko -->
 
@@ -193,6 +250,23 @@ Forward Euler의 결과는 [1.152, 0.048, 0]입니다. 구간 안에서도 반�
 
 <!-- lecture-page -->
 
+## 첫 0.2 min의 농도 변화
+
+초기 조성 [1.2,0,0]에서 A의 유입·유출 차이는 0이고 반응 소모는 0.24 mol/(L·min)입니다. B는 같은 속도로 생기며 C는 아직 B가 없어 순간 생성속도가 0입니다.
+
+| 항목 | 계산 | mol/L |
+| --- | --- | --- |
+| Euler의 A | 1.2−0.2×0.24 | 1.152000 |
+| 정확한 A | 0.6+0.6 exp(−0.08) | 1.153870 |
+| B의 평형 편차 항 | 0.4−0.4 exp(−0.06) | 0.023294 |
+| A에서 B로 전달 | 0.12[exp(−0.08)−exp(−0.06)]/(−0.1) | 0.022378 |
+| 정확한 B | 0.023294+0.022378 | 0.045672 |
+| 정확한 C | 1.2−1.153870−0.045672 | 0.000458 |
+
+Euler는 시작 순간의 속도를 구간 전체에 사용합니다. 실제 구간 안에서는 A가 줄고 B가 생겨 C 생성도 시작되므로 정확한 구간 해와 차이가 납니다.
+
+<!-- lecture-page -->
+
 ## 궤적에서 상태전이 학습 쌍 구성
 
 한 궤적의 states 배열 크기는 (151, 3), controls는 (150, 3)입니다. 궤적별로 분할한 후 행을 쌓습니다.
@@ -229,6 +303,26 @@ err_roll = recursive[1:] - states[1:]
 
 <!-- lecture-page -->
 
+## 증가량의 복원과 총농도 검사
+
+현재 상태가 [0.6,0.4,0.2] mol/L이고, 증가량 평균 [0,0,0], scale=[0.02,0.01,0.01] mol/L, 모델 출력 [−0.5,0.6,0.4]라고 둡니다.
+
+| 순서 | 값 |
+| --- | --- |
+| 표준화 출력 | [−0.5,0.6,0.4] |
+| scale 곱한 증가량 | [−0.010,0.006,0.004] mol/L |
+| 현재 상태에 더하기 | [0.590,0.406,0.204] mol/L |
+| 총농도 | 0.590+0.406+0.204=1.200 mol/L |
+
+```python
+increment = d_mean + d_scale * standardized_increment
+next_state = state + increment
+```
+
+이 계산 예의 증가량 합은 0입니다. 일반 MLP에는 그 조건을 강제하지 않았으므로 실제 예측마다 합과 음수 성분을 검사합니다. 초기 총농도가 유입 농도와 다르면 비교 대상은 고정 1.2가 아니라 정확한 총농도 전이식입니다.
+
+<!-- lecture-page -->
+
 ## 오차 전달식 유도
 
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><msub><mi>e</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mover><mi>c</mi><mo>^</mo></mover><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>+</mo><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>δ</mi><mrow><mi>k</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mrow><mi>θ</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow><mo>−</mo><msub><mi>F</mi><mrow><mi>Δt</mi></mrow></msub><mrow><mo>(</mo><msub><mi>c</mi><mrow><mi>k</mi></mrow></msub><mo>,</mo><msub><mi>u</mi><mrow><mi>k</mi></mrow></msub><mo>)</mo></mrow></mrow></mtd></mtr></mtable></math>
@@ -242,6 +336,28 @@ L과 한 단계 오차 상한 ε이 일정할 때 반복 대입합니다.
 <math display="block"><mtable columnalign="left"><mtr><mtd><mrow><mo>‖</mo><msub><mi>e</mi><mrow><mi>h</mi></mrow></msub><mo>‖</mo><mo>≤</mo><msup><mi>L</mi><mrow><mi>h</mi></mrow></msup><mo>‖</mo><msub><mi>e</mi><mrow><mn>0</mn></mrow></msub><mo>‖</mo><mo>+</mo><mi>ε</mi><munderover><mo>∑</mo><mrow><mi>r</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>h</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>L</mi><mrow><mi>r</mi></mrow></msup></mrow></mtd></mtr></mtable></math>
 
 e₀ = 0에서 L < 1이면 상한은 ε/(1−L) 이하이고 L = 1이면 hε입니다. 이 민감도와 오차 상한은 실제로 거치는 상태에서 유효해야 하며, test RMSE 자체를 상한으로 사용할 수는 없습니다.
+
+<!-- lecture-page -->
+
+## 두 평가 방식의 중간 상태
+
+기준 F(c)=0.9c, 모델 f(c)=0.9c+0.001, 초기값 c₀=1을 사용합니다. 수치는 이 스칼라 식의 계산값입니다.
+
+| 단계 | 기준 c | one-step 예측 | rollout 예측 | rollout 오차 |
+| --- | --- | --- | --- | --- |
+| 0 | 1 | 초기 상태 | 1 | 0 |
+| 1 | 0.9 | 0.901 | 0.901 | 0.001 |
+| 2 | 0.81 | 0.811 | 0.8119 | 0.0019 |
+| 3 | 0.729 | 0.730 | 0.73171 | 0.00271 |
+
+```python
+state = 1.0
+for step in range(3):
+    state = 0.9 * state + 0.001
+    print(step + 1, state)
+```
+
+두 번째 rollout은 0.9×0.901+0.001을 계산합니다. one-step은 기준 0.9를 다시 받아 0.9×0.9+0.001을 계산하므로 이전 오차를 물려받지 않습니다.
 
 <!-- lecture-page -->
 

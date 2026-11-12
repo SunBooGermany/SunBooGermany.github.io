@@ -72,6 +72,22 @@ The A error changes from +0.10 to +0.033333. B and C change from +0.05 to −0.0
 
 <!-- lecture-page -->
 
+## From the sum residual to projected output
+
+The raw output is [0.70,0.45,0.25] and the target total is 1.20 mol/L. Equal corrections Δ give 1.40−3Δ=1.20, hence Δ=0.20/3.
+
+| Step | Value |
+| --- | --- |
+| Bŷ−d | 1.40−1.20=0.20 |
+| G=BBᵀ | 1²+1²+1²=3 |
+| Solve Gλ=residual | λ=0.0666667 |
+| Component corrections | [−0.0666667,−0.0666667,−0.0666667] |
+| Projected output | [0.6333333,0.3833333,0.1833333] |
+
+Equal correction has squared distance 3×(0.20/3)²=0.013333. Subtracting 0.20 only from A also repairs the sum but has squared distance 0.04. This explains equal correction under an equally weighted Euclidean metric.
+
+<!-- lecture-page -->
+
 ## 6. Chain rule for parameters and inputs
 
 Let J_f,θ be the raw-output parameter Jacobian. For fixed A, B, b:
@@ -93,6 +109,27 @@ Euclidean projection in z minimizes ‖D⁻¹(y − ŷ)‖² in physical coordin
 Example: raw [0.70, 0.45, 0.25], total 1.20, and s = [0.2, 0.5, 0.1] give restored standardized-projection output [0.673333, 0.283333, 0.243333]. Corrections are proportional to s_j².
 
 Both methods satisfy the sum. For outputs with different units, even a physical Euclidean distance depends on unit choices; design the metric explicitly.
+
+<!-- lecture-page -->
+
+## Projection metric and component corrections
+
+Minimizing distance in standardized coordinates with scales [0.2,0.5,0.1] allocates physical corrections in proportion to squared scales. Split the residual 0.20 in the ratio 0.04:0.25:0.01.
+
+| Component | Squared-scale fraction | Subtracted concentration | Result |
+| --- | --- | --- | --- |
+| A | 0.04/0.30 | 0.026667 | 0.673333 |
+| B | 0.25/0.30 | 0.166667 | 0.283333 |
+| C | 0.01/0.30 | 0.006667 | 0.243333 |
+
+```python
+scales = np.array([0.2, 0.5, 0.1])
+raw = np.array([0.70, 0.45, 0.25])
+weights = scales**2 / np.sum(scales**2)
+projected = raw - (raw.sum() - 1.2) * weights
+```
+
+B has the largest scale, making a physical correction less costly in standardized distance. It therefore changes more. Checking only the final sum 1.20 hides the difference between these metrics.
 
 <!-- lecture-page -->
 
@@ -139,6 +176,23 @@ Clamping negative values after equality projection changes the sum. Requiring bo
 For C_Af ≥ 0 the feasible set is a simplex. The solution is affine within a fixed active-set region; derivatives need care where a component reaches zero.
 
 The required lab stops at linear equalities. Report results and gradient checks separately if implementing this inequality extension.
+
+<!-- lecture-page -->
+
+## Recomputing projection with nonnegativity
+
+Subtracting the sum residual 0.22 equally from [0.02,0.90,0.50] makes A negative. Requiring both the sum and nonnegativity leads to recomputation on the boundary A=0.
+
+| Step | Calculation |
+| --- | --- |
+| Fix A at zero | B+C=1.20 |
+| Remaining raw sum | 0.90+0.50=1.40 |
+| Correction to each free component | (1.40−1.20)/2=0.10 |
+| Result | [0,0.80,0.40] mol/L |
+
+Subtract 0.10 from each positive component while A stops at zero. This is the simplex projection of the raw output. Clipping only the negative entry does not readjust B and C, so it does not restore the sum.
+
+As raw values change, the active constraint changes when A becomes positive again. The derivative is therefore not one fixed matrix over the entire domain, unlike fixed linear-equality projection.
 
 <!-- lecture-page -->
 
@@ -270,6 +324,22 @@ P = I − Bᵀ(BBᵀ)⁻¹B는 Pᵀ = P, P² = P, BP = 0을 만족합니다. P�
 
 <!-- lecture-page -->
 
+## 합 잔차에서 투영된 출력까지
+
+원시 출력은 [0.70,0.45,0.25], 목표 합은 1.20 mol/L입니다. 세 수정량을 Δ로 같게 두면 1.40−3Δ=1.20이므로 Δ=0.20/3입니다.
+
+| 단계 | 값 |
+| --- | --- |
+| Bŷ−d | 1.40−1.20=0.20 |
+| G=BBᵀ | 1²+1²+1²=3 |
+| Gλ=잔차 | λ=0.0666667 |
+| 출력별 수정 | [−0.0666667,−0.0666667,−0.0666667] |
+| 보정 출력 | [0.6333333,0.3833333,0.1833333] |
+
+균등 보정의 거리 제곱은 3×(0.20/3)²=0.013333입니다. A에서만 0.20을 빼도 합은 맞지만 거리 제곱은 0.04로 더 큽니다. 같은 가중치의 Euclidean 거리에서 균등 보정이 선택되는 이유입니다.
+
+<!-- lecture-page -->
+
 ## 6. 파라미터와 입력에 대한 chain rule
 
 J_f,θ는 raw 출력의 파라미터 Jacobian입니다. A·B·b가 고정이면:
@@ -291,6 +361,27 @@ z 공간의 Euclidean 투영은 y 공간에서 ‖D⁻¹(y − ŷ)‖²를 최�
 예: raw [0.70, 0.45, 0.25], 합 1.20, s = [0.2, 0.5, 0.1]이면 z 공간 투영을 복원한 결과는 [0.673333, 0.283333, 0.243333]입니다. 보정량은 s_j²에 비례합니다.
 
 두 방법 모두 합을 맞춥니다. 서로 다른 단위의 출력을 함께 투영할 때에는 물리 Euclidean 거리 자체에도 단위 선택이 영향을 주므로 metric을 설계해야 합니다.
+
+<!-- lecture-page -->
+
+## 투영 거리와 성분별 수정량
+
+scale=[0.2,0.5,0.1]인 표준화 좌표에서 거리를 최소화하면 물리 단위 수정량은 scale의 제곱에 비례합니다. 총 잔차 0.20을 0.04:0.25:0.01로 나눕니다.
+
+| 성분 | scale² / 합 | 빼는 농도 | 보정 결과 |
+| --- | --- | --- | --- |
+| A | 0.04/0.30 | 0.026667 | 0.673333 |
+| B | 0.25/0.30 | 0.166667 | 0.283333 |
+| C | 0.01/0.30 | 0.006667 | 0.243333 |
+
+```python
+scales = np.array([0.2, 0.5, 0.1])
+raw = np.array([0.70, 0.45, 0.25])
+weights = scales**2 / np.sum(scales**2)
+projected = raw - (raw.sum() - 1.2) * weights
+```
+
+B는 표준편차가 커 같은 농도 수정이 표준화 거리에서 덜 비쌉니다. 따라서 더 많이 바뀝니다. 합 1.20만 확인하면 두 거리 정의의 차이가 보이지 않습니다.
 
 <!-- lecture-page -->
 
@@ -337,6 +428,23 @@ d = [1.2, 2.5]이면 첫 식의 두 배와 두 번째 식이 모순됩니다. �
 C_Af ≥ 0이면 가능한 simplex입니다. 활성집합이 고정된 구간에서는 affine 식으로 풀 수 있지만, 성분이 0이 되는 경계에서 미분을 주의해야 합니다.
 
 필수 실습은 선형 등식 투영까지입니다. 이 부등식 확장을 적용했다면 결과와 gradient 확인을 별도로 보고합니다.
+
+<!-- lecture-page -->
+
+## 음수 성분을 포함한 투영의 재계산
+
+원시 [0.02,0.90,0.50]에서 합 잔차 0.22를 균등하게 빼면 A가 음수가 됩니다. 합과 비음수 조건을 함께 요구하면 A=0인 경계에서 다시 계산합니다.
+
+| 단계 | 계산 |
+| --- | --- |
+| A를 0으로 고정 | B+C=1.20 |
+| 남은 원시 합 | 0.90+0.50=1.40 |
+| 두 성분의 보정 | (1.40−1.20)/2=0.10 |
+| 결과 | [0,0.80,0.40] mol/L |
+
+두 양의 성분에는 같은 0.10을 빼고, A는 0에서 멈춥니다. 이 결과는 원시 출력에 대한 simplex 투영입니다. 먼저 음수만 0으로 자르는 방식은 B와 C를 재조정하지 않아 합을 맞추지 못합니다.
+
+원시 값이 변해 A가 다시 양수가 되는 경계에서는 활성 제약이 바뀝니다. 따라서 이 변환의 미분은 고정 선형 등식 투영처럼 전 구간에서 같은 행렬이 아닙니다.
 
 <!-- lecture-page -->
 
