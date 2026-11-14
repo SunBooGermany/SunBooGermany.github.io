@@ -207,6 +207,22 @@ content into Research Blog posts unless explicitly requested.
 When the user asks to publish their pasted Better Judgment essay as-is, preserve
 the supplied essay structure and make only the minimum front matter/path changes.
 
+### Author's voice in Better Judgment essays (2026-11-14)
+
+Use [같은 일, 다른 출발점](_better_judgment/decision-making/2026/11/14/same-work-different-starting-points.md)
+as the voice reference for future Better Judgment essays. When the author has
+made up their mind, state the judgment directly and let their reasons follow.
+Keep the author's own pointed language when it carries the argument. In the
+reference essay, “월급의 노예” earns its place because the next sentence says
+exactly what the author means by it. Draw from each new draft's own vocabulary.
+
+Keep genuine doubt where it matters to the author's thinking. Cut caveats
+that merely qualify an already clear claim. For example, “연구를 지원받고 싶다”
+already expresses a desire. Adding “실제로 그렇게 될지는 그때 가 봐야 알 일이다”
+weakens it without adding meaning. Ground observations about others in what
+the author saw, then continue the thought. Carry the same conviction, imagery,
+and degree of certainty into the English version.
+
 ## Finish Checklist
 
 Before finishing, verify the changed file list. Run feasible syntax/build checks.
