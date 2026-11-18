@@ -1,17 +1,47 @@
 ---
 layout: judgment-post
-title: "내가 종교에서 찾는 자유와 평안"
+title: "The Freedom and Peace I Seek in Religion"
 title_ko: "내가 종교에서 찾는 자유와 평안"
 date: 2026-11-18
 category: decision-making
 category_label: "For Wiser Decision-Making"
 category_label_ko: "더 현명한 의사결정을 내리기 위하여"
 source_type: "personal-reflection"
-excerpt: "나는 종교가 사람들이 집착과 걱정, 근심에서 벗어나 지금의 삶을 더 행복하고 현명하게 살아가도록 돕는 데 목적이 있다고 생각한다."
+excerpt: "I believe religion is meant to help people free themselves from attachment and worry, and live happier, wiser lives in the present."
 excerpt_ko: "나는 종교가 사람들이 집착과 걱정, 근심에서 벗어나 지금의 삶을 더 행복하고 현명하게 살아가도록 돕는 데 목적이 있다고 생각한다."
-language: "ko"
+language: "en-ko"
 has_korean_note: false
 ---
+
+I believe religion is meant to help people free themselves from attachment and worry, and live happier, wiser lives in the present. What matters to me in religion is the freedom and peace we can find while we are alive, rather than a reward after death.
+
+Whether I am reading the teachings of Jesus or Wonhyo, what matters to me is the desire to help people live their own lives without being so tightly held by the things that cause them suffering. Even when we face the same hardship, our experience of life can change depending on how we understand and accept the situation. What I hope to find in religion is that change in perspective and the peace it can bring to life.
+
+In practice, though, I see people asserting their superiority by emphasizing how much of the Bible they have read, how diligently they attend church, or how much volunteer work they have done. “I’m going to see whether you’re attending church regularly.” “Why haven’t you been reading your Bible diligently?” I see the attitude behind such remarks, judging others and placing oneself above them, as a way of using religious superiority to make up for low self-esteem.
+
+It is as if they put on their own shackles, walk into a prison, and then think, “My shackles are thicker and heavier, so I am a better believer who follows Jesus’ teachings more faithfully.” Without asking what they have come to understand or how they have come to live through that effort, they compare only how many obligations they endure. When even suffering becomes evidence of faith, before long they may feel that if they are not suffering, they are not practicing their faith sufficiently.
+
+When faith is understood as the weight of obligation, even “love your enemies” becomes an obligation to force closeness. People may come to believe they must be as close to their enemies as they are to family or friends, trust them again, and hold on to the relationship even when their heart is not in it. Yet keeping someone close in the name of love can make both people suffer. The word love alone cannot determine what every relationship should look like.
+
+That person’s world and mine may not fit well together. If so, keeping our distance may be better for both of us. Rather than trying to change the person to suit my way of life, or spending my energy checking whether they have cut me off, I can leave their life to them. There are times when letting each other be is as necessary to a relationship as staying close.
+
+When I feel something, I write it down to make it concrete. I write about what is making me uncomfortable, how I understand the situation, and how I want to respond. It is a process of bringing my feelings and interpretations out into the open, examining them, and clarifying the attitude I choose to take. At the end of it, I may decide to stop trying to force us to fit together.
+
+What do I gain by spending my emotional energy continuing to hate someone? I do not need to force myself to feel warmth, nor is there any reason to keep my mind tied to the person by wishing them unhappiness. I want to examine how much of my life that feeling occupies and turn my attention to the people and things I value.
+
+I can ask the same question about desire. While wanting a home in Seoul, then a home in Gangnam, and then greater recognition from others, I may never ask what kind of life I actually like. If I simply take what others envy as my own desire, I will keep watching their reactions even after I get what I want.
+
+I, too, have felt empty when following other people’s desires. Even while doing something, I felt it did not fit what I truly wanted, and I was not at ease. It felt less like moving in a direction I wanted and more like being driven by something. What I needed then was to look at what I wanted before deciding what else to gain.
+
+On the other hand, I feel something different when I reflect on who I am, what I truly want, and why I am doing something, and make my choices accordingly. When the goals I have set and my daily actions fit the direction in which I want to live, I find the process itself rewarding and fulfilling. I also feel a sense of liberation in no longer trying to fit myself to standards I cannot accept, and in acting for reasons I understand for myself.
+
+That is why I can feel at peace even when the result falls short of my expectations. I understand why I made the choice and what I was working toward. Even when I take the same action and achieve the same result, my happiness and satisfaction change with my reasons for doing it and how I receive the outcome. What matters to me more than doing less work or reducing the burden is how well what I do fits the person I am and the life I want.
+
+Seen by this standard, restraint, effort, and religious practice take on different meanings. There can be fulfillment in effort I choose to bear for a purpose I understand and accept. But if I keep adding obligations and comparing myself with others without considering what the effort is for, I may move further and further away from the life I want. I cannot measure fulfillment in life simply by how many desires I satisfy or how many obligations I endure.
+
+What I seek in religion is wisdom that helps me examine a mind held captive by attachment and worry, and understand what I want to live for. I do not want to fill my life with pride in wearing heavier shackles or with recognition for having more. I want to live a life in which what I value, the purposes I have set, and my daily choices fit together. The rewards and fulfillment I feel in that life, and the ability to accept my life even when results differ from what I hoped for, are closer to the liberation I seek in religion.
+
+<!-- ko -->
 
 나는 종교가 사람들이 집착과 걱정, 근심에서 벗어나 지금의 삶을 더 행복하고 현명하게 살아가도록 돕는 데 목적이 있다고 생각한다. 내가 종교에서 중요하게 여기는 것은 죽음 이후의 보상보다, 지금 살아가는 동안 얻을 수 있는 자유와 평안이다.
 
